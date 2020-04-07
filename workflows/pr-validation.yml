@@ -1,0 +1,28 @@
+name: Pull request validation
+
+on:
+  pull_request:
+    branches: [ development, master ]
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: install
+      run: yarn
+    
+    - name: lint
+      run: yarn lint
+
+    - name: type-check
+      run: yarn check-types
+
+    - name: type-check for tests
+      run: yarn check-test-types
+
+    - name: test
+      run: yarn test
