@@ -1,0 +1,6 @@
+/node_modules
+/dist
+/bin
+/__tests__
+jest.config.js
+babel.config.js
