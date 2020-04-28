@@ -14,6 +14,7 @@
   * limitations under the License.
 */
 
+import { ActionHandler } from './actions/types'
 import { BeagleError } from './errors'
 
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
@@ -54,6 +55,7 @@ export interface BeagleConfig<Schema> {
   components: {
     [K in ComponentName<Schema>]: any
   },
+  customActions?: Record<string, ActionHandler>,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -71,9 +73,10 @@ export interface LoadParams<Schema = DefaultSchema> {
 
 export interface BeagleUIElement<Schema = DefaultSchema> {
   _beagleType_: ComponentName<Schema>,
+  _context_?: DataContext,
   children?: Array<BeagleUIElement<Schema>>,
-  [key: string]: any,
   styleProperties?: Record<string, any>,
+  [key: string]: any,
 }
 
 export interface IdentifiableBeagleUIElement<Schema = DefaultSchema>
@@ -141,4 +144,9 @@ export interface BeagleContext<T = any> {
   getElementId: () => string,
   getElement: () => IdentifiableBeagleUIElement<T> | null,
   getView: () => BeagleView<T>,
+}
+
+export interface DataContext {
+  id: string,
+  value?: any,
 }
