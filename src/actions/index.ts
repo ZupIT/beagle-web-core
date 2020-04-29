@@ -19,6 +19,7 @@ import setContext from './setContext'
 import sendRequest from './sendRequest'
 import alert from './alert'
 import confirm from './confirm'
+import NavigationActions from './navigation'
 import { ActionHandler } from './types'
 
 const defaultActionHandlers: Record<string, ActionHandler> = {
@@ -27,6 +28,7 @@ const defaultActionHandlers: Record<string, ActionHandler> = {
   sendRequest,
   alert,
   confirm,
+  ...NavigationActions,
 }
 
 export default defaultActionHandlers
