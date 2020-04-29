@@ -73,7 +73,7 @@ const createBeagleView = <Schema>({
     middlewares: Array<BeagleMiddleware<any>>,
   ): Promise<BeagleUIElement<Schema>> {
     let resultTree = uiTree
-    for(let i = 0; i < middlewares.length; i ++) {
+    for (let i = 0; i < middlewares.length; i ++) {
       resultTree = await middlewares[i](resultTree)
     }
     return resultTree
@@ -82,7 +82,7 @@ const createBeagleView = <Schema>({
   function runUserMiddlewares(
     uiTree: BeagleUIElement<any>,
     localMiddlewares: Array<BeagleMiddleware<any>>,
-  ):Promise<BeagleUIElement<Schema>> {
+  ): Promise<BeagleUIElement<Schema>> {
     return runMiddlewares(uiTree, [...middlewares, ...localMiddlewares])
   }
 
