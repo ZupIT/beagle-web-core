@@ -14,6 +14,7 @@
   * limitations under the License.
 */
 
+import set from 'lodash/set'
 import { getContextHierarchyByElementId, getContextInHierarchy } from '../context'
 import { ActionHandler, SetContextAction } from './types'
 
@@ -37,7 +38,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   if (!path) context.value = value
   else {
     context.value = context.value || {}
-    _.set(context.value, path, value)
+    set(context.value, path, value)
   }
 
   beagleView.updateWithTree({ sourceTree: uiTree })
