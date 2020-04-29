@@ -14,6 +14,7 @@
   * limitations under the License.
 */
 
+import get from 'lodash/get'
 import { getContextHierarchy, getContextInHierarchy } from './context'
 import { DataContext } from './types'
 
@@ -24,7 +25,7 @@ function getBindingValue(
   path: string,
   contextHierarchy: DataContext[],
 ) {
-  if (!path.match(/^[\w\d_]+(\[\d+\])?(\.([\w\d_]+(\[\d+\])?))*$/))
+  if (!path.match(/^[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*$/))
     console.warn(
       `Invalid path "${path}". Please, make sure your variable names contain only letters, numbers and the symbol "_". To access substructures use "." and to access array indexes use "[index]".`
     )
@@ -36,7 +37,7 @@ function getBindingValue(
   const context = getContextInHierarchy(contextHierarchy, contextId)
   if (!context) return
   
-  return contextPath ? _.get(context.value, contextPath) : context.value
+  return contextPath ? get(context.value, contextPath) : context.value
 }
 
 function replaceBindingsInString(str: string, contextHierarchy: DataContext[]) {
