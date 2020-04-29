@@ -19,6 +19,11 @@
     "test": "jest",
     "lint": "eslint ./src/**/*.ts"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "sh ./bin/check-license.sh"
+    }
+  },
   "dependencies": {
     "@babel/runtime": "^7.8.3",
     "typescript": "3.7.5"
@@ -44,6 +49,7 @@
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "3.2.0",
     "http-server": "^0.12.1",
+    "husky": "^4.2.5",
     "jest": "^25.1.0",
     "nock": "^12.0.1",
     "node-fetch": "^2.6.0",
