@@ -16,6 +16,7 @@
 
 import { ActionHandler, CustomAction } from './actions/types'
 import createEventHandler, { EventHandler } from './EventHandler'
+import createBeagleNavigator from './BeagleNavigator'
 import { replaceBindings } from './bindings'
 import createBeagleUIView from './BeagleUIView'
 import BeagleContext from './BeagleContext'
@@ -70,4 +71,5 @@ export {
   createEventHandler,
   EventHandler,
   replaceBindings,
+  createBeagleNavigator,
 }

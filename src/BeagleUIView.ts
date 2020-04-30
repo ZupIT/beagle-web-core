@@ -28,10 +28,12 @@ import {
   TreeUpdateMode,
   LoadParams,
   BeagleConfig,
+  BeagleNavigator,
 } from './types'
 import createURLBuilder from './utils/url-builder'
-import beagleStyleMiddleware from './middlewares/beagle-style'
-import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
+import createBeagleNavigator from './BeagleNavigator'
+// import beagleStyleMiddleware from './middlewares/beagle-style'
+// import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 
 const createBeagleView = <Schema>({
   baseUrl,
@@ -42,6 +44,7 @@ const createBeagleView = <Schema>({
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormater = createURLBuilder(baseUrl)
+  const beagleNavigator: BeagleNavigator = createBeagleNavigator()
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -88,7 +91,10 @@ const createBeagleView = <Schema>({
 
   function runSystemMiddlewares(uiTree: BeagleUIElement<any>) {
     // return runMiddlewares(uiTree, [beagleIdMiddleware, beagleStyleClassMiddleware, beagleStyleMiddleware]) as Promise<IdentifiableBeagleUIElement<Schema>>
-    return runMiddlewares(uiTree, [beagleIdMiddleware]) as Promise<IdentifiableBeagleUIElement<Schema>>
+    return runMiddlewares(
+      uiTree,
+      [beagleIdMiddleware]
+    ) as Promise<IdentifiableBeagleUIElement<Schema>>
     
   }
 
@@ -186,12 +192,17 @@ const createBeagleView = <Schema>({
     return clone(currentUITree)
   }
 
+  function getBeagleNavigator() {
+    return beagleNavigator
+  }
+
   return {
     subscribe,
     addErrorListener,
     updateWithFetch,
     updateWithTree,
     getTree,
+    getBeagleNavigator,
   }
 }
 

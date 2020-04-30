@@ -46,6 +46,8 @@ export type Strategy = (
   | 'cache-first'
 )
 
+export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
+
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
@@ -121,6 +123,20 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
+export type Stack = string[]
+
+export type Route = string
+
+export interface BeagleNavigator {
+  pushStack: (element: Route) => Route,
+  popStack: () => Route,
+  pushView: (route: Route) => Route,
+  popView: () => Route,
+  popToView: (route: Route) => Route,
+  resetStackNavigator: (route: Route) => Route,
+  get: () => Stack[],
+}
+
 export interface BeagleView<Schema = DefaultSchema> {
   subscribe: (listener: Listener<Schema>) => (() => void),
   addErrorListener: (errorListener: ErrorListener) => (() => void),
@@ -134,6 +150,7 @@ export interface BeagleView<Schema = DefaultSchema> {
   ) => Promise<void>,
   updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
+  getBeagleNavigator: () => BeagleNavigator,
 }
 
 export interface BeagleContext<T = any> {
