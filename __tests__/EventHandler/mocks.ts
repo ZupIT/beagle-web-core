@@ -1,14 +1,4 @@
-import { IdentifiableBeagleUIElement, BeagleView } from '../../src/types'
-
-export function createBeagleViewMock(): BeagleView {
-  return {
-    addErrorListener: jest.fn(),
-    getTree: jest.fn(),
-    subscribe: jest.fn(),
-    updateWithFetch: jest.fn(),
-    updateWithTree: jest.fn(),
-  }
-}
+import { IdentifiableBeagleUIElement } from '../../src/types'
 
 export function createContainerWithAction(
   eventName: string,

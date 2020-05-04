@@ -47,7 +47,7 @@ export interface SetContextAction {
   _actionType_: 'setContext',
   context?: string,
   path?: string,
-  value: string,
+  value: any,
 }
 
 export interface AlertAction {
