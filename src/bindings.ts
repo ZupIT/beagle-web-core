@@ -30,7 +30,7 @@ function getBindingValue(
       `Invalid path "${path}". Please, make sure your variable names contain only letters, numbers and the symbol "_". To access substructures use "." and to access array indexes use "[index]".`
     )
 
-  const pathMatch = path.match(/^([^\.]+)\.?(.*)/)
+  const pathMatch = path.match(/^([^\.\[\]]+)\.?(.*)/)
   if (!pathMatch || pathMatch.length < 1) return
   const contextId = pathMatch[1]
   const contextPath = pathMatch[2]

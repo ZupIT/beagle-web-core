@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import * as nock from 'nock'
+import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
 import BeagleContext, { views } from '../src/BeagleContext'
 import { BeagleView } from '../src/types'
