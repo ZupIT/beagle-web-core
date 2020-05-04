@@ -1,7 +1,7 @@
-import setContext from '../../src/actions/setContext'
-import { findById } from '../../src/utils/tree-reading'
-import { createBeagleViewMock } from '../test-utils'
-import { IdentifiableBeagleUIElement } from '../../src/types'
+import setContext from '../../../src/actions/setContext'
+import { findById } from '../../../src/utils/tree-reading'
+import { createBeagleViewMock } from '../../test-utils'
+import { IdentifiableBeagleUIElement } from '../../../src/types'
 import {
   createSingleContextMock,
   createDoubleContextMock,
@@ -26,7 +26,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -52,7 +52,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         children: [
@@ -84,7 +84,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -110,7 +110,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -136,7 +136,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -169,7 +169,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -202,7 +202,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -230,7 +230,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -303,7 +303,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {
@@ -331,7 +331,7 @@ describe('Actions: setContext', () => {
       handleAction: jest.fn(),
     })
   
-    expect(beagleView.updateWithTree).toBeCalledWith({
+    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
         _context_: {

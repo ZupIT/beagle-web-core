@@ -1,4 +1,4 @@
-import { IdentifiableBeagleUIElement } from '../../src/types'
+import { IdentifiableBeagleUIElement } from '../../../src/types'
 
 export function createSingleContextMock(
   ctxId = 'ctx_a',
@@ -87,42 +87,3 @@ export function createMultipleScopesMock() {
     ],
   }
 }
-
-// export function createMultiContextMock(): BeagleUIElement {
-//   return {
-//     _beagleType_: 'container',
-//     _context_: {
-//       id: 'ctx_a',
-//       value: 'value of ctx_a',
-//     },
-//     children: [
-//       {
-//         _beagleType_: 'container',
-//         _context_: {
-//           id: 'ctx_b',
-//           value: 'value of ctx_b',
-//         },
-//         children: [
-//           {
-//             _beagleType_: 'container',
-//             children: [
-//               {
-//                 _beagleType_: 'button',
-//                 value: '${ctx_a}',
-//               }
-//             ]
-//           },
-//           {
-//             _beagleType_: 'container',
-//             children: [
-//               {
-//                 _beagleType_: 'button',
-//                 value: '${ctx_b}',
-//               }
-//             ]
-//           },
-//         ],
-//       },
-//     ],
-//   }
-// }
