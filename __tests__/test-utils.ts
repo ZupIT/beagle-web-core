@@ -38,6 +38,20 @@ export function mockLocalStorage(storage: Record<string, string> = {}) {
   }
 }
 
+export function mockSystemDialogs(result = false) {
+  const globalScope = global as any
+  const original = globalScope.window
+
+  globalScope.window = {
+    alert: jest.fn(() => result),
+    confirm: jest.fn(() => result),
+  }
+  
+  return () => {
+    globalScope.window = original
+  }
+}
+
 export function hasDifferentPointers(data1, data2) {
   if (typeof data1 !== 'object') return true
   if (data1 === data2) return false
