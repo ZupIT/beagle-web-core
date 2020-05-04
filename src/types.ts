@@ -123,9 +123,9 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
-export type Stack = string[]
-
 export type Route = string
+
+export type Stack = Route[]
 
 export interface BeagleNavigator {
   pushStack: (element: Route) => Route,
@@ -135,6 +135,7 @@ export interface BeagleNavigator {
   popToView: (route: Route) => Route,
   resetStackNavigator: (route: Route) => Route,
   get: () => Stack[],
+  set: (nav: Stack[]) => void,
 }
 
 export interface BeagleView<Schema = DefaultSchema> {
@@ -151,6 +152,7 @@ export interface BeagleView<Schema = DefaultSchema> {
   updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
+  initBeagleNavigator: (initialRoute: Route) => void,
 }
 
 export interface BeagleContext<T = any> {

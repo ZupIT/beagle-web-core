@@ -29,6 +29,7 @@ import {
   LoadParams,
   BeagleConfig,
   BeagleNavigator,
+  Route,
 } from './types'
 import createURLBuilder from './utils/url-builder'
 import createBeagleNavigator from './BeagleNavigator'
@@ -44,7 +45,7 @@ const createBeagleView = <Schema>({
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormater = createURLBuilder(baseUrl)
-  const beagleNavigator: BeagleNavigator = createBeagleNavigator()
+  let beagleNavigator: BeagleNavigator
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -193,7 +194,12 @@ const createBeagleView = <Schema>({
   }
 
   function getBeagleNavigator() {
+    if (!beagleNavigator) throw Error('You must start the BeagleNavigator before using it')
     return beagleNavigator
+  }
+
+  function initBeagleNavigator(initialRoute: Route) {
+    beagleNavigator = createBeagleNavigator(initialRoute)
   }
 
   return {
@@ -203,6 +209,7 @@ const createBeagleView = <Schema>({
     updateWithTree,
     getTree,
     getBeagleNavigator,
+    initBeagleNavigator,
   }
 }
 

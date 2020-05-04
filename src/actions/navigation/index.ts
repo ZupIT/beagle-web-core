@@ -36,38 +36,38 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
 }) => {
   const { route, data } = action
   const origin = window.location.origin
-  window.location.href = `${origin}/${route}`
+  window.location.href = `${origin}${route}`
   window.history.pushState(data, 'data')
 }
 
 const pushStack: ActionHandler<PushStackAction> = ({ action, beagleView }) => {
   beagleView.getBeagleNavigator().pushStack(action.route)
-  beagleView.updateWithFetch({ path: `/${action.route}` })
+  beagleView.updateWithFetch({ path: `${action.route}` })
 }
 
 const popStack: ActionHandler<PopStackAction> = ({ beagleView }) => {
   const route = beagleView.getBeagleNavigator().popStack()
-  beagleView.updateWithFetch({ path: `/${route}` })
+  beagleView.updateWithFetch({ path: `${route}` })
 }
 
 const pushView: ActionHandler<PushViewAction> = ({ action, beagleView }) => {
   beagleView.getBeagleNavigator().pushView(action.route)
-  beagleView.updateWithFetch({ path: `/${action.route}` })
+  beagleView.updateWithFetch({ path: `${action.route}` })
 }
 
 const popView: ActionHandler<PopViewAction> = ({ beagleView }) => {
   const route = beagleView.getBeagleNavigator().popView()
-  beagleView.updateWithFetch({ path: `/${route}` })
+  beagleView.updateWithFetch({ path: `${route}` })
 }
 
 const popToView: ActionHandler<PopToViewAction> = ({ action, beagleView }) => {
   beagleView.getBeagleNavigator().popToView(action.route)
-  beagleView.updateWithFetch({ path: `/${action.route}` })
+  beagleView.updateWithFetch({ path: `${action.route}` })
 }
 
 const resetNavigation: ActionHandler<ResetNavigationAction> = ({ action, beagleView }) => {
   beagleView.getBeagleNavigator().resetStackNavigator(action.route)
-  beagleView.updateWithFetch({ path: `/${action.route}` })
+  beagleView.updateWithFetch({ path: `${action.route}` })
 }
 
 export default {

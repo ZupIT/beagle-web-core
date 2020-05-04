@@ -16,8 +16,13 @@
 
 import { Stack, Route, BeagleNavigator } from './types'
 
-const createBeagleNavigator = (): BeagleNavigator => {
-  let navigation: Stack[] = []
+const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
+  let initialStack = [initialPath]
+  let navigation: Stack[] = [initialStack]
+
+  function isSingleStack() {
+    return navigation.length === 1
+  }
 
   function isEmpty() {
     return navigation.length === 0
@@ -25,6 +30,19 @@ const createBeagleNavigator = (): BeagleNavigator => {
 
   function getLastPosition() {
     return navigation.length - 1
+  }
+
+  function getLastRoute() {
+    if (isEmpty()) return ''
+
+    const lastStackPosition = getLastPosition()
+    const lastRoutePosition = navigation[lastStackPosition].length
+
+    const route = lastRoutePosition > 0
+      ? navigation[lastStackPosition][lastRoutePosition - 1]
+      : ''
+
+    return route
   }
 
   function getCurrentRoute() {
@@ -41,54 +59,53 @@ const createBeagleNavigator = (): BeagleNavigator => {
   }
 
   function popStack() {
-    if (isEmpty()) return ''
+    if (isSingleStack()) {
+      navigation = [initialStack]
+      return initialPath
+    }
 
     navigation.pop()
-    if (isEmpty()) return '/'
-    const route = navigation[getLastPosition()][0]
-    return route
+    return getLastRoute()
   }
 
   function pushView(route: Route) {
-    if (isEmpty()) return pushStack(route)
     navigation[getLastPosition()].push(route)
     return route
   }
 
   function popView() {
-    if (isEmpty()) return ''
+    if (isSingleStack() && navigation.length === 1) return initialPath
 
     const lastPosition = getLastPosition()
     navigation[lastPosition].pop()
 
-    if (navigation[lastPosition].length > 0) {
-      const route = navigation[lastPosition][0]
-      return route
-    }
-
-    navigation.pop()
-    const route = navigation[getLastPosition()][0]
-    return route
+    if (navigation[lastPosition].length <= 0) navigation.pop()
+    
+    return getLastRoute()
   }
 
   function popToView(route: Route) {
-    if (isEmpty()) return '/'
-
-    while (getCurrentRoute() !== route) {
+    while (getCurrentRoute() !== route && !isEmpty()) {
       navigation[getLastPosition()].pop()
       if (navigation[getLastPosition()].length === 0) navigation.pop()
     }
 
+    if (isEmpty()) navigation = [initialStack]
     return route
   }
 
   function resetStackNavigator(route: Route) {
-    navigation = []
+    initialStack = [route]
+    navigation = [initialStack]
     return route
   }
 
   function get() {
     return navigation
+  }
+
+  function set(nav: Stack[]) {
+    navigation = nav
   }
 
   return {
@@ -99,6 +116,7 @@ const createBeagleNavigator = (): BeagleNavigator => {
     popToView,
     resetStackNavigator,
     get,
+    set,
   }
 
 }
