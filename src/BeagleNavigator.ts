@@ -29,18 +29,14 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     return isSingleStack() && navigation[0].length === 1
   }
 
-  function isEmpty() {
-    return navigation.length === 0
-  }
-
   function getCurrentStackPosition() {
     return navigation.length - 1
   }
 
   function getCurrentRoute() {
-    const lastStack = navigation[getCurrentStackPosition()]
-    const lastPositionInLastStack = lastStack.length - 1
-    return lastStack[lastPositionInLastStack]
+    const currentStack = navigation[getCurrentStackPosition()]
+    const lastPositionInCurrentStack = currentStack.length - 1
+    return currentStack[lastPositionInCurrentStack]
   }
 
   function pushStack(route: Route) {
@@ -66,17 +62,17 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
   function popView() {
     if (isSingleRoute()) return initialPath
 
-    const lastPosition = getCurrentStackPosition()
-    navigation[lastPosition].pop()
+    const currentPosition = getCurrentStackPosition()
+    navigation[currentPosition].pop()
 
-    if (navigation[lastPosition].length <= 0) navigation.pop()
+    if (navigation[currentPosition].length <= 0) navigation.pop()
     
     return getCurrentRoute()
   }
 
   function popToView(route: Route) {
-    const lastStack = navigation[getCurrentStackPosition()]
-    if (!find(lastStack, route)) throw Error('The route does not exist on the current stack')
+    const currentStack = navigation[getCurrentStackPosition()]
+    if (!find(currentStack, route)) throw Error('The route does not exist on the current stack')
 
     while (getCurrentRoute() !== route) {
       navigation[getCurrentStackPosition()].pop()
