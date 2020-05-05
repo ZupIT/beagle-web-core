@@ -14,6 +14,7 @@
   * limitations under the License.
 */
 
+import { find } from 'lodash'
 import { Stack, Route, BeagleNavigator } from './types'
 
 const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
@@ -24,33 +25,22 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     return navigation.length === 1
   }
 
+  function isSingleRoute() {
+    return isSingleStack() && navigation[0].length === 1
+  }
+
   function isEmpty() {
     return navigation.length === 0
   }
 
-  function getLastPosition() {
+  function getCurrentStackPosition() {
     return navigation.length - 1
   }
 
-  function getLastRoute() {
-    if (isEmpty()) return ''
-
-    const lastStackPosition = getLastPosition()
-    const lastRoutePosition = navigation[lastStackPosition].length
-
-    const route = lastRoutePosition > 0
-      ? navigation[lastStackPosition][lastRoutePosition - 1]
-      : ''
-
-    return route
-  }
-
   function getCurrentRoute() {
-    if (isEmpty()) return ''
-
-    const lastStack = navigation[getLastPosition()]
+    const lastStack = navigation[getCurrentStackPosition()]
     const lastPositionInLastStack = lastStack.length - 1
-    return lastPositionInLastStack >= 0 ? lastStack[lastPositionInLastStack] : ''
+    return lastStack[lastPositionInLastStack]
   }
 
   function pushStack(route: Route) {
@@ -65,32 +55,33 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     }
 
     navigation.pop()
-    return getLastRoute()
+    return getCurrentRoute()
   }
 
   function pushView(route: Route) {
-    navigation[getLastPosition()].push(route)
+    navigation[getCurrentStackPosition()].push(route)
     return route
   }
 
   function popView() {
-    if (isSingleStack() && navigation.length === 1) return initialPath
+    if (isSingleRoute()) return initialPath
 
-    const lastPosition = getLastPosition()
+    const lastPosition = getCurrentStackPosition()
     navigation[lastPosition].pop()
 
     if (navigation[lastPosition].length <= 0) navigation.pop()
     
-    return getLastRoute()
+    return getCurrentRoute()
   }
 
   function popToView(route: Route) {
-    while (getCurrentRoute() !== route && !isEmpty()) {
-      navigation[getLastPosition()].pop()
-      if (navigation[getLastPosition()].length === 0) navigation.pop()
+    const lastStack = navigation[getCurrentStackPosition()]
+    if (!find(lastStack, route)) throw Error('The route does not exist on the current stack')
+
+    while (getCurrentRoute() !== route) {
+      navigation[getCurrentStackPosition()].pop()
     }
 
-    if (isEmpty()) navigation = [initialStack]
     return route
   }
 
