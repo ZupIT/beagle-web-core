@@ -21,4 +21,4 @@ jobs:
       run: yarn build
 
     - name: publish
-    - run: echo 'publish'
+      run: echo 'publish'
