@@ -121,6 +121,10 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
+export interface URLBuilder {
+  build: (path: string, baseUrl?: string) => string,
+}
+
 export interface BeagleView<Schema = DefaultSchema> {
   subscribe: (listener: Listener<Schema>) => (() => void),
   addErrorListener: (errorListener: ErrorListener) => (() => void),
@@ -134,6 +138,7 @@ export interface BeagleView<Schema = DefaultSchema> {
   ) => Promise<void>,
   updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
+  getUrlBuilder: () => URLBuilder,
 }
 
 export interface BeagleContext<T = any> {

@@ -41,7 +41,7 @@ const createBeagleView = <Schema>({
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
-  const urlFormater = createURLBuilder(baseUrl)
+  const urlFormatter = createURLBuilder(baseUrl)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -149,7 +149,7 @@ const createBeagleView = <Schema>({
     elementId?: string,
     mode: TreeUpdateMode = 'replace',
   ) {
-    const url = urlFormater.build(params.path, params.baseUrl)
+    const url = urlFormatter.build(params.path, params.baseUrl)
     const allHeaders = { ...headers, ...params.headers }
     const originalTree = currentUITree
 
@@ -186,12 +186,17 @@ const createBeagleView = <Schema>({
     return clone(currentUITree)
   }
 
+  function getUrlBuilder() {
+    return urlFormatter
+  }
+
   return {
     subscribe,
     addErrorListener,
     updateWithFetch,
     updateWithTree,
     getTree,
+    getUrlBuilder,
   }
 }
 

@@ -81,12 +81,13 @@ export function stripTreeIds(tree: BeagleUIElement<any>): BeagleUIElement<any> {
   return newTree
 }
 
-export function createBeagleViewMock(tree?: IdentifiableBeagleUIElement): BeagleView {
+export function createBeagleViewMock(custom: Partial<BeagleView> = {}): BeagleView {
   return {
-    addErrorListener: jest.fn(),
-    getTree: jest.fn(() => tree),
-    subscribe: jest.fn(),
-    updateWithFetch: jest.fn(),
-    updateWithTree: jest.fn(),
+    addErrorListener: jest.fn(custom.addErrorListener),
+    getTree: jest.fn(custom.getTree),
+    subscribe: jest.fn(custom.subscribe),
+    updateWithFetch: jest.fn(custom.updateWithFetch),
+    updateWithTree: jest.fn(custom.updateWithTree),
+    getUrlBuilder: jest.fn(custom.getUrlBuilder || (() => ({ build: jest.fn((url => url)) }))),
   }
 }
