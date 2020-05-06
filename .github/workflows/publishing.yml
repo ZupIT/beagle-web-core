@@ -21,4 +21,6 @@ jobs:
       run: yarn build
 
     - name: publish
-      run: echo 'publish'
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: aa9a174b-030a-46df-819a-a86ca06e407b
