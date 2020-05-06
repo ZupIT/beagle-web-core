@@ -1,0 +1,24 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches: [ ci/npm-publish ]
+
+jobs:
+  publishing:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: install
+      run: yarn
+    
+    - name: update package version
+      run: yarn update-version
+
+    - name: build
+      run: yarn build
+
+    - name: publish
+    - run: echo 'publish'

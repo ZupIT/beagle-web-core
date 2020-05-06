@@ -17,7 +17,8 @@
     "check-test-types": "tsc __tests__/**/*.ts --noEmit",
     "postinstall": "npm run build",
     "test": "jest",
-    "lint": "eslint ./src/**/*.ts"
+    "lint": "eslint ./src/**/*.ts",
+    "update-version": "node ./bin/update-version"
   },
   "husky": {
     "hooks": {
