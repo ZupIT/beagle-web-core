@@ -57,7 +57,7 @@ describe('BeagleNavigator', () => {
   })
 
   it('should reset beagle navigator', () => {
-    navigator.resetStackNavigator('resetingStack')
+    navigator.resetNavigation('resetingStack')
     expect(navigator.get()).toEqual([['resetingStack']])
   })
 })

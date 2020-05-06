@@ -72,5 +72,4 @@ export {
   createEventHandler,
   EventHandler,
   replaceBindings,
-  createBeagleNavigator,
 }

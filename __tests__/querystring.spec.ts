@@ -24,8 +24,11 @@ describe('Utils Query String', () => {
   })
 
   it('should return empty string for empty object', () => {
-    const qs = createQueryString({})
-    expect(qs).toEqual('')
+    const qs1 = createQueryString({})
+    expect(qs1).toEqual('')
+    // @ts-ignore
+    const qs2 = createQueryString()
+    expect(qs2).toEqual('')
   })
 
   it('should encode uri correctly', () => {

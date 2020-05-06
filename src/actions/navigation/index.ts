@@ -19,12 +19,7 @@ import { createQueryString } from '../../utils/querystring'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
-  PopStackAction,
-  PopViewAction,
-  PushStackAction,
-  PushViewAction,
-  PopToViewAction,
-  ResetNavigationAction,
+  BeagleNavigationAction,
 } from './types'
 
 const openExternalURL: ActionHandler<OpenExternalURLAction> = ({ action }) => {
@@ -41,51 +36,27 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
   window.location.href = `${origin}${route}${qs}`
 }
 
-const pushStack: ActionHandler<PushStackAction> = ({ action, beagleView }) => {
-  const path = beagleView.getBeagleNavigator().pushStack(action.route)
-  beagleView.updateWithFetch({ path })
+interface Action {
+  _actionType_: string,
+  route: string,
 }
 
-const popStack: ActionHandler<PopStackAction> = ({ beagleView }) => {
-  const path = beagleView.getBeagleNavigator().popStack()
-  beagleView.updateWithFetch({ path })
-}
-
-const pushView: ActionHandler<PushViewAction> = ({ action, beagleView }) => {
-  const path = beagleView.getBeagleNavigator().pushView(action.route)
-  beagleView.updateWithFetch({ path })
-}
-
-const popView: ActionHandler<PopViewAction> = ({ beagleView }) => {
+const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, beagleView }) => {
   try {
-    const path = beagleView.getBeagleNavigator().popView()
+    const path = beagleView.getBeagleNavigator()[action._actionType_]((action as Action).route)
     beagleView.updateWithFetch({ path })
   } catch (error) {
     console.error(error)
   }
-}
-
-const popToView: ActionHandler<PopToViewAction> = ({ action, beagleView }) => {
-  try {
-    const path = beagleView.getBeagleNavigator().popToView(action.route)
-    beagleView.updateWithFetch({ path })
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const resetNavigation: ActionHandler<ResetNavigationAction> = ({ action, beagleView }) => {
-  const path = beagleView.getBeagleNavigator().resetStackNavigator(action.route)
-  beagleView.updateWithFetch({ path })
 }
 
 export default {
   openExternalURL,
   openNativeRoute,
-  pushStack,
-  popStack,
-  pushView,
-  popView,
-  popToView,
-  resetNavigation,
+  pushStack: navigateBeagleView,
+  popStack: navigateBeagleView,
+  pushView: navigateBeagleView,
+  popView: navigateBeagleView,
+  popToView: navigateBeagleView,
+  resetNavigation: navigateBeagleView,
 }

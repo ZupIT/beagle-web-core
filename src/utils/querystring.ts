@@ -14,9 +14,11 @@
   * limitations under the License.
 */
 
-import { keys, map, join } from 'lodash'
 
 export function createQueryString(data: Record<string, string>) {
-  return data && join(map(keys(data), (key: string) =>
-    `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`), '&')
+  if (!data) return ''
+  const keys = Object.keys(data)
+  const params = keys.map((key: string) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+  
+  return params.join('&')
 }
