@@ -40,12 +40,12 @@ const createBeagleView = <Schema>({
   baseUrl,
   headers,
   middlewares = [],
-}: BeagleConfig<Schema>): BeagleView<Schema> => {
+}: BeagleConfig<Schema>, initialRoute: Route): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormater = createURLBuilder(baseUrl)
-  let beagleNavigator: BeagleNavigator
+  const beagleNavigator: BeagleNavigator = createBeagleNavigator(initialRoute)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -194,12 +194,7 @@ const createBeagleView = <Schema>({
   }
 
   function getBeagleNavigator() {
-    if (!beagleNavigator) throw Error('You must start the BeagleNavigator before using it')
     return beagleNavigator
-  }
-
-  function initBeagleNavigator(initialRoute: Route) {
-    beagleNavigator = createBeagleNavigator(initialRoute)
   }
 
   return {
@@ -209,7 +204,6 @@ const createBeagleView = <Schema>({
     updateWithTree,
     getTree,
     getBeagleNavigator,
-    initBeagleNavigator,
   }
 }
 

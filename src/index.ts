@@ -34,6 +34,7 @@ import {
   BeagleMiddleware,
   BeagleView,
   Strategy,
+  Route,
 } from './types'
 
 function createBeagleUIService<
@@ -46,7 +47,7 @@ function createBeagleUIService<
     loadBeagleUITreeFromServer: loadFromServer,
     loadBeagleUITreeFromCache: loadFromCache,
     convertBeagleUiTreeToXml: xmlConverter.convertBeagleUiTreeToXml,
-    createView: () => createBeagleUIView<Schema>(config),
+    createView: (initialRoute: Route) => createBeagleUIView<Schema>(config, initialRoute),
     getConfig: () => config,
   }
 }

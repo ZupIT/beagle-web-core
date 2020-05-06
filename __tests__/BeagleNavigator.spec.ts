@@ -50,8 +50,8 @@ describe('BeagleNavigator', () => {
   })
 
   it('should ensure pop actions wont empty navigation', () => {
-    navigator.popView()
-    expect(navigator.get()).toEqual([initialStack])
+    const route = () => navigator.popView()
+    expect(route).toThrowError()
     navigator.popStack()
     expect(navigator.get()).toEqual([initialStack])
   })

@@ -103,7 +103,7 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
     headers?: Record<string, string>,
     shouldSaveCache?: boolean,
   ) => Promise<BeagleUIElement<Schema> | null>,
-  createView: () => BeagleView<Schema>,
+  createView: (initialRoute: Route) => BeagleView<Schema>,
   convertBeagleUiTreeToXml: (
     uiTree: BeagleUIElement<Schema>,
     options?: Partial<XmlOptions<Schema>>,
@@ -135,7 +135,6 @@ export interface BeagleNavigator {
   popToView: (route: Route) => Route,
   resetStackNavigator: (route: Route) => Route,
   get: () => Stack[],
-  set: (nav: Stack[]) => void,
 }
 
 export interface BeagleView<Schema = DefaultSchema> {
@@ -152,7 +151,6 @@ export interface BeagleView<Schema = DefaultSchema> {
   updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
-  initBeagleNavigator: (initialRoute: Route) => void,
 }
 
 export interface BeagleContext<T = any> {

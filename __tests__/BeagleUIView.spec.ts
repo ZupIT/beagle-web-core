@@ -36,7 +36,7 @@ describe('BeagleUIView', () => {
       baseUrl,
       components: {},
       middlewares: [middleware],
-    })
+    }, '/home')
     nock.cleanAll()
     localStorageMock.clear()
     middleware.mockClear()

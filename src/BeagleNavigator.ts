@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { find } from 'lodash'
+import { find, clone } from 'lodash'
 import { Stack, Route, BeagleNavigator } from './types'
 
 const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
@@ -60,7 +60,7 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
   }
 
   function popView() {
-    if (isSingleRoute()) return initialPath
+    if (isSingleRoute()) throw Error('It was not possible to pop a view because Beagle Navigator has only one recorded route')
 
     const currentPosition = getCurrentStackPosition()
     navigation[currentPosition].pop()
@@ -88,11 +88,7 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
   }
 
   function get() {
-    return navigation
-  }
-
-  function set(nav: Stack[]) {
-    navigation = nav
+    return clone(navigation)
   }
 
   return {
@@ -103,7 +99,6 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     popToView,
     resetStackNavigator,
     get,
-    set,
   }
 
 }
