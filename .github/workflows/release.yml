@@ -62,11 +62,13 @@ jobs:
       #     draft: false
       #     prerelease: false
 
-      - run: npm ci
+      - uses: actions/setup-node@v1
         if: ${{ steps.check.outcome == 'success' }}
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: publish
+      - run: npm publish --access public
         if: ${{ steps.check.outcome == 'success' }}
-        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
