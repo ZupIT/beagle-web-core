@@ -14,9 +14,9 @@
   * limitations under the License.
 */
 
-import { Stack, Route, BeagleNavigator } from './types'
+import { Stack, BeagleNavigator } from './types'
 
-const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
+const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
   let initialStack = [initialPath]
   let navigation: Stack[] = [initialStack]
 
@@ -38,7 +38,7 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     return currentStack[lastPositionInCurrentStack]
   }
 
-  function pushStack(route: Route) {
+  function pushStack(route: string) {
     navigation.push([route])
     return getCurrentRoute()
   }
@@ -50,7 +50,7 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function pushView(route: Route) {
+  function pushView(route: string) {
     getCurrentStack().push(route)
     return getCurrentRoute()
   }
@@ -64,7 +64,7 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function popToView(route: Route) {
+  function popToView(route: string) {
     const currentStack = getCurrentStack()
     const routeIndex = currentStack.findIndex(item => item === route)
 
@@ -74,7 +74,7 @@ const createBeagleNavigator = (initialPath: Route): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function resetNavigation(route: Route) {
+  function resetNavigation(route: string) {
     initialStack = [route]
     navigation = [initialStack]
     return route

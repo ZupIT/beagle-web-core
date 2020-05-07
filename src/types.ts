@@ -103,7 +103,7 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
     headers?: Record<string, string>,
     shouldSaveCache?: boolean,
   ) => Promise<BeagleUIElement<Schema> | null>,
-  createView: (initialRoute: Route) => BeagleView<Schema>,
+  createView: (initialRoute: string) => BeagleView<Schema>,
   convertBeagleUiTreeToXml: (
     uiTree: BeagleUIElement<Schema>,
     options?: Partial<XmlOptions<Schema>>,
@@ -123,17 +123,15 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
-export type Route = string
-
-export type Stack = Route[]
+export type Stack = string[]
 
 export interface BeagleNavigator {
-  pushStack: (element: Route) => Route,
-  popStack: () => Route,
-  pushView: (route: Route) => Route,
-  popView: () => Route,
-  popToView: (route: Route) => Route,
-  resetNavigation: (route: Route) => Route,
+  pushStack: (element: string) => string,
+  popStack: () => string,
+  pushView: (route: string) => string,
+  popView: () => string,
+  popToView: (route: string) => string,
+  resetNavigation: (route: string) => string,
   get: () => Stack[],
 }
 

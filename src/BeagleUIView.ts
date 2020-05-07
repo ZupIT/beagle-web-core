@@ -29,7 +29,6 @@ import {
   LoadParams,
   BeagleConfig,
   BeagleNavigator,
-  Route,
 } from './types'
 import createURLBuilder from './utils/url-builder'
 import createBeagleNavigator from './BeagleNavigator'
@@ -40,7 +39,7 @@ const createBeagleView = <Schema>({
   baseUrl,
   headers,
   middlewares = [],
-}: BeagleConfig<Schema>, initialRoute: Route): BeagleView<Schema> => {
+}: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
