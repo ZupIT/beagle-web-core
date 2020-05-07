@@ -2,10 +2,10 @@ name: Update version and create tag
 
 on:
   push:
-    branches: [ master ]
+    branches: [ ci/npm-publish ]
 
 jobs:
-  check-version:
+  release:
     runs-on: ubuntu-latest
 
     steps:
