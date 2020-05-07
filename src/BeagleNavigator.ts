@@ -44,7 +44,7 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
   }
 
   function popStack() {
-    if (isSingleStack()) return getCurrentRoute()
+    if (isSingleStack()) throw Error('It was not possible to pop a stack because Beagle Navigator has only one recorded stack')
 
     navigation.pop()
     return getCurrentRoute()
@@ -69,7 +69,7 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
     const routeIndex = currentStack.findIndex(item => item === route)
 
     if (routeIndex === -1) throw new Error('The route does not exist on the current stack')
-    currentStack.splice(routeIndex)
+    currentStack.splice(routeIndex + 1)
 
     return getCurrentRoute()
   }

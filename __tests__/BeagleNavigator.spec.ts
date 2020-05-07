@@ -14,7 +14,6 @@
   * limitations under the License.
 */
 
-import * as nock from 'nock'
 import createBeagleNavigator from '../src/BeagleNavigator'
 import { BeagleNavigator } from '../src/types'
 
@@ -38,26 +37,43 @@ describe('BeagleNavigator', () => {
   })
 
   it('should popStack', () => {
-    const route = navigator.popView()
-    expect(navigator.get()).toEqual([initialStack, ['first']])
-    expect(route).toBe('first')
-  })
-
-  it('should popView', () => {
-    const route = navigator.popView()
+    const route = navigator.popStack()
     expect(navigator.get()).toEqual([initialStack])
     expect(route).toBe(initialRoute)
   })
 
-  it('should ensure pop actions wont empty navigation', () => {
-    const route = () => navigator.popView()
-    expect(route).toThrowError()
-    navigator.popStack()
+  it('should popView', () => {
+    navigator.pushView('first')
+    navigator.pushView('second')
+    const route = navigator.popView()
+    expect(navigator.get()).toEqual([[initialRoute, 'first']])
+    expect(route).toBe('first')
+  })
+
+  it('should popToView', () => {
+    navigator.pushView('second')
+    const route = navigator.popToView(initialRoute)
     expect(navigator.get()).toEqual([initialStack])
+    expect(route).toBe(initialRoute)
   })
 
   it('should reset beagle navigator', () => {
     navigator.resetNavigation('resetingStack')
     expect(navigator.get()).toEqual([['resetingStack']])
+  })
+
+  it('should throw an error when popView on a single stack', () => {
+    const route = () => navigator.popView()
+    expect(route).toThrowError()
+  })
+
+  it('should throw an error when popToView with a non-existent route', () => {
+    const route = () => navigator.popToView('non-existent-route')
+    expect(route).toThrowError()
+  })
+
+  it('should throw an error when popStack on a single stack', () => {
+    const route = () => navigator.popStack()
+    expect(route).toThrowError()
   })
 })

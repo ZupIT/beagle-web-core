@@ -33,7 +33,7 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
   const { route, data } = action
   const origin = window.location.origin
   const qs = data && createQueryString(data)
-  window.location.href = `${origin}${route}${qs}`
+  window.location.href = `${origin}${route}${qs || ''}`
 }
 
 interface Action {
