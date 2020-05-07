@@ -2,7 +2,7 @@ name: Update version and create tag
 
 on:
   push:
-    branches: [ ci/npm-publish ]
+    branches: [ master ]
 
 jobs:
   check-version:
@@ -24,7 +24,7 @@ jobs:
         continue-on-error: true
         run: yarn check-version
 
-      # if version was incorrect (lower or equal than NPM), update it and push changes
+      # if version was incorrect (lower or equal than NPM), update it and create PR
 
       - name: increment version
         id: increment
@@ -45,20 +45,25 @@ jobs:
           body: updates package version to ${{ env.PACKAGE_VERSION }}
           branch: patch/increment-version-${{ env.PACKAGE_VERSION }}
 
-      # otherwise, create new tag with the last commit in master
+      # otherwise, create a release
 
-      - name: create release
+      # - name: create release
+      #   if: ${{ steps.check.outcome == 'success' }}
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ env.PACKAGE_VERSION }}
+      #     release_name: Release v${{ env.PACKAGE_VERSION }}
+      #     body: |
+      #       Todo: release notes should go here
+      #       - First Change
+      #       - Second Change
+      #     draft: false
+      #     prerelease: false
+
+      - name: publish
         if: ${{ steps.check.outcome == 'success' }}
-        uses: actions/create-release@v1
+        run: npm publish --access public
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ env.PACKAGE_VERSION }}
-          release_name: Release v${{ env.PACKAGE_VERSION }}
-          body: |
-            Todo: release notes should go here
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
-
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
