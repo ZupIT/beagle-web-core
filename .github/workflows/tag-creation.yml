@@ -22,21 +22,21 @@ jobs:
 
       - name: increment version if version was incorrect
         id: increment
-        if: ${{ steps.check.outcome == failure }}
+        if: ${{ steps.check.outcome == 'failure' }}
         run: yarn increment-version
 
       - name: commit changes if version was successfully incremented
         id: commit
-        if: ${{ steps.increment.outcome == success }}
+        if: ${{ steps.increment.outcome == 'success' }}
         run: echo "todo commit"
 
       - name: push commit if version was incorrect
-        if: ${{ steps.commit.outcome == success }}
+        if: ${{ steps.commit.outcome == 'success' }}
         run: echo "todo push"
 
       # otherwise, create new tag with the last commit in master
 
       - name: create tag if version was correct
-        if: ${{ steps.check.outcome == success }}
+        if: ${{ steps.check.outcome == 'success' }}
         run: echo "todo push"
 
