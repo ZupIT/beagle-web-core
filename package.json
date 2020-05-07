@@ -18,7 +18,8 @@
     "postinstall": "npm run build",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
-    "update-version": "node ./bin/update-version"
+    "increment-version": "node ./bin/project-version/increment",
+    "check-version": "node ./bin/project-version/check"
   },
   "husky": {
     "hooks": {

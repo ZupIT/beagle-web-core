@@ -5,33 +5,36 @@ on:
     branches: [ ci/npm-publish ]
 
 jobs:
-  update-version:
+  check-version:
     runs-on: ubuntu-latest
 
     steps:
+      # checkout code
       - uses: actions/checkout@v2
       
-      - name: update package version
-        run: yarn update-version
+      # checks if the version in package.json is greater than the version in NPM
+  
+      - name: check package version
+        id: checkVersion
+        run: yarn check-version
 
-      - name: print result
-        run: echo ${{ env.hasCorrectVersion }} ${{ env.version }}
+      # if version was incorrect (lower or equal than NPM), update it and push changes
 
-  commit-and-push:
-    needs: update-version
-    runs-on: ubuntu-latest
+      - name: increment version if version was incorrect
+        if: ${{ checkVersion.failure() }}
+        run: yarn increment-version
 
-    steps:
-      - name: commit
+      - name: commit changes if version was incorrect
+        if: ${{ checkVersion.failure() }}
         run: echo "todo commit"
 
-      - name: push
+      - name: push commit if version was incorrect
+        if: ${{ checkVersion.failure() }}
         run: echo "todo push"
 
-  create-tag:
-    needs: update-version
-    runs-on: ubuntu-latest
+      # otherwise, create new tag with the last commit in master
 
-    steps:
-      - name: create tag
-        run: echo "todo create tag with name v${{ env.version }}"
+      - name: create tag if version was correct
+        if: ${{ checkVersion.success() }}
+        run: echo "todo push"
+
