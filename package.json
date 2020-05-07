@@ -19,7 +19,8 @@
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
     "increment-version": "node ./bin/project-version/increment",
-    "check-version": "node ./bin/project-version/check"
+    "check-version": "node ./bin/project-version/check",
+    "get-version": "node ./bin/project-version/get"
   },
   "husky": {
     "hooks": {
