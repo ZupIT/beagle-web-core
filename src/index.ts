@@ -16,6 +16,7 @@
 
 import { ActionHandler, CustomAction } from './actions/types'
 import createEventHandler, { EventHandler } from './EventHandler'
+import createBeagleNavigator from './BeagleNavigator'
 import { replaceBindings } from './bindings'
 import createBeagleUIView from './BeagleUIView'
 import BeagleContext from './BeagleContext'
@@ -33,6 +34,7 @@ import {
   BeagleMiddleware,
   BeagleView,
   Strategy,
+  Route,
 } from './types'
 
 function createBeagleUIService<
@@ -45,7 +47,7 @@ function createBeagleUIService<
     loadBeagleUITreeFromServer: loadFromServer,
     loadBeagleUITreeFromCache: loadFromCache,
     convertBeagleUiTreeToXml: xmlConverter.convertBeagleUiTreeToXml,
-    createView: () => createBeagleUIView<Schema>(config),
+    createView: (initialRoute: Route) => createBeagleUIView<Schema>(config, initialRoute),
     getConfig: () => config,
   }
 }

@@ -46,6 +46,8 @@ export type Strategy = (
   | 'cache-first'
 )
 
+export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
+
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
@@ -101,7 +103,7 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
     headers?: Record<string, string>,
     shouldSaveCache?: boolean,
   ) => Promise<BeagleUIElement<Schema> | null>,
-  createView: () => BeagleView<Schema>,
+  createView: (initialRoute: Route) => BeagleView<Schema>,
   convertBeagleUiTreeToXml: (
     uiTree: BeagleUIElement<Schema>,
     options?: Partial<XmlOptions<Schema>>,
@@ -121,6 +123,20 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
+export type Route = string
+
+export type Stack = Route[]
+
+export interface BeagleNavigator {
+  pushStack: (element: Route) => Route,
+  popStack: () => Route,
+  pushView: (route: Route) => Route,
+  popView: () => Route,
+  popToView: (route: Route) => Route,
+  resetNavigation: (route: Route) => Route,
+  get: () => Stack[],
+}
+
 export interface URLBuilder {
   build: (path: string, baseUrl?: string) => string,
 }
@@ -138,6 +154,7 @@ export interface BeagleView<Schema = DefaultSchema> {
   ) => Promise<void>,
   updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
+  getBeagleNavigator: () => BeagleNavigator,
   getUrlBuilder: () => URLBuilder,
 }
 

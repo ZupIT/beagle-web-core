@@ -25,6 +25,14 @@ export interface OpenNativeRouteAction {
   data?: Record<string, any>,
 }
 
+export type BeagleNavigationAction =
+  PushStackAction |
+  PopStackAction |
+  PushViewAction |
+  PopViewAction |
+  PopToViewAction |
+  ResetNavigationAction
+
 export interface PushStackAction {
   _actionType_: 'pushStack',
   route: string,
