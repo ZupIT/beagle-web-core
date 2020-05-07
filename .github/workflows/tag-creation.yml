@@ -1,4 +1,4 @@
-name: Publish to NPM
+name: Updates version and creates tag
 
 on:
   push:
@@ -20,7 +20,6 @@ jobs:
   commit-and-push:
     needs: update-version
     runs-on: ubuntu-latest
-    if: ${{ !env.hasCorrectVersion }}
 
     steps:
       - name: commit
@@ -32,7 +31,6 @@ jobs:
   create-tag:
     needs: update-version
     runs-on: ubuntu-latest
-    if: ${{ env.hasCorrectVersion }}
 
     steps:
       - name: create tag
