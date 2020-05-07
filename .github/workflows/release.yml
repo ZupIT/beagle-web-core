@@ -47,28 +47,17 @@ jobs:
 
       # otherwise, create a release
 
-      # - name: create release
-      #   if: ${{ steps.check.outcome == 'success' }}
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: v${{ env.PACKAGE_VERSION }}
-      #     release_name: Release v${{ env.PACKAGE_VERSION }}
-      #     body: |
-      #       Todo: release notes should go here
-      #       - First Change
-      #       - Second Change
-      #     draft: false
-      #     prerelease: false
-
-      - uses: actions/setup-node@v1
+      - name: create release
         if: ${{ steps.check.outcome == 'success' }}
-        with:
-          node-version: '12.x'
-          registry-url: 'https://registry.npmjs.org'
-
-      - run: npm publish --access public
-        if: ${{ steps.check.outcome == 'success' }}
+        uses: actions/create-release@v1
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: Release v${{ env.PACKAGE_VERSION }}
+          body: |
+            Todo: release notes should go here
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
