@@ -21,19 +21,24 @@ jobs:
 
       # if version was incorrect (lower or equal than NPM), update it and push changes
 
-      - name: increment version if version was incorrect
-        id: increment
+      - name: create new branch
+        id: branch
         if: ${{ steps.check.outcome == 'failure' }}
+        run: git checkout -b fix/increment-version-${{ GITHUB_RUN_NUMBER }}
+
+      - name: increment version
+        id: increment
+        if: ${{ steps.branch.outcome == 'failure' }}
         run: yarn increment-version
 
-      - name: commit changes if version was successfully incremented
+      - name: commit changes
         id: commit
         if: ${{ steps.increment.outcome == 'success' }}
-        run: echo "todo commit"
+        run: git add -A && git commit -m "Incrementing version"
 
-      - name: push commit if version was incorrect
+      - name: push commit
         if: ${{ steps.commit.outcome == 'success' }}
-        run: echo "todo push"
+        run: git push origin fix/increment-version-${{ GITHUB_RUN_NUMBER }}
 
       # otherwise, create new tag with the last commit in master
 
