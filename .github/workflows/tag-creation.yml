@@ -1,4 +1,4 @@
-name: Updates version and creates tag
+name: Update version and create tag
 
 on:
   push:
