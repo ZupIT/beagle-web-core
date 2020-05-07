@@ -44,5 +44,5 @@ jobs:
 
       - name: create tag if version was correct
         if: ${{ steps.check.outcome == 'success' }}
-        run: echo "todo create tag"
+        run: git tag -a v${{ env.PACKAGE_VERSION }} && git push --tags
 
