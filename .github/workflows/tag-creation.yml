@@ -24,16 +24,16 @@ jobs:
       - name: increment version
         id: increment
         if: $${{ steps.check.outcome == 'failure' }}
-        run: yarn increment-version
+        run: echo "##[set-output name=version;]$(yarn increment-version)"
 
       - name: create pull request
         if: ${{ steps.increment.outcome == 'success' }}
         uses: peter-evans/create-pull-request@v2
         with:
-          commit-message: updates package version
-          title: Updates package version
-          body: updates package version
-          branch: patch/increment-version
+          commit-message: updates package version to ${{ steps.increment.output.version }}
+          title: Updates package version to ${{ steps.increment.output.version }}
+          body: updates package version to ${{ steps.increment.output.version }}
+          branch: patch/increment-version-${{ steps.increment.output.version }}
 
       # - name: create new branch
       #   id: branch

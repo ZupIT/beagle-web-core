@@ -16,7 +16,7 @@ function start() {
   const npmVersion = fetchNpmVersion(packageJson.name)
   packageJson.version = incrementVersion(npmVersion)
   updatePackageJson(packageJson)
-  console.log(`Project version updated to ${packageJson.version}`)
+  console.log(${packageJson.version})
 }
 
 start()
