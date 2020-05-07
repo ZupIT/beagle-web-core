@@ -42,7 +42,18 @@ jobs:
 
       # otherwise, create new tag with the last commit in master
 
-      - name: create tag if version was correct
+      - name: create release if version was correct
         if: ${{ steps.check.outcome == 'success' }}
-        run: git tag -a v${{ env.PACKAGE_VERSION }} && git push --tags
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: Release v${{ env.PACKAGE_VERSION }}
+          body: |
+            Todo: release notes should go here
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
 
