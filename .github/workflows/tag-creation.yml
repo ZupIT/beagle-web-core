@@ -34,12 +34,11 @@ jobs:
       - name: commit changes
         id: commit
         if: ${{ steps.increment.outcome == 'success' }}
-        run: echo $GITHUB_ACTOR && echo $github.event.pusher.name
-        #run: git add -A && git commit -m "Incrementing version" --author=$GITHUB_ACTOR
+        run: git add -A && git commit -m "Incrementing version" --author=$GITHUB_ACTOR
 
-      # - name: push commit
-      #   if: ${{ steps.commit.outcome == 'success' }}
-      #   run: git push origin fix/increment-version-$GITHUB_RUN_NUMBER
+      - name: push commit
+        if: ${{ steps.commit.outcome == 'success' }}
+        run: git push origin fix/increment-version-$GITHUB_RUN_NUMBER
 
       # otherwise, create new tag with the last commit in master
 
