@@ -29,7 +29,7 @@ jobs:
       - name: store version in variable
         id: getVersion
         if: ${{ steps.increment.outcome == 'success' }}
-        run: echo ::set-env name=PACKAGE_VERSION::$(yarn get-version)
+        run: echo ::set-env name=PACKAGE_VERSION::$(node ./bin/project-version/get)
 
       - name: print version
         if: ${{ steps.getVersion.outcome == 'success' }}
