@@ -22,10 +22,11 @@ interface ParsedResponse {
   statusText: string,
 }
 
-const xhr: ActionHandler<SendRequestAction> = async ({
+const sendRequest: ActionHandler<SendRequestAction> = async ({
   action,
   handleAction,
   eventContextHierarchy,
+  beagleView,
   ...otherParameters
 }) => {
   const { url, method, data, headers, onSuccess, onError, onFinish } = action
@@ -37,6 +38,7 @@ const xhr: ActionHandler<SendRequestAction> = async ({
       action: onSuccess,
       eventContextHierarchy: [{ id: 'onSuccess', value: parsedResponse }, ...eventContextHierarchy],
       handleAction,
+      beagleView,
       ...otherParameters,
     })
   }
@@ -48,6 +50,7 @@ const xhr: ActionHandler<SendRequestAction> = async ({
       action: onError,
       eventContextHierarchy: [{ id: 'onError', value: error }, ...eventContextHierarchy],
       handleAction,
+      beagleView,
       ...otherParameters,
     })
   }
@@ -59,34 +62,38 @@ const xhr: ActionHandler<SendRequestAction> = async ({
       action: onFinish,
       eventContextHierarchy,
       handleAction,
+      beagleView,
       ...otherParameters,
     })
   }
 
+  const contextResponse: Partial<ParsedResponse> = {}
+
   try {
-    const response = await fetch(url, { method, body: JSON.stringify(data), headers })
+    const urlBuilder = beagleView.getUrlBuilder()
+    const response = await fetch(
+      urlBuilder.build(url),
+      { method, body: JSON.stringify(data), headers },
+    )
 
     const resultText = await response.text()
+    contextResponse.status = response.status
+    contextResponse.statusText = response.statusText
+    contextResponse.data = resultText
     const resultData = resultText && JSON.parse(resultText)
-    const contextResponse = {
-      data: resultData,
-      status: response.status,
-      statusText: response.statusText,
-    }
+    contextResponse.data = resultData
     
-    if (!response.ok) {
-      const error = { ...contextResponse, message: 'Erro ao processar requisição' }
-      throw error
-    }
-
-    handleSuccess(contextResponse)
-    
+    if (!response.ok) throw new Error(contextResponse.statusText)
+    handleSuccess(contextResponse as ParsedResponse)
   } catch (error) {
     console.error(error)
-    handleError(error)
+    handleError({
+      ...contextResponse,
+      message: error.message || 'Unexpected error',
+    })
   } finally {
     handleFinish()
   }
 }
 
-export default xhr
+export default sendRequest

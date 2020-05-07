@@ -87,5 +87,5 @@ export interface ActionHandlerParams<Action extends BeagleAction = any> {
 }
 
 export type ActionHandler<Action extends BeagleAction = any> = (
-  (params: ActionHandlerParams<Action>) => void
+  (params: ActionHandlerParams<Action>) => void | Promise<void>
 )

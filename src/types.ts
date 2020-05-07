@@ -137,6 +137,10 @@ export interface BeagleNavigator {
   get: () => Stack[],
 }
 
+export interface URLBuilder {
+  build: (path: string, baseUrl?: string) => string,
+}
+
 export interface BeagleView<Schema = DefaultSchema> {
   subscribe: (listener: Listener<Schema>) => (() => void),
   addErrorListener: (errorListener: ErrorListener) => (() => void),
@@ -151,6 +155,7 @@ export interface BeagleView<Schema = DefaultSchema> {
   updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
+  getUrlBuilder: () => URLBuilder,
 }
 
 export interface BeagleContext<T = any> {

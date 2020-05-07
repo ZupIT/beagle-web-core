@@ -13,7 +13,7 @@ import {
 describe('Actions: setContext', () => {
   it('should set single context', () => {
     const mock = createSingleContextMock()
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -39,7 +39,7 @@ describe('Actions: setContext', () => {
 
   it('should set the first context in the hierarchy', () => {
     const mock = createDoubleContextMock()
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -70,7 +70,7 @@ describe('Actions: setContext', () => {
 
   it('should set context by id', () => {
     const mock = createDoubleContextMock()
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -97,7 +97,7 @@ describe('Actions: setContext', () => {
 
   it('should set context three levels above', () => {
     const mock = createMockWithDistantContext()
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -123,7 +123,7 @@ describe('Actions: setContext', () => {
 
   it('should set same-level context', () => {
     const mock = createSameLevelContextMock()
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -155,7 +155,7 @@ describe('Actions: setContext', () => {
       phones: ['(34) 98756-8574', '(34) 3212-2221'],
     }
     const mock = createSameLevelContextMock(contextValue)
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -188,7 +188,7 @@ describe('Actions: setContext', () => {
       phones: ['(34) 98756-8574', '(34) 3212-2221'],
     }
     const mock = createSameLevelContextMock(contextValue)
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -216,7 +216,7 @@ describe('Actions: setContext', () => {
   it('should set an index of the context', () => {
     const contextValue = ['Lorem', 'Ipsum', 'Sin', 'It']
     const mock = createSameLevelContextMock(contextValue)
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -243,7 +243,7 @@ describe('Actions: setContext', () => {
 
   it('should warn and not update view if context doesn\'t exist', () => {
     const mock: IdentifiableBeagleUIElement = { _beagleType_: 'container', id: 'container' }
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
     const originalWarn = console.warn
     console.warn = jest.fn()
 
@@ -265,7 +265,7 @@ describe('Actions: setContext', () => {
 
   it('should warn and not update view if context is not part of current hierarchy', () => {
     const mock = createMultipleScopesMock()
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
     const originalWarn = console.warn
     console.warn = jest.fn()
 
@@ -289,7 +289,7 @@ describe('Actions: setContext', () => {
   it('should create context structures according to path (object)', () => {
     const contextValue = { name: 'Jest' }
     const mock = createSameLevelContextMock(contextValue)
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
@@ -317,7 +317,7 @@ describe('Actions: setContext', () => {
   it('should create context structures according to path (array)', () => {
     const contextValue = { name: 'Jest' }
     const mock = createSameLevelContextMock(contextValue)
-    const beagleView = createBeagleViewMock(mock)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
