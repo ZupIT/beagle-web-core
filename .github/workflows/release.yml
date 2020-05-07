@@ -1,4 +1,4 @@
-name: Update version and create tag
+name: Check version and create pull request or release, depending on the result
 
 on:
   push:
