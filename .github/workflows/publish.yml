@@ -1,0 +1,19 @@
+name: Publishing of new version
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  npm-publish:
+    - steps:
+      - uses: actions/checkout@v2
+
+      - name: install
+        run: yarn
+
+      - name: publish
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
