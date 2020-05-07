@@ -1,0 +1,39 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches: [ ci/npm-publish ]
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: update package version
+        run: yarn update-version
+
+      - name: print result
+        run: echo ${{ env.hasCorrectVersion }} ${{ env.version }}
+
+  commit-and-push:
+    needs: update-version
+    runs-on: ubuntu-latest
+    if: ${{ !env.hasCorrectVersion }}
+
+    steps:
+      - name: commit
+        run: echo "todo commit"
+
+      - name: push
+        run: echo "todo push"
+
+  create-tag:
+    needs: update-version
+    runs-on: ubuntu-latest
+    if: ${{ env.hasCorrectVersion }}
+
+    steps:
+      - name: create tag
+        run: echo "todo create tag with name v${{ env.version }}"

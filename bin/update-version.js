@@ -33,15 +33,24 @@ function updatePackageJson(packageJson) {
   writeFileSync('package.json', `${JSON.stringify(packageJson, null, 2)}\n`)
 }
 
+function setGitHubActionsVariables(hasCorrectVersion, version) {
+  execSync(`set-env ::set-env name=hasCorrectVersion::${hasCorrectVersion}`)
+  execSync(`set-env ::set-env name=version::${version}`)
+}
+
 function start() {
   const packageJson = require('../package.json')
   const npmVersion = fetchNpmVersion(packageJson.name)
+
   if (!isVersionGreater(packageJson.version, npmVersion)) {
     packageJson.version = incrementVersion(npmVersion)
     updatePackageJson(packageJson)
     console.log(`Project version updated to ${packageJson.version}`)
+    setGitHubActionsVariables(false, packageJson.version)
     return
   }
+  
+  setGitHubActionsVariables(true, packageJson.version)
   console.log(`Project version (${packageJson.version}) is correct. No need to update it.`)
 }
 

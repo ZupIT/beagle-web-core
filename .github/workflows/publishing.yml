@@ -1,24 +1,39 @@
-name: Publish to NPM
+name: Publishing of new version
 
 on:
   push:
-    branches: [ ci/npm-publish ]
+    tags:
+      - 'v*'
 
 jobs:
-  publishing:
+  create-release:
+    name: Create Release
     runs-on: ubuntu-latest
-
+    
     steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Todo: release notes should go here
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+
+  npm-publish:
     - uses: actions/checkout@v2
 
     - name: install
       run: yarn
-    
-    - name: update package version
-      run: yarn update-version
-
-    - name: build
-      run: yarn build
 
     - name: publish
       run: npm publish --access public
