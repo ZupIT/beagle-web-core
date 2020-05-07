@@ -16,6 +16,7 @@ jobs:
   
       - name: check package version
         id: check
+        continue-on-error: true
         run: yarn check-version
 
       # if version was incorrect (lower or equal than NPM), update it and push changes
