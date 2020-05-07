@@ -44,6 +44,7 @@ jobs:
           title: Updates package version to ${{ env.PACKAGE_VERSION }}
           body: updates package version to ${{ env.PACKAGE_VERSION }}
           branch: patch/increment-version-${{ env.PACKAGE_VERSION }}
+          base: development
 
       # otherwise, create a release
 
