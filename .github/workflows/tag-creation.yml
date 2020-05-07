@@ -21,24 +21,38 @@ jobs:
 
       # if version was incorrect (lower or equal than NPM), update it and push changes
 
-      - name: create new branch
-        id: branch
-        if: ${{ steps.check.outcome == 'failure' }}
-        run: git checkout -b fix/increment-version-$GITHUB_RUN_NUMBER
-
       - name: increment version
         id: increment
-        if: ${{ steps.branch.outcome == 'success' }}
+        if: $${{ steps.check.outcome == 'failure' }}
         run: yarn increment-version
 
-      - name: commit changes
-        id: commit
+      - name: create pull request
         if: ${{ steps.increment.outcome == 'success' }}
-        run: git add -A && git commit -m "Incrementing version" --author=$GITHUB_ACTOR
+        uses: peter-evans/create-pull-request@v2
+        with:
+          commit-message: updates package version
+          title: Updates package version
+          body: updates package version
+          branch: patch/increment-version
 
-      - name: push commit
-        if: ${{ steps.commit.outcome == 'success' }}
-        run: git push origin fix/increment-version-$GITHUB_RUN_NUMBER
+      # - name: create new branch
+      #   id: branch
+      #   if: ${{ steps.check.outcome == 'failure' }}
+      #   run: git checkout -b fix/increment-version-$GITHUB_RUN_NUMBER
+
+      # - name: increment version
+      #   id: increment
+      #   if: ${{ steps.branch.outcome == 'success' }}
+      #   run: yarn increment-version
+
+      # - name: commit changes
+      #   id: commit
+      #   if: ${{ steps.increment.outcome == 'success' }}
+      #   run: git add -A && git commit -m "Incrementing version" --author=$GITHUB_ACTOR
+
+      # - name: push commit
+      #   if: ${{ steps.commit.outcome == 'success' }}
+      #   run: git push origin fix/increment-version-$GITHUB_RUN_NUMBER
 
       # otherwise, create new tag with the last commit in master
 
