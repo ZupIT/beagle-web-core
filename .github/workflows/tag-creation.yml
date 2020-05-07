@@ -24,7 +24,7 @@ jobs:
       - name: create new branch
         id: branch
         if: ${{ steps.check.outcome == 'failure' }}
-        run: git checkout -b fix/increment-version-${{ GITHUB_RUN_NUMBER }}
+        run: git checkout -b fix/increment-version-${{ env.GITHUB_RUN_NUMBER }}
 
       - name: increment version
         id: increment
@@ -38,7 +38,7 @@ jobs:
 
       - name: push commit
         if: ${{ steps.commit.outcome == 'success' }}
-        run: git push origin fix/increment-version-${{ GITHUB_RUN_NUMBER }}
+        run: git push origin fix/increment-version-${{ env.GITHUB_RUN_NUMBER }}
 
       # otherwise, create new tag with the last commit in master
 
