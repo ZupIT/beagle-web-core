@@ -2,7 +2,7 @@ name: Update version and create tag
 
 on:
   push:
-    branches: [ ci/npm-publish ]
+    branches: [ master ]
 
 jobs:
   release:
