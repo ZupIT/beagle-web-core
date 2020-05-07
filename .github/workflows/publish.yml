@@ -6,8 +6,10 @@ on:
       - created
 
 jobs:
-  npm-publish:
-    - steps:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
       - uses: actions/checkout@v2
 
       - name: install
