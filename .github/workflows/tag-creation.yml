@@ -31,41 +31,18 @@ jobs:
         if: ${{ steps.increment.outcome == 'success' }}
         run: echo ::set-env name=PACKAGE_VERSION::$(node ./bin/project-version/get)
 
-      - name: print version
+      - name: create pull request
         if: ${{ steps.getVersion.outcome == 'success' }}
-        run: echo ${{ env.PACKAGE_VERSION }}
-
-      # - name: create pull request
-      #   if: ${{ steps.getVersion.outcome == 'success' }}
-      #   uses: peter-evans/create-pull-request@v2
-      #   with:
-      #     commit-message: updates package version to ${{ steps.getVersion.output.version }}
-      #     title: Updates package version to ${{ steps.getVersion.output.version }}
-      #     body: updates package version to ${{ steps.getVersion.output.version }}
-      #     branch: patch/increment-version-${{ steps.getVersion.output.version }}
-
-      # - name: create new branch
-      #   id: branch
-      #   if: ${{ steps.check.outcome == 'failure' }}
-      #   run: git checkout -b fix/increment-version-$GITHUB_RUN_NUMBER
-
-      # - name: increment version
-      #   id: increment
-      #   if: ${{ steps.branch.outcome == 'success' }}
-      #   run: yarn increment-version
-
-      # - name: commit changes
-      #   id: commit
-      #   if: ${{ steps.increment.outcome == 'success' }}
-      #   run: git add -A && git commit -m "Incrementing version" --author=$GITHUB_ACTOR
-
-      # - name: push commit
-      #   if: ${{ steps.commit.outcome == 'success' }}
-      #   run: git push origin fix/increment-version-$GITHUB_RUN_NUMBER
+        uses: peter-evans/create-pull-request@v2
+        with:
+          commit-message: updates package version to ${{ steps.getVersion.output.version }}
+          title: Updates package version to ${{ steps.getVersion.output.version }}
+          body: updates package version to ${{ steps.getVersion.output.version }}
+          branch: patch/increment-version-${{ steps.getVersion.output.version }}
 
       # otherwise, create new tag with the last commit in master
 
       - name: create tag if version was correct
         if: ${{ steps.check.outcome == 'success' }}
-        run: echo "todo push"
+        run: echo "todo create tag"
 
