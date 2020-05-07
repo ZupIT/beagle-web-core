@@ -1,6 +1,6 @@
 {
   "name": "@zup-it/beagle-web",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
@@ -17,7 +17,14 @@
     "check-test-types": "tsc __tests__/**/*.ts --noEmit",
     "postinstall": "npm run build",
     "test": "jest",
-    "lint": "eslint ./src/**/*.ts"
+    "lint": "eslint ./src/**/*.ts",
+    "increment-version": "node ./bin/project-version/increment",
+    "check-version": "node ./bin/project-version/check"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "sh ./bin/check-license.sh"
+    }
   },
   "dependencies": {
     "@babel/runtime": "^7.8.3",
@@ -44,6 +51,7 @@
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "3.2.0",
     "http-server": "^0.12.1",
+    "husky": "^4.2.5",
     "jest": "^25.1.0",
     "nock": "^12.0.1",
     "node-fetch": "^2.6.0",
