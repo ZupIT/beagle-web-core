@@ -62,6 +62,9 @@ jobs:
       #     draft: false
       #     prerelease: false
 
+      - run: npm ci
+        if: ${{ steps.check.outcome == 'success' }}
+
       - name: publish
         if: ${{ steps.check.outcome == 'success' }}
         run: npm publish --access public
