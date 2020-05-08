@@ -19,6 +19,7 @@ import { loadFromServer, namespace } from '../../src/utils/tree-fetching'
 import { treeA } from '../mocks'
 import { mockLocalStorage } from '../test-utils'
 import { BeagleNetworkError } from '../../src/errors'
+import { RequestOptions } from '../../src/types'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -41,6 +42,27 @@ describe('Utils: tree fetching (server)', () => {
     expect(nock.isDone()).toBe(true)
   })
 
+  
+  it('should load from server (get) through a client passed by the user', async () => {
+    nock(basePath).get(path).reply(200, JSON.stringify(treeA))
+    const mockFetch = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options}))
+    const result = await loadFromServer(url, 'get', {}, true, mockFetch)
+    expect(mockFetch).toHaveBeenCalledWith(basePath + path, {"method": "get", headers: {}})
+    expect(result).toEqual(treeA)
+    expect(nock.isDone()).toBe(true)
+  })
+
+    
+  it('should load from server with headers through a client passed by the user', async () => {
+    nock(basePath, { reqheaders: { test: 'test', testX: 'testX' } }).get(path).reply(200, JSON.stringify(treeA))
+    const mockFetch = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options, headers: {...options.headers, test: 'test'}}))
+    const result = await loadFromServer(url, 'get', { testX: 'testX' }, true, mockFetch)
+    expect(mockFetch).toHaveBeenCalledWith(basePath + path, {"method": "get", headers: { testX: 'testX'}})
+    expect(result).toEqual(treeA)
+    expect(nock.isDone()).toBe(true)
+  })
+
+
   it('should load from server (post)', async () => {
     nock(basePath).post(path).reply(200, JSON.stringify(treeA))
     const result = await loadFromServer(url, 'post')
@@ -50,7 +72,8 @@ describe('Utils: tree fetching (server)', () => {
 
   it('should load from server with headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).get(path).reply(200, JSON.stringify(treeA))
-    const result = await loadFromServer(url, 'get', { test: 'test' })
+    const mockFetch = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options}))
+    const result = await loadFromServer(url, 'get', {test: 'test'},  true, mockFetch)
     expect(result).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })
@@ -66,7 +89,7 @@ describe('Utils: tree fetching (server)', () => {
   it('should not save cache after loading from server', async () => {
     const treeAString = JSON.stringify(treeA)
     nock(basePath).get(path).reply(200, treeAString)
-    await loadFromServer(url, 'get', {}, false)
+    await loadFromServer(url, 'get', {},  false)
     expect(localStorage.setItem).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })

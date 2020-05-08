@@ -1,0 +1,91 @@
+name: Publishing process
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout code
+      - uses: actions/checkout@v2
+
+      # stores current version in env
+
+      - name: store version in env
+        run: echo ::set-env name=PACKAGE_VERSION::$(node ./bin/project-version/get)
+      
+      # checks if the version in package.json is greater than the version in NPM
+  
+      - name: check package version
+        id: check
+        continue-on-error: true
+        run: node bin/project-version/check
+
+      # if version was incorrect (lower or equal than NPM's), update it and create PR
+
+      - name: increment version
+        id: increment
+        if: ${{ steps.check.outcome == 'failure' }}
+        run: node bin/project-version/increment
+
+      - name: updates env variable with new version
+        id: getVersion
+        if: ${{ steps.increment.outcome == 'success' }}
+        run: echo ::set-env name=PACKAGE_VERSION::$(node ./bin/project-version/get)
+
+      - name: create pull request
+        if: ${{ steps.getVersion.outcome == 'success' }}
+        uses: peter-evans/create-pull-request@v2
+        with:
+          commit-message: updates package version to ${{ env.PACKAGE_VERSION }}
+          title: Updates package version to ${{ env.PACKAGE_VERSION }}
+          body: updates package version to ${{ env.PACKAGE_VERSION }}
+          branch: patch/increment-version-${{ env.PACKAGE_VERSION }}
+          base: development
+
+      # otherwise, create a release
+
+      - name: create release
+        id: release
+        if: ${{ steps.check.outcome == 'success' }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: Release v${{ env.PACKAGE_VERSION }}
+          body: |
+            Todo: release notes should go here
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+
+      # if a release has been successfully created, publish to NPM
+
+      - name: install
+        id: install
+        if: ${{ steps.release.outcome == 'success' }}
+        run: yarn
+
+      - name: setup node
+        id: setupNode
+        if: ${{ steps.install.outcome == 'success' }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: build
+        id: build
+        if: ${{ steps.setupNode.outcome == 'success' }}
+        run: yarn build
+
+      - name: publish to NPM
+        if: ${{ steps.build.outcome == 'success' }}
+        run: cd dist && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

@@ -1,6 +1,6 @@
 {
   "name": "@zup-it/beagle-web",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
@@ -12,10 +12,9 @@
   ],
   "private": false,
   "scripts": {
-    "build": "tsc --declaration",
+    "build": "tsc --declaration && node bin/copy-files",
     "check-types": "tsc --noEmit",
     "check-test-types": "tsc __tests__/**/*.ts --noEmit",
-    "postinstall": "npm run build",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts"
   },
@@ -58,6 +57,7 @@
     "webpack": "4.41.5",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.10.1",
-    "webpack-hot-middleware": "2.25.0"
+    "webpack-hot-middleware": "2.25.0",
+    "typescript": "3.7.5"
   }
 }

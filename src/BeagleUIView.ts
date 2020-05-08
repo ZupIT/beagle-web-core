@@ -35,7 +35,6 @@ import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 
 const createBeagleView = <Schema>({
   baseUrl,
-  headers,
   middlewares = [],
 }: BeagleConfig<Schema>): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
@@ -73,7 +72,7 @@ const createBeagleView = <Schema>({
     middlewares: Array<BeagleMiddleware<any>>,
   ): Promise<BeagleUIElement<Schema>> {
     let resultTree = uiTree
-    for(let i = 0; i < middlewares.length; i ++) {
+    for (let i = 0; i < middlewares.length; i ++) {
       resultTree = await middlewares[i](resultTree)
     }
     return resultTree
@@ -87,8 +86,8 @@ const createBeagleView = <Schema>({
   }
 
   function runSystemMiddlewares(uiTree: BeagleUIElement<any>) {
-    // return runMiddlewares(uiTree, [beagleIdMiddleware, beagleStyleClassMiddleware, beagleStyleMiddleware]) as Promise<IdentifiableBeagleUIElement<Schema>>
-    return runMiddlewares(uiTree, [beagleIdMiddleware]) as Promise<IdentifiableBeagleUIElement<Schema>>
+     // return runMiddlewares(uiTree, [beagleIdMiddleware, beagleStyleClassMiddleware, beagleStyleMiddleware]) as Promise<IdentifiableBeagleUIElement<Schema>>
+     return runMiddlewares(uiTree, [beagleIdMiddleware]) as Promise<IdentifiableBeagleUIElement<Schema>>
     
   }
 
@@ -150,7 +149,6 @@ const createBeagleView = <Schema>({
     mode: TreeUpdateMode = 'replace',
   ) {
     const url = urlFormater.build(params.path, params.baseUrl)
-    const allHeaders = { ...headers, ...params.headers }
     const originalTree = currentUITree
 
     async function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
@@ -169,10 +167,11 @@ const createBeagleView = <Schema>({
         onChangeTree,
         errorComponent: params.errorComponent,
         loadingComponent: params.loadingComponent,
-        headers: allHeaders,
+        headers: params.headers,
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
+        fetchData: params.fetchData,
       })
     } catch (errors) {
       // removes the loading component when an error component should no be rendered

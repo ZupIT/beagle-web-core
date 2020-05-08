@@ -18,6 +18,7 @@ import * as nock from 'nock'
 import { load } from '../../src/utils/tree-fetching'
 import { treeA } from '../mocks'
 import { mockLocalStorage } from '../test-utils'
+import { RequestOptions } from '../../src/types'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -96,10 +97,11 @@ describe('Utils: tree fetching (load: general)', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should use post and send headers', async () => {
+  it.only('should use post and send headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).post(path).reply(200, JSON.stringify(treeA))
+    const mockFetch = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options, headers: { test: 'test'}}))
     const onChangeTree = jest.fn()
-    await load({ url, method: 'post', headers: { test: 'test' }, onChangeTree })
+    await load({ url, method: 'post', fetchData: mockFetch, onChangeTree })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })

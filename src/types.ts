@@ -45,10 +45,17 @@ export type Strategy = (
   | 'cache-first'
 )
 
+export type RequestOptions = {
+  body?: BodyInit,
+  headers?: HeadersInit,
+  method?: string,
+}
+
+export type FetchData = (url: string, options?: RequestOptions) => Promise<Response>
+
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
-  headers?: Record<string, string>,
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
   components: {
@@ -67,6 +74,7 @@ export interface LoadParams<Schema = DefaultSchema> {
   strategy?: Strategy,
   loadingComponent?: ComponentName<Schema>,
   errorComponent?: ComponentName<Schema>,
+  fetchData?: FetchData,
 }
 
 export interface BeagleUIElement<Schema = DefaultSchema> {
