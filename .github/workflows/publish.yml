@@ -12,45 +12,20 @@ jobs:
       # checkout code
       - uses: actions/checkout@v2
 
-      # stores current version in env
+      # get the version in package.json
 
-      - name: store version in env
-        run: echo ::set-env name=PACKAGE_VERSION::$(node ./bin/project-version/get)
+      - name: get current version
+        run: echo ::set-env name=PACKAGE_VERSION::$(node bin/publish/get-version)
       
-      # checks if the version in package.json is greater than the version in NPM
+      # check if the version in package.json is greater than the version in NPM
   
-      - name: check package version
-        id: check
-        continue-on-error: true
-        run: node bin/project-version/check
+      - name: check if this version should be published
+        run: echo ::set-env name=SHOULD_PUBLISH::$(node bin/publish/should-publish)
 
-      # if version was incorrect (lower or equal than NPM's), update it and create PR
-
-      - name: increment version
-        id: increment
-        if: ${{ steps.check.outcome == 'failure' }}
-        run: node bin/project-version/increment
-
-      - name: updates env variable with new version
-        id: getVersion
-        if: ${{ steps.increment.outcome == 'success' }}
-        run: echo ::set-env name=PACKAGE_VERSION::$(node ./bin/project-version/get)
-
-      - name: create pull request
-        if: ${{ steps.getVersion.outcome == 'success' }}
-        uses: peter-evans/create-pull-request@v2
-        with:
-          commit-message: updates package version to ${{ env.PACKAGE_VERSION }}
-          title: Updates package version to ${{ env.PACKAGE_VERSION }}
-          body: updates package version to ${{ env.PACKAGE_VERSION }}
-          branch: patch/increment-version-${{ env.PACKAGE_VERSION }}
-          base: development
-
-      # otherwise, create a release
+      # if it's a new version, create a new release
 
       - name: create release
-        id: release
-        if: ${{ steps.check.outcome == 'success' }}
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,28 +39,25 @@ jobs:
           draft: false
           prerelease: false
 
-      # if a release has been successfully created, publish to NPM
+      # if it's a new version, publish to NPM
 
       - name: install
-        id: install
-        if: ${{ steps.release.outcome == 'success' }}
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: yarn
 
       - name: setup node
-        id: setupNode
-        if: ${{ steps.install.outcome == 'success' }}
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: build
-        id: build
-        if: ${{ steps.setupNode.outcome == 'success' }}
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: yarn build
 
       - name: publish to NPM
-        if: ${{ steps.build.outcome == 'success' }}
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: cd dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

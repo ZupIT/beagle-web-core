@@ -12,13 +12,7 @@ function start() {
   const packageJson = getPackageJson()
   const npmVersion = fetchNpmVersion(packageJson.name)
 
-  if (isVersionGreater(packageJson.version, npmVersion)) {
-    console.log(`Project version (${packageJson.version}) is correct!`)
-    return process.exit(0)
-  }
-
-  console.log(`Project version (${packageJson.version}) is incorrect! It should be greater than the current version on NPM (${npmVersion}).`)
-  process.exit(1)
+  console.log(isVersionGreater(packageJson.version, npmVersion) ? 'true' : 'false')
 }
 
 start()
