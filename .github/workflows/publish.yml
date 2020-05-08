@@ -22,14 +22,14 @@ jobs:
       - name: check package version
         id: check
         continue-on-error: true
-        run: yarn check-version
+        run: node bin/project-version/check
 
       # if version was incorrect (lower or equal than NPM), update it and create PR
 
       - name: increment version
         id: increment
         if: ${{ steps.check.outcome == 'failure' }}
-        run: yarn increment-version
+        run: node bin/project-version/increment
 
       - name: updates env variable with new version
         id: getVersion
