@@ -24,7 +24,7 @@ jobs:
         continue-on-error: true
         run: node bin/project-version/check
 
-      # if version was incorrect (lower or equal than NPM), update it and create PR
+      # if version was incorrect (lower or equal than NPM's), update it and create PR
 
       - name: increment version
         id: increment
