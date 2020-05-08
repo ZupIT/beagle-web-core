@@ -58,5 +58,6 @@ export default {
   pushView: navigateBeagleView,
   popView: navigateBeagleView,
   popToView: navigateBeagleView,
-  resetNavigation: navigateBeagleView,
+  resetStack: navigateBeagleView,
+  resetApplication: navigateBeagleView,
 }

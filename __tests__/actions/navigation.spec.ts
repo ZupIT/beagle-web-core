@@ -95,10 +95,16 @@ describe('Actions: Navigation', () => {
     expect(beagleView.getBeagleNavigator().get()).toEqual([['/home']])
   })
 
-  it('should resetNavigation', () => {
+  it('should resetStack', () => {
+    pushStack()
+    NavigationActions.resetStack({ action: { _actionType_: 'resetStack', route: '/resetStack' }, ...params })
+    expect(beagleView.getBeagleNavigator().get()).toEqual([['/home'], ['/resetStack']])
+  })
+
+  it('should resetApplication', () => {
     pushView()
-    NavigationActions.resetNavigation({ action: { _actionType_: 'resetNavigation', route: '/home' }, ...params })
-    expect(beagleView.getBeagleNavigator().get()).toEqual([['/home']])
+    NavigationActions.resetApplication({ action: { _actionType_: 'resetApplication', route: '/resetApplication' }, ...params })
+    expect(beagleView.getBeagleNavigator().get()).toEqual([['/resetApplication']])
   })
 
   it('should do nothing when popView on a single route stack', () => {

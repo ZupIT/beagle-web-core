@@ -31,7 +31,8 @@ export type BeagleNavigationAction =
   PushViewAction |
   PopViewAction |
   PopToViewAction |
-  ResetNavigationAction
+  ResetStackAction |
+  ResetApplicationAction
 
 export interface PushStackAction {
   _actionType_: 'pushStack',
@@ -56,7 +57,12 @@ export interface PopToViewAction {
   route: string,
 }
 
-export interface ResetNavigationAction {
-  _actionType_: 'resetNavigation',
+export interface ResetStackAction {
+  _actionType_: 'resetStack',
+  route: string,
+}
+
+export interface ResetApplicationAction {
+  _actionType_: 'resetApplication',
   route: string,
 }

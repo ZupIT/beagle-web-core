@@ -74,10 +74,18 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function resetNavigation(route: string) {
+  function resetStack(route: string) {
+    navigation.pop()
+    pushStack(route)
+
+    return getCurrentRoute()
+  }
+
+  function resetApplication(route: string) {
     initialStack = [route]
     navigation = [initialStack]
-    return route
+
+    return getCurrentRoute()
   }
 
   function get() {
@@ -90,7 +98,8 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
     pushView,
     popView,
     popToView,
-    resetNavigation,
+    resetStack,
+    resetApplication,
     get,
   }
 

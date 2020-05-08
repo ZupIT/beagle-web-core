@@ -57,9 +57,15 @@ describe('BeagleNavigator', () => {
     expect(route).toBe(initialRoute)
   })
 
+  it('should reset current stack', () => {
+    navigator.pushStack('newStack')
+    navigator.resetStack('resetingStack')
+    expect(navigator.get()).toEqual([initialStack, ['resetingStack']])
+  })
+
   it('should reset beagle navigator', () => {
-    navigator.resetNavigation('resetingStack')
-    expect(navigator.get()).toEqual([['resetingStack']])
+    navigator.resetApplication('resetingApplication')
+    expect(navigator.get()).toEqual([['resetingApplication']])
   })
 
   it('should throw an error when popView on a single stack', () => {
