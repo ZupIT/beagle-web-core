@@ -97,7 +97,7 @@ describe('Utils: tree fetching (load: general)', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-  it.only('should use post and send headers', async () => {
+  it('should use post and send headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).post(path).reply(200, JSON.stringify(treeA))
     const mockFetch = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options, headers: { test: 'test'}}))
     const onChangeTree = jest.fn()
