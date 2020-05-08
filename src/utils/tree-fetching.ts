@@ -99,7 +99,9 @@ export async function load<Schema>({
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false) {
     if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleType_: loadingComponent })
-    await onChangeTree(await loadFromServer(url, method, headers, strategy !== 'network-only', fetchData))
+    await onChangeTree(
+      await loadFromServer(url, method, headers, strategy !== 'network-only', fetchData)
+    )
   }
 
   async function loadCache() {
