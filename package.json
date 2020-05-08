@@ -16,9 +16,7 @@
     "check-types": "tsc --noEmit",
     "check-test-types": "tsc __tests__/**/*.ts --noEmit",
     "test": "jest",
-    "lint": "eslint ./src/**/*.ts",
-    "increment-version": "node bin/project-version/increment",
-    "check-version": "node bin/project-version/check"
+    "lint": "eslint ./src/**/*.ts"
   },
   "husky": {
     "hooks": {
