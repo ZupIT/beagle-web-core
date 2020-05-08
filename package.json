@@ -1,8 +1,8 @@
 {
   "name": "@zup-it/beagle-web",
   "version": "0.0.16",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "license": "Apache-2.0",
   "licenses": [
     {
@@ -12,23 +12,18 @@
   ],
   "private": false,
   "scripts": {
-    "build": "tsc --declaration",
+    "build": "tsc --declaration && node bin/copy-files",
     "check-types": "tsc --noEmit",
     "check-test-types": "tsc __tests__/**/*.ts --noEmit",
-    "postinstall": "npm run build",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
-    "increment-version": "node ./bin/project-version/increment",
-    "check-version": "node ./bin/project-version/check"
+    "increment-version": "node bin/project-version/increment",
+    "check-version": "node bin/project-version/check"
   },
   "husky": {
     "hooks": {
       "pre-commit": "sh ./bin/check-license.sh"
     }
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.8.3",
-    "typescript": "3.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -60,6 +55,7 @@
     "webpack": "4.41.5",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.10.1",
-    "webpack-hot-middleware": "2.25.0"
+    "webpack-hot-middleware": "2.25.0",
+    "typescript": "3.7.5"
   }
 }
