@@ -21,7 +21,10 @@ jobs:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: build
+        run: yarn build
+
       - name: publish to NPM
-        run: npm publish --access public
+        run: cd dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
