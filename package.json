@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsc --declaration && node bin/copy-files",
     "check-types": "tsc --noEmit",
-    "check-test-types": "tsc __tests__/**/*.ts --noEmit",
+    "check-test-types": "tsc __tests__/**/*.ts --noEmit --allowSyntheticDefaultImports",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts"
   },

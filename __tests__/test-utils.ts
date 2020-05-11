@@ -89,5 +89,6 @@ export function createBeagleViewMock(custom: Partial<BeagleView> = {}): BeagleVi
     updateWithFetch: jest.fn(custom.updateWithFetch),
     updateWithTree: jest.fn(custom.updateWithTree),
     getUrlBuilder: jest.fn(custom.getUrlBuilder || (() => ({ build: jest.fn((url => url)) }))),
+    getBeagleNavigator: jest.fn(),
   }
 }
