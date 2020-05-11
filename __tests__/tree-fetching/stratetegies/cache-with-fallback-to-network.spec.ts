@@ -13,7 +13,7 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import * as nock from 'nock'
+import nock from 'nock'
 import { load } from '../../../src/utils/tree-fetching'
 import { treeA } from '../../mocks'
 import { mockLocalStorage } from '../../test-utils'

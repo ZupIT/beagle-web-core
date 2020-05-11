@@ -14,6 +14,7 @@
   * limitations under the License.
 */
 
+import { ActionHandler } from './actions/types'
 import { BeagleError } from './errors'
 
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
@@ -45,6 +46,8 @@ export type Strategy = (
   | 'cache-first'
 )
 
+export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
+
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
@@ -54,6 +57,7 @@ export interface BeagleConfig<Schema> {
   components: {
     [K in ComponentName<Schema>]: any
   },
+  customActions?: Record<string, ActionHandler>,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -71,9 +75,10 @@ export interface LoadParams<Schema = DefaultSchema> {
 
 export interface BeagleUIElement<Schema = DefaultSchema> {
   _beagleType_: ComponentName<Schema>,
+  _context_?: DataContext,
   children?: Array<BeagleUIElement<Schema>>,
-  [key: string]: any,
   styleProperties?: Record<string, any>,
+  [key: string]: any,
 }
 
 export interface IdentifiableBeagleUIElement<Schema = DefaultSchema>
@@ -98,7 +103,7 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
     headers?: Record<string, string>,
     shouldSaveCache?: boolean,
   ) => Promise<BeagleUIElement<Schema> | null>,
-  createView: () => BeagleView<Schema>,
+  createView: (initialRoute: string) => BeagleView<Schema>,
   convertBeagleUiTreeToXml: (
     uiTree: BeagleUIElement<Schema>,
     options?: Partial<XmlOptions<Schema>>,
@@ -118,6 +123,23 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
+export type Stack = string[]
+
+export interface BeagleNavigator {
+  pushStack: (element: string) => string,
+  popStack: () => string,
+  pushView: (route: string) => string,
+  popView: () => string,
+  popToView: (route: string) => string,
+  resetStack: (route: string) => string,
+  resetApplication: (route: string) => string,
+  get: () => Stack[],
+}
+
+export interface URLBuilder {
+  build: (path: string, baseUrl?: string) => string,
+}
+
 export interface BeagleView<Schema = DefaultSchema> {
   subscribe: (listener: Listener<Schema>) => (() => void),
   addErrorListener: (errorListener: ErrorListener) => (() => void),
@@ -131,6 +153,8 @@ export interface BeagleView<Schema = DefaultSchema> {
   ) => Promise<void>,
   updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
+  getBeagleNavigator: () => BeagleNavigator,
+  getUrlBuilder: () => URLBuilder,
 }
 
 export interface BeagleContext<T = any> {
@@ -141,4 +165,9 @@ export interface BeagleContext<T = any> {
   getElementId: () => string,
   getElement: () => IdentifiableBeagleUIElement<T> | null,
   getView: () => BeagleView<T>,
+}
+
+export interface DataContext {
+  id: string,
+  value?: any,
 }

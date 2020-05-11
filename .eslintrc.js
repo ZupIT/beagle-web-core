@@ -29,7 +29,7 @@ module.exports = {
   ],
   "plugins": ['@typescript-eslint', 'import'],
   "rules": {
-    'max-len': ['error', { code: 100, ignorePattern: maxLengthIgnorePattern }],
+    'max-len': ['error', { code: 150, ignorePattern: maxLengthIgnorePattern, comments: 200 }],
     "arrow-body-style": ["error", "as-needed"],
     'eol-last': ['error', 'always'],
     "quotes": ['error', 'single', { avoidEscape: true }],

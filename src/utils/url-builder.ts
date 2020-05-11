@@ -14,9 +14,10 @@
   * limitations under the License.
 */
 
+import { URLBuilder } from '../types'
 import { removeSuffix } from './string'
 
-function createURLBuilder(baseUrl: string) {
+function createURLBuilder(baseUrl: string): URLBuilder {
   const defaultBaseUrl = baseUrl
   return {
     build: (path: string, baseUrl?: string) => {

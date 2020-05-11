@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement } from '../src/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement, BeagleView } from '../src/types'
 
 export function mockLocalStorage(storage: Record<string, string> = {}) {
   const initialStorage = { ...storage }
@@ -35,6 +35,20 @@ export function mockLocalStorage(storage: Record<string, string> = {}) {
       localStorageObject.getItem.mockClear()
       localStorageObject.setItem.mockClear()
     },
+  }
+}
+
+export function mockSystemDialogs(result = false) {
+  const globalScope = global as any
+  const original = globalScope.window
+
+  globalScope.window = {
+    alert: jest.fn(() => result),
+    confirm: jest.fn(() => result),
+  }
+  
+  return () => {
+    globalScope.window = original
   }
 }
 
@@ -65,4 +79,16 @@ export function stripTreeIds(tree: BeagleUIElement<any>): BeagleUIElement<any> {
   delete newTree.id
   if (newTree.children) newTree.children = newTree.children.map(stripTreeIds)
   return newTree
+}
+
+export function createBeagleViewMock(custom: Partial<BeagleView> = {}): BeagleView {
+  return {
+    addErrorListener: jest.fn(custom.addErrorListener),
+    getTree: jest.fn(custom.getTree),
+    subscribe: jest.fn(custom.subscribe),
+    updateWithFetch: jest.fn(custom.updateWithFetch),
+    updateWithTree: jest.fn(custom.updateWithTree),
+    getUrlBuilder: jest.fn(custom.getUrlBuilder || (() => ({ build: jest.fn((url => url)) }))),
+    getBeagleNavigator: jest.fn(),
+  }
 }
