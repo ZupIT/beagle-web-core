@@ -75,11 +75,7 @@ const createBeagleView = <Schema>({
     uiTree: BeagleUIElement<any>,
     middlewares: Array<BeagleMiddleware<any>>,
   ): BeagleUIElement<Schema> {
-    let resultTree = uiTree
-    for (let i = 0; i < middlewares.length; i ++) {
-      resultTree = middlewares[i](resultTree)
-    }
-    return resultTree
+    return middlewares.reduce((result, middleware) => middleware(result), uiTree)
   }
 
   function runUserMiddlewares(
