@@ -16,7 +16,7 @@
 
 import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
-import { BeagleView, BeagleUIElement } from '../src/types'
+import { BeagleView } from '../src/types'
 import { BeagleCacheError, BeagleNetworkError } from '../src/errors'
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB } from './mocks'
@@ -44,9 +44,9 @@ describe('BeagleUIView', () => {
 
   it('should get current ui tree', async () => {
     expect(view.getTree()).toBeUndefined()
-    await view.updateWithTree({ sourceTree: { _beagleType_: 'test 1', id: '1' } })
+    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1', id: '1' } })
     expect(view.getTree()).toEqual({ _beagleType_: 'test 1', id: '1' })
-    await view.updateWithTree({ sourceTree: { _beagleType_: 'test 2', id: '2' } })
+    view.updateWithTree({ sourceTree: { _beagleType_: 'test 2', id: '2' } })
     expect(view.getTree()).toEqual({ _beagleType_: 'test 2', id: '2' })
   })
 
@@ -55,7 +55,7 @@ describe('BeagleUIView', () => {
     const listener2 = jest.fn()
     view.subscribe(listener1)
     view.subscribe(listener2)
-    await view.updateWithTree({ sourceTree: { _beagleType_: 'test 1', id: '1' } })
+    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1', id: '1' } })
     expect(listener1).toHaveBeenCalledWith({ _beagleType_: 'test 1', id: '1' })
     expect(listener2).toHaveBeenCalledWith({ _beagleType_: 'test 1', id: '1' })
   })
@@ -63,17 +63,17 @@ describe('BeagleUIView', () => {
   it('should unsubscribe from view changes', async () => {
     const listener = jest.fn()
     const unsubscribe = view.subscribe(listener)
-    await view.updateWithTree({ sourceTree: { _beagleType_: 'test 1' }, shouldRunMiddlewares: false })
+    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1' }, shouldRunMiddlewares: false })
     expect(listener).toHaveBeenCalled()
     listener.mockClear()
     unsubscribe()
-    await view.updateWithTree({ sourceTree: { _beagleType_: 'test 2' }, shouldRunMiddlewares: false })
+    view.updateWithTree({ sourceTree: { _beagleType_: 'test 2' }, shouldRunMiddlewares: false })
     expect(listener).not.toHaveBeenCalled()
   })
 
   it('should not run view change listeners', async () => {
     const listener = jest.fn()
-    await view.updateWithTree({ sourceTree: { _beagleType_: 'test 1' }, shouldRunListeners: false })
+    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1' }, shouldRunListeners: false })
     expect(listener).not.toHaveBeenCalled()
   })
 
@@ -107,47 +107,16 @@ describe('BeagleUIView', () => {
 
   it('should run only global middlewares', async () => {
     const tree = { _beagleType_: 'test' }
-    await view.updateWithTree({ sourceTree: tree })
+    view.updateWithTree({ sourceTree: tree })
     expect(middleware).toHaveBeenCalledWith(tree)
     // expect beagleIdMiddleware to have been run
     expect(view.getTree().id).not.toBeUndefined()
   })
 
-  it('should run an async middleware before another middleware', async () => {
-    const tree= { _beagleType_: 'test'}
-    let hasFinished = false;
-    const firstMiddleware = jest.fn((tree) => {
-      return new Promise<BeagleUIElement>(resolve => {
-          resolve(tree);
-          hasFinished = true;
-      })
-    })
-    const secondMiddleware = (tree : BeagleUIElement) => { 
-      expect(hasFinished).toBeTruthy()
-      return tree
-    }
-
-    await view.updateWithTree({ sourceTree: tree, middlewares: [firstMiddleware, secondMiddleware] })
-  })
-
-  it('should change tree after running an async middleware', async () => {
-    const tree = { _beagleType_: 'test', id: 'A', children: [{ _beagleType_: 'test', id: 'A.1', }]}
-    const finalTree = {_beagleType_: 'test', id: 'A' }
-    view.updateWithTree({ sourceTree: tree })
-    const asyncMiddleware = jest.fn((tree) => {
-      return new Promise<BeagleUIElement>(resolve => {
-          resolve(finalTree);
-      })
-    })
-
-    await view.updateWithTree({ sourceTree: tree, middlewares: [asyncMiddleware] })
-    expect(view.getTree()).toEqual(finalTree)
-  })
-
   it('should run global and local middlewares', async () => {
     const tree = { _beagleType_: 'test' }
     const localMiddleware = jest.fn(resultingTree => resultingTree)
-    await view.updateWithTree({ sourceTree: tree, middlewares: [localMiddleware] })
+    view.updateWithTree({ sourceTree: tree, middlewares: [localMiddleware] })
     expect(middleware).toHaveBeenCalledWith(tree)
     expect(localMiddleware).toHaveBeenCalledWith(tree)
     // expect beagleIdMiddleware to have been run
@@ -164,7 +133,7 @@ describe('BeagleUIView', () => {
   it('should replace part of the tree with loading and network response', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc);
-    await view.updateWithTree({ sourceTree: treeA })
+    view.updateWithTree({ sourceTree: treeA })
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     const promise = view.updateWithFetch({ path }, 'A.1')
     const expectedLoading = clone(treeA)
@@ -185,7 +154,7 @@ describe('BeagleUIView', () => {
   it('should append loading and network response to specific part of the tree', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc);
-    await view.updateWithTree({ sourceTree: treeA })
+    view.updateWithTree({ sourceTree: treeA })
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     const promise = view.updateWithFetch({ path }, 'A.1', 'append')
 
@@ -206,7 +175,7 @@ describe('BeagleUIView', () => {
   it('should prepend network response to specific part of the tree', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc);
-    await view.updateWithTree({ sourceTree: treeA })
+    view.updateWithTree({ sourceTree: treeA })
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     const promise = view.updateWithFetch({ path }, 'A.1', 'prepend')
 
@@ -234,7 +203,7 @@ describe('BeagleUIView', () => {
     const tree = { _beagleType_: 'test 1' }
     const listener = jest.fn()
     view.subscribe(listener)
-    await view.updateWithTree({ sourceTree: tree, shouldRunMiddlewares: false })
+    view.updateWithTree({ sourceTree: tree, shouldRunMiddlewares: false })
     expect(listener.mock.calls[0][0]).not.toBe(tree)
   })
 })
