@@ -161,7 +161,7 @@ const createBeagleView = <Schema>({
     const allHeaders = { ...headers, ...params.headers }
     const originalTree = currentUITree
 
-    async function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
+    function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
       setTree(originalTree, false) // changes should be made based on the original tree
       updateWithTree({
         sourceTree: loadedTree,
