@@ -14,6 +14,9 @@
   * limitations under the License.
 */
 
+import { ActionHandler, CustomAction } from './actions/types'
+import createEventHandler, { EventHandler } from './EventHandler'
+import { replaceBindings } from './bindings'
 import createBeagleUIView from './BeagleUIView'
 import BeagleContext from './BeagleContext'
 import createXMLConverter from './XMLConverter'
@@ -42,7 +45,7 @@ function createBeagleUIService<
     loadBeagleUITreeFromServer: loadFromServer,
     loadBeagleUITreeFromCache: loadFromCache,
     convertBeagleUiTreeToXml: xmlConverter.convertBeagleUiTreeToXml,
-    createView: () => createBeagleUIView<Schema>(config),
+    createView: (initialRoute: string) => createBeagleUIView<Schema>(config, initialRoute),
     getConfig: () => config,
   }
 }
@@ -62,4 +65,9 @@ export {
   BeagleView,
   Strategy,
   BeagleContext,
+  ActionHandler,
+  CustomAction,
+  createEventHandler,
+  EventHandler,
+  replaceBindings,
 }

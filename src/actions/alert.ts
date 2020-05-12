@@ -1,4 +1,3 @@
-
 /*
   * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
   *
@@ -15,28 +14,13 @@
   * limitations under the License.
 */
 
-const { execSync } = require('child_process')
+import { ActionHandler, AlertAction } from './types'
 
-function versionToArray(version) {
-  return version.split('.').map(versionPart => {
-    try {
-      return Number.parseInt(versionPart)
-    } catch {
-      return 0
-    }
-  })
+const alert: ActionHandler<AlertAction> = ({ action, handleAction, ...other }) => {
+  const { message, onPressOk } = action
+  
+  window.alert(message)
+  if (onPressOk) handleAction({ action: onPressOk, handleAction, ...other })
 }
 
-function fetchNpmVersion(packageName) {
-  return execSync(`npm show ${packageName} version`, { encoding: 'utf8' }).replace('\n', '')
-}
-
-function getPackageJson() {
-  return require('../../package.json')
-}
-
-module.exports = {
-  versionToArray,
-  fetchNpmVersion,
-  getPackageJson,
-}
+export default alert
