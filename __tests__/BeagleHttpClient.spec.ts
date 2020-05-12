@@ -1,5 +1,3 @@
-import * as nock from 'nock'
-import beagleHttpClient from "../src/BeagleHttpClient"
 /*
   * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
   *
@@ -15,6 +13,8 @@ import beagleHttpClient from "../src/BeagleHttpClient"
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
+import nock from 'nock'
+import beagleHttpClient from "../src/BeagleHttpClient"
 import { RequestOptions } from "../src/types"
 
 describe('BeagleHttpClient', () => {
