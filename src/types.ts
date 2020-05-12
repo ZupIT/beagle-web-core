@@ -53,11 +53,17 @@ export type RequestOptions = {
 
 export type FetchData = (url: string, options?: RequestOptions) => Promise<Response>
 
+export interface BeagleHttpClient {
+  fetch: FetchData,
+  setFetchFunction: (fetchFn: FetchData) => void,
+}
+
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
+  fetchData?: FetchData,
   components: {
     [K in ComponentName<Schema>]: any
   },
@@ -74,7 +80,6 @@ export interface LoadParams<Schema = DefaultSchema> {
   strategy?: Strategy,
   loadingComponent?: ComponentName<Schema>,
   errorComponent?: ComponentName<Schema>,
-  fetchData?: FetchData,
 }
 
 export interface BeagleUIElement<Schema = DefaultSchema> {

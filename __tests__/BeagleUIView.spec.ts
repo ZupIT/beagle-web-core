@@ -16,7 +16,7 @@
 
 import * as nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
-import { BeagleView, BeagleUIElement } from '../src/types'
+import { BeagleView, BeagleUIElement, RequestOptions } from '../src/types'
 import { BeagleCacheError, BeagleNetworkError } from '../src/errors'
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB } from './mocks'
@@ -236,5 +236,26 @@ describe('BeagleUIView', () => {
     view.subscribe(listener)
     await view.updateWithTree({ sourceTree: tree, shouldRunMiddlewares: false })
     expect(listener.mock.calls[0][0]).not.toBe(tree)
+  })
+
+  it('should load tree from server with headers through a client passed by the user', async () => {
+    nock(baseUrl, { reqheaders: { test: 'test' } }).get(path).reply(200, JSON.stringify(treeB))
+    const mockFetch = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options, headers: {...options.headers}}))
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData: mockFetch
+    })
+    await view.updateWithTree({ sourceTree: treeA })
+    const promise = view.updateWithFetch({ path, headers:{ test: 'test'}}, 'A.1', 'append')
+    
+    await promise
+
+    expect(mockFetch).toHaveBeenCalledWith(baseUrl + path, {'headers': {test: 'test'}, 'method': 'get'})
+    const expectedResult = clone(treeA)
+    expectedResult.children[1].children.push(treeB)
+    expect(view.getTree()).toEqual(expectedResult)
+    expect(nock.isDone()).toBe(true)
   })
 })

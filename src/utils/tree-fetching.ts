@@ -15,7 +15,8 @@
 */
 
 import { BeagleNetworkError, BeagleCacheError } from '../errors'
-import { BeagleUIElement, Strategy, HttpMethod, ComponentName, FetchData } from '../types'
+import { BeagleUIElement, Strategy, HttpMethod, ComponentName } from '../types'
+import beagleHttpClient from '../BeagleHttpClient'
 
 type StrategyType = 'network' | 'cache'
 
@@ -33,7 +34,6 @@ interface Params<Schema> {
   errorComponent?: ComponentName<Schema>,
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
-  fetchData?: FetchData,
   onChangeTree: (tree: BeagleUIElement<Schema>) => Promise<void>,
 }
 
@@ -61,16 +61,11 @@ export async function loadFromServer<Schema>(
   method: HttpMethod = 'get',
   headers?: Record<string, string>,
   shouldSaveCache = true,
-  fetchData?: FetchData
 ) {
   let response: Response
 
   try {
-    if (fetchData) {
-      response = await fetchData(url, { method, headers })
-    } else {
-      response = await fetch(url, { method, headers })
-    }
+    response = await beagleHttpClient.fetch(url, { method, headers })
   } catch (error) {
     throw new BeagleNetworkError(url, error)
   }
@@ -94,13 +89,12 @@ export async function load<Schema>({
   errorComponent = 'error',
   shouldShowLoading = true,
   shouldShowError = true,
-  fetchData,
   onChangeTree,
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false) {
     if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleType_: loadingComponent })
     await onChangeTree(
-      await loadFromServer(url, method, headers, strategy !== 'network-only', fetchData)
+      await loadFromServer(url, method, headers, strategy !== 'network-only')
     )
   }
 

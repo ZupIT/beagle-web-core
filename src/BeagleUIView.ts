@@ -32,15 +32,18 @@ import {
 import createURLBuilder from './utils/url-builder'
 import beagleStyleMiddleware from './middlewares/beagle-style'
 import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
+import beagleHttpClient from './BeagleHttpClient'
 
 const createBeagleView = <Schema>({
   baseUrl,
   middlewares = [],
+  fetchData
 }: BeagleConfig<Schema>): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormater = createURLBuilder(baseUrl)
+  if(fetchData) beagleHttpClient.setFetchFunction(fetchData)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -150,7 +153,7 @@ const createBeagleView = <Schema>({
   ) {
     const url = urlFormater.build(params.path, params.baseUrl)
     const originalTree = currentUITree
-
+    
     async function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
       setTree(originalTree, false) // changes should be made based on the original tree
       await updateWithTree({
@@ -171,7 +174,6 @@ const createBeagleView = <Schema>({
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
-        fetchData: params.fetchData,
       })
     } catch (errors) {
       // removes the loading component when an error component should no be rendered
