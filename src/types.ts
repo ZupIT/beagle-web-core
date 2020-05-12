@@ -26,7 +26,7 @@ export type TreeInsertionMode = 'prepend' | 'append'
 export type TreeUpdateMode = TreeInsertionMode | 'replace'
 
 export type BeagleMiddleware<Schema = DefaultSchema> = (uiTree: BeagleUIElement<Schema>) =>
-  BeagleUIElement<Schema> | Promise<BeagleUIElement<Schema>>
+  BeagleUIElement<Schema>
 
 export type DefaultSchema = Record<string, Record<string, any>>
 
@@ -164,7 +164,7 @@ export interface BeagleView<Schema = DefaultSchema> {
     /* default mode is "replace" */
     mode?: TreeUpdateMode,
   ) => Promise<void>,
-  updateWithTree: (params: UpdateWithTreeParams<Schema>) => Promise<void>,
+  updateWithTree: (params: UpdateWithTreeParams<Schema>) => void,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
   getUrlBuilder: () => URLBuilder,
@@ -174,7 +174,7 @@ export interface BeagleContext<T = any> {
   replace: (params: LoadParams<T>) => Promise<void>,
   append: (params: LoadParams<T>) => Promise<void>,
   prepend: (params: LoadParams<T>) => Promise<void>,
-  updateWithTree: (params: Omit<UpdateWithTreeParams<T>, 'elementId'>) => Promise<void>,
+  updateWithTree: (params: Omit<UpdateWithTreeParams<T>, 'elementId'>) => void,
   getElementId: () => string,
   getElement: () => IdentifiableBeagleUIElement<T> | null,
   getView: () => BeagleView<T>,

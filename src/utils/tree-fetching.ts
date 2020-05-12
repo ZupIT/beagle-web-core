@@ -34,7 +34,7 @@ interface Params<Schema> {
   errorComponent?: ComponentName<Schema>,
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
-  onChangeTree: (tree: BeagleUIElement<Schema>) => Promise<void>,
+  onChangeTree: (tree: BeagleUIElement<Schema>) => void,
 }
 
 export const namespace = '@beagle-web/cache'
@@ -93,13 +93,11 @@ export async function load<Schema>({
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false) {
     if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleType_: loadingComponent })
-    await onChangeTree(
-      await loadFromServer(url, method, headers, strategy !== 'network-only')
-    )
+    onChangeTree(await loadFromServer(url, method, headers, strategy !== 'network-only'))
   }
 
   async function loadCache() {
-    await onChangeTree(await loadFromCache(url, method))
+    onChangeTree(await loadFromCache(url, method))
   }
 
   async function runStrategies(
@@ -128,7 +126,7 @@ export async function load<Schema>({
     if (hasFetchSuccess) return
     const [hasFallbackSuccess, fallbackErrors] = await runStrategies(fallback, true)
     if (hasFallbackSuccess) return
-    if (shouldShowError) await onChangeTree({ _beagleType_: errorComponent })
+    if (shouldShowError) onChangeTree({ _beagleType_: errorComponent })
     throw [...fetchErrors, ...fallbackErrors]
   }
 
