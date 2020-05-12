@@ -71,13 +71,13 @@ const createBeagleView = <Schema>({
     if (shouldRunListeners) listeners.forEach(listener => listener(treeCopy))
   }
 
-  async function runMiddlewares(
+  function runMiddlewares(
     uiTree: BeagleUIElement<any>,
     middlewares: Array<BeagleMiddleware<any>>,
-  ): Promise<BeagleUIElement<Schema>> {
+  ): BeagleUIElement<Schema> {
     let resultTree = uiTree
     for (let i = 0; i < middlewares.length; i ++) {
-      resultTree = await middlewares[i](resultTree)
+      resultTree = middlewares[i](resultTree)
     }
     return resultTree
   }
@@ -85,17 +85,19 @@ const createBeagleView = <Schema>({
   function runUserMiddlewares(
     uiTree: BeagleUIElement<any>,
     localMiddlewares: Array<BeagleMiddleware<any>>,
-  ): Promise<BeagleUIElement<Schema>> {
+  ): BeagleUIElement<Schema> {
     return runMiddlewares(uiTree, [...middlewares, ...localMiddlewares])
   }
 
   function runSystemMiddlewares(uiTree: BeagleUIElement<any>) {
-    // return runMiddlewares(uiTree, [beagleIdMiddleware, beagleStyleClassMiddleware, beagleStyleMiddleware]) as Promise<IdentifiableBeagleUIElement<Schema>>
+    // return runMiddlewares(
+    //   uiTree,
+    //   [beagleIdMiddleware, beagleStyleClassMiddleware, beagleStyleMiddleware],
+    // ) as IdentifiableBeagleUIElement<Schema>
     return runMiddlewares(
       uiTree,
       [beagleIdMiddleware]
-    ) as Promise<IdentifiableBeagleUIElement<Schema>>
-    
+    ) as IdentifiableBeagleUIElement<Schema>
   }
 
   function updateRoot(
@@ -130,7 +132,7 @@ const createBeagleView = <Schema>({
     setTree(targetTree, shouldRunListeners)
   }
 
-  async function updateWithTree({
+  function updateWithTree({
     sourceTree,
     middlewares: localMiddlewares = [],
     elementId,
@@ -139,10 +141,10 @@ const createBeagleView = <Schema>({
     shouldRunListeners = true,
   }: UpdateWithTreeParams<Schema>) {
     const sourceTreeAfterApplyingUserMiddlewares = shouldRunMiddlewares
-      ? await runUserMiddlewares(sourceTree, localMiddlewares)
+      ? runUserMiddlewares(sourceTree, localMiddlewares)
       : sourceTree
 
-    const sourceTreeAfterApplyingAllMiddlewares = await runSystemMiddlewares(
+    const sourceTreeAfterApplyingAllMiddlewares = runSystemMiddlewares(
       sourceTreeAfterApplyingUserMiddlewares,
     )
 
@@ -161,7 +163,7 @@ const createBeagleView = <Schema>({
 
     async function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
       setTree(originalTree, false) // changes should be made based on the original tree
-      await updateWithTree({
+      updateWithTree({
         sourceTree: loadedTree,
         elementId,
         mode,
