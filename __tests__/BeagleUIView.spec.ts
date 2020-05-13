@@ -16,7 +16,7 @@
 
 import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
-import { BeagleView, RequestOptions } from '../src/types'
+import { BeagleView } from '../src/types'
 import { BeagleCacheError, BeagleNetworkError } from '../src/errors'
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB } from './mocks'
@@ -209,7 +209,7 @@ describe('BeagleUIView', () => {
 
   it('should load tree from server with headers through a client passed by the user', async () => {
     nock(baseUrl, { reqheaders: { test: 'test' } }).get(path).reply(200, JSON.stringify(treeB))
-    const mockFetch = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options, headers: {...options.headers}}))
+    const mockFetch = jest.fn((url: string, options: RequestInit) => fetch(url,{...options, headers: {...options.headers}}))
     view = createBeagleView({
       baseUrl,
       components: {},

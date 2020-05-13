@@ -13,14 +13,14 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { FetchData, BeagleHttpClient } from "./types"
+import { FetchData, BeagleHttpClient } from './types'
 
   function createBeagleHttpClient(): BeagleHttpClient {
     let fetchFn: FetchData = fetch
 
     return {
         fetch: (...args) => fetchFn(...args),
-        setFetchFunction: (newFetchFn: FetchData) => fetchFn = newFetchFn
+        setFetchFunction: (newFetchFn: FetchData) => fetchFn = newFetchFn,
     }
   }
   

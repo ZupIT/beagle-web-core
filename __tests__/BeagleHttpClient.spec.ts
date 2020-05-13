@@ -15,29 +15,27 @@
 */
 import nock from 'nock'
 import beagleHttpClient from "../src/BeagleHttpClient"
-import { RequestOptions } from "../src/types"
 
-describe('BeagleHttpClient', () => {
+describe.only('BeagleHttpClient', () => {
     const url = 'http://test.com'
 
     beforeEach(() => {
         nock.cleanAll()
     })
 
-    it('should assign the function parameter as the context fetch function', async () => {
-        const fetchFunc = jest.fn((url: string, options: RequestOptions) => fetch(url,{...options, headers: {...options.headers}}))
-        beagleHttpClient.setFetchFunction(fetchFunc)
-        await beagleHttpClient.fetch(url, {})
-        expect(fetchFunc).toHaveBeenCalledWith(url, {})
-        expect(nock.isDone()).toBe(true)
-    })
-
-    it('should have a fetch function as default', async () => {
+    it('should use window.fetch as default fetch function', async () => {
         const path = '/example'
-        nock(url).get(path).reply(200, { status: 'OK'})
+        nock(url).get(path).reply(200, { status: 'OK' })
         const response = await beagleHttpClient.fetch(url + path, {})
         expect(await response.json()).toEqual({ status: 'OK' })
         expect(nock.isDone()).toBe(true)
+    })
+
+    it('should use custom fetch function', async () => {
+        const fetchFunc = jest.fn()
+        beagleHttpClient.setFetchFunction(fetchFunc)
+        await beagleHttpClient.fetch(url, {})
+        expect(fetchFunc).toHaveBeenCalledWith(url, {})
     })
 
     it('should load from server with parameters options', async () => {
@@ -47,9 +45,10 @@ describe('BeagleHttpClient', () => {
         const body = new URLSearchParams()
         body.set('test', 'test')
         const parametersOptions = { body, headers: { test: 'test'}, method: 'post'}
-        const fetchFunc = jest.fn((url: string, options: RequestOptions) => fetch(url, {...options}))
+        const fetchFunc = jest.fn((url: string, options: RequestInit) => fetch(url, {...options}))
         beagleHttpClient.setFetchFunction(fetchFunc)
         await  beagleHttpClient.fetch(url + path, parametersOptions)
         expect(fetchFunc).toHaveBeenCalledWith(url + path, parametersOptions)
+        expect(nock.isDone()).toBe(true)
     })
 })
