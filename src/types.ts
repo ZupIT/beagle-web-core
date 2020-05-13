@@ -46,7 +46,7 @@ export type Strategy = (
   | 'cache-first'
 )
 
-export type FetchData = (url: string, options?: RequestInit) => Promise<Response>
+export type FetchData = (input: RequestInfo, options?: RequestInit) => Promise<Response>
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 

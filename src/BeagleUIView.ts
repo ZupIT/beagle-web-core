@@ -39,14 +39,14 @@ import beagleHttpClient from './BeagleHttpClient'
 const createBeagleView = <Schema>({
   baseUrl,
   middlewares = [],
-  fetchData
+  fetchData,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator(initialRoute)
-  if(fetchData) beagleHttpClient.setFetchFunction(fetchData)
+  if (fetchData) beagleHttpClient.setFetchFunction(fetchData)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
