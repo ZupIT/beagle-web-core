@@ -15,6 +15,7 @@
 */
 
 import {
+  simpleTab, simpleTabParsed,
   treeF,treeFParsed, treeA,
   treeG, treeGParsed,
   treeH, treeHParsed,
@@ -24,6 +25,11 @@ import beagleTabViewMiddleware from '../../src/middlewares/tab-view-component'
 describe('TabViewMiddleware', () => {
 
   it('should parse tabItems as a component ', () => {
+    const parsedTree = beagleTabViewMiddleware(simpleTab)
+    expect(parsedTree).toEqual(simpleTabParsed)
+  })
+
+  it('should parse tabItems without change other components', () => {
     const parsedTree = beagleTabViewMiddleware(treeF)
     expect(parsedTree).toEqual(treeFParsed)
   })
