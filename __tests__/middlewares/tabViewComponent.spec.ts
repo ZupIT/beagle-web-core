@@ -28,6 +28,11 @@ describe('TabViewMiddleware', () => {
     expect(parsedTree).toEqual(treeFParsed)
   })
 
+  it('should not change if tabview is in the expected structure ', () => {
+    const parsedTree = beagleTabViewMiddleware(treeFParsed)
+    expect(parsedTree).toEqual(treeFParsed)
+  })
+
   it('should parse tabItems as a component with multiple children levels ', () => {
     const parsedTree = beagleTabViewMiddleware(treeH)
     expect(parsedTree).toEqual(treeHParsed)
