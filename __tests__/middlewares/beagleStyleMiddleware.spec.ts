@@ -20,6 +20,7 @@ import {
   treeFlex, treeFlexParsed,
   treeMargin, treeMarginParsed, 
   treePadding, treePaddingParsed,
+  treeAttributesToKeepName, treeAttributesToKeepNameParsed
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 
@@ -50,11 +51,9 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toEqual(treePaddingParsed)
   })
 
-  // it('should transform color and size attributes', () => {
-  //   const parsedTree = beagleStyleMiddleware(treeColorSize)
-  //   expect(parsedTree).toEqual(treeColorSizeParsed)
-  // })
-
-
+  it('should keep attributes name and change to lowerCase the value', () => {
+    const parsedTree = beagleStyleMiddleware(treeAttributesToKeepName)
+    expect(parsedTree).toEqual(treeAttributesToKeepNameParsed)
+  })
 
 })

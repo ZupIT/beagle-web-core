@@ -691,6 +691,46 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
   }
 }
 
+export const treeAttributesToKeepName: IdentifiableBeagleUIElement = {
+  id: 'KeepAttributes',
+  _beagleType_: 'type-KeepAttributes',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      style: {
+        display: 'FLEX',
+        backgroundColor: '#FFFFFF',
+        direction: 'LTR'
+      }
+    }
+  ],
+  style: {
+    positionType:'RELATIVE'
+  }
+}
+
+export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
+  id: 'KeepAttributes',
+  _beagleType_: 'type-KeepAttributes',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      style: {
+        display: 'flex',
+        backgroundColor: '#ffffff',
+        direction: 'ltr'
+      }
+    }
+  ],
+  style: {
+    position:'relative'
+  }
+}
+
 export const treeE: IdentifiableBeagleUIElement = {
   id: 'E',
   _beagleType_: 'type-E',
