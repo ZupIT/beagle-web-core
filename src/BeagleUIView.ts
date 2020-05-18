@@ -32,20 +32,22 @@ import {
 } from './types'
 import createURLBuilder from './utils/url-builder'
 import createBeagleNavigator from './BeagleNavigator'
+import beagleHttpClient from './BeagleHttpClient'
 import beagleTabViewMiddleware from './middlewares/tab-view-component'
 // import beagleStyleMiddleware from './middlewares/beagle-style'
 // import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 
 const createBeagleView = <Schema>({
   baseUrl,
-  headers,
   middlewares = [],
+  fetchData,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator(initialRoute)
+  if (fetchData) beagleHttpClient.setFetchFunction(fetchData)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -155,7 +157,6 @@ const createBeagleView = <Schema>({
     mode: TreeUpdateMode = 'replace',
   ) {
     const url = urlFormatter.build(params.path, params.baseUrl)
-    const allHeaders = { ...headers, ...params.headers }
     const originalTree = currentUITree
 
     function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
@@ -174,7 +175,7 @@ const createBeagleView = <Schema>({
         onChangeTree,
         errorComponent: params.errorComponent,
         loadingComponent: params.loadingComponent,
-        headers: allHeaders,
+        headers: params.headers,
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,

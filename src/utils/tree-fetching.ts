@@ -16,6 +16,7 @@
 
 import { BeagleNetworkError, BeagleCacheError } from '../errors'
 import { BeagleUIElement, Strategy, HttpMethod, ComponentName } from '../types'
+import beagleHttpClient from '../BeagleHttpClient'
 
 type StrategyType = 'network' | 'cache'
 
@@ -64,7 +65,7 @@ export async function loadFromServer<Schema>(
   let response: Response
 
   try {
-    response = await fetch(url, { method, headers })
+    response = await beagleHttpClient.fetch(url, { method, headers })
   } catch (error) {
     throw new BeagleNetworkError(url, error)
   }

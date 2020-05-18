@@ -206,4 +206,19 @@ describe('BeagleUIView', () => {
     view.updateWithTree({ sourceTree: tree, shouldRunMiddlewares: false })
     expect(listener.mock.calls[0][0]).not.toBe(tree)
   })
+
+  it('should apply fetchData configuration to HttpClient', async () => {
+    const path = '/example'
+    const fetchData = jest.fn()
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData
+    }, '')
+    await view.updateWithFetch({ path })
+ 
+    const expectedResult = clone(treeA)
+    expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { "method": "get" })
+  })
 })
