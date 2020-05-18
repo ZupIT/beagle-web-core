@@ -16,6 +16,353 @@
 
 import { IdentifiableBeagleUIElement } from '../src/types'
 
+export const treeSize: IdentifiableBeagleUIElement = {
+  id: 'Size',
+  _beagleType_: 'type-Size',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-C',
+          style: {
+            size: {
+              height: {
+                value: 300.0,
+                type: "REAL"
+              },
+              width: {
+                value: 300.0,
+                type: "REAL"
+              }
+            }
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleType_: 'type-D',
+      style: {
+        size: {
+          maxWidth: {
+            value: 50.0,
+            type: "PERCENT"
+          },
+          maxHeight: {
+            value: 50.0,
+            type: "PERCENT"
+          }
+        }
+      },
+    },
+    {
+      id: 'D.2',
+      _beagleType_: 'type-D',
+      style: {
+        size: {
+          width: {
+            value: 50.0,
+            type: "AUTO"
+          },
+          height: {
+            value: 0.0,
+            type: "AUTO"
+          }
+        }
+      },
+    },
+  ],
+  style: {
+    size: {
+      minWidth: {
+        value: 300.0,
+        type: "REAL"
+      },
+      minHeight: {
+        value: 300.0,
+        type: "REAL"
+      }
+    }
+  }
+}
+
+export const treeSizeParsed: IdentifiableBeagleUIElement = {
+  id: 'Size',
+  _beagleType_: 'type-Size',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-C',
+          style: {
+            height: "300px",
+            width: "300px"
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleType_: 'type-D',
+      style: {
+        maxWidth: "50%",
+        maxHeight: "50%"
+      },
+    },
+    {
+      id: 'D.2',
+      _beagleType_: 'type-D',
+      style: {
+        width: 'auto',
+        height: 'auto'
+      },
+    },
+  ],
+  style: {
+    minWidth: "300px",
+    minHeight: "300px"
+  }
+}
+
+export const treePosition: IdentifiableBeagleUIElement = {
+  id: 'Position',
+  _beagleType_: 'type-Position',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-C',
+          style: {
+            position: {
+              top: {
+                value: 10.0,
+                type: "REAL"
+              },
+              left: {
+                value: 10.0,
+                type: "REAL"
+              }
+            }
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleType_: 'type-D',
+      style: {
+        position: {
+          bottom: {
+            value: 10.0,
+            type: "PERCENT"
+          },
+          right: {
+            value: 10.0,
+            type: "PERCENT"
+          }
+        }
+      },
+    },
+    {
+      id: 'E.1',
+      _beagleType_: 'type-E',
+      style: {
+        position: {
+          start: {
+            value: 10.0,
+            type: "REAL"
+          },
+          end: {
+            value: 15.0,
+            type: "REAL"
+          }
+        }
+      },
+    },
+    {
+      id: 'F.1',
+      _beagleType_: 'type-F',
+      style: {
+        position: {
+          horizontal: {
+            value: 10.0,
+            type: "REAL"
+          }
+        }
+      },
+    },
+    {
+      id: 'G.1',
+      _beagleType_: 'type-G',
+      style: {
+        position: {
+          vertical: {
+            value: 15.0,
+            type: "REAL"
+          }
+        }
+      }
+    }
+  ],
+  style: {
+    position: {
+      all: {
+        value: 10.0,
+        type: "REAL"
+      }
+    }
+  }
+}
+
+export const treePositionParsed: IdentifiableBeagleUIElement = {
+  id: 'Position',
+  _beagleType_: 'type-Position',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-C',
+          style: {
+            top: '10px',
+            left: '10px'
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleType_: 'type-D',
+      style: {
+        bottom: '10%',
+        right: '10%'
+      },
+    },
+    {
+      id: 'E.1',
+      _beagleType_: 'type-E',
+      style: {
+        left: '10px',
+        right: '15px'
+      },
+    },
+    {
+      id: 'F.1',
+      _beagleType_: 'type-F',
+      style: {
+        left: '10px',
+        right: '10px'
+      }
+    },
+    {
+      id: 'G.1',
+      _beagleType_: 'type-G',
+      style: {
+        top: '15px',
+        bottom: '15px'
+      }
+    }
+  ],
+  style: {
+    left: '10px',
+    right: '10px',
+    top: '10px',
+    bottom: '10px'
+  }
+}
+
+export const treeFlex: IdentifiableBeagleUIElement = {
+  id: 'Flex',
+  _beagleType_: 'type-Flex',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-C',
+          style: {
+            flex: {
+              flexDirection: 'COLUMN',
+              flexWrap: 'WRAP',
+              justifyContent: 'FLEX_START',
+              alignItems: 'SPACE_BETWEEN',
+              alignSelf: 'CENTER'
+            }
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleType_: 'type-D',
+      style: {
+        flex: {
+          alignContent: 'SPACE_AROUND',
+          grow: 2.0,
+          shrink: 2.0,
+          basis: {
+            value: 50.0,
+            type: "REAL"
+          }
+        }
+      },
+    }
+  ]
+}
+
+export const treeFlexParsed: IdentifiableBeagleUIElement = {
+  id: 'Flex',
+  _beagleType_: 'type-Flex',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-C',
+          style: {
+            flexDirection: 'column',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-start',
+            alignItems: 'space-between',
+            alignSelf: 'center'
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleType_: 'type-D',
+      style: {
+        alignContent: 'space-around',
+        flexGrow: 2,
+        flexShrink: 2,
+        flexBasis: '50px'
+      },
+    }
+  ]
+}
+
 export const treeE: IdentifiableBeagleUIElement = {
   id: 'E',
   _beagleType_: 'type-E',
@@ -28,17 +375,17 @@ export const treeE: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          style: 'Style.TestChildren.MockStyle'
+          styleId: 'Style.TestChildren.MockStyle'
         },
       ]
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
-      style: 'Design.StyleChildren.MockStyle'
+      styleId: 'Design.StyleChildren.MockStyle'
     },
   ],
-  style: 'Design.TextStyle.MockStyle'
+  styleId: 'Design.TextStyle.MockStyle'
 }
 
 export const treeEParsed: IdentifiableBeagleUIElement = {
@@ -53,17 +400,17 @@ export const treeEParsed: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          styleClass: 'style-test-children-mock-style'
+          styleId: 'style-test-children-mock-style'
         },
       ]
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
-      styleClass: 'design-style-children-mock-style'
+      styleId: 'design-style-children-mock-style'
     },
   ],
-  styleClass: 'design-text-style-mock-style'
+  styleId: 'design-text-style-mock-style'
 }
 
 export const treeMargin: IdentifiableBeagleUIElement = {
@@ -78,7 +425,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          flex: {
+          style: {
             margin: {
               all: {
                 value: 8.0,
@@ -92,7 +439,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
     {
       id: 'D.1',
       _beagleType_: 'type-D',
-      flex: {
+      style: {
         margin: {
           top: {
             value: 16.0,
@@ -110,7 +457,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
       },
     },
   ],
-  flex: {
+  style: {
     margin: {
       horizontal: {
         value: 16.0,
@@ -132,7 +479,7 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          flex: {
+          style: {
             margin: {
               all: {
                 value: 8.0,
@@ -149,7 +496,7 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
     {
       id: 'D.1',
       _beagleType_: 'type-D',
-      flex: {
+      style: {
         margin: {
           top: {
             value: 16.0,
@@ -172,7 +519,7 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
       }
     },
   ],
-  flex: {
+  style: {
     margin: {
       horizontal: {
         value: 16.0,
@@ -197,7 +544,7 @@ export const treePadding: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          flex: {
+          style: {
             padding: {
               vertical: {
                 value: 3.0,
@@ -211,7 +558,7 @@ export const treePadding: IdentifiableBeagleUIElement = {
     {
       id: 'D.1',
       _beagleType_: 'type-D',
-      flex: {
+      style: {
         padding: {
           top: {
             value: 16.0,
@@ -225,7 +572,7 @@ export const treePadding: IdentifiableBeagleUIElement = {
       },
     },
   ],
-  flex: {
+  style: {
     padding: {
       all: {
         value: 16.0,
@@ -247,7 +594,7 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          flex: {
+          style: {
             padding: {
               vertical: {
                 value: 3.0,
@@ -264,7 +611,7 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
     {
       id: 'D.1',
       _beagleType_: 'type-D',
-      flex: {
+      style: {
         padding: {
           top: {
             value: 16.0,
@@ -282,7 +629,7 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
       }
     },
   ],
-  flex: {
+  style: {
     padding: {
       all: {
         value: 16.0,

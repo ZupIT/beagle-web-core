@@ -33,7 +33,7 @@ import {
 import createURLBuilder from './utils/url-builder'
 import createBeagleNavigator from './BeagleNavigator'
 import beagleTabViewMiddleware from './middlewares/tab-view-component'
-// import beagleStyleMiddleware from './middlewares/beagle-style'
+import beagleStyleMiddleware from './middlewares/beagle-style'
 // import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 
 const createBeagleView = <Schema>({
@@ -93,7 +93,7 @@ const createBeagleView = <Schema>({
     // ) as IdentifiableBeagleUIElement<Schema>
     return runMiddlewares(
       uiTree,
-      [beagleTabViewMiddleware, beagleIdMiddleware]
+      [beagleTabViewMiddleware, beagleIdMiddleware, beagleStyleMiddleware]
     ) as IdentifiableBeagleUIElement<Schema>
   }
 

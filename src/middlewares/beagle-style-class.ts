@@ -18,12 +18,10 @@ import { BeagleMiddleware } from '../types'
 
 const beagleStyleClassMiddleware: BeagleMiddleware<any> = (uiTree) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleClassMiddleware)
-  if (uiTree.style !== undefined && uiTree.style !== '') {
-    uiTree.styleClass = uiTree.style
-    uiTree.styleClass = uiTree.styleClass.replace(/([a-z])([A-Z])/g, '$1-$2')
-    uiTree.styleClass = uiTree.styleClass.replace(/\./g, '-').toLowerCase()
+  if (uiTree.styleId !== undefined && uiTree.styleId !== '') {
+    uiTree.styleId = uiTree.styleId.replace(/([a-z])([A-Z])/g, '$1-$2')
+    uiTree.styleId = uiTree.styleId.replace(/\./g, '-').toLowerCase()
   }
-  delete uiTree.style 
   return uiTree
 }
 
