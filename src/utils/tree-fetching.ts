@@ -65,7 +65,7 @@ export async function loadFromServer<Schema>(
   let response: Response
 
   try {
-    response = await beagleHttpClient.fetch(url, { method, headers: headers && headers })
+    response = await beagleHttpClient.fetch(url, { method, headers })
   } catch (error) {
     throw new BeagleNetworkError(url, error)
   }
