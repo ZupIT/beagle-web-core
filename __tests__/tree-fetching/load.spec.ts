@@ -99,7 +99,7 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should use post and send headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).post(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, method: 'post', headers: { test: 'test'}, onChangeTree })
+    await load({ url, method: 'post', headers: { test: 'test' }, onChangeTree })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })

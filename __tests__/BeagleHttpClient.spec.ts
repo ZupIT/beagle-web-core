@@ -31,24 +31,21 @@ describe.only('BeagleHttpClient', () => {
         expect(nock.isDone()).toBe(true)
     })
 
+    it('should use options when fetching content from server', async () => {
+        const path = '/example';
+        nock(url, { reqheaders: { test: 'test' } })
+            .post(path, (body) => body.test).reply(200, { status: 'OK' })
+        const body = new URLSearchParams()
+        body.set('test', 'test')
+        const parametersOptions = { body, headers: { test: 'test' }, method: 'post' }
+        await  beagleHttpClient.fetch(url + path, parametersOptions)
+        expect(nock.isDone()).toBe(true)
+    })
+
     it('should use custom fetch function', async () => {
         const fetchFunc = jest.fn()
         beagleHttpClient.setFetchFunction(fetchFunc)
         await beagleHttpClient.fetch(url, {})
         expect(fetchFunc).toHaveBeenCalledWith(url, {})
-    })
-
-    it('should load from server with parameters options', async () => {
-        const path = '/example';
-        nock(url, { reqheaders: { test: 'test'}})
-            .post(path, (body) => body.test ).reply(200, { status: 'OK'})
-        const body = new URLSearchParams()
-        body.set('test', 'test')
-        const parametersOptions = { body, headers: { test: 'test'}, method: 'post'}
-        const fetchFunc = jest.fn((url: string, options: RequestInit) => fetch(url, {...options}))
-        beagleHttpClient.setFetchFunction(fetchFunc)
-        await  beagleHttpClient.fetch(url + path, parametersOptions)
-        expect(fetchFunc).toHaveBeenCalledWith(url + path, parametersOptions)
-        expect(nock.isDone()).toBe(true)
     })
 })

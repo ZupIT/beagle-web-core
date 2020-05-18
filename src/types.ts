@@ -46,12 +46,10 @@ export type Strategy = (
   | 'cache-first'
 )
 
-export type FetchData = (input: RequestInfo, options?: RequestInit) => Promise<Response>
-
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
 export interface BeagleHttpClient {
-  fetch: FetchData,
+  fetch: typeof fetch,
   setFetchFunction: (fetchFn: typeof fetch) => void,
 }
 
@@ -60,7 +58,7 @@ export interface BeagleConfig<Schema> {
   schemaUrl?: string,
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
-  fetchData?: FetchData,
+  fetchData?: typeof fetch,
   components: {
     [K in ComponentName<Schema>]: any
   },
