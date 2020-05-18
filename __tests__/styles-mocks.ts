@@ -489,8 +489,8 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
           id: 'D.0.1',
           _beagleType_: 'type-D',
           style: {
-            marginTop:'5%',
-            marginLeft:'auto'
+            marginTop: '5%',
+            marginLeft: 'auto'
           }
         },
       ],
@@ -707,7 +707,7 @@ export const treeAttributesToKeepName: IdentifiableBeagleUIElement = {
     }
   ],
   style: {
-    positionType:'RELATIVE'
+    positionType: 'RELATIVE'
   }
 }
 
@@ -727,7 +727,7 @@ export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
     }
   ],
   style: {
-    position:'relative'
+    position: 'relative'
   }
 }
 
@@ -747,6 +747,83 @@ export const treeWithoutStyle: IdentifiableBeagleUIElement = {
       ]
     }
   ]
+}
+
+export const treeMixStyle: IdentifiableBeagleUIElement = {
+  _beagleType_: "beagle:component:container",
+  id: 'testing',
+  children: [
+    {
+      _beagleType_: "beagle:component:image",
+      name: "img.jpg",
+      id: 'testing-2',
+      style: {
+        size: {
+          height: {
+            value: 300.0,
+            type: "REAL"
+          },
+          width: {
+            value: 300.0,
+            type: "REAL"
+          }
+        },
+        margin: {
+          all: {
+            value: 0,
+            type: "AUTO"
+          }
+        }
+      }
+    }
+  ],
+  style:{
+    display: "FLEX",
+    positionType: 'RELATIVE',
+    flex: {
+      flexDirection:"COLUMN",
+      alignItems:"CENTER",
+      justifyContent:"CENTER"
+    },
+    margin: {
+      top: {
+        value: 10,
+        type: "AUTO"
+      }
+    },
+    padding: {
+      right: {
+        value: 10,
+        type: "REAL"
+      }
+    }
+  }
+}
+
+export const treeMixStyleParsed: IdentifiableBeagleUIElement = {
+  _beagleType_: "beagle:component:container",
+  id: 'testing',
+  children: [
+    {
+      _beagleType_: "beagle:component:image",
+      name: "img.jpg",
+      id: 'testing-2',
+      style: {
+        height: '300px',
+        width: '300px',
+        margin: 'auto'
+      }
+    }
+  ],
+  style: {
+    display:"flex",
+    position: 'relative',
+    flexDirection:"column",
+    alignItems:"center",
+    justifyContent:"center",
+    marginTop: 'auto',
+    paddingRight: '10px'
+  }
 }
 
 export const treeE: IdentifiableBeagleUIElement = {

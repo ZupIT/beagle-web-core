@@ -21,7 +21,7 @@ import {
   treeMargin, treeMarginParsed, 
   treePadding, treePaddingParsed,
   treeAttributesToKeepName, treeAttributesToKeepNameParsed,
-  treeWithoutStyle,
+  treeWithoutStyle, treeMixStyle, treeMixStyleParsed,
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 
@@ -60,6 +60,11 @@ describe('StyleMiddleware', () => {
   it('should not change tree if no style is present', () => {
     const parsedTree = beagleStyleMiddleware(treeWithoutStyle)
     expect(parsedTree).toEqual(treeWithoutStyle)
+  })
+
+  it('should parse multiple styles on the tree', () => {
+    const parsedTree = beagleStyleMiddleware(treeMixStyle)
+    expect(parsedTree).toEqual(treeMixStyleParsed)
   })
 
 })
