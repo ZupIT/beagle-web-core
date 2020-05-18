@@ -552,12 +552,38 @@ export const treePadding: IdentifiableBeagleUIElement = {
               }
             }
           }
-        },
-      ]
+        }
+      ],
+      style: {
+        padding: {
+          left: {
+            value: 5.0,
+            type: 'REAL'
+          },
+          bottom: {
+            value: 10.0,
+            type: 'REAL'
+          }
+        }
+      }
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
+      children: [
+        {
+          id: 'D.1.0',
+          _beagleType_: 'type-C',
+          style: {
+            padding: {
+              horizontal: {
+                value: 3.0,
+                type: 'PERCENT'
+              }
+            }
+          }
+        }
+      ],
       style: {
         padding: {
           top: {
@@ -565,7 +591,41 @@ export const treePadding: IdentifiableBeagleUIElement = {
             type: 'REAL'
           },
           right: {
+            value: 20.0,
+            type: 'REAL'
+          },
+        }
+      },
+    },
+    {
+      id: 'D.2',
+      _beagleType_: 'type-D',
+      children: [
+        {
+          id: 'D.2.0',
+          _beagleType_: 'type-C',
+          style: {
+            padding: {
+              start: {
+                value: 3.0,
+                type: 'REAL'
+              },
+              end: {
+                value: 5.0,
+                type: 'PERCENT'
+              }
+            }
+          }
+        }
+      ],
+      style: {
+        padding: {
+          top: {
             value: 16.0,
+            type: 'REAL'
+          },
+          right: {
+            value: 20.0,
             type: 'REAL'
           },
         }
@@ -601,16 +661,39 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
                 type: 'PERCENT'
               }
             }
-          },
-          styleProperties: {
-            padding: '3% 0'
           }
-        },
-      ]
+        }
+      ],
+      style: {
+        padding: {
+          left: {
+            value: 5.0,
+            type: 'REAL'
+          },
+          bottom: {
+            value: 10.0,
+            type: 'REAL'
+          }
+        }
+      }
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
+      children: [
+        {
+          id: 'D.1.0',
+          _beagleType_: 'type-C',
+          style: {
+            padding: {
+              horizontal: {
+                value: 3.0,
+                type: 'PERCENT'
+              }
+            }
+          }
+        }
+      ],
       style: {
         padding: {
           top: {
@@ -618,15 +701,45 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
             type: 'REAL'
           },
           right: {
-            value: 16.0,
+            value: 20.0,
             type: 'REAL'
           },
         }
       },
-      styleProperties: {
-        paddingTop: '16px',
-        paddingRight: '16px'
-      }
+    },
+    {
+      id: 'D.2',
+      _beagleType_: 'type-D',
+      children: [
+        {
+          id: 'D.2.0',
+          _beagleType_: 'type-C',
+          style: {
+            padding: {
+              start: {
+                value: 3.0,
+                type: 'REAL'
+              },
+              end: {
+                value: 5.0,
+                type: 'PERCENT'
+              }
+            }
+          }
+        }
+      ],
+      style: {
+        padding: {
+          top: {
+            value: 16.0,
+            type: 'REAL'
+          },
+          right: {
+            value: 20.0,
+            type: 'REAL'
+          },
+        }
+      },
     },
   ],
   style: {
@@ -636,9 +749,6 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
         type: 'REAL'
       },
     }
-  },
-  styleProperties: {
-    padding: '16px'
   }
 }
 
