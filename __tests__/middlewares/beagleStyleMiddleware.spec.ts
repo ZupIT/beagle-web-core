@@ -20,7 +20,8 @@ import {
   treeFlex, treeFlexParsed,
   treeMargin, treeMarginParsed, 
   treePadding, treePaddingParsed,
-  treeAttributesToKeepName, treeAttributesToKeepNameParsed
+  treeAttributesToKeepName, treeAttributesToKeepNameParsed,
+  treeWithoutStyle,
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 
@@ -41,19 +42,24 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toEqual(treeFlexParsed)
   })
 
-  it('should transform margin attributes', () => {
+  it('should handle margin attributes', () => {
     const parsedTree = beagleStyleMiddleware(treeMargin)
     expect(parsedTree).toEqual(treeMarginParsed)
   })
 
-  it('should transform padding style', () => {
+  it('should handle padding style', () => {
     const parsedTree = beagleStyleMiddleware(treePadding)
     expect(parsedTree).toEqual(treePaddingParsed)
   })
 
-  it('should keep attributes name and change to lowerCase the value', () => {
+  it('should keep attributes name and change values to lowerCase', () => {
     const parsedTree = beagleStyleMiddleware(treeAttributesToKeepName)
     expect(parsedTree).toEqual(treeAttributesToKeepNameParsed)
+  })
+
+  it('should not change tree if no style is present', () => {
+    const parsedTree = beagleStyleMiddleware(treeWithoutStyle)
+    expect(parsedTree).toEqual(treeWithoutStyle)
   })
 
 })

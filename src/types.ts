@@ -77,7 +77,7 @@ export interface BeagleUIElement<Schema = DefaultSchema> {
   _beagleType_: ComponentName<Schema>,
   _context_?: DataContext,
   children?: Array<BeagleUIElement<Schema>>,
-  styleProperties?: Record<string, any>,
+  style?: Record<string, any>,
   [key: string]: any,
 }
 

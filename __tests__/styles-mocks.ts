@@ -358,7 +358,7 @@ export const treeFlexParsed: IdentifiableBeagleUIElement = {
         alignContent: 'space-around',
         flexGrow: 2,
         flexShrink: 2,
-        flexWrap: 'no-wrap',
+        flexWrap: 'nowrap',
         flexBasis: '50px'
       },
     }
@@ -729,6 +729,24 @@ export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
   style: {
     position:'relative'
   }
+}
+
+export const treeWithoutStyle: IdentifiableBeagleUIElement = {
+  id: 'WithoutStyle',
+  _beagleType_: 'type-WithoutStyle',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'C.0',
+          _beagleType_: 'type-C'
+        }
+      ]
+    }
+  ]
 }
 
 export const treeE: IdentifiableBeagleUIElement = {

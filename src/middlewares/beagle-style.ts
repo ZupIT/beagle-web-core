@@ -124,8 +124,9 @@ const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: St
         parsedValue = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
       }
       else {
-        parsedValue = styleAttributes[key] === 'NO_WRAP' ? 
-          replace(styleAttributes[key], '_', '') : replace(styleAttributes[key], '_', '-')
+        const hasSpecialValues = SPECIAL_VALUES[styleAttributes[key]]
+        parsedValue = hasSpecialValues ? 
+          hasSpecialValues : replace(styleAttributes[key], '_', '-')
         parsedValue = toLowerCase(parsedValue)
       }
       uiTree.parsedStyle[atributeName] = parsedValue
@@ -177,15 +178,14 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
     return uiTree
   }
 
-
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
 
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
-  if (uiTree.style) {
+  if (uiTree.style && typeof uiTree.style === 'object') {
     const styleObj = uiTree.style
-
+    
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)
