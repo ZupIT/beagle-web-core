@@ -45,6 +45,10 @@ const FLEX_PROPERTIES_TO_RENAME: Record<string, string> = {
   'basis': 'flexBasis',
 }
 
+const SPECIAL_VALUES: Record<string, string> = {
+  'NO_WRAP': 'nowrap',
+}
+
 const toLowerCase = (value: string | number) => {
   if (typeof value === 'number') return value
   return value.toLowerCase()
@@ -120,7 +124,8 @@ const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: St
         parsedValue = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
       }
       else {
-        parsedValue = replace(styleAttributes[key], '_', '-')
+        parsedValue = styleAttributes[key] === 'NO_WRAP' ? 
+          replace(styleAttributes[key], '_', '') : replace(styleAttributes[key], '_', '-')
         parsedValue = toLowerCase(parsedValue)
       }
       uiTree.parsedStyle[atributeName] = parsedValue
