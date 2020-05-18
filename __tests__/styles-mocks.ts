@@ -592,7 +592,7 @@ export const treePadding: IdentifiableBeagleUIElement = {
           },
           right: {
             value: 20.0,
-            type: 'REAL'
+            type: 'AUTO'
           },
         }
       },
@@ -618,18 +618,6 @@ export const treePadding: IdentifiableBeagleUIElement = {
           }
         }
       ],
-      style: {
-        padding: {
-          top: {
-            value: 16.0,
-            type: 'REAL'
-          },
-          right: {
-            value: 20.0,
-            type: 'REAL'
-          },
-        }
-      },
     },
   ],
   style: {
@@ -655,26 +643,14 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
           id: 'D.0.0',
           _beagleType_: 'type-C',
           style: {
-            padding: {
-              vertical: {
-                value: 3.0,
-                type: 'PERCENT'
-              }
-            }
+            paddingTop: '3%',
+            paddingBottom: '3%'
           }
         }
       ],
       style: {
-        padding: {
-          left: {
-            value: 5.0,
-            type: 'REAL'
-          },
-          bottom: {
-            value: 10.0,
-            type: 'REAL'
-          }
-        }
+        paddingLeft: '5px',
+        paddingBottom: '10px'
       }
     },
     {
@@ -685,26 +661,14 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
           id: 'D.1.0',
           _beagleType_: 'type-C',
           style: {
-            padding: {
-              horizontal: {
-                value: 3.0,
-                type: 'PERCENT'
-              }
-            }
+            paddingLeft: '3%',
+            paddingRight: '3%'
           }
         }
       ],
       style: {
-        padding: {
-          top: {
-            value: 16.0,
-            type: 'REAL'
-          },
-          right: {
-            value: 20.0,
-            type: 'REAL'
-          },
-        }
+        paddingTop: '16px',
+        paddingRight: 'auto'
       },
     },
     {
@@ -715,40 +679,15 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
           id: 'D.2.0',
           _beagleType_: 'type-C',
           style: {
-            padding: {
-              start: {
-                value: 3.0,
-                type: 'REAL'
-              },
-              end: {
-                value: 5.0,
-                type: 'PERCENT'
-              }
-            }
+            paddingLeft: '3px',
+            paddingRight: '5%'
           }
         }
       ],
-      style: {
-        padding: {
-          top: {
-            value: 16.0,
-            type: 'REAL'
-          },
-          right: {
-            value: 20.0,
-            type: 'REAL'
-          },
-        }
-      },
     },
   ],
   style: {
-    padding: {
-      all: {
-        value: 16.0,
-        type: 'REAL'
-      },
-    }
+    padding: '16px'
   }
 }
 
