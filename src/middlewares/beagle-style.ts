@@ -153,6 +153,105 @@ const formatEdgeAttributes =
     return uiTree
   }
 
+  
+
+// const KEEP_AS_IS_PROPERTIES: Array<string> = [
+//     'backgroundColor',
+//     'direction',
+//     'display',
+//   ]
+  
+//   const PROPERTIES_TO_RENAME: Record<string, string> = {
+//     'positionType': 'position',
+//     'textColor': 'color',
+//     'grow': 'flexGrow',
+//     'shrink': 'flexShrink',
+//     'basis': 'flexBasis',
+//   }
+  
+//   const SINGLE_PROPERTIES: Array<string> = [
+//     'backgroundColor',
+//     'direction',
+//     'display',
+//   ]
+
+// const formatAttributesToRename = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
+//   if (styleAttributes) {
+//     const keys = Object.keys(styleAttributes)
+//     const styleAtt = keys.filter((prop) => PROPERTIES_TO_RENAME[prop] !== undefined)
+//     if (styleAtt && styleAtt.length) {
+//       styleAtt.forEach((prop) => {
+//         let value
+//         if (typeof styleAttributes[prop] === 'object') {
+//           const parsedType = UNITY_TYPE[styleAttributes[prop].type]
+//           value = `${styleAttributes[prop].value}${parsedType}`
+//         } else {
+//           value = toLowerCase(styleAttributes[prop])
+//         }
+
+//         value = handleColors(prop, value)
+//         //@ts-ignore
+//         return uiTree.styleProperties[PROPERTIES_TO_RENAME[prop]] = value
+//       })
+//     }
+//   }
+//   return uiTree
+// }
+
+
+
+// const keepAsIs = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
+//     if (styleAttributes) {
+//       const keys = Object.keys(styleAttributes)
+//       const styleAtt = keys.filter((prop) => KEEP_AS_IS_PROPERTIES.includes(prop))
+//       styleAtt.forEach((prop) => {
+//         uiTree.parsedStyle[prop] = toLowerCase(styleAttributes[prop])
+//       })
+//     }
+//     return uiTree
+//   }
+  
+  // const formatSingleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
+  //   if (styleAttributes) {
+  //     const keys = Object.keys(styleAttributes)
+  //     const styleAtt = keys.filter((prop) => SINGLE_PROPERTIES.includes(prop))
+  //     styleAtt.forEach((prop) => {
+  //       const value = styleAttributes[prop]
+  //       //@ts-ignore
+  //       uiTree.styleProperties[prop] = value
+  //     })
+  //   }
+  //   return uiTree
+  // }
+  
+//   const handleEdgeValues =
+//     (key: string, parsedUnitType: string, styleAttributes: Style) => {
+//       let value = ''
+//       if (parsedUnitType === UNITY_TYPE.AUTO) {
+//         value = UNITY_TYPE.AUTO
+//       } else {
+//         value = `${styleAttributes[key].value}${parsedUnitType}`
+//       }
+//       const edgeValues: Record<string, string> = {
+//         vertical: `${value} 0`,
+//         horizontal: `0 ${value}`,
+//       }
+//       return edgeValues[key] || value
+//     }
+  
+
+
+
+    
+  // uiTree = formatSingleAttributes(uiTree, uiTree)
+  // uiTree = formatAttributesToRename(uiTree, uiTree)
+
+    // uiTree = formatAttributesToRename(uiTree, styleObj)
+    
+    // uiTree = formatEdgeAttributes(uiTree, 'margin', styleObj.margin)
+    // uiTree = formatEdgeAttributes(uiTree, 'padding', styleObj.padding)
+    // uiTree = keepAsIs(uiTree, styleObj)
+
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
 
