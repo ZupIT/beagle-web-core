@@ -318,6 +318,7 @@ export const treeFlex: IdentifiableBeagleUIElement = {
           alignContent: 'SPACE_AROUND',
           grow: 2.0,
           shrink: 2.0,
+          flexWrap: 'NO_WRAP',
           basis: {
             value: 50.0,
             type: "REAL"
@@ -357,60 +358,11 @@ export const treeFlexParsed: IdentifiableBeagleUIElement = {
         alignContent: 'space-around',
         flexGrow: 2,
         flexShrink: 2,
+        flexWrap: 'no-wrap',
         flexBasis: '50px'
       },
     }
   ]
-}
-
-export const treeE: IdentifiableBeagleUIElement = {
-  id: 'E',
-  _beagleType_: 'type-E',
-  value: 'teste',
-  children: [
-    {
-      id: 'D.0',
-      _beagleType_: 'type-B',
-      children: [
-        {
-          id: 'D.0.0',
-          _beagleType_: 'type-C',
-          styleId: 'Style.TestChildren.MockStyle'
-        },
-      ]
-    },
-    {
-      id: 'D.1',
-      _beagleType_: 'type-D',
-      styleId: 'Design.StyleChildren.MockStyle'
-    },
-  ],
-  styleId: 'Design.TextStyle.MockStyle'
-}
-
-export const treeEParsed: IdentifiableBeagleUIElement = {
-  id: 'E',
-  _beagleType_: 'type-E',
-  value: 'teste',
-  children: [
-    {
-      id: 'D.0',
-      _beagleType_: 'type-B',
-      children: [
-        {
-          id: 'D.0.0',
-          _beagleType_: 'type-C',
-          styleId: 'style-test-children-mock-style'
-        },
-      ]
-    },
-    {
-      id: 'D.1',
-      _beagleType_: 'type-D',
-      styleId: 'design-style-children-mock-style'
-    },
-  ],
-  styleId: 'design-text-style-mock-style'
 }
 
 export const treeMargin: IdentifiableBeagleUIElement = {
@@ -424,7 +376,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleType_: 'type-D',
           style: {
             margin: {
               all: {
@@ -434,24 +386,70 @@ export const treeMargin: IdentifiableBeagleUIElement = {
             }
           }
         },
-      ]
+        {
+          id: 'D.0.1',
+          _beagleType_: 'type-D',
+          style: {
+            margin: {
+              top: {
+                value: 5.0,
+                type: 'PERCENT'
+              },
+              left: {
+                value: 10.0,
+                type: 'AUTO'
+              }
+            }
+          }
+        },
+      ],
+      style: {
+        margin: {
+          vertical: {
+            value: 20.0,
+            type: 'REAL'
+          },
+        }
+      }
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-D',
+          style: {
+            margin: {
+              start: {
+                value: 8.0,
+                type: 'REAL'
+              }
+            }
+          }
+        },
+        {
+          id: 'D.0.1',
+          _beagleType_: 'type-D',
+          style: {
+            margin: {
+              end: {
+                value: 12.0,
+                type: 'REAL'
+              }
+            }
+          }
+        },
+      ],
       style: {
         margin: {
-          top: {
+          right: {
             value: 16.0,
             type: 'REAL'
           },
           bottom: {
-            value: 16.0,
+            value: 15.0,
             type: 'REAL'
-          },
-          left: {
-            value: 5.0,
-            type: 'PERCENT'
           }
         }
       },
@@ -460,7 +458,11 @@ export const treeMargin: IdentifiableBeagleUIElement = {
   style: {
     margin: {
       horizontal: {
-        value: 16.0,
+        value: 20.0,
+        type: 'REAL'
+      },
+      top: {
+        value: 5.0,
         type: 'REAL'
       },
     }
@@ -478,59 +480,57 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleType_: 'type-D',
           style: {
-            margin: {
-              all: {
-                value: 8.0,
-                type: 'REAL'
-              }
-            }
-          },
-          styleProperties: {
             margin: '8px'
           }
         },
-      ]
+        {
+          id: 'D.0.1',
+          _beagleType_: 'type-D',
+          style: {
+            marginTop:'5%',
+            marginLeft:'auto'
+          }
+        },
+      ],
+      style: {
+        marginTop: '20px',
+        marginBottom: '20px'
+      }
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
-      style: {
-        margin: {
-          top: {
-            value: 16.0,
-            type: 'REAL'
-          },
-          bottom: {
-            value: 16.0,
-            type: 'REAL'
-          },
-          left: {
-            value: 5.0,
-            type: 'PERCENT'
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleType_: 'type-D',
+          style: {
+            marginLeft: '8px'
           }
-        }
+        },
+        {
+          id: 'D.0.1',
+          _beagleType_: 'type-D',
+          style: {
+            marginRight: '12px'
+          }
+        },
+      ],
+      style: {
+        marginRight: '16px',
+        marginBottom: '15px'
       },
-      styleProperties: {
-        marginTop: '16px',
-        marginBottom: '16px',
-        marginLeft: '5%'
-      }
     },
   ],
   style: {
-    margin: {
-      horizontal: {
-        value: 16.0,
-        type: 'REAL'
-      },
-    }
-  },
-  styleProperties: {
-    margin: '0 16px'
+    marginRight: '20px',
+    marginLeft: '20px',
+    marginTop: '5px'
   }
 }
+
 
 export const treePadding: IdentifiableBeagleUIElement = {
   id: 'F',
@@ -642,9 +642,9 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
   }
 }
 
-export const treeColorSize: IdentifiableBeagleUIElement = {
-  id: 'F',
-  _beagleType_: 'type-F',
+export const treeE: IdentifiableBeagleUIElement = {
+  id: 'E',
+  _beagleType_: 'type-E',
   value: 'teste',
   children: [
     {
@@ -654,23 +654,22 @@ export const treeColorSize: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          textColor: '#00c00c',
-          backgroundColor: '#fafafa',
+          styleId: 'Style.TestChildren.MockStyle'
         },
       ]
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
+      styleId: 'Design.StyleChildren.MockStyle'
     },
   ],
-  textColor: 'ffffff',
-  backgroundColor: '000000',
+  styleId: 'Design.TextStyle.MockStyle'
 }
 
-export const treeColorSizeParsed: IdentifiableBeagleUIElement = {
-  id: 'F',
-  _beagleType_: 'type-F',
+export const treeEParsed: IdentifiableBeagleUIElement = {
+  id: 'E',
+  _beagleType_: 'type-E',
   value: 'teste',
   children: [
     {
@@ -680,24 +679,15 @@ export const treeColorSizeParsed: IdentifiableBeagleUIElement = {
         {
           id: 'D.0.0',
           _beagleType_: 'type-C',
-          textColor: '#00c00c',
-          backgroundColor: '#fafafa',
-          styleProperties: {
-            backgroundColor: '#fafafa',
-            color: '#00c00c'
-          }
+          styleId: 'style-test-children-mock-style'
         },
       ]
     },
     {
       id: 'D.1',
       _beagleType_: 'type-D',
+      styleId: 'design-style-children-mock-style'
     },
   ],
-  textColor: 'ffffff',
-  backgroundColor: '000000',
-  styleProperties: {
-    backgroundColor: '#000000',
-    color: '#ffffff'
-  }
+  styleId: 'design-text-style-mock-style'
 }

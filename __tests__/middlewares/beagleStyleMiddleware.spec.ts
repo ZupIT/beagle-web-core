@@ -18,8 +18,8 @@ import {
   treeSize, treeSizeParsed,
   treePositionParsed, treePosition,
   treeFlex, treeFlexParsed,
-  treeMargin, treeMarginParsed, treePadding, treePaddingParsed, 
-  treeColorSize, treeColorSizeParsed
+  treeMargin, treeMarginParsed, 
+  treePadding, treePaddingParsed,
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 
@@ -40,15 +40,15 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toEqual(treeFlexParsed)
   })
 
-  // it('should transform margin attributes', () => {
-  //   const parsedTree = beagleStyleMiddleware(treeMargin)
-  //   expect(parsedTree).toEqual(treeMarginParsed)
-  // })
+  it('should transform margin attributes', () => {
+    const parsedTree = beagleStyleMiddleware(treeMargin)
+    expect(parsedTree).toEqual(treeMarginParsed)
+  })
 
-  // it('should transform padding style', () => {
-  //   const parsedTree = beagleStyleMiddleware(treePadding)
-  //   expect(parsedTree).toEqual(treePaddingParsed)
-  // })
+  it('should transform padding style', () => {
+    const parsedTree = beagleStyleMiddleware(treePadding)
+    expect(parsedTree).toEqual(treePaddingParsed)
+  })
 
   // it('should transform color and size attributes', () => {
   //   const parsedTree = beagleStyleMiddleware(treeColorSize)

@@ -14,9 +14,9 @@
   * limitations under the License.
 */
 
+import isObject from 'lodash/isObject'
 import { BeagleMiddleware, BeagleUIElement, Style } from '../types'
 import { capitalizeFirstLetter } from '../utils/string'
-import isObject from 'lodash/isObject'
 
 const UNITY_TYPE: Record<string, string> = {
   'REAL': 'px',
@@ -81,7 +81,7 @@ const handleSpecialPosition = (key: string,
   uiTree: BeagleUIElement, value: string) => {
   const parsedNames = EDGE_SPECIAL_VALUES[key]
 
-  parsedNames.map((name) => uiTree.parsedStyle[name] = value)
+  parsedNames.forEach((name) => uiTree.parsedStyle[name] = value)
   return uiTree
 }
 
@@ -122,6 +122,37 @@ const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: St
   return uiTree
 }
 
+const handleSpecialEdge = (key: string,
+  uiTree: BeagleUIElement, value: string, prefixName: string) => {
+  if (key === 'all') {
+    uiTree.parsedStyle[prefixName] = value
+  } else {
+    const parsedNames = EDGE_SPECIAL_VALUES[key]
+    parsedNames.forEach((name) => {
+      const cssName = `${prefixName}${capitalizeFirstLetter(name)}`
+      uiTree.parsedStyle[cssName] = value
+    })
+  }
+  return uiTree
+}
+
+const formatEdgeAttributes =
+  (uiTree: BeagleUIElement<any>, edgeType: string, styleAttributes?: Style) => {
+    if (styleAttributes) {
+      const keys = Object.keys(styleAttributes)
+      keys.forEach((key) => {
+        const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
+        if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
+          uiTree = handleSpecialEdge(key, uiTree, valueWithType, edgeType)
+        } else {
+          const edgePosition = `${edgeType}${capitalizeFirstLetter(key)}`
+          uiTree.parsedStyle[edgePosition] = valueWithType
+        }
+      })
+    }
+    return uiTree
+  }
+
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
 
@@ -133,10 +164,13 @@ const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<an
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)
+    uiTree = formatEdgeAttributes(uiTree, 'margin', styleObj.margin)
+    uiTree = formatEdgeAttributes(uiTree, 'padding', styleObj.padding)
+
     uiTree.style = uiTree.parsedStyle
   }
   delete uiTree.parsedStyle
-
+  console.log('Tree = ', uiTree)
   return uiTree
 }
 
