@@ -742,7 +742,6 @@ export const treeTestChild: IdentifiableBeagleUIElement = {
     {
       id: 'A.0',
       _beagleType_: 'type-B',
-      style: 'margin: 10',
       children: [
         {
           id: 'A.0.0',
