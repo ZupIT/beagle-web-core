@@ -18,17 +18,22 @@ import isObject from 'lodash/isObject'
 import { BeagleMiddleware, BeagleUIElement, Style } from '../types'
 import { capitalizeFirstLetter } from '../utils/string'
 
+interface HeightDataFormat {
+  value: number,
+  type: string,
+}
+
 const UNITY_TYPE: Record<string, string> = {
   'REAL': 'px',
   'PERCENT': '%',
   'AUTO': 'auto',
 }
 
-const SINGLE_ATTRIBUTES:  Record<string, string> = {
+const SINGLE_ATTRIBUTES: Record<string, string> = {
   'positionType': 'position',
   'backgroundColor': 'backgroundColor',
-  'direction':'direction',
-  'display':'display',
+  'direction': 'direction',
+  'display': 'display',
 }
 
 const EDGE_SPECIAL_VALUES: Record<string, string[]> = {
@@ -71,19 +76,40 @@ const handleAutoAsValue = (value: string, parsedUnitType: string) => {
 
 const getWebType = (type: string) => UNITY_TYPE[type]
 
-const parseValuesWithUnit = (unitType: string, value: string) => {
+const parseValuesWithUnit = (unitType: string, value: number) => {
   const parsedUnitType = getWebType(unitType)
-  return handleAutoAsValue(value, parsedUnitType)
+  return handleAutoAsValue(value.toString(), parsedUnitType)
+}
+
+const handleAspectRatio = (valueAspectRatio: number | null, heightData: HeightDataFormat, 
+  uiTree: BeagleUIElement<any>) => {
+  if (valueAspectRatio && heightData && heightData.value) {
+    const value = heightData.value * valueAspectRatio
+    const valueWithType = parseValuesWithUnit(heightData.type, value)
+    uiTree.parsedStyle['width'] = valueWithType
+  }
+  return uiTree
 }
 
 const formatSizeProperty =
   (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-    if (styleAttributes) {
+    if (styleAttributes && typeof styleAttributes === 'object') {
       const keys = Object.keys(styleAttributes)
+      let heightData = {} as HeightDataFormat
+      let valueAspectRatio = null
       keys.forEach((key) => {
-        const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
-        uiTree.parsedStyle[key] = valueWithType
+        if (key !== 'aspectRatio') {
+          const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
+          uiTree.parsedStyle[key] = valueWithType
+
+          if (key === 'height') {
+            heightData = styleAttributes[key]
+          }
+        } else {
+          valueAspectRatio = styleAttributes[key]
+        }
       })
+      uiTree = handleAspectRatio(valueAspectRatio, heightData, uiTree)
     }
     return uiTree
   }
@@ -98,7 +124,7 @@ const handleSpecialPosition = (key: string,
 
 const formatPositionProperty =
   (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-    if (styleAttributes) {
+    if (styleAttributes && typeof styleAttributes === 'object') {
       const keys = Object.keys(styleAttributes)
       keys.forEach((key) => {
         const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
@@ -115,7 +141,7 @@ const formatPositionProperty =
 const renameFlexAttributes = (key: string) => FLEX_PROPERTIES_TO_RENAME[key] || key
 
 const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-  if (styleAttributes) {
+  if (styleAttributes && typeof styleAttributes === 'object') {
     const flexKeys = Object.keys(styleAttributes)
     flexKeys.forEach((key) => {
       const atributeName = renameFlexAttributes(key)
@@ -125,7 +151,7 @@ const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: St
       }
       else {
         const hasSpecialValues = SPECIAL_VALUES[styleAttributes[key]]
-        parsedValue = hasSpecialValues ? 
+        parsedValue = hasSpecialValues ?
           hasSpecialValues : replace(styleAttributes[key], '_', '-')
         parsedValue = toLowerCase(parsedValue)
       }
@@ -151,7 +177,7 @@ const handleSpecialEdge = (key: string,
 
 const formatEdgeAttributes =
   (uiTree: BeagleUIElement<any>, edgeType: string, styleAttributes?: Style) => {
-    if (styleAttributes) {
+    if (styleAttributes && typeof styleAttributes === 'object') {
       const keys = Object.keys(styleAttributes)
       keys.forEach((key) => {
         const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
@@ -167,16 +193,16 @@ const formatEdgeAttributes =
   }
 
 const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-    if (styleAttributes) {
-      const keys = Object.keys(styleAttributes)
-      const styleAtt = keys.filter((prop) => Object.keys(SINGLE_ATTRIBUTES).includes(prop))
-      styleAtt.forEach((prop) => {
-        const propName = SINGLE_ATTRIBUTES[prop]
-        uiTree.parsedStyle[propName] = toLowerCase(styleAttributes[prop])
-      })
-    }
-    return uiTree
+  if (styleAttributes) {
+    const keys = Object.keys(styleAttributes)
+    const styleAtt = keys.filter((prop) => Object.keys(SINGLE_ATTRIBUTES).includes(prop))
+    styleAtt.forEach((prop) => {
+      const propName = SINGLE_ATTRIBUTES[prop]
+      uiTree.parsedStyle[propName] = toLowerCase(styleAttributes[prop])
+    })
   }
+  return uiTree
+}
 
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
@@ -185,7 +211,7 @@ const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<an
 
   if (uiTree.style && typeof uiTree.style === 'object') {
     const styleObj = uiTree.style
-    
+
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)

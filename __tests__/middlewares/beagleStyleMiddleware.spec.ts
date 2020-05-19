@@ -16,6 +16,7 @@
 
 import {
   treeSize, treeSizeParsed,
+  treeAspectRatio, treeAspectRatioParsed,
   treePositionParsed, treePosition,
   treeFlex, treeFlexParsed,
   treeMargin, treeMarginParsed, 
@@ -30,6 +31,11 @@ describe('StyleMiddleware', () => {
   it('should handle size attributes', () => {
     const parsedTree = beagleStyleMiddleware(treeSize)
     expect(parsedTree).toEqual(treeSizeParsed)
+  })
+
+  it('should handle aspect ratio', () => {
+    const parsedTree = beagleStyleMiddleware(treeAspectRatio)
+    expect(parsedTree).toEqual(treeAspectRatioParsed)
   })
 
   it('should handle position attributes', () => {
