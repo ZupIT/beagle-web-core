@@ -25,10 +25,11 @@ import { treeA } from './mocks'
 
 describe('Utils: tree reading', () => {
   it('should find by attribute', () => {
-    expect(findByAttribute(treeA, 'style').length).toBe(4)
-    expect(findByAttribute(treeA, 'style', 'margin: 10').length).toBe(2)
-    expect(findByAttribute(treeA, 'style', 'margin: 20').length).toBe(2)
-    expect(findByAttribute(treeA, 'style')[0]).toBe(treeA.children[0])
+    expect(findByAttribute(treeA, 'styleId').length).toBe(4)
+    expect(findByAttribute(treeA, 'styleId', 'style-testing-1').length).toBe(2)
+    expect(findByAttribute(treeA, 'styleId', 'style-testing-2').length).toBe(1)
+    expect(findByAttribute(treeA, 'styleId', 'style-testing-3').length).toBe(1)
+    expect(findByAttribute(treeA, 'styleId')[0]).toBe(treeA.children[0])
   })
 
   it('should not find by attribute', () => {

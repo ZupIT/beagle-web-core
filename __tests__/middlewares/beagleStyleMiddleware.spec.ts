@@ -15,28 +15,56 @@
 */
 
 import {
-  treeMargin, treeMarginParsed, treePadding, treePaddingParsed, 
-  treeColorSize, treeColorSizeParsed
+  treeSize, treeSizeParsed,
+  treePositionParsed, treePosition,
+  treeFlex, treeFlexParsed,
+  treeMargin, treeMarginParsed, 
+  treePadding, treePaddingParsed,
+  treeAttributesToKeepName, treeAttributesToKeepNameParsed,
+  treeWithoutStyle, treeMixStyle, treeMixStyleParsed,
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 
 describe('StyleMiddleware', () => {
 
-  it('should transform margin attributes', () => {
+  it('should handle size attributes', () => {
+    const parsedTree = beagleStyleMiddleware(treeSize)
+    expect(parsedTree).toEqual(treeSizeParsed)
+  })
+
+  it('should handle position attributes', () => {
+    const parsedTree = beagleStyleMiddleware(treePosition)
+    expect(parsedTree).toEqual(treePositionParsed)
+  })
+
+  it('should handle flex attributes', () => {
+    const parsedTree = beagleStyleMiddleware(treeFlex)
+    expect(parsedTree).toEqual(treeFlexParsed)
+  })
+
+  it('should handle margin attributes', () => {
     const parsedTree = beagleStyleMiddleware(treeMargin)
     expect(parsedTree).toEqual(treeMarginParsed)
   })
 
-  it('should transform padding style', () => {
+  it('should handle padding style', () => {
     const parsedTree = beagleStyleMiddleware(treePadding)
     expect(parsedTree).toEqual(treePaddingParsed)
   })
 
-  it('should transform color and size attributes', () => {
-    const parsedTree = beagleStyleMiddleware(treeColorSize)
-    expect(parsedTree).toEqual(treeColorSizeParsed)
+  it('should keep attributes name and change values to lowerCase', () => {
+    const parsedTree = beagleStyleMiddleware(treeAttributesToKeepName)
+    expect(parsedTree).toEqual(treeAttributesToKeepNameParsed)
   })
 
+  it('should not change tree if no style is present', () => {
+    const parsedTree = beagleStyleMiddleware(treeWithoutStyle)
+    expect(parsedTree).toEqual(treeWithoutStyle)
+  })
 
+  it('should parse multiple styles on the tree', () => {
+    const parsedTree = beagleStyleMiddleware(treeMixStyle)
+    expect(parsedTree).toEqual(treeMixStyleParsed)
+  })
 
 })
