@@ -48,12 +48,17 @@ export type Strategy = (
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
+export interface BeagleHttpClient {
+  fetch: typeof fetch,
+  setFetchFunction: (fetchFn: typeof fetch) => void,
+}
+
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
-  headers?: Record<string, string>,
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
+  fetchData?: typeof fetch,
   components: {
     [K in ComponentName<Schema>]: any
   },
