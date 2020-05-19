@@ -28,6 +28,8 @@ const convertChildToChildren = (uiTree: BeagleUIElement<any>) => {
         uiTree.children = children ? [...children, ...childArray] : childArray
         delete uiTree.child
     }
+
+    if (uiTree.children) uiTree.children.forEach(convertChildToChildren)
         
     return uiTree
 }

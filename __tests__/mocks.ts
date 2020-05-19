@@ -758,12 +758,10 @@ export const treeWithChild: IdentifiableBeagleUIElement = {
   child: {
     id: 'A.0',
     _beagleType_: 'type-B',
-    children: [
-      {
-        id: 'A.0.0',
-        _beagleType_: 'type-D',
-      },
-    ],
+    child: {
+      id: 'A.0.0',
+      _beagleType_: 'type-D',
+    },
   },
 }
 
@@ -773,12 +771,10 @@ export const treeWithChildAndChildren: IdentifiableBeagleUIElement = {
   child: {
     id: 'A.0',
     _beagleType_: 'type-B',
-    children: [
-      {
-        id: 'A.0.0',
-        _beagleType_: 'type-D',
-      },
-    ],
+    child: {
+      id: 'A.0.0',
+      _beagleType_: 'type-D',
+    },
   },
   children: [],
 }
