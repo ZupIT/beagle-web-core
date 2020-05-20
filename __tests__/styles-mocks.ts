@@ -132,6 +132,57 @@ export const treeSizeParsed: IdentifiableBeagleUIElement = {
   }
 }
 
+
+export const treeAspectRatio: IdentifiableBeagleUIElement = {
+  id: 'AspectRatio',
+  _beagleType_: 'type-AspectRatio',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleType_: 'type-C',
+      style: {
+        size: {
+          height: {
+            value: 50.0,
+            type: "PERCENT"
+          },
+          aspectRatio: 2
+        }
+      }
+    },
+  ],
+  style: {
+    size: {
+      height: {
+        value: 300.0,
+        type: "REAL"
+      },
+      aspectRatio: 0.5
+    }
+  }
+}
+
+export const treeAspectRatioParsed: IdentifiableBeagleUIElement = {
+  id: 'AspectRatio',
+  _beagleType_: 'type-AspectRatio',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleType_: 'type-C',
+      style: {
+        height: '50%',
+        width: '100%'
+      }
+    },
+  ],
+  style: {
+    height: '300px',
+    width: '150px'
+  }
+}
+
 export const treePosition: IdentifiableBeagleUIElement = {
   id: 'Position',
   _beagleType_: 'type-Position',
