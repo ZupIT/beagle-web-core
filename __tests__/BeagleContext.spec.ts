@@ -32,7 +32,7 @@ describe('BeagleContext', () => {
   const middleware = jest.fn(tree => tree)
 
   beforeEach(() => {
-    view = createBeagleView({ baseUrl, components: {}, middlewares: [middleware] })
+    view = createBeagleView({ baseUrl, components: {}, middlewares: [middleware] }, '/home')
     view.updateWithTree({ sourceTree: treeA })
     middleware.mockClear()
     nock.cleanAll()

@@ -14,6 +14,8 @@
   * limitations under the License.
 */
 
+import { BeagleUIElement } from '../..'
+
 export interface OpenExternalURLAction {
   _actionType_: 'openExternalURL',
   url: string,
@@ -25,18 +27,21 @@ export interface OpenNativeRouteAction {
   data?: Record<string, any>,
 }
 
-export type BeagleNavigationAction =
-  PushStackAction |
-  PopStackAction |
-  PushViewAction |
-  PopViewAction |
-  PopToViewAction |
-  ResetStackAction |
-  ResetApplicationAction
+export interface RemoteView {
+  url: string,
+  fallback?: BeagleUIElement,
+  shouldPrefetch?: boolean,
+}
+
+export interface LocalView {
+  screen: BeagleUIElement,
+}
+
+export type Route = LocalView | RemoteView
 
 export interface PushStackAction {
   _actionType_: 'pushStack',
-  route: string,
+  route: Route,
 }
 
 export interface PopStackAction {
@@ -45,7 +50,7 @@ export interface PopStackAction {
 
 export interface PushViewAction {
   _actionType_: 'pushView',
-  route: string,
+  route: Route,
 }
 
 export interface PopViewAction {
@@ -54,15 +59,24 @@ export interface PopViewAction {
 
 export interface PopToViewAction {
   _actionType_: 'popToView',
-  route: string,
+  route: Route,
 }
 
 export interface ResetStackAction {
   _actionType_: 'resetStack',
-  route: string,
+  route: Route,
 }
 
 export interface ResetApplicationAction {
   _actionType_: 'resetApplication',
-  route: string,
+  route: Route,
 }
+
+export type BeagleNavigationAction =
+  PushStackAction |
+  PopStackAction |
+  PushViewAction |
+  PopViewAction |
+  PopToViewAction |
+  ResetStackAction |
+  ResetApplicationAction

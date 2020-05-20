@@ -18,7 +18,7 @@ import createBeagleNavigator from '../src/BeagleNavigator'
 import { BeagleNavigator } from '../src/types'
 
 describe('BeagleNavigator', () => {
-  const initialRoute = 'home'
+  const initialRoute = { url: 'home' }
   const initialStack = [initialRoute]
   const navigator: BeagleNavigator = createBeagleNavigator(initialRoute)
 
@@ -27,13 +27,13 @@ describe('BeagleNavigator', () => {
   })
 
   it('should pushStack', () => {
-    navigator.pushStack('first')
-    expect(navigator.get()).toEqual([initialStack, ['first']])
+    navigator.pushStack({ url: 'first' })
+    expect(navigator.get()).toEqual([initialStack, [{ url: 'first' }]])
   })
 
   it('should pushView', () => {
-    navigator.pushView('second')
-    expect(navigator.get()).toEqual([initialStack, ['first', 'second']])
+    navigator.pushView({ url: 'second' })
+    expect(navigator.get()).toEqual([initialStack, [{ url: 'first' }, { url: 'second' }]])
   })
 
   it('should popStack', () => {
@@ -43,29 +43,29 @@ describe('BeagleNavigator', () => {
   })
 
   it('should popView', () => {
-    navigator.pushView('first')
-    navigator.pushView('second')
+    navigator.pushView({ url: 'first' })
+    navigator.pushView({ url: 'second' })
     const route = navigator.popView()
-    expect(navigator.get()).toEqual([[initialRoute, 'first']])
-    expect(route).toBe('first')
+    expect(navigator.get()).toEqual([[initialRoute, { url: 'first' }]])
+    expect(route).toStrictEqual({ url: 'first' })
   })
 
   it('should popToView', () => {
-    navigator.pushView('second')
+    navigator.pushView({ url: 'second' })
     const route = navigator.popToView(initialRoute)
     expect(navigator.get()).toEqual([initialStack])
     expect(route).toBe(initialRoute)
   })
 
   it('should reset current stack', () => {
-    navigator.pushStack('newStack')
-    navigator.resetStack('resetingStack')
-    expect(navigator.get()).toEqual([initialStack, ['resetingStack']])
+    navigator.pushStack({ url: 'newStack' })
+    navigator.resetStack({ url: 'resetingStack' })
+    expect(navigator.get()).toEqual([initialStack, [{ url : 'resetingStack' }]])
   })
 
   it('should reset beagle navigator', () => {
-    navigator.resetApplication('resetingApplication')
-    expect(navigator.get()).toEqual([['resetingApplication']])
+    navigator.resetApplication({ url: 'resetingApplication' })
+    expect(navigator.get()).toEqual([[{ url : 'resetingApplication' }]])
   })
 
   it('should throw an error when popView on a single stack', () => {
@@ -74,7 +74,7 @@ describe('BeagleNavigator', () => {
   })
 
   it('should throw an error when popToView with a non-existent route', () => {
-    const route = () => navigator.popToView('non-existent-route')
+    const route = () => navigator.popToView({ url: 'non-existent-route' })
     expect(route).toThrowError()
   })
 
