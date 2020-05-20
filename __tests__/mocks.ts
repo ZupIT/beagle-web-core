@@ -734,3 +734,47 @@ export const simpleTabParsed: BeagleUIElement = {
     }
   ]
 }
+
+export const treeTestChild: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleType_: 'type-A',
+  children: [
+    {
+      id: 'A.0',
+      _beagleType_: 'type-B',
+      children: [
+        {
+          id: 'A.0.0',
+          _beagleType_: 'type-D',
+        },
+      ],
+    },
+  ],
+}
+
+export const treeWithChild: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleType_: 'type-A',
+  child: {
+    id: 'A.0',
+    _beagleType_: 'type-B',
+    child: {
+      id: 'A.0.0',
+      _beagleType_: 'type-D',
+    },
+  },
+}
+
+export const treeWithChildAndChildren: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleType_: 'type-A',
+  child: {
+    id: 'A.0',
+    _beagleType_: 'type-B',
+    child: {
+      id: 'A.0.0',
+      _beagleType_: 'type-D',
+    },
+  },
+  children: [],
+}
