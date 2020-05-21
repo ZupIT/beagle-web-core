@@ -16,7 +16,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const fetch = require('node-fetch')
+const fetch = require('cross-fetch')
 
 function getUrlToSchema(fileContent) {
   const schemaUrl = fileContent.match(/schemaUrl:\s*['"]([^'"]+)['"]/)

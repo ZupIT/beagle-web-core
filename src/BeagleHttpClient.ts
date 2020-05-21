@@ -13,14 +13,16 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { BeagleHttpClient } from './types'
+import fetch from 'cross-fetch'
+import { BeagleHttpClient, FetchType } from './types'
+
 
   function createBeagleHttpClient(): BeagleHttpClient {
-    let fetchFn: typeof fetch = fetch
+    let fetchFn: FetchType = fetch
 
     return {
         fetch: (...args) => fetchFn(...args),
-        setFetchFunction: (newFetchFn: typeof fetch) => fetchFn = newFetchFn,
+        setFetchFunction: (newFetchFn: FetchType) => fetchFn = newFetchFn,
     }
   }
   

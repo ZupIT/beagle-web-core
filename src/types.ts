@@ -14,8 +14,8 @@
   * limitations under the License.
 */
 
-import { ActionHandler } from './actions/types'
 import { BeagleError } from './errors'
+import { ActionHandler } from './actions/types'
 
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
@@ -48,9 +48,11 @@ export type Strategy = (
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
+export type FetchType = (url: RequestInfo, init?: RequestInit | undefined) => Promise<Response>
+
 export interface BeagleHttpClient {
-  fetch: typeof fetch,
-  setFetchFunction: (fetchFn: typeof fetch) => void,
+  fetch: FetchType,
+  setFetchFunction: (fetchFn: FetchType) => void,
 }
 
 export interface BeagleConfig<Schema> {
@@ -58,7 +60,7 @@ export interface BeagleConfig<Schema> {
   schemaUrl?: string,
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
-  fetchData?: typeof fetch,
+  fetchData?: FetchType,
   components: {
     [K in ComponentName<Schema>]: any
   },
