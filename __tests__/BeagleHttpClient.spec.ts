@@ -18,6 +18,7 @@ import beagleHttpClient from "../src/BeagleHttpClient"
 
 describe.only('BeagleHttpClient', () => {
   const url = 'http://test.com'
+  beagleHttpClient.setFetchFunction(fetch)
 
   beforeEach(() => {
     nock.cleanAll()
