@@ -9,7 +9,6 @@ const path = '/url-builder'
 const element = { _beagleType_: 'container', id: 'container' }
 
 describe('Actions: sendRequest', () => {
-  
   beagleHttpClient.setFetchFunction(fetch)
 
   it('should send request using the UrlBuilder', async () => {
