@@ -149,7 +149,7 @@ const createBeagleView = <Schema>({
       sourceTreeAfterApplyingUserMiddlewares,
     )
 
-    if (!elementId) updateRoot(sourceTreeAfterApplyingAllMiddlewares, mode, shouldRunListeners)
+    if (!elementId || elementId === currentUITree.id) updateRoot(sourceTreeAfterApplyingAllMiddlewares, mode, shouldRunListeners)
     else updateElement(sourceTreeAfterApplyingAllMiddlewares, elementId, mode, shouldRunListeners)
   }
 
