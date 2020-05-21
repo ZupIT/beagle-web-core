@@ -14,15 +14,24 @@
   * limitations under the License.
 */
 
-import { BeagleMiddleware } from '../types'
+import { BeagleUIElement } from '../types'
 
-const beagleStyleClassMiddleware: BeagleMiddleware<any> = (uiTree) => {
-  if (uiTree.children) uiTree.children.forEach(beagleStyleClassMiddleware)
-  if (uiTree.styleId !== undefined && uiTree.styleId !== '') {
-    uiTree.styleId = uiTree.styleId.replace(/([a-z])([A-Z])/g, '$1-$2')
-    uiTree.styleId = uiTree.styleId.replace(/\./g, '-').toLowerCase()
-  }
-  return uiTree
+const convertChildToChildren = (uiTree: BeagleUIElement<any>) => {
+    if (uiTree.child) {
+        const child = uiTree.child
+        if (typeof child !== 'object') return uiTree
+
+        const childArray = Array.isArray(child) ? child : [child]
+        const children = uiTree.children
+        delete uiTree.children
+        
+        uiTree.children = children ? [...children, ...childArray] : childArray
+        delete uiTree.child
+    }
+
+    if (uiTree.children) uiTree.children.forEach(convertChildToChildren)
+        
+    return uiTree
 }
 
-export default beagleStyleClassMiddleware 
+export default convertChildToChildren
