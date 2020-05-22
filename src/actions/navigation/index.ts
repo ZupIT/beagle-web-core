@@ -37,13 +37,13 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
 }
 
 interface Action {
-  _actionType_: string,
+  _beagleAction_: string,
   route: string,
 }
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, beagleView }) => {
   try {
-    const path = beagleView.getBeagleNavigator()[action._actionType_]((action as Action).route)
+    const path = beagleView.getBeagleNavigator()[action._beagleAction_]((action as Action).route)
     beagleView.updateWithFetch({ path })
   } catch (error) {
     console.error(error)

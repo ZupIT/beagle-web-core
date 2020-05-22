@@ -35,7 +35,7 @@ function createEventHandler(
   const actionHandlers = { ...defaultActionHandlers, ...customActionHandlers }
 
   const handleAction: ActionHandler = (params) => {
-    const actionType = params.action._actionType_
+    const actionType = params.action._beagleAction_
     if (!actionHandlers[actionType]) {
       console.warn(`There is no action handler for action with type "${actionType}"`)
       return
@@ -46,7 +46,7 @@ function createEventHandler(
   }
 
   function isBeagleAction(element: IdentifiableBeagleUIElement) {
-    return element && !!element._actionType_
+    return element && !!element._beagleAction_
   }
 
   function transformBeagleActionsToFunction(

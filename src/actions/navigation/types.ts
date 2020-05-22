@@ -15,12 +15,12 @@
 */
 
 export interface OpenExternalURLAction {
-  _actionType_: 'openExternalURL',
+  _beagleAction_: 'openExternalURL',
   url: string,
 }
 
 export interface OpenNativeRouteAction {
-  _actionType_: 'openNativeRoute',
+  _beagleAction_: 'openNativeRoute',
   route: string,
   data?: Record<string, any>,
 }
@@ -35,34 +35,34 @@ export type BeagleNavigationAction =
   ResetApplicationAction
 
 export interface PushStackAction {
-  _actionType_: 'pushStack',
+  _beagleAction_: 'pushStack',
   route: string,
 }
 
 export interface PopStackAction {
-  _actionType_: 'popStack',
+  _beagleAction_: 'popStack',
 }
 
 export interface PushViewAction {
-  _actionType_: 'pushView',
+  _beagleAction_: 'pushView',
   route: string,
 }
 
 export interface PopViewAction {
-  _actionType_: 'popView',
+  _beagleAction_: 'popView',
 }
 
 export interface PopToViewAction {
-  _actionType_: 'popToView',
+  _beagleAction_: 'popToView',
   route: string,
 }
 
 export interface ResetStackAction {
-  _actionType_: 'resetStack',
+  _beagleAction_: 'resetStack',
   route: string,
 }
 
 export interface ResetApplicationAction {
-  _actionType_: 'resetApplication',
+  _beagleAction_: 'resetApplication',
   route: string,
 }
