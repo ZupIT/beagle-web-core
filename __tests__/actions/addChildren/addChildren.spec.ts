@@ -15,7 +15,7 @@ describe('Actions: addChildren', () => {
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         componentId: 'content',
         value: [newContent],
       },
@@ -38,7 +38,7 @@ describe('Actions: addChildren', () => {
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         mode: 'append',
         componentId: 'content',
         value: [newContent],
@@ -62,7 +62,7 @@ describe('Actions: addChildren', () => {
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         mode: 'prepend',
         componentId: 'content',
         value: [newContent],
@@ -86,7 +86,7 @@ describe('Actions: addChildren', () => {
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         mode: 'replace',
         componentId: 'content',
         value: [newContent],
@@ -109,7 +109,7 @@ describe('Actions: addChildren', () => {
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         componentId: 'blah',
         value: [newContent],
       },

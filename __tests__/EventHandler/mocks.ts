@@ -8,7 +8,7 @@ export function createContainerWithAction(
     _beagleComponent_: 'container',
     id: 'container',
     [eventName]: action || {
-      _actionType_: 'alert',
+      _beagleAction_: 'alert',
       message: 'test message',
     },
   }
@@ -27,7 +27,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
         _beagleComponent_: 'button',
         id: 'btn-open-modal',
         onPress: {
-          _actionType_: 'setContext',
+          _beagleAction_: 'setContext',
           value: true,
         }
       },
@@ -38,11 +38,11 @@ export function createModalMock(): IdentifiableBeagleUIElement {
         title: 'My Modal',
         onClose: [
           {
-            _actionType_: 'setContext',
+            _beagleAction_: 'setContext',
             value: false,
           },
           {
-            _actionType_: 'alert',
+            _beagleAction_: 'alert',
             message: 'modal has been closed!',
           },
         ],
@@ -51,16 +51,16 @@ export function createModalMock(): IdentifiableBeagleUIElement {
             _beagleComponent_: 'container',
             id: 'modal-content',
             onInit: {
-              _actionType_: 'sendRequest',
+              _beagleAction_: 'sendRequest',
               componentId: 'modal',
               url: '/modalContent',
               onSuccess: {
-                _actionType_: 'addChildren',
+                _beagleAction_: 'addChildren',
                 mode: 'replace',
                 value: '${onSuccess.data}',
               },
               onError: {
-                _actionType_: 'showErrorMessage',
+                _beagleAction_: 'showErrorMessage',
                 text: 'An unexpected error ocurred!',
               },
             },
