@@ -66,37 +66,12 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
 
 /* Insert string 'custom:' if the component string doesn't have the strings 'beagle:' or 'custom:' in the
 beginning of the string. */
-export function convertComponentsToCustom(components: BeagleConfig<DefaultSchema>['components']): any {
-  // let indexes: {[K in ComponentName<DefaultSchema>]: any} = mapKeys(components, (value, key) => {
-  //   return `${
-  //     key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
-  //       ? key
-  //       : 'custom:' + key
-  //   }`
-  //  })
-  // return indexes
-
-  let indexes: {[K in ComponentName<DefaultSchema>]: any} = {};
-  for (var prop in components) {
-    // var teste:ComponentName<DefaultSchema> = prop.indexOf('beagle:') === 0 || prop.indexOf('custom:') === 0 ? prop : 'custom:' + prop
-    // indexes[teste] = components[prop]
-    Object.defineProperty(components, 'custom'+prop, Object.getOwnPropertyDescriptor(components, prop));
-    delete components[prop];
-  }
-  return indexes
-  // returnmapKeys(components, (value, key) => {
-  //   return `${
-  //     key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
-  //       ? key
-  //       : 'custom:' + key
-  //   }`
-  //  })
+export function convertComponentsToCustom<DefaultSchema>(components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
+  return mapKeys(components, (value, key) => {
+    return `${
+      key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
+        ? key
+        : 'custom:' + key
+      }`
+  }) as BeagleConfig<DefaultSchema>['components']
 }
-// const mapKeys = (obj, mapper) =>
-//     Object.entries(obj).reduce(
-//       (acc, [key, value]) => ({
-//         ...acc,
-//         [mapper(value, key)]: value,
-//       }),
-//       {}
-//     )
