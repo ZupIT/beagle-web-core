@@ -55,7 +55,7 @@ describe('EventHandler', () => {
   it('should call new function and trigger action handler (single BeagleAction)', () => {
     const beagleView = createBeagleViewMock()
     const eventHandler = createEventHandler({}, beagleView)
-    const action = { _actionType_: 'alert', message: 'test' }
+    const action = { _beagleAction_: 'alert', message: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
 
@@ -74,10 +74,10 @@ describe('EventHandler', () => {
   it('should deserialize an array of BeagleActions into a single function', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
     const actions = [
-      { _actionType_: 'alert', message: 'hello' },
-      { _actionType_: 'alert', message: 'world' },
-      { _actionType_: 'setContext', value: 'hello world!' },
-      { _actionType_: 'openExternalURL', url: 'http://hello.world.com' },
+      { _beagleAction_: 'alert', message: 'hello' },
+      { _beagleAction_: 'alert', message: 'world' },
+      { _beagleAction_: 'setContext', value: 'hello world!' },
+      { _beagleAction_: 'openExternalURL', url: 'http://hello.world.com' },
     ]
     const mock = createContainerWithAction('onInit', actions)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
@@ -88,10 +88,10 @@ describe('EventHandler', () => {
     const beagleView = createBeagleViewMock()
     const eventHandler = createEventHandler({}, beagleView)
     const actions = [
-      { _actionType_: 'alert', message: 'hello' },
-      { _actionType_: 'alert', message: 'world' },
-      { _actionType_: 'setContext', value: 'hello world!' },
-      { _actionType_: 'openExternalURL', url: 'http://hello.world.com' },
+      { _beagleAction_: 'alert', message: 'hello' },
+      { _beagleAction_: 'alert', message: 'world' },
+      { _beagleAction_: 'setContext', value: 'hello world!' },
+      { _beagleAction_: 'openExternalURL', url: 'http://hello.world.com' },
     ]
     const mock = createContainerWithAction('onInit', actions)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
@@ -137,7 +137,7 @@ describe('EventHandler', () => {
 
   it('should create implicit context when function is called passing a parameter', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
-    const action = { _actionType_: 'alert', message: 'test' }
+    const action = { _beagleAction_: 'alert', message: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
     
@@ -155,7 +155,7 @@ describe('EventHandler', () => {
 
   it('should replace bindings when handling an action', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
-    const action = { _actionType_: 'alert', message: '${test}' }
+    const action = { _beagleAction_: 'alert', message: '${test}' }
     const mock = createContainerWithAction('onInit', action)
     mock._context_ = { id: 'test', value: 'Hello World!' }
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
@@ -165,7 +165,7 @@ describe('EventHandler', () => {
     const alert = defaultActionHandlers.alert as jest.Mock
     expect(alert).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: { _actionType_: 'alert', message: 'Hello World!' }
+        action: { _beagleAction_: 'alert', message: 'Hello World!' }
       })
     )
     alert.mockClear()
@@ -175,7 +175,7 @@ describe('EventHandler', () => {
     const beagleView = createBeagleViewMock()
     const customHandlers = { myCustomAction: jest.fn() }
     const eventHandler = createEventHandler(customHandlers, beagleView)
-    const action = { _actionType_: 'myCustomAction', value: 'test' }
+    const action = { _beagleAction_: 'myCustomAction', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
 
@@ -200,7 +200,7 @@ describe('EventHandler', () => {
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
   
-    const action = { _actionType_: 'alert', message: 'test' }
+    const action = { _beagleAction_: 'alert', message: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
 
@@ -217,7 +217,7 @@ describe('EventHandler', () => {
 
   it('should warn if action handler doesn\'t exist', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
-    const action = { _actionType_: 'blah', value: 'test' }
+    const action = { _beagleAction_: 'blah', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
   
