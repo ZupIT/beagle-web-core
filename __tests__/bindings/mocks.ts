@@ -43,52 +43,52 @@ export function createSocialMediaData() {
 export function createSocialMediaMock(): BeagleUIElement {
   const data = createSocialMediaData()
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     _context_: {
       id: 'user',
       value: data.user,
     },
     children: [
       {
-        _beagleType_: 'profile-card',
+        _beagleComponent_: 'profile-card',
         id: 'profile',
         name: '${user.name}',
         picture: '${user.picture}',
         detailsPath: '/users/${user.id}',
       },
       {
-        _beagleType_: 'container',
+        _beagleComponent_: 'container',
         _context_: {
           id: 'friends',
           value: data.friends,
         },
         children: [
           {
-            _beagleType_: 'text',
+            _beagleComponent_: 'text',
             id: 'friendsTitle',
             value: '${user.name}\'s friends:',
           },
           {
-            _beagleType_: 'friends-panel',
+            _beagleComponent_: 'friends-panel',
             id: 'friendsPanel',
             friendList: '${friends}',
           },
           {
-            _beagleType_: 'container',
+            _beagleComponent_: 'container',
             _context_: {
               id: 'isModalOpen',
               value: false,
             },
             children: [
               {
-                _beagleType_: 'button',
+                _beagleComponent_: 'button',
                 onPress: {
                   _actionType_: 'setContext',
                   value: true,
                 },
               },
               {
-                _beagleType_: 'modal',
+                _beagleComponent_: 'modal',
                 id: 'friendDetailsModal',
                 isOpen: '${isModalOpen}',
               }
@@ -97,32 +97,32 @@ export function createSocialMediaMock(): BeagleUIElement {
         ],
       },
       {
-        _beagleType_: 'container',
+        _beagleComponent_: 'container',
         _context_: {
           id: 'posts',
           value: data.posts,
         },
         children: [
           {
-            _beagleType_: 'post',
+            _beagleComponent_: 'post',
             id: 'firstPost',
             author: '${posts[0].author}',
             text: '${posts[0].text}',
           },
           {
-            _beagleType_: 'post',
+            _beagleComponent_: 'post',
             id: 'secondPost',
             author: '${posts[1].author}',
             text: '${posts[1].text}',
           },
           {
-            _beagleType_: 'post',
+            _beagleComponent_: 'post',
             id: 'thirdPost',
             author: '${posts[2].author}',
             text: '${posts[2].text}',
           },
           {
-            _beagleType_: 'post',
+            _beagleComponent_: 'post',
             id: 'postWithWrongContext',
             author: '${friends[0].name}',
             text: 'My new post',
@@ -135,15 +135,15 @@ export function createSocialMediaMock(): BeagleUIElement {
 
 export function createMockWithSameIdContexts(): BeagleUIElement {
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     _context_: { id: 'ctx', value: 'jest-1' },
     children: [
       {
-        _beagleType_: 'container',
+        _beagleComponent_: 'container',
         _context_: { id: 'ctx', value: 'jest-2' },
         children: [
           {
-            _beagleType_: 'text',
+            _beagleComponent_: 'text',
             value: '${ctx}',
           },
         ],

@@ -3,7 +3,7 @@ import { createBeagleViewMock, mockSystemDialogs } from '../test-utils'
 
 describe('Actions: confirm', () => {
   it('should show confirm message', () => {
-    const mock = { _beagleType_: 'container', id: 'container' }
+    const mock = { _beagleComponent_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs()
 
     confirm({
@@ -22,7 +22,7 @@ describe('Actions: confirm', () => {
   })
 
   it('should run onPressOk', () => {
-    const mock = { _beagleType_: 'container', id: 'container' }
+    const mock = { _beagleComponent_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs(true)
     const handleAction = jest.fn()
     const onPressOk = { _actionType_: 'test-ok' }
@@ -46,7 +46,7 @@ describe('Actions: confirm', () => {
   })
 
   it('should run onPressCancel', () => {
-    const mock = { _beagleType_: 'container', id: 'container' }
+    const mock = { _beagleComponent_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs(false)
     const handleAction = jest.fn()
     const onPressOk = { _actionType_: 'test-ok' }

@@ -6,7 +6,7 @@ import beagleHttpClient from '../../src/BeagleHttpClient'
 
 const domain = 'http://beagle.test.com'
 const path = '/url-builder'
-const element = { _beagleType_: 'container', id: 'container' }
+const element = { _beagleComponent_: 'container', id: 'container' }
 
 describe('Actions: sendRequest', () => {
   beagleHttpClient.setFetchFunction(fetch)

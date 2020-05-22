@@ -5,7 +5,7 @@ export function createSingleContextMock(
   btnId = 'button',
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'container_${ctxId}',
+    _beagleComponent_: 'container_${ctxId}',
     id: 'container',
     _context_: {
       id: ctxId,
@@ -13,7 +13,7 @@ export function createSingleContextMock(
     },
     children: [
       {
-        _beagleType_: 'button',
+        _beagleComponent_: 'button',
         id: btnId,
         value: `\${${ctxId}}`,
       },
@@ -29,7 +29,7 @@ export function createDoubleContextMock(): IdentifiableBeagleUIElement {
 
 export function createMockWithDistantContext(): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     id: 'containerA',
     _context_: {
       id: 'ctx_a',
@@ -37,19 +37,19 @@ export function createMockWithDistantContext(): IdentifiableBeagleUIElement {
     },
     children: [
       {
-        _beagleType_: 'container',
+        _beagleComponent_: 'container',
         id: 'containerB',
         children: [
           {
-            _beagleType_: 'container',
+            _beagleComponent_: 'container',
             id: 'containerC',
             children: [
               {
-                _beagleType_: 'container',
+                _beagleComponent_: 'container',
                 id: 'containerD',
                 children: [
                   {
-                    _beagleType_: 'button',
+                    _beagleComponent_: 'button',
                     id: 'button',
                     value: '${ctx_a}',
                   },
@@ -67,7 +67,7 @@ export function createSameLevelContextMock(
   value: any = 'value of ctx_a',
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'text',
+    _beagleComponent_: 'text',
     id: 'text',
     _context_: {
       id: 'ctx_a',
@@ -79,7 +79,7 @@ export function createSameLevelContextMock(
 
 export function createMultipleScopesMock() {
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     id: 'container',
     children: [
       createSingleContextMock('ctx_a', 'btn_a'),

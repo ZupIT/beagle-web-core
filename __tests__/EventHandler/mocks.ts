@@ -5,7 +5,7 @@ export function createContainerWithAction(
   action?: any
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     id: 'container',
     [eventName]: action || {
       _actionType_: 'alert',
@@ -16,7 +16,7 @@ export function createContainerWithAction(
 
 export function createModalMock(): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     id: 'container',
     _context_: {
       id: 'isModalOpen',
@@ -24,7 +24,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
     },
     children: [
       {
-        _beagleType_: 'button',
+        _beagleComponent_: 'button',
         id: 'btn-open-modal',
         onPress: {
           _actionType_: 'setContext',
@@ -32,7 +32,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
         }
       },
       {
-        _beagleType_: 'modal',
+        _beagleComponent_: 'modal',
         id: 'modal',
         isOpen: '${isModalOpen}',
         title: 'My Modal',
@@ -48,7 +48,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
         ],
         children: [
           {
-            _beagleType_: 'container',
+            _beagleComponent_: 'container',
             id: 'modal-content',
             onInit: {
               _actionType_: 'sendRequest',
@@ -66,7 +66,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
             },
             children: [
               {
-                _beagleType_: 'loading',
+                _beagleComponent_: 'loading',
                 id: 'loading',
               },
             ],
