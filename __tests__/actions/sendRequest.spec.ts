@@ -2,12 +2,15 @@ import nock from 'nock'
 import sendRequest from '../../src/actions/sendRequest'
 import { createBeagleViewMock } from '../test-utils'
 import { ActionHandlerParams } from '../../src/actions/types'
+import beagleHttpClient from '../../src/BeagleHttpClient'
 
 const domain = 'http://beagle.test.com'
 const path = '/url-builder'
 const element = { _beagleType_: 'container', id: 'container' }
 
 describe('Actions: sendRequest', () => {
+  beagleHttpClient.setFetchFunction(fetch)
+
   it('should send request using the UrlBuilder', async () => {
     nock(domain).get(path).reply(200)
     const urlBuilder = { build: jest.fn(() => `${domain}${path}`) }

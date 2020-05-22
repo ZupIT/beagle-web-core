@@ -48,7 +48,7 @@ const createBeagleView = <Schema>({
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator(initialRoute)
-  if (fetchData) beagleHttpClient.setFetchFunction(fetchData)
+  beagleHttpClient.setFetchFunction(fetchData || fetch)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
