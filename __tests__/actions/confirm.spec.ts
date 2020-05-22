@@ -8,7 +8,7 @@ describe('Actions: confirm', () => {
 
     confirm({
       action: {
-        _actionType_: 'confirm',
+        _beagleAction_: 'confirm',
         message: 'Would you like to continue?',
       },
       beagleView: createBeagleViewMock({ getTree: () => mock }),
@@ -25,12 +25,12 @@ describe('Actions: confirm', () => {
     const mock = { _beagleType_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs(true)
     const handleAction = jest.fn()
-    const onPressOk = { _actionType_: 'test-ok' }
-    const onPressCancel = { _actionType_: 'test-cancel' }
+    const onPressOk = { _beagleAction_: 'test-ok' }
+    const onPressCancel = { _beagleAction_: 'test-cancel' }
 
     confirm({
       action: {
-        _actionType_: 'confirm',
+        _beagleAction_: 'confirm',
         message: 'Would you like to continue?',
         onPressOk,
         onPressCancel,
@@ -49,12 +49,12 @@ describe('Actions: confirm', () => {
     const mock = { _beagleType_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs(false)
     const handleAction = jest.fn()
-    const onPressOk = { _actionType_: 'test-ok' }
-    const onPressCancel = { _actionType_: 'test-cancel' }
+    const onPressOk = { _beagleAction_: 'test-ok' }
+    const onPressCancel = { _beagleAction_: 'test-cancel' }
 
     confirm({
       action: {
-        _actionType_: 'confirm',
+        _beagleAction_: 'confirm',
         message: 'Would you like to continue?',
         onPressOk,
         onPressCancel,

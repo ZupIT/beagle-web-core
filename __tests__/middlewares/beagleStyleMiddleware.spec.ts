@@ -25,52 +25,96 @@ import {
   treeWithoutStyle, treeMixStyle, treeMixStyleParsed,
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
+import { clone } from '../../src/utils/tree-manipulation'
 
 describe('StyleMiddleware', () => {
 
   it('should handle size attributes', () => {
-    const parsedTree = beagleStyleMiddleware(treeSize)
+    const tree = clone(treeSize)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeSizeParsed)
   })
 
   it('should handle aspect ratio', () => {
-    const parsedTree = beagleStyleMiddleware(treeAspectRatio)
+    const tree = clone(treeAspectRatio)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeAspectRatioParsed)
   })
 
   it('should handle position attributes', () => {
-    const parsedTree = beagleStyleMiddleware(treePosition)
+    const tree = clone(treePosition)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treePositionParsed)
   })
 
   it('should handle flex attributes', () => {
-    const parsedTree = beagleStyleMiddleware(treeFlex)
+    const tree = clone(treeFlex)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeFlexParsed)
   })
 
   it('should handle margin attributes', () => {
-    const parsedTree = beagleStyleMiddleware(treeMargin)
+    const tree = clone(treeMargin)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeMarginParsed)
   })
 
   it('should handle padding style', () => {
-    const parsedTree = beagleStyleMiddleware(treePadding)
+    const tree = clone(treePadding)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treePaddingParsed)
   })
 
   it('should keep attributes name and change values to lowerCase', () => {
-    const parsedTree = beagleStyleMiddleware(treeAttributesToKeepName)
+    const tree = clone(treeAttributesToKeepName)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeAttributesToKeepNameParsed)
   })
 
   it('should not change tree if no style is present', () => {
-    const parsedTree = beagleStyleMiddleware(treeWithoutStyle)
+    const tree = clone(treeWithoutStyle)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeWithoutStyle)
   })
 
   it('should parse multiple styles on the tree', () => {
-    const parsedTree = beagleStyleMiddleware(treeMixStyle)
+    const tree = clone(treeMixStyle)
+    const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeMixStyleParsed)
+  })
+
+  it('should not change already parsed style', () => {
+    let tree = clone(treeSizeParsed)
+    let parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
+    
+    tree = clone(treeAspectRatioParsed)
+    parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
+    
+    tree = clone(treePositionParsed)
+    parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
+
+    tree = clone(treeFlexParsed)
+    parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
+
+    tree = clone(treeMarginParsed)
+    parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
+
+    tree = clone(treePaddingParsed)
+    parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
+
+    tree = clone(treeAttributesToKeepNameParsed)
+    parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
+
+    tree = clone(treeMixStyleParsed)
+    parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(tree)
   })
 
 })

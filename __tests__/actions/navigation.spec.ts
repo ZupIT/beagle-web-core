@@ -31,7 +31,7 @@ describe('Actions: Navigation', () => {
   const pushStack = () => {
     NavigationActions.pushStack({
       action: {
-        _actionType_: 'pushStack',
+        _beagleAction_: 'pushStack',
         route: {
           url: '/profile',
         },
@@ -43,7 +43,7 @@ describe('Actions: Navigation', () => {
   const pushView = () => {
     NavigationActions.pushView({
       action: {
-        _actionType_: 'pushView',
+        _beagleAction_: 'pushView',
         route: {
           url: '/profile',
         },
@@ -74,12 +74,12 @@ describe('Actions: Navigation', () => {
   })
 
   it('should open exeternal url', () => {
-    NavigationActions.openExternalURL({ action: { _actionType_: 'openExternalURL', url: externlUrl }, ...params })
+    NavigationActions.openExternalURL({ action: { _beagleAction_: 'openExternalURL', url: externlUrl }, ...params })
     expect(window.open).toBeCalledWith(externlUrl)
   })
 
   it('should open native route', () => {
-    NavigationActions.openNativeRoute({ action: { _actionType_: 'openNativeRoute', route: '/teste' }, ...params })
+    NavigationActions.openNativeRoute({ action: { _beagleAction_: 'openNativeRoute', route: '/teste' }, ...params })
     expect(window.location.href).toBe('origin/teste')
   })
 
@@ -91,7 +91,7 @@ describe('Actions: Navigation', () => {
 
   it('should popStack on beagle navigator', () => {
     pushStack()
-    NavigationActions.popStack({ action: { _actionType_: 'popStack' }, ...params })
+    NavigationActions.popStack({ action: { _beagleAction_: 'popStack' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
@@ -103,40 +103,40 @@ describe('Actions: Navigation', () => {
 
   it('should popView on beagle navigator', () => {
     pushView()
-    NavigationActions.popView({ action: { _actionType_: 'popView' }, ...params })
+    NavigationActions.popView({ action: { _beagleAction_: 'popView' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should popToView on beagle navigator', () => {
     pushView()
-    NavigationActions.popToView({ action: { _actionType_: 'popToView', route: { url: '/home' } }, ...params })
+    NavigationActions.popToView({ action: { _beagleAction_: 'popToView', route: { url: '/home' } }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should resetStack', () => {
     pushStack()
-    NavigationActions.resetStack({ action: { _actionType_: 'resetStack', route: { url: '/resetStack' }}, ...params })
+    NavigationActions.resetStack({ action: { _beagleAction_: 'resetStack', route: { url: '/resetStack' }}, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, [{ url: '/resetStack' }]])
   })
 
   it('should resetApplication', () => {
     pushView()
-    NavigationActions.resetApplication({ action: { _actionType_: 'resetApplication', route: { url: '/resetApplication' }}, ...params })
+    NavigationActions.resetApplication({ action: { _beagleAction_: 'resetApplication', route: { url: '/resetApplication' }}, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([[{ url: '/resetApplication' }]])
   })
 
   it('should do nothing when popView on a single route stack', () => {
-    NavigationActions.popView({ action: { _actionType_: 'popView' }, ...params })
+    NavigationActions.popView({ action: { _beagleAction_: 'popView' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should do nothing when popStack on a single stack', () => {
-    NavigationActions.popStack({ action: { _actionType_: 'popStack' }, ...params })
+    NavigationActions.popStack({ action: { _beagleAction_: 'popStack' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should do nothing when popToView for a not valid view', () => {
-    NavigationActions.popToView({ action: { _actionType_: 'popToView', route: '/non-existent-route' }, ...params })
+    NavigationActions.popToView({ action: { _beagleAction_: 'popToView', route: '/non-existent-route' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 

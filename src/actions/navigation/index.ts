@@ -40,13 +40,13 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
 }
 
 interface Action {
-  _actionType_: string,
+  _beagleAction_: string,
   route: Route,
 }
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, beagleView }) => {
   try {
-    const element = beagleView.getBeagleNavigator()[action._actionType_]((action as Action).route)
+    const element = beagleView.getBeagleNavigator()[action._beagleAction_]((action as Action).route)
     const screen = (element as LocalView).screen
     const path = (element as RemoteView).url
     if (screen) beagleView.updateWithTree({ sourceTree: screen })
