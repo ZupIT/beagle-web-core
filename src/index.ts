@@ -34,11 +34,15 @@ import {
   BeagleView,
   Strategy,
 } from './types'
+import { convertComponentsToCustom } from './utils/tree-manipulation'
 
 function createBeagleUIService<
   Schema = DefaultSchema,
   ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
 > (config: ConfigType): BeagleUIService<Schema, ConfigType> {
+
+  config.components = convertComponentsToCustom(config.components)
+
   const xmlConverter = createXMLConverter(config.components)
 
   return {

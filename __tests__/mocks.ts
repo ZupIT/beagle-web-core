@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { IdentifiableBeagleUIElement, BeagleUIElement } from '../src/types'
+import { IdentifiableBeagleUIElement, BeagleUIElement, DefaultSchema, BeagleConfig } from '../src/types'
 
 export const treeA: IdentifiableBeagleUIElement = {
   id: 'A',
@@ -777,4 +777,14 @@ export const treeWithChildAndChildren: IdentifiableBeagleUIElement = {
     },
   },
   children: [],
+}
+
+export const configComponents: BeagleConfig<DefaultSchema>['components'] = {
+  'beagle:component:button': 'Teste',
+  'button': 'Teste'
+}
+
+export const configComponentsRight: BeagleConfig<DefaultSchema>['components'] = {
+  'beagle:component:button': 'Teste',
+  'custom:button': 'Teste'
 }
