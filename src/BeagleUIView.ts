@@ -37,6 +37,7 @@ import beagleTabViewMiddleware from './middlewares/tab-view-component'
 import convertChildToChildren from './middlewares/convert-child-to-children'
 import beagleStyleMiddleware from './middlewares/beagle-style'
 import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
+import { addPrefix } from './utils/string'
 
 const createBeagleView = <Schema>({
   baseUrl,
@@ -158,7 +159,8 @@ const createBeagleView = <Schema>({
     elementId?: string,
     mode: TreeUpdateMode = 'replace',
   ) {
-    const url = urlFormatter.build(params.path, params.baseUrl)
+    const path = addPrefix(params.path, '/')
+    const url = urlFormatter.build(path)
     const originalTree = currentUITree
 
     function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
