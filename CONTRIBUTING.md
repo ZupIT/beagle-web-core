@@ -3,7 +3,7 @@
 Want to contribute to Beagle Web? There are a few things you need to know.  
 
 # Branch Organization
- 
+
 Submit all changes to `master` branch. Always base your work on the project's `master` branch, naming your new branch according to the following guide:
 
 * `feature/branch-name` for new features
