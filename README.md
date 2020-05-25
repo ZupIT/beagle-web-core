@@ -18,14 +18,14 @@ Onde `ACTION` corresponde a uma ação qualquer. Note que, normalmente, eventos 
 Qualquer componente pode disparar eventos, mas os atributos que declaram eventos, assim como qualquer outro, devem estar na especificação do componente. Por exemplo, um "button", além dos atributos "type", "value" e "style", também possui o atributo "onPress", que é do tipo "Action", pois sempre deve estar relacionado a uma ação.
 
 ### Ações
-Ações são sempre valores associados a eventos. Uma ação é identificada pela chave `_actionType_`. `_actionType_`, além de indicar que o objeto é uma ação, identifica o tipo de ação que deve ser executada.
+Ações são sempre valores associados a eventos. Uma ação é identificada pela chave `_beagleAction_`. `_beagleAction_`, além de indicar que o objeto é uma ação, identifica o tipo de ação que deve ser executada.
 
-Alguns exemplos de `_actionType_` são:
+Alguns exemplos de `_beagleAction_` são:
 - alert: mostra uma caixa de alerta do sistema com uma mensagem e um botão de ok para fechar a mensagem.
 - setContext: essa é a principal ação nesta especificação. Ela altera algum valor em algum contexto. Contextos serão vistos mais a frente.
 - sendRequest: dispara uma requisição http.
 
-Junto ao `_actionType_`, uma ação deve definir os parâmetros esperados pelo tipo de ação especificado. Uma ação do tipo "alert", por exemplo, espera os seguintes parâmetros:
+Junto ao `_beagleAction_`, uma ação deve definir os parâmetros esperados pelo tipo de ação especificado. Uma ação do tipo "alert", por exemplo, espera os seguintes parâmetros:
 - message: mensagem a ser exibida.
 - onPressOk: opcional. Ação que deve ser executada quando o botão de ok for pressionado.
 
@@ -36,13 +36,13 @@ Portanto, para abrir uma caixa de alerta do sistema ao clicar em um botão, por 
   "_beagleType_": "button",
   "value": "Clique para abrir o alerta",
   "onPress": {
-    "_actionType_": "alert",
+    "_beagleAction_": "alert",
     "message": "Caixa de alerta foi aberta! Clique em \"ok\" para fechar."
   }
 }
 ```
 
-Atente-se para o fato de que a ação "alert" é apenas um exemplo. Qualquer ação, com qualquer `_actionType_` poderia ser lançada no evento de "onPress".
+Atente-se para o fato de que a ação "alert" é apenas um exemplo. Qualquer ação, com qualquer `_beagleAction_` poderia ser lançada no evento de "onPress".
 
 ### Contexto
 Um contexto pode ser estabelecido em qualquer componente Beagle que aceite um ou mais filhos. Todo contexto é identificado pela chave `_context_`. Se a chave `_context_` é encontrada no JSON, então um contexto está sendo definido a partir daquele ponto na árvore, ou seja, o escopo desse contexto é o próprio elemento onde ele foi definido e todos seus descendentes.
@@ -205,11 +205,11 @@ Variáveis em um binding podem conter apenas letras, números e o caracter "_".
 ## Ações customizadas
 O Beagle oferecerá uma série de ações para o desenvolvedor, mas não é incomum que o desenvolvedor queira implementar comportamentos muito específicos que o Beagle sozinho não conseguiria oferecer. Para isso, o usuário poderá declarar suas próprias ações, chamadas de "customActions".
 
-Uma customAction possui obrigatoriamente um `_actionType_` que deve ser único e identificar a ação. Além do `_actionType_`, a customAction pode receber qualquer atributo que faça sentido para ela. Por exemplo, uma customAction que mostra mensagens de feedback na tela poderia chamar "showFeedbackMessage" e ter o seguinte esquema (notação Typescript):
+Uma customAction possui obrigatoriamente um `_beagleAction_` que deve ser único e identificar a ação. Além do `_beagleAction_`, a customAction pode receber qualquer atributo que faça sentido para ela. Por exemplo, uma customAction que mostra mensagens de feedback na tela poderia chamar "showFeedbackMessage" e ter o seguinte esquema (notação Typescript):
 
 ```typescript
 interface ShowFeedbackMessageAction {
-  _actionType_: 'showFeedbackMessage',
+  _beagleAction_: 'showFeedbackMessage',
   level?: 'info' | 'warning' | 'success' | 'error',
   text: string,
   duration?: number,
@@ -265,7 +265,7 @@ Veja um exemplo de contexto criado implicitamente:
   "_beagleType_": "input",
   "label": "CEP",
   "onBlur": {
-    "_actionType_": "sendRequest",
+    "_beagleAction_": "sendRequest",
     "url": "https://viacep.com.br/ws/${onBlur.value}/json",
     "method": "get"
   }
@@ -292,7 +292,7 @@ Essa é a ação mais importante e serve para estabelecer uma comunicação entr
 
 ```typescript
 interface SetContextAction {
-  _actionType_: 'setContext',
+  _beagleAction_: 'setContext',
   context?: string,
   path?: string,
   value: string,
@@ -333,7 +333,7 @@ Esta ação é responsável por disparar requisições HTTP. Os dados retornados
 
 ```typescript
 interface SendRequestAction {
-  _actionType_: 'sendRequest',
+  _beagleAction_: 'sendRequest',
   url: string,
   method?: 'get' | 'post' | 'put' | 'patch' | 'delete',
   data?: any,
@@ -383,7 +383,7 @@ Esta ação serve para alterar galhos da árvore de UI, ou seja, ela manipula os
 
 ```typescript
 interface AddChildrenAction {
-  _actionType_: 'addChildren',
+  _beagleAction_: 'addChildren',
   componentId: string,
   value: BeagleUIElement[],
   mode?: 'append' | 'prepend' | 'replace',
@@ -408,43 +408,55 @@ Opcional. Diz como os filhos em `value` devem ser adicionados ao elemento de id 
 Estas ações geram uma navegação na aplicação. Esta navegação pode afetar a aplicação como um todo ou apenas a view correspondente ao Beagle. As definições de como deve funcionar a navegação foram definidas previamente e devem ser replicadas aqui. A seguir, apresenta-se as definições de cada ação de navegação em notação Typescript.
 
 ```typescript
+interface RemoteView {
+  url: string,
+  fallback?: BeagleUIElement,
+  shouldPrefetch?: boolean,
+}
+
+interface LocalView {
+  screen: BeagleUIElement,
+}
+
+type Route = LocalView | RemoteView
+
 interface OpenExternalURLAction {
-  _actionType_: 'openExternalURL',
+  _beagleAction_: 'openExternalURL',
   url: string,
 }
 
 interface OpenNativeRouteAction {
-  _actionType_: 'openNativeRoute',
+  _beagleAction_: 'openNativeRoute',
   route: string,
   data?: Record<string, any>,
 }
 
 interface PushStackAction {
-  _actionType_: 'pushStack',
-  route: string,
+  _beagleAction_: 'pushStack',
+  route: Route,
 }
 
 interface PopStackAction {
-  _actionType_: 'popStack',
+  _beagleAction_: 'popStack',
 }
 
 interface PushViewAction {
-  _actionType_: 'pushView',
-  route: string,
+  _beagleAction_: 'pushView',
+  route: Route,
 }
 
 interface PopViewAction {
-  _actionType_: 'popView',
+  _beagleAction_: 'popView',
 }
 
 interface PopToViewAction {
-  _actionType_: 'popToView',
+  _beagleAction_: 'popToView',
   route: string,
 }
 
 interface ResetNavigationAction {
-  _actionType_: 'resetNavigation',
-  route: string,
+  _beagleAction_: 'resetNavigation',
+  route: Route,
 }
 ```
 
@@ -456,13 +468,13 @@ Mostram as caixas de diálogo nativas do sistema. Alert mostra uma mensagem e um
 
 ```typescript
 interface AlertAction {
-  _actionType_: 'alert',
+  _beagleAction_: 'alert',
   message: string,
   onPressOk?: BeagleAction,
 }
 
 interface ConfirmAction {
-  _actionType_: 'confirm',
+  _beagleAction_: 'confirm',
   message: string,
   onPressOk?: BeagleAction,
   onPressCancel?: BeagleAction,
@@ -497,14 +509,7 @@ Containers devem disparar o evento `onInit` ao serem inicializados pela primeira
 
 ## Exemplos
 
-A seguir apresenta-se uma série de exemplos usando as definições de evento, ação, contexto e bindings. Os exemplos apontam para páginas web rodando o beagle, abram as ferramentas de desenvolvedor (F12) para observar as rqeuisições e analisar os JSONs.
+Veja e interaja com os exemplos no playground (`ctrl + b` para abrir o painel com todos os exemplos): 
+https://beagle-playground.netlify.app/#9603e04a34fc449ba84b15736740b92c
 
-- [Texto reativo](https://beagle-interaction-poc.netlify.app/#reactive-text)
-- [Abertura de modal](https://beagle-interaction-poc.netlify.app/#modal)
-- [Submissão de formulário](https://beagle-interaction-poc.netlify.app/#form)
-- [Feedbacks em formulários](https://beagle-interaction-poc.netlify.app/#form-with-feedback)
-- [Indicador de loading ao enviar formulários](https://beagle-interaction-poc.netlify.app/#form-with-loading)
-- [Autocomplete em formulários (CEP preenche o restante dos campos)](https://beagle-interaction-poc.netlify.app/#form-with-autocomplete)
-- [Separação entre modelo de apresentação (view) e dados](https://beagle-interaction-poc.netlify.app/#lazy-data-model)
-- [Carregando uma modal de forma lazy (conteúdo só carrega quando a modal é aberta)](https://beagle-interaction-poc.netlify.app/#lazy-modal)
-- [Lista de filmes, onde novos filmes são adicionados sempre que se clica no botão](https://beagle-interaction-poc.netlify.app/#movie-list)
+**Atenção**: ainda não implementamos permissões no Playground. Por favor, não salve suas alterações em cima do projeto.
