@@ -68,7 +68,6 @@ export interface BeagleConfig<Schema> {
 
 export interface LoadParams<Schema = DefaultSchema> {
   path: string,
-  baseUrl?: string,
   method?: HttpMethod,
   headers?: Record<string, string>,
   middlewares?: Array<BeagleMiddleware<Schema>>,
