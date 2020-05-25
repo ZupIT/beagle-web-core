@@ -15,7 +15,7 @@ We are using [GitHub Issues](https://github.com/ZupIT/beagle-web-core/issues) fo
 
 # Sending a Pull Request
 
-Before sending us a pull request, please make sure the following is done:
+Before sending us a pull request,  please make sure the following is done:
 1. Run yarn in the repository root
 2. If you’ve fixed a bug or added code that should be tested, add tests
 3. Ensure the test suite passes (yarn test)
