@@ -20,6 +20,9 @@ import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
   BeagleNavigationAction,
+  Route,
+  LocalView,
+  RemoteView,
 } from './types'
 
 const openExternalURL: ActionHandler<OpenExternalURLAction> = ({ action }) => {
@@ -38,13 +41,16 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
 
 interface Action {
   _beagleAction_: string,
-  route: string,
+  route: Route,
 }
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, beagleView }) => {
   try {
-    const path = beagleView.getBeagleNavigator()[action._beagleAction_]((action as Action).route)
-    beagleView.updateWithFetch({ path })
+    const element = beagleView.getBeagleNavigator()[action._beagleAction_]((action as Action).route)
+    const screen = (element as LocalView).screen
+    const path = (element as RemoteView).url
+    if (screen) beagleView.updateWithTree({ sourceTree: screen })
+    else beagleView.updateWithFetch({ path })
   } catch (error) {
     console.error(error)
   }
