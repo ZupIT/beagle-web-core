@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import mapKeys from 'lodash/mapkeys'
+import mapKeys from 'lodash/mapKeys'
 import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig } from '../types'
 import { findById, findParentByChildId, indexOf } from './tree-reading'
 
