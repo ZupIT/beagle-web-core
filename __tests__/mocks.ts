@@ -18,11 +18,11 @@ import { IdentifiableBeagleUIElement, BeagleUIElement } from '../src/types'
 
 export const treeA: IdentifiableBeagleUIElement = {
   id: 'A',
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   children: [
     {
       id: 'A.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       styleId: 'style-testing-1',
       style: {
         margin: {
@@ -35,25 +35,25 @@ export const treeA: IdentifiableBeagleUIElement = {
       children: [
         {
           id: 'A.0.0',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
     {
       id: 'A.1',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'A.1.0',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
         {
           id: 'A.1.1',
-          _beagleType_: 'type-E',
+          _beagleComponent_: 'type-E',
           children: [
             {
               id: 'A.1.1.0',
-              _beagleType_: 'type-F',
+              _beagleComponent_: 'type-F',
               style: {
                 margin: {
                   all: {
@@ -66,11 +66,11 @@ export const treeA: IdentifiableBeagleUIElement = {
             },
             {
               id: 'A.1.1.1',
-              _beagleType_: 'type-F',
+              _beagleComponent_: 'type-F',
             },
             {
               id: 'A.1.1.2',
-              _beagleType_: 'type-F',
+              _beagleComponent_: 'type-F',
               styleId: 'style-testing-3',
               style: {
                 margin: {
@@ -83,7 +83,7 @@ export const treeA: IdentifiableBeagleUIElement = {
             },
             {
               id: 'A.1.1.3',
-              _beagleType_: 'type-F',
+              _beagleComponent_: 'type-F',
             },
           ],
         },
@@ -91,7 +91,7 @@ export const treeA: IdentifiableBeagleUIElement = {
     },
     {
       id: 'A.2',
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       styleId: 'style-testing-1',
       style: {
         margin: {
@@ -107,75 +107,75 @@ export const treeA: IdentifiableBeagleUIElement = {
 
 export const treeB: IdentifiableBeagleUIElement = {
   id: 'B',
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   value: 'teste',
   children: [
     {
       id: 'B.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'B.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
         },
       ],
     },
     {
       id: 'B.1',
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
     },
   ],
 }
 
 export const treeC: IdentifiableBeagleUIElement = {
   id: 'C',
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   value: 'teste',
   children: [
     {
       id: 'C.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'C.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
         },
       ],
     },
     {
       id: 'C.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
     },
   ],
 }
 
 export const treeD: IdentifiableBeagleUIElement = {
   id: 'D',
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   value: 'teste',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
         },
       ],
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
     },
   ],
 }
 
 export const treeF: BeagleUIElement = {
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   children: [
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         margin: {
           all: {
@@ -186,23 +186,23 @@ export const treeF: BeagleUIElement = {
       },
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
         {
-          _beagleType_: 'beagle:component:tabview',
+          _beagleComponent_: 'beagle:tabview',
           tabItems: [
             {
               title: 'A.1.1.0',
               child: {
-                _beagleType_: 'type-A-1',
+                _beagleComponent_: 'type-A-1',
                 style: {
                   margin: {
                     all: {
@@ -217,7 +217,7 @@ export const treeF: BeagleUIElement = {
               title: 'A.1.1.1',
               icon: 'icon',
               child: {
-                _beagleType_: 'type-A-1',
+                _beagleComponent_: 'type-A-1',
                 style: {
                   margin: {
                     all: {
@@ -230,7 +230,7 @@ export const treeF: BeagleUIElement = {
             },
             {
               child: {
-                _beagleType_: 'type-A-1',
+                _beagleComponent_: 'type-A-1',
                 style: {
                   margin: {
                     all: {
@@ -246,7 +246,7 @@ export const treeF: BeagleUIElement = {
       ],
     },
     {
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         margin: {
           all: {
@@ -260,10 +260,10 @@ export const treeF: BeagleUIElement = {
 }
 
 export const treeFParsed: BeagleUIElement = {
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   children: [
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         margin: {
           all: {
@@ -274,25 +274,25 @@ export const treeFParsed: BeagleUIElement = {
       },
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
         {
-          _beagleType_: 'beagle:component:tabview',
+          _beagleComponent_: 'beagle:tabview',
           children: [
             {
-              _beagleType_: 'beagle:component:tabitem',
+              _beagleComponent_: 'beagle:tabitem',
               title: 'A.1.1.0',
               children: [
                 {
-                  _beagleType_: 'type-A-1',
+                  _beagleComponent_: 'type-A-1',
                   style: {
                     margin: {
                       all: {
@@ -304,12 +304,12 @@ export const treeFParsed: BeagleUIElement = {
                 }]
             },
             {
-              _beagleType_: 'beagle:component:tabitem',
+              _beagleComponent_: 'beagle:tabitem',
               title: 'A.1.1.1',
               icon: 'icon',
               children: [
                 {
-                  _beagleType_: 'type-A-1',
+                  _beagleComponent_: 'type-A-1',
                   style: {
                     margin: {
                       all: {
@@ -322,10 +322,10 @@ export const treeFParsed: BeagleUIElement = {
               ]
             },
             {
-              _beagleType_: 'beagle:component:tabitem',
+              _beagleComponent_: 'beagle:tabitem',
               children: [
                 {
-                  _beagleType_: 'type-A-1',
+                  _beagleComponent_: 'type-A-1',
                   style: {
                     margin: {
                       all: {
@@ -342,7 +342,7 @@ export const treeFParsed: BeagleUIElement = {
       ],
     },
     {
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         margin: {
           all: {
@@ -356,10 +356,10 @@ export const treeFParsed: BeagleUIElement = {
 }
 
 export const treeG: BeagleUIElement = {
-  _beagleType_: 'type-G',
+  _beagleComponent_: 'type-G',
   children: [
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         margin: {
           all: {
@@ -370,28 +370,28 @@ export const treeG: BeagleUIElement = {
       },
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
         {
-          _beagleType_: 'beagle:component:tabview',
+          _beagleComponent_: 'beagle:tabview',
           tabItems: [
             {
               title: 'G.1.1.0',
               child: {
-                _beagleType_: 'beagle:component:tabview',
+                _beagleComponent_: 'beagle:tabview',
                 tabItems: [
                   {
                     title: 'G.1.1.0',
                     child: {
-                      _beagleType_: 'type-B-0'
+                      _beagleComponent_: 'type-B-0'
                     }
                   }
                 ]
@@ -401,7 +401,7 @@ export const treeG: BeagleUIElement = {
               title: 'H.1.1.1',
               icon: 'icon',
               child: {
-                _beagleType_: 'type-H-1',
+                _beagleComponent_: 'type-H-1',
                 style: {
                   margin: {
                     all: {
@@ -412,7 +412,7 @@ export const treeG: BeagleUIElement = {
                 },
                 children: [
                   {
-                    _beagleType_: 'type-H-1',
+                    _beagleComponent_: 'type-H-1',
                   }
                 ]
               }
@@ -422,7 +422,7 @@ export const treeG: BeagleUIElement = {
       ],
     },
     {
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         margin: {
           all: {
@@ -437,10 +437,10 @@ export const treeG: BeagleUIElement = {
 
 
 export const treeGParsed: BeagleUIElement = {
-  _beagleType_: 'type-G',
+  _beagleComponent_: 'type-G',
   children: [
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         margin: {
           all: {
@@ -451,31 +451,31 @@ export const treeGParsed: BeagleUIElement = {
       },
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
         {
-          _beagleType_: 'beagle:component:tabview',
+          _beagleComponent_: 'beagle:tabview',
           children: [
             {
-              _beagleType_: 'beagle:component:tabitem',
+              _beagleComponent_: 'beagle:tabitem',
               title: 'G.1.1.0',
               children: [
                 {
-                  _beagleType_: 'beagle:component:tabview',
+                  _beagleComponent_: 'beagle:tabview',
                   children: [
                     {
-                      _beagleType_: 'beagle:component:tabitem',
+                      _beagleComponent_: 'beagle:tabitem',
                       title: 'G.1.1.0',
                       children: [{
-                        _beagleType_: 'type-B-0'
+                        _beagleComponent_: 'type-B-0'
                       }
                       ]
                     }
@@ -484,11 +484,11 @@ export const treeGParsed: BeagleUIElement = {
               ]
             },
             {
-              _beagleType_: 'beagle:component:tabitem',
+              _beagleComponent_: 'beagle:tabitem',
               title: 'H.1.1.1',
               icon: 'icon',
               children: [{
-                _beagleType_: 'type-H-1',
+                _beagleComponent_: 'type-H-1',
                 style: {
                   margin: {
                     all: {
@@ -499,7 +499,7 @@ export const treeGParsed: BeagleUIElement = {
                 },
                 children: [
                   {
-                    _beagleType_: 'type-H-1',
+                    _beagleComponent_: 'type-H-1',
                   }
                 ]
               }]
@@ -509,7 +509,7 @@ export const treeGParsed: BeagleUIElement = {
       ],
     },
     {
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         margin: {
           all: {
@@ -524,10 +524,10 @@ export const treeGParsed: BeagleUIElement = {
 
 
 export const treeH: BeagleUIElement = {
-  _beagleType_: 'type-H',
+  _beagleComponent_: 'type-H',
   children: [
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         margin: {
           all: {
@@ -538,23 +538,23 @@ export const treeH: BeagleUIElement = {
       },
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
         {
-          _beagleType_: 'beagle:component:tabview',
+          _beagleComponent_: 'beagle:tabview',
           tabItems: [
             {
               title: 'H.1.1.0',
               child: {
-                _beagleType_: 'type-H-0',
+                _beagleComponent_: 'type-H-0',
                 style: {
                   margin: {
                     all: {
@@ -565,7 +565,7 @@ export const treeH: BeagleUIElement = {
                 },
                 children: [
                   {
-                    _beagleType_: 'type-H-0',
+                    _beagleComponent_: 'type-H-0',
                   }
                 ]
               }
@@ -574,7 +574,7 @@ export const treeH: BeagleUIElement = {
               title: 'H.1.1.1',
               icon: 'icon',
               child: {
-                _beagleType_: 'type-H-1',
+                _beagleComponent_: 'type-H-1',
                 style: {
                   margin: {
                     all: {
@@ -585,7 +585,7 @@ export const treeH: BeagleUIElement = {
                 },
                 children: [
                   {
-                    _beagleType_: 'type-H-1',
+                    _beagleComponent_: 'type-H-1',
                   }
                 ]
               }
@@ -595,7 +595,7 @@ export const treeH: BeagleUIElement = {
       ],
     },
     {
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         margin: {
           all: {
@@ -610,10 +610,10 @@ export const treeH: BeagleUIElement = {
 
 
 export const treeHParsed: BeagleUIElement = {
-  _beagleType_: 'type-H',
+  _beagleComponent_: 'type-H',
   children: [
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         margin: {
           all: {
@@ -624,24 +624,24 @@ export const treeHParsed: BeagleUIElement = {
       },
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
     {
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
         {
-          _beagleType_: 'beagle:component:tabview',
+          _beagleComponent_: 'beagle:tabview',
           children: [
             {
-              _beagleType_: 'beagle:component:tabitem',
+              _beagleComponent_: 'beagle:tabitem',
               title: 'H.1.1.0',
               children: [{
-                _beagleType_: 'type-H-0',
+                _beagleComponent_: 'type-H-0',
                 style: {
                   margin: {
                     all: {
@@ -652,17 +652,17 @@ export const treeHParsed: BeagleUIElement = {
                 },
                 children: [
                   {
-                    _beagleType_: 'type-H-0',
+                    _beagleComponent_: 'type-H-0',
                   }
                 ]
               }]
             },
             {
-              _beagleType_: 'beagle:component:tabitem',
+              _beagleComponent_: 'beagle:tabitem',
               title: 'H.1.1.1',
               icon: 'icon',
               children: [{
-                _beagleType_: 'type-H-1',
+                _beagleComponent_: 'type-H-1',
                 style: {
                   margin: {
                     all: {
@@ -673,7 +673,7 @@ export const treeHParsed: BeagleUIElement = {
                 },
                 children: [
                   {
-                    _beagleType_: 'type-H-1',
+                    _beagleComponent_: 'type-H-1',
                   }
                 ]
               }
@@ -684,7 +684,7 @@ export const treeHParsed: BeagleUIElement = {
       ],
     },
     {
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         margin: {
           all: {
@@ -698,38 +698,38 @@ export const treeHParsed: BeagleUIElement = {
 }
 
 export const simpleTab: BeagleUIElement = {
-  _beagleType_: 'beagle:component:tabview',
+  _beagleComponent_: 'beagle:tabview',
   tabItems: [
     {
       title: 'Container1',
       child: {
-        _beagleType_: 'beagle:component:container'
+        _beagleComponent_: 'beagle:container'
       }
     },
     {
       title: 'Container2',
       child: {
-        _beagleType_: 'beagle:component:container'
+        _beagleComponent_: 'beagle:container'
       }
     }
   ]
 }
 
 export const simpleTabParsed: BeagleUIElement = {
-  _beagleType_: 'beagle:component:tabview',
+  _beagleComponent_: 'beagle:tabview',
   children: [
     {
-      _beagleType_: 'beagle:component:tabitem',
+      _beagleComponent_: 'beagle:tabitem',
       title: 'Container1',
       children: [{
-        _beagleType_: 'beagle:component:container'
+        _beagleComponent_: 'beagle:container'
       }]
     },
     {
-      _beagleType_: 'beagle:component:tabitem',
+      _beagleComponent_: 'beagle:tabitem',
       title: 'Container2',
       children: [{
-        _beagleType_: 'beagle:component:container'
+        _beagleComponent_: 'beagle:container'
       }]
     }
   ]
@@ -737,15 +737,15 @@ export const simpleTabParsed: BeagleUIElement = {
 
 export const treeTestChild: IdentifiableBeagleUIElement = {
   id: 'A',
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   children: [
     {
       id: 'A.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'A.0.0',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
         },
       ],
     },
@@ -754,26 +754,26 @@ export const treeTestChild: IdentifiableBeagleUIElement = {
 
 export const treeWithChild: IdentifiableBeagleUIElement = {
   id: 'A',
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   child: {
     id: 'A.0',
-    _beagleType_: 'type-B',
+    _beagleComponent_: 'type-B',
     child: {
       id: 'A.0.0',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
     },
   },
 }
 
 export const treeWithChildAndChildren: IdentifiableBeagleUIElement = {
   id: 'A',
-  _beagleType_: 'type-A',
+  _beagleComponent_: 'type-A',
   child: {
     id: 'A.0',
-    _beagleType_: 'type-B',
+    _beagleComponent_: 'type-B',
     child: {
       id: 'A.0.0',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
     },
   },
   children: [],

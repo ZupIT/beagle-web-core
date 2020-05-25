@@ -242,7 +242,7 @@ describe('Actions: setContext', () => {
   })
 
   it('should warn and not update view if context doesn\'t exist', () => {
-    const mock: IdentifiableBeagleUIElement = { _beagleType_: 'container', id: 'container' }
+    const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const originalWarn = console.warn
     console.warn = jest.fn()

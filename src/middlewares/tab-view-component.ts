@@ -23,10 +23,10 @@ interface TabItem extends BeagleUIElement {
 }
 
 const beagleTabViewMiddleware = (uiTree: BeagleUIElement<any>) => {
-    if (uiTree._beagleType_ === 'beagle:component:tabview' && !uiTree.children) {
+    if (uiTree._beagleComponent_ === 'beagle:tabview' && !uiTree.children) {
         uiTree.children = []
         const parsedItems = uiTree.tabItems.map((tab: TabItem) => {
-            tab._beagleType_ = 'beagle:component:tabitem'
+            tab._beagleComponent_ = 'beagle:tabitem'
             tab.children = [tab.child]
             delete tab.child
             return tab

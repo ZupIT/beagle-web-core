@@ -45,23 +45,23 @@ function createXMLConverter<Schema>(components: BeagleConfig<Schema>['components
     uiTree: BeagleUIElement<Schema>,
     options?: Partial<XmlOptions<Schema>>,
   ): string => {
-    const { _beagleType_, children, ...props } = uiTree
+    const { _beagleComponent_, children, ...props } = uiTree
 
-    if (!components[_beagleType_]) {
+    if (!components[_beagleComponent_]) {
       console.error(
-        `Error: server driven UI could not find component ${_beagleType_}. This component and its children won't be rendered.`
+        `Error: server driven UI could not find component ${_beagleComponent_}. This component and its children won't be rendered.`
       )
       return ''
     }
 
     const opts = { ...defaultXmlOptions, ...options }
-    const tagName = opts.formatTagName(_beagleType_)
+    const tagName = opts.formatTagName(_beagleComponent_)
     const id = props.id
     delete props.id
 
     const attrs: Array<string> = []
     Object.keys(props).forEach((name: string) => {
-      if (opts.shouldAddAttribute(_beagleType_, name)){
+      if (opts.shouldAddAttribute(_beagleComponent_, name)){
         const formatedProp =
           `${opts.formatAttributeName(name)}=${opts.formatAttributeValue(props[name])}`
         attrs.push(formatedProp)

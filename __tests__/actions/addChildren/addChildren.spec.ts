@@ -8,7 +8,7 @@ describe('Actions: addChildren', () => {
   it('should add children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children.push(newContent)
@@ -31,7 +31,7 @@ describe('Actions: addChildren', () => {
   it('should append children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children.push(newContent)
@@ -55,7 +55,7 @@ describe('Actions: addChildren', () => {
   it('should prepend children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children.unshift(newContent)
@@ -79,7 +79,7 @@ describe('Actions: addChildren', () => {
   it('should replace children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children = [newContent]
@@ -103,7 +103,7 @@ describe('Actions: addChildren', () => {
   it('should warn and not update view when component is not found', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const originalWarn = console.warn
     console.warn = jest.fn()
   
