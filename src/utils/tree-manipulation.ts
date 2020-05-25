@@ -67,7 +67,7 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
 beginning of the string. */
 export function convertComponentsToCustom<DefaultSchema>
   (components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
-  return mapKeys(components, (value, key) => `${
+  return mapKeys(components, (value, key: string) => `${
       key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
         ? key
         : 'custom:' + key
