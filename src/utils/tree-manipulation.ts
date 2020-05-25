@@ -14,10 +14,9 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, ComponentName } from '../types'
-import { findById, findParentByChildId, indexOf } from './tree-reading'
-import { BeagleConfig, DefaultSchema } from "../types"
 import { mapKeys } from 'lodash'
+import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig } from '../types'
+import { findById, findParentByChildId, indexOf } from './tree-reading'
 
 /* Adds a child element to the target tree. If the mode is "append", the child will be added as the
 last element of the target's children. If "prepend", it will be added as the first child. This
@@ -66,12 +65,11 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
 
 /* Insert string 'custom:' if the component string doesn't have the strings 'beagle:' or 'custom:' in the
 beginning of the string. */
-export function convertComponentsToCustom<DefaultSchema>(components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
-  return mapKeys(components, (value, key) => {
-    return `${
+export function convertComponentsToCustom<DefaultSchema>
+  (components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
+  return mapKeys(components, (value, key) => `${
       key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
         ? key
         : 'custom:' + key
-      }`
-  }) as BeagleConfig<DefaultSchema>['components']
+      }`) as BeagleConfig<DefaultSchema>['components']
 }
