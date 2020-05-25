@@ -18,6 +18,10 @@ export function removePrefix(str: string, prefix: string) {
   return str.replace(new RegExp(`^${prefix}`), '')
 }
 
+export function addPrefix(str: string, prefix: string) {
+  return  (!str || str[0] !== prefix) ? `${prefix}${str}` : str
+}
+
 export function removeSuffix(str: string, suffix: string) {
   return str.replace(new RegExp(`${suffix}$`), '')
 }

@@ -218,7 +218,47 @@ describe('BeagleUIView', () => {
     }, '')
     await view.updateWithFetch({ path })
  
-    const expectedResult = clone(treeA)
     expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { "method": "get" })
+  })
+
+  it('should handle path as relative without starting with /', async () => {
+    const mockFunc = jest.fn()
+    view.subscribe(mockFunc);
+    const path = 'example'
+    const fetchData = jest.fn()
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData
+    }, '')
+    await view.updateWithFetch({ path })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/${path}`, { "method": "get" })
+  })
+
+  it('should handle relative path starting with /', async () => {
+    const path = '/example'
+    const fetchData = jest.fn()
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData
+    }, '')
+    await view.updateWithFetch({ path })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}${path}`, { "method": "get" })
+  })
+
+  it('should make request for root baseUrl path', async () => {
+    const path = ''
+    const fetchData = jest.fn()
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData
+    }, '')
+    await view.updateWithFetch({ path })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get" })
   })
 })
