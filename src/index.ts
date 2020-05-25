@@ -74,4 +74,5 @@ export {
   createEventHandler,
   EventHandler,
   replaceBindings,
+  convertComponentsToCustom
 }
