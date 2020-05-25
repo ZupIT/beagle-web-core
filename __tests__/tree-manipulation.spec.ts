@@ -39,7 +39,7 @@ describe('Utils: tree manipulation', () => {
   })
 
   it('should append child to element without children', () => {
-    const target: BeagleUIElement<any> = { _beagleType_: 'test' }
+    const target: BeagleUIElement<any> = {_beagleComponent_: 'test' }
     addChild(target, treeB, 'append')
     expect(target.children[0]).toBe(treeB)
   })
