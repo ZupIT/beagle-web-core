@@ -69,7 +69,6 @@ describe('Utils: tree manipulation', () => {
   })
 
   it('should insert custom word', () => {
-    console.log('convertComponentsToCustom(configComponents)', convertComponentsToCustom(configComponents))
     expect(convertComponentsToCustom(configComponents)).toEqual(configComponentsRight)
   })
 })
