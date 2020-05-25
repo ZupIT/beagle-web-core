@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { capitalizeFirstLetter, removePrefix, removeSuffix } from '../src/utils/string'
+import { capitalizeFirstLetter, removePrefix, removeSuffix, addPrefix } from '../src/utils/string'
 
 describe('Utils String', () => {
 
@@ -92,6 +92,26 @@ describe('Utils String', () => {
 
   it('capitalizeFirstLetter should change upperCase only first letter', () => {
     expect(capitalizeFirstLetter('tEsTiNg tEsT')).toEqual('TEsTiNg tEsT')
+  })
+
+  it('should add the prefix if string does not have it', () => {
+    expect(addPrefix('test', '/')).toEqual('/test')
+  })
+
+  it('should not add the prefix if string already has it', () => {
+    expect(addPrefix('/test', '/')).toEqual('/test')
+  })
+
+  it('should handle empty string', () => {
+    expect(addPrefix('', '/')).toEqual('/')
+  })
+  
+  it('should not change string if it already has prefix', () => {
+    expect(addPrefix('/t/e/s/t', '/')).toEqual('/t/e/s/t')
+  })
+
+  it('should add prefix and not change inner string', () => {
+    expect(addPrefix('t/e/s/t/', '/')).toEqual('/t/e/s/t/')
   })
 
 })

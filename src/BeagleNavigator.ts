@@ -15,9 +15,10 @@
 */
 
 import { Stack, BeagleNavigator } from './types'
+import { Route } from './actions/navigation/types'
 
-const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
-  let initialStack = [initialPath]
+const createBeagleNavigator = (initialRoute: Route): BeagleNavigator => {
+  let initialStack = [initialRoute]
   let navigation: Stack[] = [initialStack]
 
   function isSingleStack() {
@@ -38,7 +39,7 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
     return currentStack[lastPositionInCurrentStack]
   }
 
-  function pushStack(route: string) {
+  function pushStack(route: Route) {
     navigation.push([route])
     return getCurrentRoute()
   }
@@ -50,7 +51,7 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function pushView(route: string) {
+  function pushView(route: Route) {
     getCurrentStack().push(route)
     return getCurrentRoute()
   }
@@ -64,9 +65,9 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function popToView(route: string) {
+  function popToView(route: Route) {
     const currentStack = getCurrentStack()
-    const routeIndex = currentStack.findIndex(item => item === route)
+    const routeIndex = currentStack.findIndex(item => JSON.stringify(item) === JSON.stringify(route))
 
     if (routeIndex === -1) throw new Error('The route does not exist on the current stack')
     currentStack.splice(routeIndex + 1)
@@ -74,14 +75,14 @@ const createBeagleNavigator = (initialPath: string): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function resetStack(route: string) {
+  function resetStack(route: Route) {
     navigation.pop()
     pushStack(route)
 
     return getCurrentRoute()
   }
 
-  function resetApplication(route: string) {
+  function resetApplication(route: Route) {
     initialStack = [route]
     navigation = [initialStack]
 

@@ -16,6 +16,7 @@
 
 import { ActionHandler } from './actions/types'
 import { BeagleError } from './errors'
+import { Route } from './actions/navigation/types'
 
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
@@ -67,7 +68,6 @@ export interface BeagleConfig<Schema> {
 
 export interface LoadParams<Schema = DefaultSchema> {
   path: string,
-  baseUrl?: string,
   method?: HttpMethod,
   headers?: Record<string, string>,
   middlewares?: Array<BeagleMiddleware<Schema>>,
@@ -128,16 +128,16 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
-export type Stack = string[]
+export type Stack = Route[]
 
 export interface BeagleNavigator {
-  pushStack: (element: string) => string,
-  popStack: () => string,
-  pushView: (route: string) => string,
-  popView: () => string,
-  popToView: (route: string) => string,
-  resetStack: (route: string) => string,
-  resetApplication: (route: string) => string,
+  pushStack: (route: Route) => Route,
+  popStack: () => Route,
+  pushView: (route: Route) => Route,
+  popView: () => Route,
+  popToView: (route: Route) => Route,
+  resetStack: (route: Route) => Route,
+  resetApplication: (route: Route) => Route,
   get: () => Stack[],
 }
 
