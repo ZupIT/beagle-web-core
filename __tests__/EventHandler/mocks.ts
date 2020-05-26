@@ -5,10 +5,10 @@ export function createContainerWithAction(
   action?: any
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     id: 'container',
     [eventName]: action || {
-      _actionType_: 'alert',
+      _beagleAction_: 'alert',
       message: 'test message',
     },
   }
@@ -16,7 +16,7 @@ export function createContainerWithAction(
 
 export function createModalMock(): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'container',
+    _beagleComponent_: 'container',
     id: 'container',
     _context_: {
       id: 'isModalOpen',
@@ -24,49 +24,49 @@ export function createModalMock(): IdentifiableBeagleUIElement {
     },
     children: [
       {
-        _beagleType_: 'button',
+        _beagleComponent_: 'button',
         id: 'btn-open-modal',
         onPress: {
-          _actionType_: 'setContext',
+          _beagleAction_: 'setContext',
           value: true,
         }
       },
       {
-        _beagleType_: 'modal',
+        _beagleComponent_: 'modal',
         id: 'modal',
         isOpen: '${isModalOpen}',
         title: 'My Modal',
         onClose: [
           {
-            _actionType_: 'setContext',
+            _beagleAction_: 'setContext',
             value: false,
           },
           {
-            _actionType_: 'alert',
+            _beagleAction_: 'alert',
             message: 'modal has been closed!',
           },
         ],
         children: [
           {
-            _beagleType_: 'container',
+            _beagleComponent_: 'container',
             id: 'modal-content',
             onInit: {
-              _actionType_: 'sendRequest',
+              _beagleAction_: 'sendRequest',
               componentId: 'modal',
               url: '/modalContent',
               onSuccess: {
-                _actionType_: 'addChildren',
+                _beagleAction_: 'addChildren',
                 mode: 'replace',
                 value: '${onSuccess.data}',
               },
               onError: {
-                _actionType_: 'showErrorMessage',
+                _beagleAction_: 'showErrorMessage',
                 text: 'An unexpected error ocurred!',
               },
             },
             children: [
               {
-                _beagleType_: 'loading',
+                _beagleComponent_: 'loading',
                 id: 'loading',
               },
             ],

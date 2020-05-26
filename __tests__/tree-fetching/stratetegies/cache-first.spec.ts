@@ -20,6 +20,7 @@ import { treeA, treeB } from '../../mocks'
 import { mockLocalStorage } from '../../test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleCacheError, BeagleNetworkError } from '../../../src/errors'
+import beagleHttpClient from '../../../src/BeagleHttpClient'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -27,6 +28,7 @@ const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: cache-first)', () => {
   const localStorageMock = mockLocalStorage()
+  beagleHttpClient.setFetchFunction(fetch)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -47,7 +49,7 @@ describe('Utils: tree fetching (load: cache-first)', () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
     await load({ url, onChangeTree, strategy: 'cache-first' })
-    expect(onChangeTree.mock.calls).toEqual([[{ _beagleType_: 'loading' }], [treeA]])
+    expect(onChangeTree.mock.calls).toEqual([[{_beagleComponent_: 'loading' }], [treeA]])
     expect(nock.isDone()).toBe(true)
   })
 

@@ -15,6 +15,7 @@
 */
 
 import isObject from 'lodash/isObject'
+import isEmpty from 'lodash/isEmpty'
 import { BeagleMiddleware, BeagleUIElement, Style } from '../types'
 import { capitalizeFirstLetter } from '../utils/string'
 
@@ -81,7 +82,7 @@ const parseValuesWithUnit = (unitType: string, value: number) => {
   return handleAutoAsValue(value.toString(), parsedUnitType)
 }
 
-const handleAspectRatio = (valueAspectRatio: number | null, heightData: HeightDataFormat, 
+const handleAspectRatio = (valueAspectRatio: number | null, heightData: HeightDataFormat,
   uiTree: BeagleUIElement<any>) => {
   if (valueAspectRatio && heightData && heightData.value) {
     const value = heightData.value * valueAspectRatio
@@ -198,7 +199,12 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
     const styleAtt = keys.filter((prop) => Object.keys(SINGLE_ATTRIBUTES).includes(prop))
     styleAtt.forEach((prop) => {
       const propName = SINGLE_ATTRIBUTES[prop]
-      uiTree.parsedStyle[propName] = toLowerCase(styleAttributes[prop])
+      //@ts-ignore
+      uiTree.style[propName] = toLowerCase(styleAttributes[prop])
+      if (propName != prop) {
+        //@ts-ignore
+        delete uiTree.style[prop]
+      }
     })
   }
   return uiTree
@@ -217,9 +223,9 @@ const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<an
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)
     uiTree = formatEdgeAttributes(uiTree, 'margin', styleObj.margin)
     uiTree = formatEdgeAttributes(uiTree, 'padding', styleObj.padding)
+    if (!isEmpty(uiTree.parsedStyle))
+      uiTree.style = uiTree.parsedStyle
     uiTree = singleAttributes(uiTree, styleObj)
-
-    uiTree.style = uiTree.parsedStyle
   }
   delete uiTree.parsedStyle
   return uiTree

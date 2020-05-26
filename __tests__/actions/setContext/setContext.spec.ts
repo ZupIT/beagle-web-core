@@ -17,7 +17,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         value: 'new value',
       },
       beagleView,
@@ -43,7 +43,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         value: 'new value',
       },
       beagleView,
@@ -74,7 +74,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         context: 'ctx_a',
         value: 'new value',
       },
@@ -101,7 +101,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         value: 'new value',
       },
       beagleView,
@@ -127,7 +127,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         value: 'new value',
       },
       beagleView,
@@ -159,7 +159,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         path: 'age',
         value: 32,
       },
@@ -192,7 +192,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         path: 'phones[0]',
         value: '(00) 00000-0000',
       },
@@ -220,7 +220,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         path: '[2]',
         value: 'Dolor',
       },
@@ -242,14 +242,14 @@ describe('Actions: setContext', () => {
   })
 
   it('should warn and not update view if context doesn\'t exist', () => {
-    const mock: IdentifiableBeagleUIElement = { _beagleType_: 'container', id: 'container' }
+    const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const originalWarn = console.warn
     console.warn = jest.fn()
 
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         value: 'test',
       },
       beagleView,
@@ -271,7 +271,7 @@ describe('Actions: setContext', () => {
 
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         context: 'ctx_a',
         value: 'test',
       },
@@ -293,7 +293,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         path: 'lorem.ipsum.sin.it.dolor',
         value: 'amet',
       },
@@ -321,7 +321,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _actionType_: 'setContext',
+        _beagleAction_: 'setContext',
         path: 'lorem[1].ipsum.sin[3].it.dolor[0]',
         value: 'amet',
       },

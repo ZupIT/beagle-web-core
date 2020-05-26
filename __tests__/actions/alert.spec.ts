@@ -3,12 +3,12 @@ import { createBeagleViewMock, mockSystemDialogs } from '../test-utils'
 
 describe('Actions: alert', () => {
   it('should show alert message', () => {
-    const mock = { _beagleType_: 'container', id: 'container' }
+    const mock = { _beagleComponent_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs()
 
     alert({
       action: {
-        _actionType_: 'alert',
+        _beagleAction_: 'alert',
         message: 'Hello World!',
       },
       beagleView: createBeagleViewMock({ getTree: () => mock }),
@@ -22,14 +22,14 @@ describe('Actions: alert', () => {
   })
 
   it('should run onPressOk', () => {
-    const mock = { _beagleType_: 'container', id: 'container' }
+    const mock = { _beagleComponent_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs()
     const handleAction = jest.fn()
-    const onPressOk = { _actionType_: 'test' }
+    const onPressOk = { _beagleAction_: 'test' }
 
     alert({
       action: {
-        _actionType_: 'alert',
+        _beagleAction_: 'alert',
         message: 'Hello World!',
         onPressOk,
       },

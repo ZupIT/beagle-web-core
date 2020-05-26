@@ -2,12 +2,15 @@ import nock from 'nock'
 import sendRequest from '../../src/actions/sendRequest'
 import { createBeagleViewMock } from '../test-utils'
 import { ActionHandlerParams } from '../../src/actions/types'
+import beagleHttpClient from '../../src/BeagleHttpClient'
 
 const domain = 'http://beagle.test.com'
 const path = '/url-builder'
-const element = { _beagleType_: 'container', id: 'container' }
+const element = { _beagleComponent_: 'container', id: 'container' }
 
 describe('Actions: sendRequest', () => {
+  beagleHttpClient.setFetchFunction(fetch)
+
   it('should send request using the UrlBuilder', async () => {
     nock(domain).get(path).reply(200)
     const urlBuilder = { build: jest.fn(() => `${domain}${path}`) }
@@ -15,7 +18,7 @@ describe('Actions: sendRequest', () => {
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: 'myUrl',
         method: 'get',
       },
@@ -36,7 +39,7 @@ describe('Actions: sendRequest', () => {
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
       },
       beagleView,
@@ -58,7 +61,7 @@ describe('Actions: sendRequest', () => {
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
         method: 'post',
         headers,
@@ -79,11 +82,11 @@ describe('Actions: sendRequest', () => {
     nock(domain).get(path).reply(200, JSON.stringify(response))
     const beagleView = createBeagleViewMock()
     const handleAction = jest.fn()
-    const onSuccess = { _actionType_: 'alert', message: 'Success!' }
+    const onSuccess = { _beagleAction_: 'alert', message: 'Success!' }
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
         onSuccess,
       },
@@ -123,14 +126,14 @@ describe('Actions: sendRequest', () => {
     })
   
     const handleAction = jest.fn()
-    const onError = { _actionType_: 'alert', message: 'Error!' }
+    const onError = { _beagleAction_: 'alert', message: 'Error!' }
   
     const originalLogError = console.error
     console.error = jest.fn()
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
         onError,
       },
@@ -167,14 +170,14 @@ describe('Actions: sendRequest', () => {
     nock(domain).get(path).reply(500, JSON.stringify(response))
     const beagleView = createBeagleViewMock()
     const handleAction = jest.fn()
-    const onError = { _actionType_: 'alert', message: 'Error!' }
+    const onError = { _beagleAction_: 'alert', message: 'Error!' }
 
     const originalLogError = console.error
     console.error = jest.fn()
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
         onError,
       },
@@ -213,14 +216,14 @@ describe('Actions: sendRequest', () => {
     nock(domain).get(path).reply(200, response)
     const beagleView = createBeagleViewMock()
     const handleAction = jest.fn()
-    const onError = { _actionType_: 'alert', message: 'Error!' }
+    const onError = { _beagleAction_: 'alert', message: 'Error!' }
 
     const originalLogError = console.error
     console.error = jest.fn()
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
         onError,
       },
@@ -258,11 +261,11 @@ describe('Actions: sendRequest', () => {
     nock(domain).get(path).reply(200)
     const beagleView = createBeagleViewMock()
     const handleAction = jest.fn()
-    const onFinish = { _actionType_: 'alert', message: 'Finish!' }
+    const onFinish = { _beagleAction_: 'alert', message: 'Finish!' }
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
         onFinish,
       },
@@ -288,14 +291,14 @@ describe('Actions: sendRequest', () => {
     nock(domain).get(path).reply(500)
     const beagleView = createBeagleViewMock()
     const handleAction = jest.fn()
-    const onFinish = { _actionType_: 'alert', message: 'Finish!' }
+    const onFinish = { _beagleAction_: 'alert', message: 'Finish!' }
 
     const originalLogError = console.error
     console.error = jest.fn()
 
     await sendRequest({
       action: {
-        _actionType_: 'sendRequest',
+        _beagleAction_: 'sendRequest',
         url: `${domain}${path}`,
         onFinish,
       },

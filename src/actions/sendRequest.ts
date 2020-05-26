@@ -14,6 +14,7 @@
   * limitations under the License.
 */
 
+import httpClient from '../BeagleHttpClient'
 import { ActionHandler, SendRequestAction } from './types'
 
 interface ParsedResponse {
@@ -71,7 +72,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
 
   try {
     const urlBuilder = beagleView.getUrlBuilder()
-    const response = await fetch(
+    const response = await httpClient.fetch(
       urlBuilder.build(url),
       { method, body: JSON.stringify(data), headers },
     )

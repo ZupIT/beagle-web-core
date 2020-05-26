@@ -8,14 +8,14 @@ describe('Actions: addChildren', () => {
   it('should add children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children.push(newContent)
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         componentId: 'content',
         value: [newContent],
       },
@@ -31,14 +31,14 @@ describe('Actions: addChildren', () => {
   it('should append children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children.push(newContent)
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         mode: 'append',
         componentId: 'content',
         value: [newContent],
@@ -55,14 +55,14 @@ describe('Actions: addChildren', () => {
   it('should prepend children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children.unshift(newContent)
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         mode: 'prepend',
         componentId: 'content',
         value: [newContent],
@@ -79,14 +79,14 @@ describe('Actions: addChildren', () => {
   it('should replace children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = clone(mock)
     const content = findById(expected, 'content')
     content.children = [newContent]
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         mode: 'replace',
         componentId: 'content',
         value: [newContent],
@@ -103,13 +103,13 @@ describe('Actions: addChildren', () => {
   it('should warn and not update view when component is not found', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const newContent = { _beagleType_: 'text', id: 'text', value: 'Hello World! '}
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const originalWarn = console.warn
     console.warn = jest.fn()
   
     addChildren({
       action: {
-        _actionType_: 'addChildren',
+        _beagleAction_: 'addChildren',
         componentId: 'blah',
         value: [newContent],
       },
