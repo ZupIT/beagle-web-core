@@ -23,6 +23,9 @@ import {
   treePadding, treePaddingParsed,
   treeAttributesToKeepName, treeAttributesToKeepNameParsed,
   treeWithoutStyle, treeMixStyle, treeMixStyleParsed,
+  treeAttributesToKeepNameWithContext,
+  treeMixStyleWithContext, treeMixStyleWithContextParsed, 
+  treeContextValue, treeContextValueParsed
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 import { clone } from '../../src/utils/tree-manipulation'
@@ -117,4 +120,21 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toEqual(tree)
   })
 
+  it('should not change context variable', () => {
+    const tree = clone(treeAttributesToKeepNameWithContext)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeAttributesToKeepNameWithContext)
+  })
+
+  it('should not change context variable', () => {
+    const tree = clone(treeMixStyleWithContext)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeMixStyleWithContextParsed)
+  })
+
+ it('should not change context variable', () => {
+    const tree = clone(treeContextValue)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeContextValueParsed)
+  })
 })
