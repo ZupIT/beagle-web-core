@@ -48,9 +48,9 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, bea
   try {
     const element = beagleView.getBeagleNavigator()[action._beagleAction_]((action as Action).route)
     const screen = (element as LocalView).screen
-    const path = (element as RemoteView).url
+    const { url: path, fallback } = element as RemoteView
     if (screen) beagleView.updateWithTree({ sourceTree: screen })
-    else beagleView.updateWithFetch({ path })
+    else beagleView.updateWithFetch({ path, fallback })
   } catch (error) {
     console.error(error)
   }

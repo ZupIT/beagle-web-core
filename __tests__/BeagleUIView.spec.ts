@@ -221,6 +221,20 @@ describe('BeagleUIView', () => {
     expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { "method": "get" })
   })
 
+  it('should fallback to UIElement when fetch fails', async () => {
+    const fallbackTree = { _beagleComponent_: 'test 1' }
+    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    await view.updateWithFetch({ path, fallback: fallbackTree })
+    expect(view.getTree()).toEqual(fallbackTree)
+  })
+
+  it('should not fallback to UIElement when fetch succeed', async () => {
+    const fallbackTree = { _beagleComponent_: 'test 1' }
+    nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
+    await view.updateWithFetch({ path, fallback: fallbackTree })
+    expect(view.getTree()).toEqual(treeA)
+  })
+
   it('should handle path as relative without starting with /', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc);
