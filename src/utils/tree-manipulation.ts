@@ -15,8 +15,9 @@
 */
 
 import mapKeys from 'lodash/mapKeys'
-import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig } from '../types'
+import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig, ItemsToCustom } from '../types'
 import { findById, findParentByChildId, indexOf } from './tree-reading'
+import { ActionHandler } from '..'
 
 /* Adds a child element to the target tree. If the mode is "append", the child will be added as the
 last element of the target's children. If "prepend", it will be added as the first child. This
@@ -67,9 +68,19 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
 beginning of the string. */
 export function convertComponentsToCustom<DefaultSchema>
   (components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
-  return mapKeys(components, (value, key: string) => `${
-      key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
-        ? key
-        : 'custom:' + key
-      }`) as BeagleConfig<DefaultSchema>['components']
+  return converToCustom(components) as BeagleConfig<DefaultSchema>['components']
+}
+
+/* Insert string 'custom:' if the actions string doesn't have the strings 'beagle:' or 'custom:' in the
+beginning of the string. */
+export function convertActionsToCustom<DefaultSchema> (actions: Record<string, ActionHandler>): Record<string, ActionHandler> {
+  return converToCustom(actions) as BeagleConfig<DefaultSchema>['components']
+}
+
+export function converToCustom(items: ItemsToCustom ) {
+  return mapKeys(items, (value, key: string) => `${
+    key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
+      ? key
+      : 'custom:' + key
+    }`)
 }

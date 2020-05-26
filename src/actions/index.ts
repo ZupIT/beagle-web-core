@@ -23,11 +23,11 @@ import NavigationActions from './navigation'
 import { ActionHandler } from './types'
 
 const defaultActionHandlers: Record<string, ActionHandler> = {
-  addChildren,
-  setContext,
-  sendRequest,
-  alert,
-  confirm,
+  'beagle:addChildren': addChildren,
+  'beagle:setContext': setContext,
+  'beagle:sendRequest': sendRequest,
+  'beagle:alert': alert,
+  'beagle:confirm': confirm,
   ...NavigationActions,
 }
 

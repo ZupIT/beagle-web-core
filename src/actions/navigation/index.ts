@@ -57,13 +57,13 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, bea
 }
 
 export default {
-  openExternalURL,
-  openNativeRoute,
-  pushStack: navigateBeagleView,
-  popStack: navigateBeagleView,
-  pushView: navigateBeagleView,
-  popView: navigateBeagleView,
-  popToView: navigateBeagleView,
-  resetStack: navigateBeagleView,
-  resetApplication: navigateBeagleView,
+  'beagle:openExternalURL': openExternalURL,
+  'beagle:openNativeRoute': openNativeRoute,
+  'beagle:pushStack': navigateBeagleView,
+  'beagle:popStack': navigateBeagleView,
+  'beagle:pushView': navigateBeagleView,
+  'beagle:popView': navigateBeagleView,
+  'beagle:popToView': navigateBeagleView,
+  'beagle:resetStack': navigateBeagleView,
+  'beagle:resetApplication': navigateBeagleView,
 }

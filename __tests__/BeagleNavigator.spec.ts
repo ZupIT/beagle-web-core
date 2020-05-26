@@ -27,59 +27,59 @@ describe('BeagleNavigator', () => {
   })
 
   it('should pushStack', () => {
-    navigator.pushStack({ url: 'first' })
+    navigator['beagle:pushStack']({ url: 'first' })
     expect(navigator.get()).toEqual([initialStack, [{ url: 'first' }]])
   })
 
   it('should pushView', () => {
-    navigator.pushView({ url: 'second' })
+    navigator['beagle:pushView']({ url: 'second' })
     expect(navigator.get()).toEqual([initialStack, [{ url: 'first' }, { url: 'second' }]])
   })
 
   it('should popStack', () => {
-    const route = navigator.popStack()
+    const route = navigator['beagle:popStack']()
     expect(navigator.get()).toEqual([initialStack])
     expect(route).toBe(initialRoute)
   })
 
   it('should popView', () => {
-    navigator.pushView({ url: 'first' })
-    navigator.pushView({ url: 'second' })
-    const route = navigator.popView()
+    navigator['beagle:pushView']({ url: 'first' })
+    navigator['beagle:pushView']({ url: 'second' })
+    const route = navigator['beagle:popView']()
     expect(navigator.get()).toEqual([[initialRoute, { url: 'first' }]])
     expect(route).toStrictEqual({ url: 'first' })
   })
 
   it('should popToView', () => {
-    navigator.pushView({ url: 'second' })
-    const route = navigator.popToView(initialRoute)
+    navigator['beagle:pushView']({ url: 'second' })
+    const route = navigator['beagle:popToView'](initialRoute)
     expect(navigator.get()).toEqual([initialStack])
     expect(route).toBe(initialRoute)
   })
 
   it('should reset current stack', () => {
-    navigator.pushStack({ url: 'newStack' })
-    navigator.resetStack({ url: 'resetingStack' })
+    navigator['beagle:pushStack']({ url: 'newStack' })
+    navigator['beagle:resetStack']({ url: 'resetingStack' })
     expect(navigator.get()).toEqual([initialStack, [{ url : 'resetingStack' }]])
   })
 
   it('should reset beagle navigator', () => {
-    navigator.resetApplication({ url: 'resetingApplication' })
+    navigator['beagle:resetApplication']({ url: 'resetingApplication' })
     expect(navigator.get()).toEqual([[{ url : 'resetingApplication' }]])
   })
 
   it('should throw an error when popView on a single stack', () => {
-    const route = () => navigator.popView()
+    const route = () => navigator['beagle:popView']()
     expect(route).toThrowError()
   })
 
   it('should throw an error when popToView with a non-existent route', () => {
-    const route = () => navigator.popToView({ url: 'non-existent-route' })
+    const route = () => navigator['beagle:popToView']({ url: 'non-existent-route' })
     expect(route).toThrowError()
   })
 
   it('should throw an error when popStack on a single stack', () => {
-    const route = () => navigator.popStack()
+    const route = () => navigator['beagle:popStack']()
     expect(route).toThrowError()
   })
 })

@@ -8,7 +8,7 @@ describe('Actions: alert', () => {
 
     alert({
       action: {
-        _beagleAction_: 'alert',
+        _beagleAction_: 'beagle:alert',
         message: 'Hello World!',
       },
       beagleView: createBeagleViewMock({ getTree: () => mock }),
@@ -29,7 +29,7 @@ describe('Actions: alert', () => {
 
     alert({
       action: {
-        _beagleAction_: 'alert',
+        _beagleAction_: 'beagle:alert',
         message: 'Hello World!',
         onPressOk,
       },

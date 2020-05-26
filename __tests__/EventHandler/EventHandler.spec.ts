@@ -55,13 +55,13 @@ describe('EventHandler', () => {
   it('should call new function and trigger action handler (single BeagleAction)', () => {
     const beagleView = createBeagleViewMock()
     const eventHandler = createEventHandler({}, beagleView)
-    const action = { _beagleAction_: 'alert', message: 'test' }
+    const action = { _beagleAction_: 'beagle:alert', message: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
 
     treeWithFunction.onInit()
 
-    const alert = defaultActionHandlers.alert as jest.Mock
+    const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expectActionHandlerToHaveBeenCalled({
       handler: alert,
       action,
@@ -74,10 +74,10 @@ describe('EventHandler', () => {
   it('should deserialize an array of BeagleActions into a single function', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
     const actions = [
-      { _beagleAction_: 'alert', message: 'hello' },
-      { _beagleAction_: 'alert', message: 'world' },
-      { _beagleAction_: 'setContext', value: 'hello world!' },
-      { _beagleAction_: 'openExternalURL', url: 'http://hello.world.com' },
+      { _beagleAction_: 'beagle:alert', message: 'hello' },
+      { _beagleAction_: 'beagle:alert', message: 'world' },
+      { _beagleAction_: 'beagle:setContext', value: 'hello world!' },
+      { _beagleAction_: 'beagle:openExternalURL', url: 'http://hello.world.com' },
     ]
     const mock = createContainerWithAction('onInit', actions)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
@@ -88,17 +88,17 @@ describe('EventHandler', () => {
     const beagleView = createBeagleViewMock()
     const eventHandler = createEventHandler({}, beagleView)
     const actions = [
-      { _beagleAction_: 'alert', message: 'hello' },
-      { _beagleAction_: 'alert', message: 'world' },
-      { _beagleAction_: 'setContext', value: 'hello world!' },
-      { _beagleAction_: 'openExternalURL', url: 'http://hello.world.com' },
+      { _beagleAction_: 'beagle:alert', message: 'hello' },
+      { _beagleAction_: 'beagle:alert', message: 'world' },
+      { _beagleAction_: 'beagle:setContext', value: 'hello world!' },
+      { _beagleAction_: 'beagle:openExternalURL', url: 'http://hello.world.com' },
     ]
     const mock = createContainerWithAction('onInit', actions)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
   
     treeWithFunction.onInit()
   
-    const alert = defaultActionHandlers.alert as jest.Mock
+    const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expectActionHandlerToHaveBeenCalled({
       handler: alert,
       times: 2,
@@ -116,7 +116,7 @@ describe('EventHandler', () => {
     })
     alert.mockClear()
 
-    const setContext = defaultActionHandlers.setContext as jest.Mock
+    const setContext = defaultActionHandlers['beagle:setContext'] as jest.Mock
     expectActionHandlerToHaveBeenCalled({
       handler: setContext,
       action: actions[2],
@@ -125,7 +125,7 @@ describe('EventHandler', () => {
     })
     setContext.mockClear()
 
-    const openExternalURL = defaultActionHandlers.openExternalURL as jest.Mock
+    const openExternalURL = defaultActionHandlers['beagle:openExternalURL'] as jest.Mock
     expectActionHandlerToHaveBeenCalled({
       handler: openExternalURL,
       action: actions[3],
@@ -137,14 +137,14 @@ describe('EventHandler', () => {
 
   it('should create implicit context when function is called passing a parameter', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
-    const action = { _beagleAction_: 'alert', message: 'test' }
+    const action = { _beagleAction_: 'beagle:alert', message: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
     
     const event = { name: 'Beagle', lastName: 'Mockerson' }
     treeWithFunction.onInit(event)
 
-    const alert = defaultActionHandlers.alert as jest.Mock
+    const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expect(alert).toHaveBeenCalledWith(
       expect.objectContaining({
         eventContextHierarchy: [{ id: 'onInit', value: event }]
@@ -155,17 +155,17 @@ describe('EventHandler', () => {
 
   it('should replace bindings when handling an action', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
-    const action = { _beagleAction_: 'alert', message: '${test}' }
+    const action = { _beagleAction_: 'beagle:alert', message: '${test}' }
     const mock = createContainerWithAction('onInit', action)
     mock._context_ = { id: 'test', value: 'Hello World!' }
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
     
     treeWithFunction.onInit()
 
-    const alert = defaultActionHandlers.alert as jest.Mock
+    const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expect(alert).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: { _beagleAction_: 'alert', message: 'Hello World!' }
+        action: { _beagleAction_: 'beagle:alert', message: 'Hello World!' }
       })
     )
     alert.mockClear()
@@ -194,21 +194,21 @@ describe('EventHandler', () => {
     console.warn = jest.fn()
 
     const beagleView = createBeagleViewMock()
-    const customHandlers = { alert: jest.fn() }
+    const customHandlers = { 'beagle:alert': jest.fn() }
 
     const eventHandler = createEventHandler(customHandlers, beagleView)
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
   
-    const action = { _beagleAction_: 'alert', message: 'test' }
+    const action = { _beagleAction_: 'beagle:alert', message: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
 
     treeWithFunction.onInit()
 
-    expect(defaultActionHandlers.alert).not.toHaveBeenCalled()
+    expect(defaultActionHandlers['beagle:alert']).not.toHaveBeenCalled()
     expectActionHandlerToHaveBeenCalled({
-      handler: customHandlers.alert,
+      handler: customHandlers['beagle:alert'],
       action,
       beagleView,
       element: treeWithFunction,

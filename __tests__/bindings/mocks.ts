@@ -83,7 +83,7 @@ export function createSocialMediaMock(): BeagleUIElement {
               {
                 _beagleComponent_: 'button',
                 onPress: {
-                  _beagleAction_: 'setContext',
+                  _beagleAction_: 'beagle:setContext',
                   value: true,
                 },
               },
