@@ -21,6 +21,7 @@ import createBeagleUIView from './BeagleUIView'
 import BeagleContext from './BeagleContext'
 import createXMLConverter from './XMLConverter'
 import { loadFromCache, loadFromServer } from './utils/tree-fetching'
+import { convertComponentsToCustom } from './utils/tree-manipulation'
 import {
   DefaultSchema,
   BeagleConfig,
@@ -39,6 +40,9 @@ function createBeagleUIService<
   Schema = DefaultSchema,
   ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
 > (config: ConfigType): BeagleUIService<Schema, ConfigType> {
+
+  config.components = convertComponentsToCustom(config.components)
+
   const xmlConverter = createXMLConverter(config.components)
 
   return {
@@ -70,4 +74,5 @@ export {
   createEventHandler,
   EventHandler,
   replaceBindings,
+  convertComponentsToCustom,
 }
