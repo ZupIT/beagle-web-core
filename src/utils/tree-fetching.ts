@@ -94,7 +94,7 @@ export async function load<Schema>({
   onChangeTree,
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false) {
-    if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleType_: loadingComponent })
+    if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({  _beagleComponent_: loadingComponent })
     onChangeTree(await loadFromServer(url, method, headers, strategy !== 'network-only'))
   }
 
@@ -129,7 +129,7 @@ export async function load<Schema>({
     if (fallbackUIElement) return onChangeTree(fallbackUIElement)
     const [hasFallbackStrategySuccess, fallbackStrategyErrors] = await runStrategies(fallbackStrategy, true)
     if (hasFallbackStrategySuccess) return
-    if (shouldShowError) onChangeTree({ _beagleType_: errorComponent })
+    if (shouldShowError) onChangeTree({ _beagleComponent_: errorComponent })
     throw [...fetchErrors, ...fallbackStrategyErrors]
   }
 

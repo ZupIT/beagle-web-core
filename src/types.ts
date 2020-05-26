@@ -81,7 +81,7 @@ export interface LoadParams<Schema = DefaultSchema> {
 }
 
 export interface BeagleUIElement<Schema = DefaultSchema> {
-  _beagleType_: ComponentName<Schema>,
+  _beagleComponent_: ComponentName<Schema>,
   _context_?: DataContext,
   children?: Array<BeagleUIElement<Schema>>,
   style?: Record<string, any>,

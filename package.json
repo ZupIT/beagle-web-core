@@ -1,6 +1,6 @@
 {
   "name": "@zup-it/beagle-web",
-  "version": "0.0.17",
+  "version": "0.1.0",
   "main": "index.js",
   "types": "index.d.ts",
   "license": "Apache-2.0",
@@ -35,7 +35,7 @@
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-typescript": "^7.8.3",
     "@types/enzyme": "3.10.4",
-    "@types/jest": "24.9.0",
+    "@types/jest": "^24.9.0",
     "@types/lodash": "^4.14.150",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
@@ -54,10 +54,10 @@
     "node-fetch": "^2.6.0",
     "source-map-loader": "0.2.4",
     "ts-jest": "25.0.0",
+    "typescript": "3.7.5",
     "webpack": "4.41.5",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.10.1",
-    "webpack-hot-middleware": "2.25.0",
-    "typescript": "3.7.5"
+    "webpack-hot-middleware": "2.25.0"
   }
 }

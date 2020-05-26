@@ -18,16 +18,16 @@ import { IdentifiableBeagleUIElement } from '../src/types'
 
 export const treeSize: IdentifiableBeagleUIElement = {
   id: 'Size',
-  _beagleType_: 'type-Size',
+  _beagleComponent_: 'type-Size',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             size: {
               height: {
@@ -45,7 +45,7 @@ export const treeSize: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         size: {
           maxWidth: {
@@ -61,7 +61,7 @@ export const treeSize: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.2',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         size: {
           width: {
@@ -92,16 +92,16 @@ export const treeSize: IdentifiableBeagleUIElement = {
 
 export const treeSizeParsed: IdentifiableBeagleUIElement = {
   id: 'Size',
-  _beagleType_: 'type-Size',
+  _beagleComponent_: 'type-Size',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             height: "300px",
             width: "300px"
@@ -111,7 +111,7 @@ export const treeSizeParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         maxWidth: "50%",
         maxHeight: "50%"
@@ -119,7 +119,7 @@ export const treeSizeParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.2',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         width: 'auto',
         height: 'auto'
@@ -135,12 +135,12 @@ export const treeSizeParsed: IdentifiableBeagleUIElement = {
 
 export const treeAspectRatio: IdentifiableBeagleUIElement = {
   id: 'AspectRatio',
-  _beagleType_: 'type-AspectRatio',
+  _beagleComponent_: 'type-AspectRatio',
   value: 'testing',
   children: [
     {
       id: 'D.0.0',
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         size: {
           height: {
@@ -165,12 +165,12 @@ export const treeAspectRatio: IdentifiableBeagleUIElement = {
 
 export const treeAspectRatioParsed: IdentifiableBeagleUIElement = {
   id: 'AspectRatio',
-  _beagleType_: 'type-AspectRatio',
+  _beagleComponent_: 'type-AspectRatio',
   value: 'testing',
   children: [
     {
       id: 'D.0.0',
-      _beagleType_: 'type-C',
+      _beagleComponent_: 'type-C',
       style: {
         height: '50%',
         width: '100%'
@@ -185,16 +185,16 @@ export const treeAspectRatioParsed: IdentifiableBeagleUIElement = {
 
 export const treePosition: IdentifiableBeagleUIElement = {
   id: 'Position',
-  _beagleType_: 'type-Position',
+  _beagleComponent_: 'type-Position',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             position: {
               top: {
@@ -212,7 +212,7 @@ export const treePosition: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         position: {
           bottom: {
@@ -228,7 +228,7 @@ export const treePosition: IdentifiableBeagleUIElement = {
     },
     {
       id: 'E.1',
-      _beagleType_: 'type-E',
+      _beagleComponent_: 'type-E',
       style: {
         position: {
           start: {
@@ -244,7 +244,7 @@ export const treePosition: IdentifiableBeagleUIElement = {
     },
     {
       id: 'F.1',
-      _beagleType_: 'type-F',
+      _beagleComponent_: 'type-F',
       style: {
         position: {
           horizontal: {
@@ -256,7 +256,7 @@ export const treePosition: IdentifiableBeagleUIElement = {
     },
     {
       id: 'G.1',
-      _beagleType_: 'type-G',
+      _beagleComponent_: 'type-G',
       style: {
         position: {
           vertical: {
@@ -279,16 +279,16 @@ export const treePosition: IdentifiableBeagleUIElement = {
 
 export const treePositionParsed: IdentifiableBeagleUIElement = {
   id: 'Position',
-  _beagleType_: 'type-Position',
+  _beagleComponent_: 'type-Position',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             top: '10px',
             left: '10px'
@@ -298,7 +298,7 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         bottom: '10%',
         right: '10%'
@@ -306,7 +306,7 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'E.1',
-      _beagleType_: 'type-E',
+      _beagleComponent_: 'type-E',
       style: {
         left: '10px',
         right: '15px'
@@ -314,7 +314,7 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'F.1',
-      _beagleType_: 'type-F',
+      _beagleComponent_: 'type-F',
       style: {
         left: '10px',
         right: '10px'
@@ -322,7 +322,7 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'G.1',
-      _beagleType_: 'type-G',
+      _beagleComponent_: 'type-G',
       style: {
         top: '15px',
         bottom: '15px'
@@ -339,16 +339,16 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
 
 export const treeFlex: IdentifiableBeagleUIElement = {
   id: 'Flex',
-  _beagleType_: 'type-Flex',
+  _beagleComponent_: 'type-Flex',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             flex: {
               flexDirection: 'COLUMN',
@@ -363,7 +363,7 @@ export const treeFlex: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         flex: {
           alignContent: 'SPACE_AROUND',
@@ -382,16 +382,16 @@ export const treeFlex: IdentifiableBeagleUIElement = {
 
 export const treeFlexParsed: IdentifiableBeagleUIElement = {
   id: 'Flex',
-  _beagleType_: 'type-Flex',
+  _beagleComponent_: 'type-Flex',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             flexDirection: 'column',
             flexWrap: 'wrap',
@@ -404,7 +404,7 @@ export const treeFlexParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       style: {
         alignContent: 'space-around',
         flexGrow: 2,
@@ -418,16 +418,16 @@ export const treeFlexParsed: IdentifiableBeagleUIElement = {
 
 export const treeMargin: IdentifiableBeagleUIElement = {
   id: 'F',
-  _beagleType_: 'type-F',
+  _beagleComponent_: 'type-F',
   value: 'teste',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             margin: {
               all: {
@@ -439,7 +439,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
         },
         {
           id: 'D.0.1',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             margin: {
               top: {
@@ -465,11 +465,11 @@ export const treeMargin: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             margin: {
               start: {
@@ -481,7 +481,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
         },
         {
           id: 'D.0.1',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             margin: {
               end: {
@@ -522,23 +522,23 @@ export const treeMargin: IdentifiableBeagleUIElement = {
 
 export const treeMarginParsed: IdentifiableBeagleUIElement = {
   id: 'F',
-  _beagleType_: 'type-F',
+  _beagleComponent_: 'type-F',
   value: 'teste',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             margin: '8px'
           }
         },
         {
           id: 'D.0.1',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             marginTop: '5%',
             marginLeft: 'auto'
@@ -552,18 +552,18 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             marginLeft: '8px'
           }
         },
         {
           id: 'D.0.1',
-          _beagleType_: 'type-D',
+          _beagleComponent_: 'type-D',
           style: {
             marginRight: '12px'
           }
@@ -585,16 +585,16 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
 
 export const treePadding: IdentifiableBeagleUIElement = {
   id: 'F',
-  _beagleType_: 'type-F',
+  _beagleComponent_: 'type-F',
   value: 'teste',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             padding: {
               vertical: {
@@ -620,11 +620,11 @@ export const treePadding: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       children: [
         {
           id: 'D.1.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             padding: {
               horizontal: {
@@ -650,11 +650,11 @@ export const treePadding: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.2',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       children: [
         {
           id: 'D.2.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             padding: {
               start: {
@@ -683,16 +683,16 @@ export const treePadding: IdentifiableBeagleUIElement = {
 
 export const treePaddingParsed: IdentifiableBeagleUIElement = {
   id: 'F',
-  _beagleType_: 'type-F',
+  _beagleComponent_: 'type-F',
   value: 'teste',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             paddingTop: '3%',
             paddingBottom: '3%'
@@ -706,11 +706,11 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       children: [
         {
           id: 'D.1.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             paddingLeft: '3%',
             paddingRight: '3%'
@@ -724,11 +724,11 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
     },
     {
       id: 'D.2',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       children: [
         {
           id: 'D.2.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           style: {
             paddingLeft: '3px',
             paddingRight: '5%'
@@ -744,12 +744,12 @@ export const treePaddingParsed: IdentifiableBeagleUIElement = {
 
 export const treeAttributesToKeepName: IdentifiableBeagleUIElement = {
   id: 'KeepAttributes',
-  _beagleType_: 'type-KeepAttributes',
+  _beagleComponent_: 'type-KeepAttributes',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         display: 'FLEX',
         backgroundColor: '#FFFFFF',
@@ -764,12 +764,12 @@ export const treeAttributesToKeepName: IdentifiableBeagleUIElement = {
 
 export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
   id: 'KeepAttributes',
-  _beagleType_: 'type-KeepAttributes',
+  _beagleComponent_: 'type-KeepAttributes',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       style: {
         display: 'flex',
         backgroundColor: '#ffffff',
@@ -784,16 +784,16 @@ export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
 
 export const treeWithoutStyle: IdentifiableBeagleUIElement = {
   id: 'WithoutStyle',
-  _beagleType_: 'type-WithoutStyle',
+  _beagleComponent_: 'type-WithoutStyle',
   value: 'testing',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'C.0',
-          _beagleType_: 'type-C'
+          _beagleComponent_: 'type-C'
         }
       ]
     }
@@ -801,11 +801,11 @@ export const treeWithoutStyle: IdentifiableBeagleUIElement = {
 }
 
 export const treeMixStyle: IdentifiableBeagleUIElement = {
-  _beagleType_: "beagle:component:container",
+  _beagleComponent_: "beagle:container",
   id: 'testing',
   children: [
     {
-      _beagleType_: "beagle:component:image",
+      _beagleComponent_: "beagle:image",
       name: "img.jpg",
       id: 'testing-2',
       style: {
@@ -852,11 +852,11 @@ export const treeMixStyle: IdentifiableBeagleUIElement = {
 }
 
 export const treeMixStyleParsed: IdentifiableBeagleUIElement = {
-  _beagleType_: "beagle:component:container",
+  _beagleComponent_: "beagle:container",
   id: 'testing',
   children: [
     {
-      _beagleType_: "beagle:component:image",
+      _beagleComponent_: "beagle:image",
       name: "img.jpg",
       id: 'testing-2',
       style: {
@@ -879,23 +879,23 @@ export const treeMixStyleParsed: IdentifiableBeagleUIElement = {
 
 export const treeE: IdentifiableBeagleUIElement = {
   id: 'E',
-  _beagleType_: 'type-E',
+  _beagleComponent_: 'type-E',
   value: 'teste',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           styleId: 'Style.TestChildren.MockStyle'
         },
       ]
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       styleId: 'Design.StyleChildren.MockStyle'
     },
   ],
@@ -904,23 +904,23 @@ export const treeE: IdentifiableBeagleUIElement = {
 
 export const treeEParsed: IdentifiableBeagleUIElement = {
   id: 'E',
-  _beagleType_: 'type-E',
+  _beagleComponent_: 'type-E',
   value: 'teste',
   children: [
     {
       id: 'D.0',
-      _beagleType_: 'type-B',
+      _beagleComponent_: 'type-B',
       children: [
         {
           id: 'D.0.0',
-          _beagleType_: 'type-C',
+          _beagleComponent_: 'type-C',
           styleId: 'style-test-children-mock-style'
         },
       ]
     },
     {
       id: 'D.1',
-      _beagleType_: 'type-D',
+      _beagleComponent_: 'type-D',
       styleId: 'design-style-children-mock-style'
     },
   ],

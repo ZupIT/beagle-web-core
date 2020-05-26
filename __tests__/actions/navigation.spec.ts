@@ -23,7 +23,7 @@ describe('Actions: Navigation', () => {
   let beagleView: BeagleView
   let params
   const baseUrl = 'http://teste.com'
-  const element = { _beagleType_: 'button', id: 'button' }
+  const element = { _beagleComponent_: 'button', id: 'button' }
   const externlUrl = 'http://google.com'
   const originalError = console.error
   const initialStack = [{ url: '/home' }]

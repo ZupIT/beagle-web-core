@@ -44,10 +44,10 @@ describe('BeagleUIView', () => {
 
   it('should get current ui tree', async () => {
     expect(view.getTree()).toBeUndefined()
-    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1', id: '1' } })
-    expect(view.getTree()).toEqual({ _beagleType_: 'test 1', id: '1' })
-    view.updateWithTree({ sourceTree: { _beagleType_: 'test 2', id: '2' } })
-    expect(view.getTree()).toEqual({ _beagleType_: 'test 2', id: '2' })
+    view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 1', id: '1' } })
+    expect(view.getTree()).toEqual({ _beagleComponent_: 'test 1', id: '1' })
+    view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 2', id: '2' } })
+    expect(view.getTree()).toEqual({ _beagleComponent_: 'test 2', id: '2' })
   })
 
   it('should subscribe to view changes', async () => {
@@ -55,25 +55,25 @@ describe('BeagleUIView', () => {
     const listener2 = jest.fn()
     view.subscribe(listener1)
     view.subscribe(listener2)
-    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1', id: '1' } })
-    expect(listener1).toHaveBeenCalledWith({ _beagleType_: 'test 1', id: '1' })
-    expect(listener2).toHaveBeenCalledWith({ _beagleType_: 'test 1', id: '1' })
+    view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 1', id: '1' } })
+    expect(listener1).toHaveBeenCalledWith({ _beagleComponent_: 'test 1', id: '1' })
+    expect(listener2).toHaveBeenCalledWith({ _beagleComponent_: 'test 1', id: '1' })
   })
 
   it('should unsubscribe from view changes', async () => {
     const listener = jest.fn()
     const unsubscribe = view.subscribe(listener)
-    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1' }, shouldRunMiddlewares: false })
+    view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 1' }, shouldRunMiddlewares: false })
     expect(listener).toHaveBeenCalled()
     listener.mockClear()
     unsubscribe()
-    view.updateWithTree({ sourceTree: { _beagleType_: 'test 2' }, shouldRunMiddlewares: false })
+    view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 2' }, shouldRunMiddlewares: false })
     expect(listener).not.toHaveBeenCalled()
   })
 
   it('should not run view change listeners', async () => {
     const listener = jest.fn()
-    view.updateWithTree({ sourceTree: { _beagleType_: 'test 1' }, shouldRunListeners: false })
+    view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 1' }, shouldRunListeners: false })
     expect(listener).not.toHaveBeenCalled()
   })
 
@@ -106,7 +106,7 @@ describe('BeagleUIView', () => {
   })
 
   it('should run only global middlewares', async () => {
-    const tree = { _beagleType_: 'test' }
+    const tree = { _beagleComponent_: 'test' }
     view.updateWithTree({ sourceTree: tree })
     expect(middleware).toHaveBeenCalledWith(tree)
     // expect beagleIdMiddleware to have been run
@@ -114,7 +114,7 @@ describe('BeagleUIView', () => {
   })
 
   it('should run global and local middlewares', async () => {
-    const tree = { _beagleType_: 'test' }
+    const tree = { _beagleComponent_: 'test' }
     const localMiddleware = jest.fn(resultingTree => resultingTree)
     view.updateWithTree({ sourceTree: tree, middlewares: [localMiddleware] })
     expect(middleware).toHaveBeenCalledWith(tree)
@@ -140,7 +140,7 @@ describe('BeagleUIView', () => {
     
     await promise
 
-    expectedLoading.children[1] = { _beagleType_: 'loading', id: 'loading' }
+    expectedLoading.children[1] = { _beagleComponent_: 'loading', id: 'loading' }
     expect(mockFunc.mock.calls[0][0]).toEqual(treeA)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
   
@@ -161,7 +161,7 @@ describe('BeagleUIView', () => {
     await promise
 
     const expectedLoading = clone(treeA)
-    expectedLoading.children[1].children.push({ _beagleType_: 'loading', id: 'loading' })
+    expectedLoading.children[1].children.push({ _beagleComponent_: 'loading', id: 'loading' })
     expect(mockFunc.mock.calls[0][0]).toEqual(treeA)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
 
@@ -182,7 +182,7 @@ describe('BeagleUIView', () => {
     await promise
 
     const expectedLoading = clone(treeA)
-    expectedLoading.children[1].children.unshift({ _beagleType_: 'loading', id: 'loading' })
+    expectedLoading.children[1].children.unshift({ _beagleComponent_: 'loading', id: 'loading' })
     expect(mockFunc.mock.calls[0][0]).toEqual(treeA)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
 
@@ -194,13 +194,13 @@ describe('BeagleUIView', () => {
   })
 
   it('should encapsulate ui tree: getTree', () => {
-    const tree = { _beagleType_: 'test 1' }
+    const tree = { _beagleComponent_: 'test 1' }
     view.updateWithTree({ sourceTree: tree, shouldRunMiddlewares: false })
     expect(view.getTree()).not.toBe(tree)
   })
 
   it('should encapsulate ui tree: updateTree', async () => {
-    const tree = { _beagleType_: 'test 1' }
+    const tree = { _beagleComponent_: 'test 1' }
     const listener = jest.fn()
     view.subscribe(listener)
     view.updateWithTree({ sourceTree: tree, shouldRunMiddlewares: false })
@@ -218,21 +218,61 @@ describe('BeagleUIView', () => {
     }, '')
     await view.updateWithFetch({ path })
  
-    const expectedResult = clone(treeA)
     expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { "method": "get" })
   })
 
   it('should fallback to UIElement when fetch fails', async () => {
-    const fallbackTree = { _beagleType_: 'test 1' }
+    const fallbackTree = { _beagleComponent_: 'test 1' }
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await view.updateWithFetch({ path, fallback: fallbackTree })
     expect(view.getTree()).toEqual(fallbackTree)
   })
 
   it('should not fallback to UIElement when fetch succeed', async () => {
-    const fallbackTree = { _beagleType_: 'test 1' }
+    const fallbackTree = { _beagleComponent_: 'test 1' }
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
     await view.updateWithFetch({ path, fallback: fallbackTree })
     expect(view.getTree()).toEqual(treeA)
+  })
+
+  it('should handle path as relative without starting with /', async () => {
+    const mockFunc = jest.fn()
+    view.subscribe(mockFunc);
+    const path = 'example'
+    const fetchData = jest.fn()
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData
+    }, '')
+    await view.updateWithFetch({ path })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/${path}`, { "method": "get" })
+  })
+
+  it('should handle relative path starting with /', async () => {
+    const path = '/example'
+    const fetchData = jest.fn()
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData
+    }, '')
+    await view.updateWithFetch({ path })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}${path}`, { "method": "get" })
+  })
+
+  it('should make request for root baseUrl path', async () => {
+    const path = ''
+    const fetchData = jest.fn()
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      middlewares: [middleware],
+      fetchData
+    }, '')
+    await view.updateWithFetch({ path })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get" })
   })
 })
