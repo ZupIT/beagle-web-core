@@ -927,6 +927,7 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
         position: {
           top: {
             value: '${contextTest}',
+            type: "REAL"
           },
           left: '${contextTest}'
         },
@@ -944,7 +945,8 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
         },
         padding: {
           right: {
-            value: '${contextTest}'
+            value: '${contextTest}',
+            type: "REAL"
           }
         },
         paddingTop: '10px'
@@ -1073,9 +1075,80 @@ export const treeContextValueParsed: IdentifiableBeagleUIElement = {
       style: {
         position: {
           top: {
-            value: '${contextTest}'
+            value: '${contextTest}',
+            type: "REAL"
           },
         },
+      }
+    },
+  ]
+}
+
+export const treeContextType: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '10',
+            type: '${contextTest}'
+          },
+        },
+        padding: {
+          right: {
+            value: '5',
+            type: '${contextTest}'
+          }
+        },
+        size: {
+          height: {
+            value: 300.0,
+            type: '${contextTest}'
+          },
+          width: {
+            value: 200.0,
+            type: '${contextTest}'
+          }
+        }
+      }
+    },
+  ]
+}
+
+export const treeContextTypeParsed: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '10',
+            type: '${contextTest}'
+          },
+        },
+        padding: {
+          right: {
+            value: '5',
+            type: '${contextTest}'
+          }
+        },
+        size: {
+          height: {
+            value: 300.0,
+            type: '${contextTest}'
+          },
+          width: {
+            value: 200.0,
+            type: '${contextTest}'
+          }
+        }
       }
     },
   ]

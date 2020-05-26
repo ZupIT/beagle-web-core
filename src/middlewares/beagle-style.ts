@@ -62,7 +62,7 @@ const SPECIAL_VALUES: Record<string, string> = {
 
 const verifyContext = (value: string | number) => {
   if (value && typeof value === 'string') {
-    const isContext = value.match(/^\${[a-z0-9A-Z-]*}$/)
+    const isContext = value.match(/^\${[a-z0-9A-Z_]*}$/)
     return isContext
   }
   else return false
@@ -71,6 +71,7 @@ const verifyContext = (value: string | number) => {
 const handleContext = (item: string | number | EdgeDataFormat, key: string,
   uiTree: BeagleUIElement<any>, outsideObjectKey?: string) => {
   let stringValue: string
+  let stringType = ''
   let isItemObject = false
   if (isObject(item)) {
     isItemObject = true
@@ -80,6 +81,10 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
       // @ts-ignore
       stringValue = item.value || ''
     }
+
+    if (item && item.type)
+      stringType = item.type.toString()
+
   } else {
     // @ts-ignore
     stringValue = item && typeof item === 'number' ? item.toString() : item || ''
@@ -92,6 +97,8 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
       if (isItemObject) {
         uiTree.parsedStyle[outsideObjectKey][key] = {
           'value': stringValue,
+          // @ts-ignore
+          'type': item.type,
         }
       } else {
         uiTree.parsedStyle[outsideObjectKey][key] = stringValue
@@ -100,10 +107,30 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
       if (isItemObject) {
         uiTree.parsedStyle[key] = {
           'value': stringValue,
+          // @ts-ignore
+          'type': item.type,
         }
       } else {
         uiTree.parsedStyle[key] = stringValue
       }
+    }
+    return true
+  } else if (verifyContext(stringType)) {
+    if (outsideObjectKey) {
+      if (!isObject(uiTree.parsedStyle[outsideObjectKey]))
+        uiTree.parsedStyle[outsideObjectKey] = {}
+      uiTree.parsedStyle[outsideObjectKey][key] = {
+        // @ts-ignore
+        'value': item.value,
+        'type': stringType,
+      }
+    } else {
+      uiTree.parsedStyle[key] = {
+        // @ts-ignore
+        'value': item.value,
+        'type': stringType,
+      }
+
     }
     return true
   }
