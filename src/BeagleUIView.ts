@@ -37,11 +37,13 @@ import beagleTabViewMiddleware from './middlewares/tab-view-component'
 import convertChildToChildren from './middlewares/convert-child-to-children'
 import beagleStyleMiddleware from './middlewares/beagle-style'
 import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
+import beagleAnalytics from './BeagleAnalytics'
 
 const createBeagleView = <Schema>({
   baseUrl,
   middlewares = [],
   fetchData,
+  analytics,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
@@ -49,6 +51,7 @@ const createBeagleView = <Schema>({
   const urlFormatter = createURLBuilder(baseUrl)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator(initialRoute)
   beagleHttpClient.setFetchFunction(fetchData || fetch)
+  analytics && beagleAnalytics.setAnalytics(analytics)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)

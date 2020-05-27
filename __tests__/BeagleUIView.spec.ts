@@ -16,11 +16,12 @@
 
 import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
-import { BeagleView } from '../src/types'
+import { BeagleView, Analytics } from '../src/types'
 import { BeagleCacheError, BeagleNetworkError } from '../src/errors'
 import { clone } from '../src/utils/tree-manipulation'
-import { treeA, treeB } from './mocks'
+import { treeA, treeB, treeWithAnalitycs } from './mocks'
 import { mockLocalStorage, stripTreeIds } from './test-utils'
+import beagleAnalytics from '../src/BeagleAnalytics'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -206,7 +207,7 @@ describe('BeagleUIView', () => {
     view.updateWithTree({ sourceTree: tree, shouldRunMiddlewares: false })
     expect(listener.mock.calls[0][0]).not.toBe(tree)
   })
-
+  
   it('should apply fetchData configuration to HttpClient', async () => {
     const path = '/example'
     const fetchData = jest.fn()
@@ -218,7 +219,23 @@ describe('BeagleUIView', () => {
     }, '')
     await view.updateWithFetch({ path })
  
-    const expectedResult = clone(treeA)
     expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { "method": "get" })
   })
+
+  it('should apply analytics service to BeagleAnalytics', async () => {
+    const path = '/example'
+    const analytics: Analytics = {
+      trackEventOnClick: jest.fn(),
+      trackEventOnScreenAppeared: jest.fn(),
+      trackEventOnScreenDisappeared: jest.fn()
+  }
+    view = createBeagleView({
+      baseUrl,
+      components: {},
+      analytics
+    }, '')
+ 
+    expect(beagleAnalytics.getAnalytics()).toEqual(analytics)
+  })
+
 })

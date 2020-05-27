@@ -16,6 +16,7 @@
 
 import { findById } from './utils/tree-reading'
 import { BeagleView, BeagleContext } from './types'
+import beagleAnalytics from './BeagleAnalytics'
 
 export const views: Record<string, BeagleView> = {}
 
@@ -28,6 +29,7 @@ function createContext<T>(view: BeagleView<T>, elementId: string): BeagleContext
     getElementId: () => elementId,
     getElement: () => findById(view.getTree(), elementId),
     getView: () => view,
+    getAnalytics: () => beagleAnalytics.getAnalytics(),
   }
 }
 
