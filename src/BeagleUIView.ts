@@ -162,6 +162,7 @@ const createBeagleView = <Schema>({
     const path = addPrefix(params.path, '/')
     const url = urlFormatter.build(path)
     const originalTree = currentUITree
+    const fallbackUIElement = params.fallback
 
     function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
       setTree(originalTree, false) // changes should be made based on the original tree
@@ -176,6 +177,7 @@ const createBeagleView = <Schema>({
     try {
       await loadUITree({
         url,
+        fallbackUIElement,
         onChangeTree,
         errorComponent: params.errorComponent,
         loadingComponent: params.loadingComponent,

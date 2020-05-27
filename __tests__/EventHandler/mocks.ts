@@ -66,7 +66,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
             },
             children: [
               {
-                _beagleComponent_: 'loading',
+                _beagleComponent_: 'custom:loading',
                 id: 'loading',
               },
             ],
