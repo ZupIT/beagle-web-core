@@ -64,9 +64,9 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
   return tree && JSON.parse(JSON.stringify(tree))
 }
 
-export function converToCustom(items: ItemsToCustom) {
+export function convertToCustom(items: ItemsToCustom) {
   return mapKeys(items, (value, key: string) => `${
-    key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
+    key.startsWith('beagle:') || key.startsWith('custom:')
       ? key
       : 'custom:' + key
     }`)
@@ -76,13 +76,13 @@ export function converToCustom(items: ItemsToCustom) {
 beginning of the string. */
 export function convertComponentsToCustom<DefaultSchema>
   (components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
-  return converToCustom(components) as BeagleConfig<DefaultSchema>['components']
+  return convertToCustom(components) as BeagleConfig<DefaultSchema>['components']
 }
 
 /* Insert string 'custom:' if the actions string doesn't have the strings 'beagle:' or 'custom:' in the
 beginning of the string. */
 export function convertActionsToCustom<DefaultSchema> (actions: Record<string, ActionHandler>): Record<string, ActionHandler> {
-  return converToCustom(actions) as BeagleConfig<DefaultSchema>['components']
+  return convertToCustom(actions) as BeagleConfig<DefaultSchema>['components']
 }
 
 
