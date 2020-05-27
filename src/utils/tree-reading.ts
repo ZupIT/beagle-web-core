@@ -58,7 +58,7 @@ export function findByType<T extends BeagleUIElement<any>>(
   tree: T,
   type: string,
 ): Array<T> {
-  return findByAttribute(tree, '_beagleType_', type)
+  return findByAttribute(tree, '_beagleComponent_', type)
 }
 
 export function findParentByChildId<Schema>(

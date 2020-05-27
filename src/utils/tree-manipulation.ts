@@ -14,7 +14,8 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode } from '../types'
+import mapKeys from 'lodash/mapKeys'
+import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig } from '../types'
 import { findById, findParentByChildId, indexOf } from './tree-reading'
 
 /* Adds a child element to the target tree. If the mode is "append", the child will be added as the
@@ -60,4 +61,15 @@ export function replaceInTree<Schema>(
 
 export function clone<T extends BeagleUIElement<any>>(tree: T): T {
   return tree && JSON.parse(JSON.stringify(tree))
+}
+
+/* Insert string 'custom:' if the component string doesn't have the strings 'beagle:' or 'custom:' in the
+beginning of the string. */
+export function convertComponentsToCustom<DefaultSchema>
+  (components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
+  return mapKeys(components, (value, key: string) => `${
+      key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
+        ? key
+        : 'custom:' + key
+      }`) as BeagleConfig<DefaultSchema>['components']
 }

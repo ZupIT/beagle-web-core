@@ -38,6 +38,7 @@ import convertChildToChildren from './middlewares/convert-child-to-children'
 import beagleStyleMiddleware from './middlewares/beagle-style'
 import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import beagleAnalytics from './BeagleAnalytics'
+import { addPrefix } from './utils/string'
 
 const createBeagleView = <Schema>({
   baseUrl,
@@ -49,7 +50,7 @@ const createBeagleView = <Schema>({
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
-  const beagleNavigator: BeagleNavigator = createBeagleNavigator(initialRoute)
+  const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   beagleHttpClient.setFetchFunction(fetchData || fetch)
   analytics && beagleAnalytics.setAnalytics(analytics)
 
@@ -161,8 +162,10 @@ const createBeagleView = <Schema>({
     elementId?: string,
     mode: TreeUpdateMode = 'replace',
   ) {
-    const url = urlFormatter.build(params.path, params.baseUrl)
+    const path = addPrefix(params.path, '/')
+    const url = urlFormatter.build(path)
     const originalTree = currentUITree
+    const fallbackUIElement = params.fallback
 
     function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
       setTree(originalTree, false) // changes should be made based on the original tree
@@ -177,6 +180,7 @@ const createBeagleView = <Schema>({
     try {
       await loadUITree({
         url,
+        fallbackUIElement,
         onChangeTree,
         errorComponent: params.errorComponent,
         loadingComponent: params.loadingComponent,

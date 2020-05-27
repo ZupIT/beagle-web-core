@@ -14,9 +14,9 @@
   * limitations under the License.
 */
 
-import { addChild, clone, insertIntoTree, replaceInTree } from '../src/utils/tree-manipulation'
+import { addChild, clone, insertIntoTree, replaceInTree, convertComponentsToCustom } from '../src/utils/tree-manipulation'
 import { BeagleUIElement }  from '../src/types'
-import { treeA, treeB } from './mocks'
+import { treeA, treeB, configComponents, configComponentsRight  } from './mocks'
 import { last, hasDifferentPointers } from './test-utils'
 
 describe('Utils: tree manipulation', () => {
@@ -39,7 +39,7 @@ describe('Utils: tree manipulation', () => {
   })
 
   it('should append child to element without children', () => {
-    const target: BeagleUIElement<any> = { _beagleType_: 'test' }
+    const target: BeagleUIElement<any> = {_beagleComponent_: 'test' }
     addChild(target, treeB, 'append')
     expect(target.children[0]).toBe(treeB)
   })
@@ -66,5 +66,9 @@ describe('Utils: tree manipulation', () => {
     expected.children[1].children[0] = treeB
     replaceInTree(target, treeB, 'A.1.0')
     expect(target).toEqual(expected)
+  })
+
+  it('should insert custom word', () => {
+    expect(convertComponentsToCustom(configComponents)).toEqual(configComponentsRight)
   })
 })

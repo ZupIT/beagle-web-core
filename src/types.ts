@@ -16,10 +16,11 @@
 
 import { ActionHandler } from './actions/types'
 import { BeagleError } from './errors'
+import { Route } from './actions/navigation/types'
 
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
-export type ComponentName<Schema> = keyof Schema | 'error' | 'loading'
+export type ComponentName<Schema> = keyof Schema | 'custom:error' | 'custom:loading'
 
 export type TreeInsertionMode = 'prepend' | 'append'
 
@@ -82,7 +83,7 @@ export interface BeagleConfig<Schema> {
 
 export interface LoadParams<Schema = DefaultSchema> {
   path: string,
-  baseUrl?: string,
+  fallback?: BeagleUIElement<Schema>,
   method?: HttpMethod,
   headers?: Record<string, string>,
   middlewares?: Array<BeagleMiddleware<Schema>>,
@@ -94,7 +95,7 @@ export interface LoadParams<Schema = DefaultSchema> {
 }
 
 export interface BeagleUIElement<Schema = DefaultSchema> {
-  _beagleType_: ComponentName<Schema>,
+  _beagleComponent_: ComponentName<Schema>,
   _context_?: DataContext,
   children?: Array<BeagleUIElement<Schema>>,
   style?: Record<string, any>,
@@ -143,16 +144,16 @@ export interface UpdateWithTreeParams<Schema> {
   shouldRunListeners?: boolean,
 }
 
-export type Stack = string[]
+export type Stack = Route[]
 
 export interface BeagleNavigator {
-  pushStack: (element: string) => string,
-  popStack: () => string,
-  pushView: (route: string) => string,
-  popView: () => string,
-  popToView: (route: string) => string,
-  resetStack: (route: string) => string,
-  resetApplication: (route: string) => string,
+  pushStack: (route: Route) => Route,
+  popStack: () => Route,
+  pushView: (route: Route) => Route,
+  popView: () => Route,
+  popToView: (route: Route) => Route,
+  resetStack: (route: Route) => Route,
+  resetApplication: (route: Route) => Route,
   get: () => Stack[],
 }
 

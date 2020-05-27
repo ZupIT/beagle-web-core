@@ -37,7 +37,7 @@ describe('BeagleContext', () => {
   }
 
   beforeEach(() => {
-    view = createBeagleView({ baseUrl, components: {}, middlewares: [middleware], analytics },'')
+    view = createBeagleView({ baseUrl, components: {}, middlewares: [middleware], analytics }, '/home')
     view.updateWithTree({ sourceTree: treeA })
     middleware.mockClear()
     nock.cleanAll()
@@ -138,5 +138,5 @@ describe('BeagleContext', () => {
     BeagleContext.unregisterView('beagleId')
     expect(views['beagleId']).toBeUndefined()
   })
-  
+
 })

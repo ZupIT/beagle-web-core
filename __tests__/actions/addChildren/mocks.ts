@@ -2,21 +2,21 @@ import { IdentifiableBeagleUIElement } from '../../../src/types'
 
 export function createSimpleMock(): IdentifiableBeagleUIElement {
   return {
-    _beagleType_: 'container',
+   _beagleComponent_: 'container',
     id: 'container',
     children: [
       {
-        _beagleType_: 'container',
+        _beagleComponent_: 'container',
         id: 'content',
         children: [
           {
-            _beagleType_: 'loading',
+            _beagleComponent_: 'custom:loading',
             id: 'loading',
           },
         ],
       },
       {
-        _beagleType_: 'button',
+        _beagleComponent_: 'button',
         id: 'button',
         value: 'click me',
       },

@@ -27,6 +27,7 @@ interface StrategyArrays {
 
 interface Params<Schema> {
   url: string,
+  fallbackUIElement?: BeagleUIElement<Schema>,
   method?: HttpMethod,
   headers?: Record<string, string>,
   strategy?: Strategy,
@@ -82,17 +83,18 @@ export async function loadFromServer<Schema>(
 
 export async function load<Schema>({
   url,
+  fallbackUIElement,
   method = 'get',
   headers,
   strategy = 'network-with-fallback-to-cache',
-  loadingComponent = 'loading',
-  errorComponent = 'error',
+  loadingComponent = 'custom:loading',
+  errorComponent = 'custom:error',
   shouldShowLoading = true,
   shouldShowError = true,
   onChangeTree,
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false) {
-    if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleType_: loadingComponent })
+    if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({  _beagleComponent_: loadingComponent })
     onChangeTree(await loadFromServer(url, method, headers, strategy !== 'network-only'))
   }
 
@@ -121,13 +123,14 @@ export async function load<Schema>({
   }
 
   async function start() {
-    const { fetch, fallback } = strategyNameToStrategyArrays[strategy]
+    const { fetch, fallback: fallbackStrategy } = strategyNameToStrategyArrays[strategy]
     const [hasFetchSuccess, fetchErrors] = await runStrategies(fetch, false)
     if (hasFetchSuccess) return
-    const [hasFallbackSuccess, fallbackErrors] = await runStrategies(fallback, true)
-    if (hasFallbackSuccess) return
-    if (shouldShowError) onChangeTree({ _beagleType_: errorComponent })
-    throw [...fetchErrors, ...fallbackErrors]
+    if (fallbackUIElement) return onChangeTree(fallbackUIElement)
+    const [hasFallbackStrategySuccess, fallbackStrategyErrors] = await runStrategies(fallbackStrategy, true)
+    if (hasFallbackStrategySuccess) return
+    if (shouldShowError) onChangeTree({ _beagleComponent_: errorComponent })
+    throw [...fetchErrors, ...fallbackStrategyErrors]
   }
 
   await start()
