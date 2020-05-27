@@ -15,9 +15,11 @@
 */
 
 import mapKeys from 'lodash/mapKeys'
-import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig, ItemsToCustom } from '../types'
+import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig, DefaultSchema } from '../types'
 import { ActionHandler } from '../actions/types'
 import { findById, findParentByChildId, indexOf } from './tree-reading'
+
+type ItemsToCustom = Record<string, ActionHandler> | BeagleConfig<DefaultSchema>['components']
 
 /* Adds a child element to the target tree. If the mode is "append", the child will be added as the
 last element of the target's children. If "prepend", it will be added as the first child. This

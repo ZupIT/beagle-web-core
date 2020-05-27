@@ -49,8 +49,6 @@ export type Strategy = (
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
-export type ItemsToCustom = Record<string, ActionHandler> | BeagleConfig<DefaultSchema>['components']
-
 export interface BeagleHttpClient {
   fetch: typeof fetch,
   setFetchFunction: (fetchFn: typeof fetch) => void,
