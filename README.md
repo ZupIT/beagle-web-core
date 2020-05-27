@@ -33,10 +33,10 @@ Portanto, para abrir uma caixa de alerta do sistema ao clicar em um botão, por 
 
 ```json
 {
-  "_beagleType_": "button",
+  "_beagleComponent_": "beagle:button",
   "value": "Clique para abrir o alerta",
   "onPress": {
-    "_beagleAction_": "alert",
+    "_beagleAction_": "beagle:alert",
     "message": "Caixa de alerta foi aberta! Clique em \"ok\" para fechar."
   }
 }
@@ -45,7 +45,17 @@ Portanto, para abrir uma caixa de alerta do sistema ao clicar em um botão, por 
 Atente-se para o fato de que a ação "alert" é apenas um exemplo. Qualquer ação, com qualquer `_beagleAction_` poderia ser lançada no evento de "onPress".
 
 ### Contexto
-Um contexto pode ser estabelecido em qualquer componente Beagle que aceite um ou mais filhos. Todo contexto é identificado pela chave `_context_`. Se a chave `_context_` é encontrada no JSON, então um contexto está sendo definido a partir daquele ponto na árvore, ou seja, o escopo desse contexto é o próprio elemento onde ele foi definido e todos seus descendentes.
+Um contexto pode ser estabelecido em qualquer componente Beagle que implemente `LayoutComponent`, ou seja, `_context_` pode ser especificado nos seguintes componentes:
+- container
+- form
+- screen
+- scrollView
+- lazyComponent
+- listView
+- pageView
+- custom components que implementam LayoutComponent
+
+Todo contexto é identificado pela chave `_context_`. Se a chave `_context_` é encontrada no JSON, então um contexto está sendo definido a partir daquele ponto na árvore, ou seja, o escopo desse contexto é o próprio elemento onde ele foi definido e todos seus descendentes.
 
 Um contexto nada mais é que uma variável. Essa variável pode ser de qualquer tipo, inclusive um mapa, definindo um conjunto de pares <key, value>. Através de bindings (próximo tópico), o valor de um contexto pode ser acessado por qualquer componente ou ação em seu escopo.
 
@@ -53,14 +63,14 @@ Um contexto possui sempre um id e um valor. Veja um exemplo de componente que de
 
 ```json
 {
-  "_beagleType_": "container",
+  "_beagleComponent_": "beagle:container",
   "_context_": {
     "id": "myText",
     "value": "Hello World!",
   },
   "children": [
     {
-      "_beagleType_": "text",
+      "_beagleComponent_": "beagle:text",
       "value": "Exemplo de contexto"
     }
   ]
@@ -187,7 +197,7 @@ Deseja-se escrever extamente "${client.name}", ou seja essa string não deve ser
 
 ```json
 {
-  "_beagleType": "text",
+  "_beagleComponent": "text",
   "value": "\\${client.name}"
 }
 ```
@@ -209,7 +219,7 @@ Uma customAction possui obrigatoriamente um `_beagleAction_` que deve ser único
 
 ```typescript
 interface ShowFeedbackMessageAction {
-  _beagleAction_: 'showFeedbackMessage',
+  _beagleAction_: 'beagle:showFeedbackMessage',
   level?: 'info' | 'warning' | 'success' | 'error',
   text: string,
   duration?: number,
@@ -262,10 +272,10 @@ Veja um exemplo de contexto criado implicitamente:
 
 ```json
 {
-  "_beagleType_": "input",
+  "_beagleComponent_": "custom:text-input",
   "label": "CEP",
   "onBlur": {
-    "_beagleAction_": "sendRequest",
+    "_beagleAction_": "beagle:sendRequest",
     "url": "https://viacep.com.br/ws/${onBlur.value}/json",
     "method": "get"
   }
@@ -292,7 +302,7 @@ Essa é a ação mais importante e serve para estabelecer uma comunicação entr
 
 ```typescript
 interface SetContextAction {
-  _beagleAction_: 'setContext',
+  _beagleAction_: 'beagle:setContext',
   context?: string,
   path?: string,
   value: string,
@@ -333,7 +343,7 @@ Esta ação é responsável por disparar requisições HTTP. Os dados retornados
 
 ```typescript
 interface SendRequestAction {
-  _beagleAction_: 'sendRequest',
+  _beagleAction_: 'beagle:sendRequest',
   url: string,
   method?: 'get' | 'post' | 'put' | 'patch' | 'delete',
   data?: any,
@@ -383,7 +393,7 @@ Esta ação serve para alterar galhos da árvore de UI, ou seja, ela manipula os
 
 ```typescript
 interface AddChildrenAction {
-  _beagleAction_: 'addChildren',
+  _beagleAction_: 'beagle:addChildren',
   componentId: string,
   value: BeagleUIElement[],
   mode?: 'append' | 'prepend' | 'replace',
@@ -421,41 +431,41 @@ interface LocalView {
 type Route = LocalView | RemoteView
 
 interface OpenExternalURLAction {
-  _beagleAction_: 'openExternalURL',
+  _beagleAction_: 'beagle:openExternalURL',
   url: string,
 }
 
 interface OpenNativeRouteAction {
-  _beagleAction_: 'openNativeRoute',
+  _beagleAction_: 'beagle:openNativeRoute',
   route: string,
   data?: Record<string, any>,
 }
 
 interface PushStackAction {
-  _beagleAction_: 'pushStack',
+  _beagleAction_: 'beagle:pushStack',
   route: Route,
 }
 
 interface PopStackAction {
-  _beagleAction_: 'popStack',
+  _beagleAction_: 'beagle:popStack',
 }
 
 interface PushViewAction {
-  _beagleAction_: 'pushView',
+  _beagleAction_: 'beagle:pushView',
   route: Route,
 }
 
 interface PopViewAction {
-  _beagleAction_: 'popView',
+  _beagleAction_: 'beagle:popView',
 }
 
 interface PopToViewAction {
-  _beagleAction_: 'popToView',
+  _beagleAction_: 'beagle:popToView',
   route: string,
 }
 
 interface ResetNavigationAction {
-  _beagleAction_: 'resetNavigation',
+  _beagleAction_: 'beagle:resetNavigation',
   route: Route,
 }
 ```
@@ -468,13 +478,13 @@ Mostram as caixas de diálogo nativas do sistema. Alert mostra uma mensagem e um
 
 ```typescript
 interface AlertAction {
-  _beagleAction_: 'alert',
+  _beagleAction_: 'beagle:alert',
   message: string,
   onPressOk?: BeagleAction,
 }
 
 interface ConfirmAction {
-  _beagleAction_: 'confirm',
+  _beagleAction_: 'beagle:confirm',
   message: string,
   onPressOk?: BeagleAction,
   onPressCancel?: BeagleAction,
@@ -483,13 +493,25 @@ interface ConfirmAction {
 
 `onPressOk` e `onPressCancel` são eventos, ou seja, serão associados à ações e permitem que se faça um encadeamento de ações. A ação associada ao `onPressOk` é executada quando o botão de ok é pressionado. A ação associada ao `onPressCancel` é executada quando o botão de cancel é pressionado.
 
+### Submit form
+
+Esta ação submete o formulário no qual o componente que a disparou está contido.
+
+```typescript
+interface SubmitFormAction {
+  _beagleAction_: 'beagle:submitForm',
+}
+```
+
 ## Componentes padrões e eventos esperados
 
 ### Button
 O componente de botão possui os eventos `onPress` e `onLongPress`. Nenhum desses eventos cria contexto implícito.
 
-### Form
-O componente de form possui os eventos `onSubmit` e `onReset`. Nenhum desses eventos cria contexto implícito.
+### Simple form
+O componente simpleform é um novo componente padrão que deve funcionar exatamente como o container no mobile. A única propriedade a mais é o evento `onSubmit`. O evento `onSubmit` não cria contexto implícito e é emitido sempre que o formulário é submetido.
+
+Um formulário é submetido através da ação `beagle:submitForm`.
 
 ### Inputs
 Todo componente de entrada de dados possui os eventos `onChange`, `onFocus` e `onBlur`. `onChange` é disparado quando o valor do input muda. `onFocus` é disparado quando o input recebe foco. `onBlur` é disparado quando o input perde foco.
