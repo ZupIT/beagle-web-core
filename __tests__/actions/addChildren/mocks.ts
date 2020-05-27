@@ -10,7 +10,7 @@ export function createSimpleMock(): IdentifiableBeagleUIElement {
         id: 'content',
         children: [
           {
-            _beagleComponent_: 'loading',
+            _beagleComponent_: 'custom:loading',
             id: 'loading',
           },
         ],
