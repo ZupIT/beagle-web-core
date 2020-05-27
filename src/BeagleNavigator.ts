@@ -94,14 +94,14 @@ const createBeagleNavigator = (initialRoute: Route): BeagleNavigator => {
   }
 
   return {
-    'beagle:pushStack': pushStack,
-    'beagle:popStack': popStack,
-    'beagle:pushView': pushView,
-    'beagle:popView': popView,
-    'beagle:popToView': popToView,
-    'beagle:resetStack': resetStack,
-    'beagle:resetApplication': resetApplication,
-    'beagle:get': get,
+    pushStack,
+    popStack,
+    pushView,
+    popView,
+    popToView,
+    resetStack,
+    resetApplication,
+    get,
   }
 
 }

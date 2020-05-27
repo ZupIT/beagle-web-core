@@ -70,7 +70,7 @@ describe('Actions: Navigation', () => {
   })
 
   it('should init beagle navigator correctly', () => {
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should open exeternal url', () => {
@@ -86,58 +86,58 @@ describe('Actions: Navigation', () => {
   it('should pushStack on beagle navigator', () => {
     pushStack()
     const newStack = [{ url: '/profile' }]
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack, newStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, newStack])
   })
 
   it('should popStack on beagle navigator', () => {
     pushStack()
     NavigationActions['beagle:popStack']({ action: { _beagleAction_: 'beagle:popStack' }, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should pushView on beagle navigator', () => {
     pushView()
     const newView = { url: '/profile' }
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([[{ url: '/home' }, newView]])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([[{ url: '/home' }, newView]])
   })
 
   it('should popView on beagle navigator', () => {
     pushView()
     NavigationActions['beagle:popView']({ action: { _beagleAction_: 'beagle:popView' }, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should popToView on beagle navigator', () => {
     pushView()
     NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: { url: '/home' } }, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should resetStack', () => {
     pushStack()
     NavigationActions['beagle:resetStack']({ action: { _beagleAction_: 'beagle:resetStack', route: { url: '/resetStack' }}, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack, [{ url: '/resetStack' }]])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, [{ url: '/resetStack' }]])
   })
 
   it('should resetApplication', () => {
     pushView()
     NavigationActions['beagle:resetApplication']({ action: { _beagleAction_: 'beagle:resetApplication', route: { url: '/resetApplication' }}, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([[{ url: '/resetApplication' }]])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([[{ url: '/resetApplication' }]])
   })
 
   it('should do nothing when popView on a single route stack', () => {
     NavigationActions['beagle:popView']({ action: { _beagleAction_: 'beagle:popView' }, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should do nothing when popStack on a single stack', () => {
     NavigationActions['beagle:popStack']({ action: { _beagleAction_: 'beagle:popStack' }, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should do nothing when popToView for a not valid view', () => {
     NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: '/non-existent-route' }, ...params })
-    expect(beagleView.getBeagleNavigator()['beagle:get']()).toEqual([initialStack])
+    expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
 })

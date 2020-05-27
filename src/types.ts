@@ -49,8 +49,6 @@ export type Strategy = (
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
-export type ItemsToCustom = Record<string, ActionHandler> | BeagleConfig<DefaultSchema>['components']
-
 export interface BeagleHttpClient {
   fetch: typeof fetch,
   setFetchFunction: (fetchFn: typeof fetch) => void,
@@ -133,14 +131,14 @@ export interface UpdateWithTreeParams<Schema> {
 export type Stack = Route[]
 
 export interface BeagleNavigator {
-  'beagle:pushStack': (route: Route) => Route,
-  'beagle:popStack': () => Route,
-  'beagle:pushView': (route: Route) => Route,
-  'beagle:popView': () => Route,
-  'beagle:popToView': (route: Route) => Route,
-  'beagle:resetStack': (route: Route) => Route,
-  'beagle:resetApplication': (route: Route) => Route,
-  'beagle:get': () => Stack[],
+  pushStack: (route: Route) => Route,
+  popStack: () => Route,
+  pushView: (route: Route) => Route,
+  popView: () => Route,
+  popToView: (route: Route) => Route,
+  resetStack: (route: Route) => Route,
+  resetApplication: (route: Route) => Route,
+  get: () => Stack[],
 }
 
 export interface URLBuilder {

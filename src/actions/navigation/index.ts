@@ -16,6 +16,7 @@
 
 import { ActionHandler } from '../types'
 import { createQueryString } from '../../utils/querystring'
+import { BeagleNavigator } from '../../types'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -46,7 +47,8 @@ interface Action {
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, beagleView }) => {
   try {
-    const element = beagleView.getBeagleNavigator()[action._beagleAction_]((action as Action).route)
+    const functionName = action._beagleAction_.replace(/^beagle:/, '') as keyof BeagleNavigator
+    const element = beagleView.getBeagleNavigator()[functionName]((action as Action).route)
     const screen = (element as LocalView).screen
     const path = (element as RemoteView).url
     if (screen) beagleView.updateWithTree({ sourceTree: screen })
