@@ -28,10 +28,32 @@ const convertChildToChildren = (uiTree: BeagleUIElement<any>) => {
         uiTree.children = children ? [...children, ...childArray] : childArray
         delete uiTree.child
     }
-
-    if (uiTree.children) uiTree.children.forEach(convertChildToChildren)
         
     return uiTree
 }
 
-export default convertChildToChildren
+const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
+  if (uiTree._beagleComponent_ === 'beagle:lazycomponent' && uiTree.initialState) {
+      const initialState = uiTree.initialState
+      if (typeof initialState !== 'object') return uiTree
+
+      const initialStateArray = Array.isArray(initialState) ? initialState : [initialState]
+      const children = uiTree.children
+      delete uiTree.children
+      
+      uiTree.children = children ? [...children, ...initialStateArray] : initialStateArray
+      delete uiTree.initialState
+  }
+      
+  return uiTree
+}
+
+const convertToChildren = (uiTree: BeagleUIElement<any>) => {
+  uiTree = convertChildToChildren(uiTree)
+  uiTree = beagleLazyComponentMiddleware(uiTree)
+  
+  if (uiTree.children) uiTree.children.forEach(convertChildToChildren)
+
+  return uiTree
+}
+export default convertToChildren

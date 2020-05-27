@@ -14,22 +14,41 @@
   * limitations under the License.
 */
 
-import { treeWithChild, treeWithChildAndChildren, treeTestChild } from '../mocks'
-import convertChildToChildren from '../../src/middlewares/convert-child-to-children'
+import { 
+  treeWithChild, treeWithChildAndChildren, treeTestChild,
+  treeWithLazyComponent, treeWithLazyComponentParsed,
+  treeWithLazyComponentAndChild, treeWithLazyComponentAndChildParsed
+} from '../mocks'
+import convertToChildren from '../../src/middlewares/convert-to-children'
 
 describe('ChildToChildren Middleware', () => {
   it('should transform child attributes to children attributes', () => {
-    const parsedTree = convertChildToChildren(treeWithChild)
+    const parsedTree = convertToChildren(treeWithChild)
     expect(parsedTree).toEqual(treeTestChild)
   })
 
   it('should return same tree when no child s found', () => {
-    const parsedTree = convertChildToChildren(treeTestChild)
+    const parsedTree = convertToChildren(treeTestChild)
     expect(parsedTree).toEqual(treeTestChild)
   })
 
   it('should return only one children attribute when child and children s found', () => {
-    const parsedTree = convertChildToChildren(treeWithChildAndChildren)
+    const parsedTree = convertToChildren(treeWithChildAndChildren)
     expect(parsedTree).toEqual(treeTestChild)
+  })
+
+  it('should transform lazycomponent attribute', () => {
+    const parsedTree = convertToChildren(treeWithLazyComponent)
+    expect(parsedTree).toEqual(treeWithLazyComponentParsed)
+  })
+
+  it('should return same tree when no lazycomponent is found', () => {
+    const parsedTree = convertToChildren(treeTestChild)
+    expect(parsedTree).toEqual(treeTestChild)
+  })
+
+  it('should replace initialState and child on the same tree', () => {
+    const parsedTree = convertToChildren(treeWithLazyComponentAndChild)
+    expect(parsedTree).toEqual(treeWithLazyComponentAndChildParsed)
   })
 })
