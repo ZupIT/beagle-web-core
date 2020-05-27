@@ -101,7 +101,7 @@ const createBeagleNavigator = (initialRoute: Route): BeagleNavigator => {
     'beagle:popToView': popToView,
     'beagle:resetStack': resetStack,
     'beagle:resetApplication': resetApplication,
-    get,
+    'beagle:get': get,
   }
 
 }

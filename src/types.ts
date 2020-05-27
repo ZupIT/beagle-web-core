@@ -140,7 +140,7 @@ export interface BeagleNavigator {
   'beagle:popToView': (route: Route) => Route,
   'beagle:resetStack': (route: Route) => Route,
   'beagle:resetApplication': (route: Route) => Route,
-  get: () => Stack[],
+  'beagle:get': () => Stack[],
 }
 
 export interface URLBuilder {
