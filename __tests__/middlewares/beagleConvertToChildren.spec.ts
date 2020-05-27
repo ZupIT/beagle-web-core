@@ -19,36 +19,36 @@ import {
   treeWithLazyComponent, treeWithLazyComponentParsed,
   treeWithLazyComponentAndChild, treeWithLazyComponentAndChildParsed
 } from '../mocks'
-import convertToChildren from '../../src/middlewares/convert-to-children'
+import beagleConvertToChildrenMiddleware from '../../src/middlewares/beagle-convert-to-children'
 
 describe('ChildToChildren Middleware', () => {
   it('should transform child attributes to children attributes', () => {
-    const parsedTree = convertToChildren(treeWithChild)
+    const parsedTree = beagleConvertToChildrenMiddleware(treeWithChild)
     expect(parsedTree).toEqual(treeTestChild)
   })
 
   it('should return same tree when no child s found', () => {
-    const parsedTree = convertToChildren(treeTestChild)
+    const parsedTree = beagleConvertToChildrenMiddleware(treeTestChild)
     expect(parsedTree).toEqual(treeTestChild)
   })
 
   it('should return only one children attribute when child and children s found', () => {
-    const parsedTree = convertToChildren(treeWithChildAndChildren)
+    const parsedTree = beagleConvertToChildrenMiddleware(treeWithChildAndChildren)
     expect(parsedTree).toEqual(treeTestChild)
   })
 
   it('should transform lazycomponent attribute', () => {
-    const parsedTree = convertToChildren(treeWithLazyComponent)
+    const parsedTree = beagleConvertToChildrenMiddleware(treeWithLazyComponent)
     expect(parsedTree).toEqual(treeWithLazyComponentParsed)
   })
 
   it('should return same tree when no lazycomponent is found', () => {
-    const parsedTree = convertToChildren(treeTestChild)
+    const parsedTree = beagleConvertToChildrenMiddleware(treeTestChild)
     expect(parsedTree).toEqual(treeTestChild)
   })
 
   it('should replace initialState and child on the same tree', () => {
-    const parsedTree = convertToChildren(treeWithLazyComponentAndChild)
+    const parsedTree = beagleConvertToChildrenMiddleware(treeWithLazyComponentAndChild)
     expect(parsedTree).toEqual(treeWithLazyComponentAndChildParsed)
   })
 })

@@ -48,7 +48,7 @@ const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
   return uiTree
 }
 
-const convertToChildren = (uiTree: BeagleUIElement<any>) => {
+const beagleConvertToChildrenMiddleware = (uiTree: BeagleUIElement<any>) => {
   uiTree = convertChildToChildren(uiTree)
   uiTree = beagleLazyComponentMiddleware(uiTree)
   
@@ -56,4 +56,4 @@ const convertToChildren = (uiTree: BeagleUIElement<any>) => {
 
   return uiTree
 }
-export default convertToChildren
+export default beagleConvertToChildrenMiddleware
