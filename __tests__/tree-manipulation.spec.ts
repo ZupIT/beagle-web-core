@@ -15,8 +15,8 @@
 */
 
 import { addChild, clone, insertIntoTree, replaceInTree, checkPrefix } from '../src/utils/tree-manipulation'
-import { BeagleUIElement }  from '../src/types'
-import { treeA, treeB, configComponentsWrong  } from './mocks'
+import { BeagleUIElement } from '../src/types'
+import { treeA, treeB, configComponentsWrong } from './mocks'
 import { last, hasDifferentPointers } from './test-utils'
 
 describe('Utils: tree manipulation', () => {
@@ -39,7 +39,7 @@ describe('Utils: tree manipulation', () => {
   })
 
   it('should append child to element without children', () => {
-    const target: BeagleUIElement<any> = {_beagleComponent_: 'test' }
+    const target: BeagleUIElement<any> = { _beagleComponent_: 'test' }
     addChild(target, treeB, 'append')
     expect(target.children[0]).toBe(treeB)
   })
@@ -69,6 +69,8 @@ describe('Utils: tree manipulation', () => {
   })
 
   it('should insert custom word', () => {
-    expect(() => checkPrefix(configComponentsWrong)).toThrow(new Error('Invalid component name button. Your components should always start with "beagle:" if it\'s overwriting a default component or "custom:" if it\'s a custom component'))
+    expect(() => checkPrefix(configComponentsWrong)).toThrow(new Error(`Please check your config. The button is not a valid name. Yours components or actions
+      should always start with "beagle:" if it\'s overwriting a default component or an action, "custom:"
+      if it\'s a custom component or an action`))
   })
 })

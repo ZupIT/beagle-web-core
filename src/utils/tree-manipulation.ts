@@ -69,7 +69,9 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
 export function checkPrefix(items: ItemsToCustom) {
   mapKeys(items, (value, key: string) => {
     if (!key.startsWith('custom:') && !key.startsWith('beagle:')) {
-      throw new Error(`Invalid component name ${key}. Your components should always start with "beagle:" if it\'s overwriting a default component or "custom:" if it\'s a custom component`)
+      throw new Error(`Please check your config. The ${key} is not a valid name. Yours components or actions
+      should always start with "beagle:" if it\'s overwriting a default component or an action, "custom:"
+      if it\'s a custom component or an action`)
     }
   })
 }
