@@ -64,7 +64,6 @@ export interface CustomAction {
 
 export type BeagleDefaultAction = (
   SendRequestAction
-  | SetAttributeAction
   | AddChildrenAction
   | SetContextAction
   | AlertAction
