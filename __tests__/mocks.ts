@@ -779,12 +779,7 @@ export const treeWithChildAndChildren: IdentifiableBeagleUIElement = {
   children: [],
 }
 
-export const configComponents: BeagleConfig<DefaultSchema>['components'] = {
-  'beagle:component:button': 'Teste',
+export const configComponentsWrong: BeagleConfig<DefaultSchema>['components'] = {
+  'beagle:button': 'Teste',
   'button': 'Teste'
-}
-
-export const configComponentsRight: BeagleConfig<DefaultSchema>['components'] = {
-  'beagle:component:button': 'Teste',
-  'custom:button': 'Teste'
 }

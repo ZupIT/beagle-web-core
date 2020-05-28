@@ -66,25 +66,12 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
   return tree && JSON.parse(JSON.stringify(tree))
 }
 
-export function convertToCustom(items: ItemsToCustom) {
-  return mapKeys(items, (value, key: string) => `${
-    key.startsWith('beagle:') || key.startsWith('custom:')
-      ? key
-      : 'custom:' + key
-    }`)
-}
-
-/* Insert string 'custom:' if the component string doesn't have the strings 'beagle:' or 'custom:' in the
-beginning of the string. */
-export function convertComponentsToCustom<DefaultSchema>
-  (components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
-  return convertToCustom(components) as BeagleConfig<DefaultSchema>['components']
-}
-
-/* Insert string 'custom:' if the actions string doesn't have the strings 'beagle:' or 'custom:' in the
-beginning of the string. */
-export function convertActionsToCustom<DefaultSchema> (actions: Record<string, ActionHandler>): Record<string, ActionHandler> {
-  return convertToCustom(actions) as BeagleConfig<DefaultSchema>['components']
+export function checkPrefix(items: ItemsToCustom) {
+  mapKeys(items, (value, key: string) => {
+    if (!key.startsWith('custom:') && !key.startsWith('beagle:')) {
+      throw new Error(`Invalid component name ${key}. Your components should always start with "beagle:" if it\'s overwriting a default component or "custom:" if it\'s a custom component`)
+    }
+  })
 }
 
 
