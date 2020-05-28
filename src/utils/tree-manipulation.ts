@@ -15,8 +15,11 @@
 */
 
 import mapKeys from 'lodash/mapKeys'
-import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig } from '../types'
+import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig, DefaultSchema } from '../types'
+import { ActionHandler } from '../actions/types'
 import { findById, findParentByChildId, indexOf } from './tree-reading'
+
+type ItemsToCustom = Record<string, ActionHandler> | BeagleConfig<DefaultSchema>['components']
 
 /* Adds a child element to the target tree. If the mode is "append", the child will be added as the
 last element of the target's children. If "prepend", it will be added as the first child. This
@@ -63,13 +66,14 @@ export function clone<T extends BeagleUIElement<any>>(tree: T): T {
   return tree && JSON.parse(JSON.stringify(tree))
 }
 
-/* Insert string 'custom:' if the component string doesn't have the strings 'beagle:' or 'custom:' in the
-beginning of the string. */
-export function convertComponentsToCustom<DefaultSchema>
-  (components: BeagleConfig<DefaultSchema>['components']): BeagleConfig<DefaultSchema>['components'] {
-  return mapKeys(components, (value, key: string) => `${
-      key.indexOf('beagle:') === 0 || key.indexOf('custom:') === 0
-        ? key
-        : 'custom:' + key
-      }`) as BeagleConfig<DefaultSchema>['components']
+export function checkPrefix(items: ItemsToCustom) {
+  mapKeys(items, (value, key: string) => {
+    if (!key.startsWith('custom:') && !key.startsWith('beagle:')) {
+      throw new Error(`Please check your config. The ${key} is not a valid name. Yours components or actions
+      should always start with "beagle:" if it\'s overwriting a default component or an action, "custom:"
+      if it\'s a custom component or an action`)
+    }
+  })
 }
+
+

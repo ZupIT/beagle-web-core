@@ -8,7 +8,7 @@ export function createContainerWithAction(
     _beagleComponent_: 'container',
     id: 'container',
     [eventName]: action || {
-      _beagleAction_: 'alert',
+      _beagleAction_: 'beagle:alert',
       message: 'test message',
     },
   }
@@ -27,7 +27,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
         _beagleComponent_: 'button',
         id: 'btn-open-modal',
         onPress: {
-          _beagleAction_: 'setContext',
+          _beagleAction_: 'beagle:setContext',
           value: true,
         }
       },
@@ -38,11 +38,11 @@ export function createModalMock(): IdentifiableBeagleUIElement {
         title: 'My Modal',
         onClose: [
           {
-            _beagleAction_: 'setContext',
+            _beagleAction_: 'beagle:setContext',
             value: false,
           },
           {
-            _beagleAction_: 'alert',
+            _beagleAction_: 'beagle:alert',
             message: 'modal has been closed!',
           },
         ],
@@ -51,7 +51,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
             _beagleComponent_: 'container',
             id: 'modal-content',
             onInit: {
-              _beagleAction_: 'sendRequest',
+              _beagleAction_: 'beagle:sendRequest',
               componentId: 'modal',
               url: '/modalContent',
               onSuccess: {

@@ -1,14 +1,14 @@
 import confirm from '../../src/actions/confirm'
 import { createBeagleViewMock, mockSystemDialogs } from '../test-utils'
 
-describe('Actions: confirm', () => {
+describe('Actions: beagle:confirm', () => {
   it('should show confirm message', () => {
     const mock = { _beagleComponent_: 'container', id: 'container' }
     const unmockDialogs = mockSystemDialogs()
 
     confirm({
       action: {
-        _beagleAction_: 'confirm',
+        _beagleAction_: 'beagle:confirm',
         message: 'Would you like to continue?',
       },
       beagleView: createBeagleViewMock({ getTree: () => mock }),
@@ -30,7 +30,7 @@ describe('Actions: confirm', () => {
 
     confirm({
       action: {
-        _beagleAction_: 'confirm',
+        _beagleAction_: 'beagle:confirm',
         message: 'Would you like to continue?',
         onPressOk,
         onPressCancel,
@@ -54,7 +54,7 @@ describe('Actions: confirm', () => {
 
     confirm({
       action: {
-        _beagleAction_: 'confirm',
+        _beagleAction_: 'beagle:confirm',
         message: 'Would you like to continue?',
         onPressOk,
         onPressCancel,

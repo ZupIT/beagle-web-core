@@ -17,12 +17,12 @@
 import { BeagleUIElement } from '../..'
 
 export interface OpenExternalURLAction {
-  _beagleAction_: 'openExternalURL',
+  _beagleAction_: 'beagle:openExternalURL',
   url: string,
 }
 
 export interface OpenNativeRouteAction {
-  _beagleAction_: 'openNativeRoute',
+  _beagleAction_: 'beagle:openNativeRoute',
   route: string,
   data?: Record<string, any>,
 }
@@ -40,35 +40,35 @@ export interface LocalView {
 export type Route = LocalView | RemoteView
 
 export interface PushStackAction {
-  _beagleAction_: 'pushStack',
+  _beagleAction_: 'beagle:pushStack',
   route: Route,
 }
 
 export interface PopStackAction {
-  _beagleAction_: 'popStack',
+  _beagleAction_: 'beagle:popStack',
 }
 
 export interface PushViewAction {
-  _beagleAction_: 'pushView',
+  _beagleAction_: 'beagle:pushView',
   route: Route,
 }
 
 export interface PopViewAction {
-  _beagleAction_: 'popView',
+  _beagleAction_: 'beagle:popView',
 }
 
 export interface PopToViewAction {
-  _beagleAction_: 'popToView',
+  _beagleAction_: 'beagle:popToView',
   route: Route,
 }
 
 export interface ResetStackAction {
-  _beagleAction_: 'resetStack',
+  _beagleAction_: 'beagle:resetStack',
   route: Route,
 }
 
 export interface ResetApplicationAction {
-  _beagleAction_: 'resetApplication',
+  _beagleAction_: 'beagle:resetApplication',
   route: Route,
 }
 
