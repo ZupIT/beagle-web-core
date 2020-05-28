@@ -34,7 +34,7 @@ import createURLBuilder from './utils/url-builder'
 import createBeagleNavigator from './BeagleNavigator'
 import beagleHttpClient from './BeagleHttpClient'
 import beagleTabViewMiddleware from './middlewares/tab-view-component'
-import convertChildToChildren from './middlewares/convert-child-to-children'
+import beagleConvertToChildrenMiddleware from './middlewares/beagle-convert-to-children'
 import beagleStyleMiddleware from './middlewares/beagle-style'
 import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import { addPrefix } from './utils/string'
@@ -98,7 +98,7 @@ const createBeagleView = <Schema>({
         beagleIdMiddleware,
         beagleStyleMiddleware,
         beagleStyleClassMiddleware,
-        convertChildToChildren]
+        beagleConvertToChildrenMiddleware]
     ) as IdentifiableBeagleUIElement<Schema>
   }
 
