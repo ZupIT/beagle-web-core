@@ -19,7 +19,7 @@ import { IdentifiableBeagleUIElement, BeagleView, DataContext } from '../types'
 type HTTPMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
 
 export interface SendRequestAction {
-  _beagleAction_: 'sendRequest',
+  _beagleAction_: 'beagle:sendRequest',
   url: string,
   method?: HTTPMethod,
   data?: any,
@@ -37,27 +37,27 @@ export interface SetAttributeAction {
 }
 
 export interface AddChildrenAction {
-  _beagleAction_: 'addChildren',
+  _beagleAction_: 'beagle:addChildren',
   componentId: string,
   value: IdentifiableBeagleUIElement[],
   mode?: 'append' | 'prepend' | 'replace',
 }
 
 export interface SetContextAction {
-  _beagleAction_: 'setContext',
+  _beagleAction_: 'beagle:setContext',
   context?: string,
   path?: string,
   value: any,
 }
 
 export interface AlertAction {
-  _beagleAction_: 'alert',
+  _beagleAction_: 'beagle:alert',
   message: string,
   onPressOk?: BeagleAction,
 }
 
 export interface ConfirmAction {
-  _beagleAction_: 'confirm',
+  _beagleAction_: 'beagle:confirm',
   message: string,
   onPressOk?: BeagleAction,
   onPressCancel?: BeagleAction,

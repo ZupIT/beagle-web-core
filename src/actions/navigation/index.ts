@@ -16,6 +16,7 @@
 
 import { ActionHandler } from '../types'
 import { createQueryString } from '../../utils/querystring'
+import { BeagleNavigator } from '../../types'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -46,7 +47,8 @@ interface Action {
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, beagleView }) => {
   try {
-    const element = beagleView.getBeagleNavigator()[action._beagleAction_]((action as Action).route)
+    const functionName = action._beagleAction_.replace(/^beagle:/, '') as keyof BeagleNavigator
+    const element = beagleView.getBeagleNavigator()[functionName]((action as Action).route)
     const screen = (element as LocalView).screen
     const { url: path, fallback } = element as RemoteView
     if (screen) beagleView.updateWithTree({ sourceTree: screen })
@@ -57,13 +59,13 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = ({ action, bea
 }
 
 export default {
-  openExternalURL,
-  openNativeRoute,
-  pushStack: navigateBeagleView,
-  popStack: navigateBeagleView,
-  pushView: navigateBeagleView,
-  popView: navigateBeagleView,
-  popToView: navigateBeagleView,
-  resetStack: navigateBeagleView,
-  resetApplication: navigateBeagleView,
+  'beagle:openExternalURL': openExternalURL,
+  'beagle:openNativeRoute': openNativeRoute,
+  'beagle:pushStack': navigateBeagleView,
+  'beagle:popStack': navigateBeagleView,
+  'beagle:pushView': navigateBeagleView,
+  'beagle:popView': navigateBeagleView,
+  'beagle:popToView': navigateBeagleView,
+  'beagle:resetStack': navigateBeagleView,
+  'beagle:resetApplication': navigateBeagleView,
 }

@@ -10,14 +10,14 @@ import {
   createMultipleScopesMock,
 } from './mocks'
 
-describe('Actions: setContext', () => {
+describe('Actions: beagle:setContext', () => {
   it('should set single context', () => {
     const mock = createSingleContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         value: 'new value',
       },
       beagleView,
@@ -43,7 +43,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         value: 'new value',
       },
       beagleView,
@@ -74,7 +74,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         context: 'ctx_a',
         value: 'new value',
       },
@@ -101,7 +101,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         value: 'new value',
       },
       beagleView,
@@ -127,7 +127,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         value: 'new value',
       },
       beagleView,
@@ -159,7 +159,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         path: 'age',
         value: 32,
       },
@@ -192,7 +192,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         path: 'phones[0]',
         value: '(00) 00000-0000',
       },
@@ -220,7 +220,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         path: '[2]',
         value: 'Dolor',
       },
@@ -249,7 +249,7 @@ describe('Actions: setContext', () => {
 
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         value: 'test',
       },
       beagleView,
@@ -271,7 +271,7 @@ describe('Actions: setContext', () => {
 
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         context: 'ctx_a',
         value: 'test',
       },
@@ -293,7 +293,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         path: 'lorem.ipsum.sin.it.dolor',
         value: 'amet',
       },
@@ -321,7 +321,7 @@ describe('Actions: setContext', () => {
   
     setContext({
       action: {
-        _beagleAction_: 'setContext',
+        _beagleAction_: 'beagle:setContext',
         path: 'lorem[1].ipsum.sin[3].it.dolor[0]',
         value: 'amet',
       },
