@@ -52,12 +52,40 @@ Entrada de Analytics gerada automáticamente quando usuário clica no botão:
 {
   "type": "action",
   "screen": "/step1",
-  "platform": "android",
   "event": "onPress",
-  "componentType": "button",
-  "componentId": "btn-next",
+  "component": {
+    "type": "beagle:button",
+    "id": "btn-next",
+    "position": { "x": 158, "y": 350 }
+  },
   "beagleAction": "pushView",
   "route": "/step2",
+  "sessionId": "ANENw588HHA78",
+}
+```
+
+Uma sessão possui dados como:
+
+```json
+{
+  "id": "ANENw588HHA78",
+  "userId": "a1489",
+  "platform": "android 10",
+  "beagle": "beagle-android@1.0",
+
+  "geolocation": {
+    "latitude": 58.78987854,
+    "longitude": -187.7865789,
+  },
+  
+  "city": "Uberlândia",
+  "state": "Minas Gerais",
+  "country": "Brazil",
+  "sex": "m",
+  "age": 47,
+  "phoneNumber": "(34) 99827-7858",
+  "connectionType": "4G",
+  "carrier": "Vivo"
 }
 ```
 
