@@ -779,6 +779,80 @@ export const treeWithChildAndChildren: IdentifiableBeagleUIElement = {
   children: [],
 }
 
+export const treeWithLazyComponent: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazycomponent',
+  initialState: {
+    id: 'A.0',
+    _beagleComponent_: 'type-B',
+    children: [
+      {
+        id: 'A.0.0',
+        _beagleComponent_: 'type-D',
+      }
+    ]
+  },
+}
+
+export const treeWithLazyComponentParsed: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazycomponent',
+  children: [
+    {
+      id: 'A.0',
+      _beagleComponent_: 'type-B',
+      children: [
+        {
+          id: 'A.0.0',
+          _beagleComponent_: 'type-D',
+        }
+      ]
+    }
+  ]
+}
+
+export const treeWithLazyComponentAndChild: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazycomponent',
+  initialState: {
+    id: 'A.0',
+    _beagleComponent_: 'type-B',
+    child: {
+      id: 'A.0.0',
+      _beagleComponent_: 'type-D',
+      children: [
+        {
+          id: 'A.0.0.0',
+          _beagleComponent_: 'type-D',
+        }
+      ]
+    }
+  },
+}
+
+export const treeWithLazyComponentAndChildParsed: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazycomponent',
+  children: [
+    {
+      id: 'A.0',
+      _beagleComponent_: 'type-B',
+      children: [
+        {
+          id: 'A.0.0',
+          _beagleComponent_: 'type-D',
+          children: [
+            {
+              id: 'A.0.0.0',
+              _beagleComponent_: 'type-D',
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
 export const configComponentsWrong: BeagleConfig<DefaultSchema>['components'] = {
   'beagle:button': 'Teste',
   'button': 'Teste'

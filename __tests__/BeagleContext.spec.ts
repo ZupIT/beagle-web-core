@@ -124,6 +124,17 @@ describe('BeagleContext', () => {
     }
   })
 
+  it('should replace even if root element', async () => {
+    const context = BeagleContext.getContext(viewId, 'A')
+    context.updateWithTree({sourceTree: treeA})
+    nock(baseUrl).get(path).reply(200, JSON.stringify(treeC))
+  
+    await context.replace({ path })
+    const replacedTree = clone(treeC)
+    expect(context.getView().getTree()).toStrictEqual(replacedTree)
+    expect(nock.isDone()).toBe(true)
+  })
+
   it('should unregister a view', () => {
     BeagleContext.unregisterView('beagleId')
     expect(views['beagleId']).toBeUndefined()
