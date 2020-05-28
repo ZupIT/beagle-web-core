@@ -15,6 +15,7 @@
 */
 
 import { IdentifiableBeagleUIElement, BeagleView, DataContext } from '../types'
+import { BeagleNavigationAction } from './navigation/types'
 
 type HTTPMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
 
@@ -27,13 +28,6 @@ export interface SendRequestAction {
   onSuccess?: BeagleAction,
   onError?: BeagleAction,
   onFinish?: BeagleAction,
-}
-
-export interface SetAttributeAction {
-  _beagleAction_: 'setAttribute',
-  componentId: string,
-  attributeName: string,
-  attributeValue: string,
 }
 
 export interface AddChildrenAction {
@@ -68,15 +62,17 @@ export interface CustomAction {
   [key: string]: any,
 }
 
-export type BeagleAction = (
+export type BeagleDefaultAction = (
   SendRequestAction
   | SetAttributeAction
   | AddChildrenAction
   | SetContextAction
   | AlertAction
   | ConfirmAction
-  | CustomAction
+  | BeagleNavigationAction
 )
+
+export type BeagleAction = BeagleDefaultAction | CustomAction
 
 export interface ActionHandlerParams<Action extends BeagleAction = any> {
   action: Action,
