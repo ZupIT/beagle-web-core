@@ -877,6 +877,283 @@ export const treeMixStyleParsed: IdentifiableBeagleUIElement = {
   }
 }
 
+export const treeAttributesToKeepNameWithContext: IdentifiableBeagleUIElement = {
+  id: 'KeepAttributes',
+  _beagleComponent_: 'type-KeepAttributes',
+  value: 'testing',
+  children: [
+    {
+      id: 'D.0',
+      _beagleComponent_: 'type-B',
+      style: {
+        display: '${contextTest}',
+        backgroundColor: '${contextTest}',
+        direction: '${contextTest}'
+      }
+    }
+  ],
+  style: {
+    positionType: '${contextTest}'
+  }
+}
+
+export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      _beagleComponent_: "beagle:image",
+      name: "img.jpg",
+      id: 'testing-2',
+      style: {
+        flex: {
+          flexDirection: '${contextTest}'
+        },
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        size: {
+          height: '${contextTest}'
+        },
+        width: '300px',
+        margin: {
+          all: '${contextTest}',
+        }
+      }
+    },
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '${contextTest}',
+            type: "REAL"
+          },
+          left: '${contextTest}'
+        },
+        bottom: '10px',
+        right: '20px',
+        padding: '${contextTest}'
+      }
+    },
+    {
+      id: 'E.0.0',
+      _beagleComponent_: 'type-E',
+      style: {
+        size: {
+          width: '${contextTest}'
+        },
+        padding: {
+          right: {
+            value: '${contextTest}',
+            type: "REAL"
+          }
+        },
+        paddingTop: '10px'
+      }
+    },
+  ],
+  style: {
+    display:"flex",
+    position: 'relative',
+    flex: '${contextTest}',
+    paddingRight: '10px',
+    size: '${contextTest}',
+    margin: '${contextTest}'
+  }
+}
+
+export const treeMixStyleWithContext: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      _beagleComponent_: "beagle:image",
+      name: "img.jpg",
+      id: 'testing-2',
+      style: {
+        flex: {
+          flexDirection: '${contextTest}',
+          flexWrap: 'WRAP',
+          justifyContent: 'FLEX_START',
+        },
+        size: {
+          height: '${contextTest}',
+          width: {
+            value: 300.0,
+            type: "REAL"
+          },
+        },
+        margin: {
+          all: '${contextTest}',
+        }
+      }
+    },
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '${contextTest}',
+            type: "REAL"
+          },
+          left: '${contextTest}',
+          bottom: {
+            value: 10.0,
+            type: "REAL"
+          },
+          right: {
+            value: 20.0,
+            type: "REAL"
+          }
+        },
+        padding: '${contextTest}'
+      }
+    },
+    {
+      id: 'E.0.0',
+      _beagleComponent_: 'type-E',
+      style: {
+        size: {
+          width: '${contextTest}'
+        },
+        padding: {
+          right: {
+            value: '${contextTest}',
+            type: "REAL"
+          },
+          top: {
+            value: 10,
+            type: "REAL"
+          }
+        }
+      }
+    },
+  ],
+  style:{
+    display: "FLEX",
+    positionType: 'RELATIVE',
+    flex:'${contextTest}',
+    padding: {
+      right: {
+        value: 10,
+        type: "REAL"
+      }
+    },
+    size: '${contextTest}',
+    margin: '${contextTest}'
+  }
+}
+
+export const treeContextValue: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '${contextTest}',
+            type: "REAL"
+          },
+        },
+      }
+    },
+  ]
+}
+
+export const treeContextValueParsed: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '${contextTest}',
+            type: "REAL"
+          },
+        },
+      }
+    },
+  ]
+}
+
+export const treeContextType: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '10',
+            type: '${contextTest}'
+          },
+        },
+        padding: {
+          right: {
+            value: '5',
+            type: '${contextTest}'
+          }
+        },
+        size: {
+          height: {
+            value: 300.0,
+            type: '${contextTest}'
+          },
+          width: {
+            value: 200.0,
+            type: '${contextTest}'
+          }
+        }
+      }
+    },
+  ]
+}
+
+export const treeContextTypeParsed: IdentifiableBeagleUIElement = {
+  _beagleComponent_: "beagle:container",
+  id: 'testing',
+  children: [
+    {
+      id: 'D.0.0',
+      _beagleComponent_: 'type-C',
+      style: {
+        position: {
+          top: {
+            value: '10',
+            type: '${contextTest}'
+          },
+        },
+        padding: {
+          right: {
+            value: '5',
+            type: '${contextTest}'
+          }
+        },
+        size: {
+          height: {
+            value: 300.0,
+            type: '${contextTest}'
+          },
+          width: {
+            value: 200.0,
+            type: '${contextTest}'
+          }
+        }
+      }
+    },
+  ]
+}
+
 export const treeE: IdentifiableBeagleUIElement = {
   id: 'E',
   _beagleComponent_: 'type-E',
