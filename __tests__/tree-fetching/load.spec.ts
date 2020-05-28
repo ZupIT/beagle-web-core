@@ -39,7 +39,7 @@ describe('Utils: tree fetching (load: general)', () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
     const promise = load({ url, onChangeTree })
-    expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'loading' })
+    expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:loading' })
     onChangeTree.mockClear()
     await promise
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
@@ -50,12 +50,12 @@ describe('Utils: tree fetching (load: general)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
     const promise = load({ url, onChangeTree })
-    expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'loading' })
+    expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:loading' })
     onChangeTree.mockClear()
     try {
       await promise
     } catch {}
-    expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'error' })
+    expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:error' })
     expect(nock.isDone()).toBe(true)
   })
 

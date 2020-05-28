@@ -20,7 +20,7 @@ import { Route } from './actions/navigation/types'
 
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
-export type ComponentName<Schema> = keyof Schema | 'error' | 'loading'
+export type ComponentName<Schema> = keyof Schema | 'custom:error' | 'custom:loading'
 
 export type TreeInsertionMode = 'prepend' | 'append'
 
@@ -68,6 +68,7 @@ export interface BeagleConfig<Schema> {
 
 export interface LoadParams<Schema = DefaultSchema> {
   path: string,
+  fallback?: BeagleUIElement<Schema>,
   method?: HttpMethod,
   headers?: Record<string, string>,
   middlewares?: Array<BeagleMiddleware<Schema>>,
