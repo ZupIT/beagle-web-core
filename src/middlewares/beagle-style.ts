@@ -24,6 +24,11 @@ interface HeightDataFormat {
   type: string,
 }
 
+interface EdgeDataFormat {
+  value: number | string,
+  type: string,
+}
+
 const UNITY_TYPE: Record<string, string> = {
   'REAL': 'px',
   'PERCENT': '%',
@@ -55,6 +60,83 @@ const SPECIAL_VALUES: Record<string, string> = {
   'NO_WRAP': 'nowrap',
 }
 
+const verifyContext = (value: string | number) => {
+  if (value && typeof value === 'string') {
+    const isContext = value.match(/^\${[a-z0-9A-Z_]*}$/)
+    return isContext
+  }
+  else return false
+}
+
+const handleContext = (item: string | number | EdgeDataFormat, key: string,
+  uiTree: BeagleUIElement<any>, outsideObjectKey?: string) => {
+  let stringValue: string
+  let stringType = ''
+  let isItemObject = false
+  if (isObject(item)) {
+    isItemObject = true
+    if (item && item.value && typeof item.value === 'number')
+      stringValue = item.value.toString()
+    else {
+      // @ts-ignore
+      stringValue = item.value || ''
+    }
+
+    if (item && item.type)
+      stringType = item.type.toString()
+
+  } else {
+    // @ts-ignore
+    stringValue = item && typeof item === 'number' ? item.toString() : item || ''
+  }
+
+  if (verifyContext(stringValue)) {
+    if (outsideObjectKey) {
+      if (!isObject(uiTree.parsedStyle[outsideObjectKey]))
+        uiTree.parsedStyle[outsideObjectKey] = {}
+      if (isItemObject) {
+        uiTree.parsedStyle[outsideObjectKey][key] = {
+          'value': stringValue,
+          // @ts-ignore
+          'type': item.type,
+        }
+      } else {
+        uiTree.parsedStyle[outsideObjectKey][key] = stringValue
+      }
+    } else {
+      if (isItemObject) {
+        uiTree.parsedStyle[key] = {
+          'value': stringValue,
+          // @ts-ignore
+          'type': item.type,
+        }
+      } else {
+        uiTree.parsedStyle[key] = stringValue
+      }
+    }
+    return true
+  } else if (verifyContext(stringType)) {
+    if (outsideObjectKey) {
+      if (!isObject(uiTree.parsedStyle[outsideObjectKey]))
+        uiTree.parsedStyle[outsideObjectKey] = {}
+      uiTree.parsedStyle[outsideObjectKey][key] = {
+        // @ts-ignore
+        'value': item.value,
+        'type': stringType,
+      }
+    } else {
+      uiTree.parsedStyle[key] = {
+        // @ts-ignore
+        'value': item.value,
+        'type': stringType,
+      }
+
+    }
+    return true
+  }
+  return false
+}
+
 const toLowerCase = (value: string | number) => {
   if (typeof value === 'number') return value
   return value.toLowerCase()
@@ -79,6 +161,8 @@ const getWebType = (type: string) => UNITY_TYPE[type]
 
 const parseValuesWithUnit = (unitType: string, value: number) => {
   const parsedUnitType = getWebType(unitType)
+  if (value === undefined || value === null)
+    return ''
   return handleAutoAsValue(value.toString(), parsedUnitType)
 }
 
@@ -94,23 +178,28 @@ const handleAspectRatio = (valueAspectRatio: number | null, heightData: HeightDa
 
 const formatSizeProperty =
   (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-    if (styleAttributes && typeof styleAttributes === 'object') {
-      const keys = Object.keys(styleAttributes)
-      let heightData = {} as HeightDataFormat
-      let valueAspectRatio = null
-      keys.forEach((key) => {
-        if (key !== 'aspectRatio') {
-          const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
-          uiTree.parsedStyle[key] = valueWithType
+    if (styleAttributes) {
+      if (typeof styleAttributes === 'object') {
+        const keys = Object.keys(styleAttributes)
+        let heightData = {} as HeightDataFormat
+        let valueAspectRatio = null
+        keys.forEach((key) => {
+          if (handleContext(styleAttributes[key], key, uiTree, 'size')) return
+          if (key !== 'aspectRatio') {
+            const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
+            uiTree.parsedStyle[key] = valueWithType
 
-          if (key === 'height') {
-            heightData = styleAttributes[key]
+            if (key === 'height') {
+              heightData = styleAttributes[key]
+            }
+          } else {
+            valueAspectRatio = styleAttributes[key]
           }
-        } else {
-          valueAspectRatio = styleAttributes[key]
-        }
-      })
-      uiTree = handleAspectRatio(valueAspectRatio, heightData, uiTree)
+        })
+        uiTree = handleAspectRatio(valueAspectRatio, heightData, uiTree)
+      } else {
+        handleContext(styleAttributes, 'size', uiTree)
+      }
     }
     return uiTree
   }
@@ -125,16 +214,21 @@ const handleSpecialPosition = (key: string,
 
 const formatPositionProperty =
   (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-    if (styleAttributes && typeof styleAttributes === 'object') {
-      const keys = Object.keys(styleAttributes)
-      keys.forEach((key) => {
-        const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
-        if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
-          uiTree = handleSpecialPosition(key, uiTree, valueWithType)
-        } else {
-          uiTree.parsedStyle[key] = valueWithType
-        }
-      })
+    if (styleAttributes) {
+      if (typeof styleAttributes === 'object') {
+        const keys = Object.keys(styleAttributes)
+        keys.forEach((key) => {
+          if (handleContext(styleAttributes[key], key, uiTree, 'position')) return
+          const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
+          if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
+            uiTree = handleSpecialPosition(key, uiTree, valueWithType)
+          } else {
+            uiTree.parsedStyle[key] = valueWithType
+          }
+        })
+      } else {
+        handleContext(styleAttributes, 'position', uiTree)
+      }
     }
     return uiTree
   }
@@ -142,22 +236,27 @@ const formatPositionProperty =
 const renameFlexAttributes = (key: string) => FLEX_PROPERTIES_TO_RENAME[key] || key
 
 const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-  if (styleAttributes && typeof styleAttributes === 'object') {
-    const flexKeys = Object.keys(styleAttributes)
-    flexKeys.forEach((key) => {
-      const atributeName = renameFlexAttributes(key)
-      let parsedValue
-      if (isObject(styleAttributes[key])) {
-        parsedValue = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
-      }
-      else {
-        const hasSpecialValues = SPECIAL_VALUES[styleAttributes[key]]
-        parsedValue = hasSpecialValues ?
-          hasSpecialValues : replace(styleAttributes[key], '_', '-')
-        parsedValue = toLowerCase(parsedValue)
-      }
-      uiTree.parsedStyle[atributeName] = parsedValue
-    })
+  if (styleAttributes) {
+    if (typeof styleAttributes === 'object') {
+      const flexKeys = Object.keys(styleAttributes)
+      flexKeys.forEach((key) => {
+        if (handleContext(styleAttributes[key], key, uiTree, 'flex')) return
+        const atributeName = renameFlexAttributes(key)
+        let parsedValue
+        if (isObject(styleAttributes[key])) {
+          parsedValue = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
+        }
+        else {
+          const hasSpecialValues = SPECIAL_VALUES[styleAttributes[key]]
+          parsedValue = hasSpecialValues ?
+            hasSpecialValues : replace(styleAttributes[key], '_', '-')
+          parsedValue = toLowerCase(parsedValue)
+        }
+        uiTree.parsedStyle[atributeName] = parsedValue
+      })
+    } else {
+      handleContext(styleAttributes, 'flex', uiTree)
+    }
   }
   return uiTree
 }
@@ -178,17 +277,22 @@ const handleSpecialEdge = (key: string,
 
 const formatEdgeAttributes =
   (uiTree: BeagleUIElement<any>, edgeType: string, styleAttributes?: Style) => {
-    if (styleAttributes && typeof styleAttributes === 'object') {
-      const keys = Object.keys(styleAttributes)
-      keys.forEach((key) => {
-        const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
-        if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
-          uiTree = handleSpecialEdge(key, uiTree, valueWithType, edgeType)
-        } else {
-          const edgePosition = `${edgeType}${capitalizeFirstLetter(key)}`
-          uiTree.parsedStyle[edgePosition] = valueWithType
-        }
-      })
+    if (styleAttributes) {
+      if (typeof styleAttributes === 'object') {
+        const keys = Object.keys(styleAttributes)
+        keys.forEach((key) => {
+          if (handleContext(styleAttributes[key], key, uiTree, edgeType)) return
+          const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
+          if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
+            uiTree = handleSpecialEdge(key, uiTree, valueWithType, edgeType)
+          } else {
+            const edgePosition = `${edgeType}${capitalizeFirstLetter(key)}`
+            uiTree.parsedStyle[edgePosition] = valueWithType
+          }
+        })
+      } else {
+        handleContext(styleAttributes, edgeType, uiTree)
+      }
     }
     return uiTree
   }
@@ -198,6 +302,7 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
     const keys = Object.keys(styleAttributes)
     const styleAtt = keys.filter((prop) => Object.keys(SINGLE_ATTRIBUTES).includes(prop))
     styleAtt.forEach((prop) => {
+      if (handleContext(styleAttributes[prop], prop, uiTree)) return
       const propName = SINGLE_ATTRIBUTES[prop]
       //@ts-ignore
       uiTree.style[propName] = toLowerCase(styleAttributes[prop])

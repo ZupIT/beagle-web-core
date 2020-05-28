@@ -140,7 +140,7 @@ describe('BeagleUIView', () => {
     
     await promise
 
-    expectedLoading.children[1] = { _beagleComponent_: 'loading', id: 'loading' }
+    expectedLoading.children[1] = { _beagleComponent_: 'custom:loading', id: 'loading' }
     expect(mockFunc.mock.calls[0][0]).toEqual(treeA)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
   
@@ -161,7 +161,7 @@ describe('BeagleUIView', () => {
     await promise
 
     const expectedLoading = clone(treeA)
-    expectedLoading.children[1].children.push({ _beagleComponent_: 'loading', id: 'loading' })
+    expectedLoading.children[1].children.push({ _beagleComponent_: 'custom:loading', id: 'loading' })
     expect(mockFunc.mock.calls[0][0]).toEqual(treeA)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
 
@@ -182,7 +182,7 @@ describe('BeagleUIView', () => {
     await promise
 
     const expectedLoading = clone(treeA)
-    expectedLoading.children[1].children.unshift({ _beagleComponent_: 'loading', id: 'loading' })
+    expectedLoading.children[1].children.unshift({ _beagleComponent_: 'custom:loading', id: 'loading' })
     expect(mockFunc.mock.calls[0][0]).toEqual(treeA)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
 
@@ -219,6 +219,20 @@ describe('BeagleUIView', () => {
     await view.updateWithFetch({ path })
  
     expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { "method": "get" })
+  })
+
+  it('should fallback to UIElement when fetch fails', async () => {
+    const fallbackTree = { _beagleComponent_: 'test 1' }
+    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    await view.updateWithFetch({ path, fallback: fallbackTree })
+    expect(view.getTree()).toEqual(fallbackTree)
+  })
+
+  it('should not fallback to UIElement when fetch succeed', async () => {
+    const fallbackTree = { _beagleComponent_: 'test 1' }
+    nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
+    await view.updateWithFetch({ path, fallback: fallbackTree })
+    expect(view.getTree()).toEqual(treeA)
   })
 
   it('should handle path as relative without starting with /', async () => {
