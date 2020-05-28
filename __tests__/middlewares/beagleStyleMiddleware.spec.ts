@@ -23,6 +23,10 @@ import {
   treePadding, treePaddingParsed,
   treeAttributesToKeepName, treeAttributesToKeepNameParsed,
   treeWithoutStyle, treeMixStyle, treeMixStyleParsed,
+  treeAttributesToKeepNameWithContext,
+  treeMixStyleWithContext, treeMixStyleWithContextParsed, 
+  treeContextValue,
+  treeContextType, treeContextTypeParsed
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 import { clone } from '../../src/utils/tree-manipulation'
@@ -117,4 +121,27 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toEqual(tree)
   })
 
+  it('should not change context variable', () => {
+    const tree = clone(treeAttributesToKeepNameWithContext)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeAttributesToKeepNameWithContext)
+  })
+
+  it('should parse object mixed with context without changing context', () => {
+    const tree = clone(treeMixStyleWithContext)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeMixStyleWithContextParsed)
+  })
+
+ it('should parse object with context on value without changing it', () => {
+    const tree = clone(treeContextValue)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeContextValue)
+  })
+
+  it('should parse object with context on type without changing it', () => {
+    const tree = clone(treeContextType)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeContextTypeParsed)
+  })
 })
