@@ -50,7 +50,6 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
   try {
     const functionName = action._beagleAction_.replace(/^beagle:/, '') as keyof BeagleNavigator
     const element = beagleView.getBeagleNavigator()[functionName]((action as Action).route)
-    
     const screen = (element as LocalView).screen
     const { url: path, fallback, shouldPrefetch } = element as RemoteView
 
