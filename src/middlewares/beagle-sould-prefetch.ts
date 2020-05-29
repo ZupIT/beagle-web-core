@@ -14,23 +14,33 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement } from '../types'
+import { BeagleUIElement, URLBuilder } from '../types'
 import { loadFromServer } from '../utils/tree-fetching'
+import NavigationActions from '../actions/navigation'
+import { addPrefix } from '../utils/string'
 
-const beagleShouldPrefetch = (uiTree: BeagleUIElement<any>) => {
-	const keys = Object.keys(uiTree)
-	keys && keys.forEach(key => {
-		if (uiTree[key]._beagleAction_ === '') {
-			if (uiTree[key].shouldPrefetch) {
-				const path = uiTree[key].route
-				loadFromServer(path)
-			}
-		}
-	})
-	
-	if (uiTree.children) uiTree.children.forEach(beagleShouldPrefetch)
-	
-	return uiTree
+const createShouldPrefetMiddleware = (urlFormatter: URLBuilder) => {
+
+  const beagleShouldPrefetch = (uiTree: BeagleUIElement<any>) => {
+    const keys = Object.keys(uiTree)
+    const navigationActionKeys = Object.keys(NavigationActions)
+    keys && keys.forEach(key => {
+      const isNavigationAction = navigationActionKeys && navigationActionKeys.indexOf(uiTree[key]._beagleAction_) >= 0
+      const shouldPrefetch = uiTree[key].route && uiTree[key].route.shouldPrefetch
+      if (isNavigationAction && shouldPrefetch) {
+        const path = addPrefix(uiTree[key].route.url, '/')
+        const url = urlFormatter.build(path)
+        loadFromServer(url)
+      }
+    })
+    
+    if (uiTree.children) uiTree.children.forEach(beagleShouldPrefetch)
+    
+    return uiTree
+  }
+
+  return beagleShouldPrefetch
+
 }
 
-export default beagleShouldPrefetch
+export default createShouldPrefetMiddleware

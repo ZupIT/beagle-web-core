@@ -17,7 +17,6 @@
 import { ActionHandler } from '../types'
 import { createQueryString } from '../../utils/querystring'
 import { BeagleNavigator } from '../../types'
-import { loadFromCache } from '../../utils/tree-fetching'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -56,10 +55,9 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
     if (screen) return beagleView.updateWithTree({ sourceTree: screen })
     if (shouldPrefetch) {
       try {
-        const cachedTree = await loadFromCache(path)
-        return beagleView.updateWithTree({ sourceTree: cachedTree })
+        return beagleView.updateWithFetch({ path, strategy: 'cache-with-fallback-to-network' })
       } catch (error) {
-        return beagleView.updateWithFetch({ path, fallback }) 
+        console.error(error)
       }
     }
     
