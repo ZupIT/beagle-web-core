@@ -28,6 +28,7 @@ const defaultActionHandlers: Record<string, ActionHandler> = {
   'beagle:sendRequest': sendRequest,
   'beagle:alert': alert,
   'beagle:confirm': confirm,
+  'beagle:submitForm': () => {},
   ...NavigationActions,
 }
 
