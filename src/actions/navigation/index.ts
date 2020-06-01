@@ -17,6 +17,8 @@
 import { ActionHandler } from '../types'
 import { createQueryString } from '../../utils/querystring'
 import { BeagleNavigator } from '../../types'
+import { loadFromCache } from '../../utils/tree-fetching'
+import { addPrefix } from '../../utils/string'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -50,18 +52,21 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
     const functionName = action._beagleAction_.replace(/^beagle:/, '') as keyof BeagleNavigator
     const element = beagleView.getBeagleNavigator()[functionName]((action as Action).route)
     const screen = (element as LocalView).screen
-    const { url: path, fallback, shouldPrefetch } = element as RemoteView
+    const { url, fallback, shouldPrefetch } = element as RemoteView
 
     if (screen) return beagleView.updateWithTree({ sourceTree: screen })
     if (shouldPrefetch) {
       try {
-        return beagleView.updateWithFetch({ path, strategy: 'cache-with-fallback-to-network' })
+        const path = addPrefix(url, '/')
+        const baseUrl = beagleView.getUrlBuilder().build(path)
+        const cachedTree = await loadFromCache(baseUrl)
+        return beagleView.updateWithTree({ sourceTree: cachedTree })
       } catch (error) {
         console.error(error)
       }
     }
     
-    return beagleView.updateWithFetch({ path, fallback })
+    return beagleView.updateWithFetch({ path: url, fallback })
   } catch (error) {
     console.error(error)
   }
