@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import createShouldPrefetchMiddleware from '../../src/middlewares/beagle-sould-prefetch'
+import createShouldPrefetchMiddleware from '../../src/middlewares/beagle-should-prefetch'
 import { BeagleUIElement, URLBuilder } from '../../src/types'
 import createURLBuilder from '../../src/utils/url-builder'
 import { mockLocalStorage } from '../test-utils'
