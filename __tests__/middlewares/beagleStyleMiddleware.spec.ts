@@ -26,7 +26,7 @@ import {
   treeAttributesToKeepNameWithContext,
   treeMixStyleWithContext, treeMixStyleWithContextParsed, 
   treeContextValue,
-  treeContextType, treeContextTypeParsed
+  treeContextType, treeContextTypeParsed, notValidContext, notValidContextParsed,
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 import { clone } from '../../src/utils/tree-manipulation'
@@ -143,5 +143,11 @@ describe('StyleMiddleware', () => {
     const tree = clone(treeContextType)
     const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeContextTypeParsed)
+  })
+
+  it('should not keep values if invalid context format', () => {
+    const tree = clone(notValidContext)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(notValidContextParsed)
   })
 })
