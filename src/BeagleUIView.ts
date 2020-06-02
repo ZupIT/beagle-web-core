@@ -37,6 +37,7 @@ import beagleTabViewMiddleware from './middlewares/tab-view-component'
 import beagleConvertToChildrenMiddleware from './middlewares/beagle-convert-to-children'
 import beagleStyleMiddleware from './middlewares/beagle-style'
 import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
+import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
 
 const createBeagleView = <Schema>({
@@ -48,6 +49,7 @@ const createBeagleView = <Schema>({
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
+  const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   beagleHttpClient.setFetchFunction(fetchData || fetch)
 
@@ -94,11 +96,14 @@ const createBeagleView = <Schema>({
 
     return runMiddlewares(
       uiTree,
-      [beagleTabViewMiddleware,
+      [
+        beagleTabViewMiddleware,
         beagleIdMiddleware,
         beagleStyleMiddleware,
         beagleStyleClassMiddleware,
-        beagleConvertToChildrenMiddleware]
+        beagleConvertToChildrenMiddleware,
+        beagleShouldPrefetchMiddleware,
+      ],
     ) as IdentifiableBeagleUIElement<Schema>
   }
 
