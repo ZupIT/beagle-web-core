@@ -72,7 +72,7 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
   }
 }
 
-export default {
+const NavigationActions: Record<string, ActionHandler> = {
   'beagle:openExternalURL': openExternalURL,
   'beagle:openNativeRoute': openNativeRoute,
   'beagle:pushStack': navigateBeagleView,
@@ -83,3 +83,5 @@ export default {
   'beagle:resetStack': navigateBeagleView,
   'beagle:resetApplication': navigateBeagleView,
 }
+
+export default NavigationActions

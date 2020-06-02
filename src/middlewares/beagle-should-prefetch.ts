@@ -23,10 +23,9 @@ const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder) => {
 
   const beagleShouldPrefetch = (uiTree: BeagleUIElement<any>) => {
     const keys = Object.keys(uiTree)
-    const navigationActionKeys = Object.keys(NavigationActions) 
 
     keys.forEach(key => {
-      const isNavigationAction = uiTree[key] && navigationActionKeys[uiTree[key]._beagleAction_]
+      const isNavigationAction = uiTree[key] && NavigationActions[uiTree[key]._beagleAction_]
       const shouldPrefetch = uiTree[key].route && uiTree[key].route.shouldPrefetch
       if (isNavigationAction && shouldPrefetch) {
         const path = addPrefix(uiTree[key].route.url, '/')
