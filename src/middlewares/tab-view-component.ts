@@ -15,6 +15,7 @@
 */
 
 import { BeagleUIElement } from '../types'
+import beagleConvertToChildrenMiddleware from './beagle-convert-to-children'
 
 interface TabItem extends BeagleUIElement {
     title?: string,
@@ -28,6 +29,8 @@ const beagleTabViewMiddleware = (uiTree: BeagleUIElement<any>) => {
         const parsedItems = uiTree.tabItems.map((tab: TabItem) => {
             tab._beagleComponent_ = 'beagle:tabitem'
             tab.children = [tab.child]
+            tab.children.forEach(beagleConvertToChildrenMiddleware)
+
             delete tab.child
             return tab
         })

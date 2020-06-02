@@ -97,11 +97,11 @@ const createBeagleView = <Schema>({
     return runMiddlewares(
       uiTree,
       [
+        beagleConvertToChildrenMiddleware,
         beagleTabViewMiddleware,
         beagleIdMiddleware,
         beagleStyleMiddleware,
         beagleStyleClassMiddleware,
-        beagleConvertToChildrenMiddleware,
         beagleShouldPrefetchMiddleware,
       ],
     ) as IdentifiableBeagleUIElement<Schema>
