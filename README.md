@@ -1,537 +1,158 @@
-# Especificação - Eventos, Ações, Contextos e Bindings
+# Resumo
 
-## Introdução
+Este documento tem como objetivo sugerir propostas para a primeira versão do Beagle Web após a 1.0
+(provavelmente a 1.1). Acredito que devemos focar no aperfeiçoamento daquilo que já oferecemos.
+Portanto, vejo os seguintes pontos como os principais em que devemos trabalhar:
 
-### Eventos
-Eventos são disparados pelos componentes da aplicação ou por uma ação. No JSON, tudo que está relacionado a uma ação é um evento.
+1. Aperfeiçoamento da arquitetura
+2. Melhorias de performance
+3. Correção de bugs
+4. Documentação top sobre a arquitetura, getting started, exemplos no playground e tópicos avançados
+5. Aperfeiçoar o playground
+6. ~~Rever o funcionamento do Beagle Angular. O que podemos melhorar? Vale trocar a abordagem?~~
+7. ~~Implementar o Beagle no React Native~~
+8. ~~Implementar o Beagle no React Electron~~
 
-Exemplo:
+Risquei os ponto 6, pois, apesar de ser um grande ponto de melhoria, é algo muito complexo e
+acredito que seria mais prudente colocá-lo para a versão seguinte (provavelmente 1.2).
 
-```json
-{
- "onPress": ACTION,
-}
-```
+Risquei os pontos 7 e 8, pois acredito que sejam menos importantes em relação aos demais e poderiam
+estar na versão 1.2 ao invés de a 1.1.
 
-Onde `ACTION` corresponde a uma ação qualquer. Note que, normalmente, eventos começam com o prefixo "on". Exemplos: onPress, onInit, onChange, onFocus, onBlur.
+Os pontos 6, 7 e 8 podem ser desenvolvidos em paralelo com o restante, caso faltem tasks para a
+equipe.
 
-Qualquer componente pode disparar eventos, mas os atributos que declaram eventos, assim como qualquer outro, devem estar na especificação do componente. Por exemplo, um "button", além dos atributos "type", "value" e "style", também possui o atributo "onPress", que é do tipo "Action", pois sempre deve estar relacionado a uma ação.
+**É importante lembrar que não podemos ter breaking changes nessas versões.**
 
-### Ações
-Ações são sempre valores associados a eventos. Uma ação é identificada pela chave `_beagleAction_`. `_beagleAction_`, além de indicar que o objeto é uma ação, identifica o tipo de ação que deve ser executada.
+# Propostas
 
-Alguns exemplos de `_beagleAction_` são:
-- alert: mostra uma caixa de alerta do sistema com uma mensagem e um botão de ok para fechar a mensagem.
-- setContext: essa é a principal ação nesta especificação. Ela altera algum valor em algum contexto. Contextos serão vistos mais a frente.
-- sendRequest: dispara uma requisição http.
+A proposta 1 e a 2 são as únicas que precisam de um grande detalhamento, as demais são auto-explicativas.
 
-Junto ao `_beagleAction_`, uma ação deve definir os parâmetros esperados pelo tipo de ação especificado. Uma ação do tipo "alert", por exemplo, espera os seguintes parâmetros:
-- message: mensagem a ser exibida.
-- onPressOk: opcional. Ação que deve ser executada quando o botão de ok for pressionado.
+## Melhorias de arquitetura e performance (core)
 
-Portanto, para abrir uma caixa de alerta do sistema ao clicar em um botão, por exemplo, poderíamos usar a seguinte combinação de ação e evento:
+O Beagle web hoje funciona bem para nós, é um código extensível e desacoplado que nos permite
+implementar novas funcionalidades com muita agilidade. Mas isso traz um problema: como não temos
+uma definição clara e objetiva da arquitetura, não é fácil entender como tudo funciona, o que acaba
+levando ao uso errado de middlewares ou outras funcionalidades da lib. Até mesmo para nós, é comum
+criarmos middlewares que executam em ordem errada. Precisamos que o dev saiba claramente como tudo
+funciona e em que momentos seu código irá rodar.
 
-```json
-{
-  "_beagleComponent_": "beagle:button",
-  "value": "Clique para abrir o alerta",
-  "onPress": {
-    "_beagleAction_": "beagle:alert",
-    "message": "Caixa de alerta foi aberta! Clique em \"ok\" para fechar."
-  }
-}
-```
+Destacamos os seguintes pontos que precisamos melhorar na arquitetura:
 
-Atente-se para o fato de que a ação "alert" é apenas um exemplo. Qualquer ação, com qualquer `_beagleAction_` poderia ser lançada no evento de "onPress".
+### Middlewares
 
-### Contexto
-Um contexto pode ser estabelecido em qualquer componente Beagle que implemente `LayoutComponent`, ou seja, `_context_` pode ser especificado nos seguintes componentes:
-- container
-- form
-- screen
-- scrollView
-- lazyComponent
-- listView
-- pageView
-- custom components que implementam LayoutComponent
+Middlewares foi uma boa ideia para criar um ponto de extensão fácil de se usar na lib, mas a medida
+que o projeto cresceu em complexidade, a utilização de middlewares se tornou algo confuso e perigoso.
 
-Todo contexto é identificado pela chave `_context_`. Se a chave `_context_` é encontrada no JSON, então um contexto está sendo definido a partir daquele ponto na árvore, ou seja, o escopo desse contexto é o próprio elemento onde ele foi definido e todos seus descendentes.
+- A ordem dos middlewares é excessivamente importante
+- O dev pode criar um middleware que sobrescreve uma expressão (`${exemplo.de.expressao}`), nesse
+caso, todo o contexto vai parar de funcionar e ele provavelmente não vai saber o por que.
+- Não está claro o momento em que os middlewares rodam.
+- Muitos problemas são resolvidos com middlewares, o que pode levar a um problema de performance.
 
-Um contexto nada mais é que uma variável. Essa variável pode ser de qualquer tipo, inclusive um mapa, definindo um conjunto de pares <key, value>. Através de bindings (próximo tópico), o valor de um contexto pode ser acessado por qualquer componente ou ação em seu escopo.
+**Proposta:** remover os middlewares. Não remover a funcionalidade, mas oferecê-la de forma mais
+bem organizada. Um dos pontos é melhor documentar a arquitetura, nessa documentação fica claro
+quais passos executamos e a ordem em que eles são executados. Existem alguns pontos chave nesse
+processo, por exemplo, logo após o JSON chegar do servidor, logo antes de se atribuir a árvore ao
+Beagle View ou logo antes de renderizar a view. Esses deveriam ser nossos pontos de extensão, e ao
+invés de chamá-los de middlewares, poderíamos chamá-los de lifecycles, como em outros frameworks de
+renderização. Dessa forma, fica mais claro onde cada coisa será executada e impedimos que alguns
+erros aconteçam, pois poderemos garantir uma ordem nos nossos processos.
 
-Um contexto possui sempre um id e um valor. Veja um exemplo de componente que define um contexto:
+Sobre não ter breaking changes, podemos deprecar os middlewares, mas continuar os executando como
+se fosse algum dos lifecycles.
 
-```json
-{
-  "_beagleComponent_": "beagle:container",
-  "_context_": {
-    "id": "myText",
-    "value": "Hello World!",
-  },
-  "children": [
-    {
-      "_beagleComponent_": "beagle:text",
-      "value": "Exemplo de contexto"
-    }
-  ]
-}
-````
+Além disso, algumas coisas que se tornaram muito comuns no decorrer do nosso desenvolvimento e podem
+virar annotations. Veja o exemplo do próximo tópico.
 
-O contexto acima é uma simples string, mas ele poderia também ser um número, um array ou um mapa <chave, valor>, não há restrição de tipo.
+### Children, child, itens, rows, etc
 
-### Bindings
-A ideia de contexto não faz sentido por si só, é necessário poder acessá-lo. Para acessar um contexto, faz-se uso de "bindings" que nada mais são que strings em um formato especial que identifica um valor dentro de algum contexto disponível.
+Tentamos mudar o restante das frentes para padronizarem tudo como "children", mas não funcionou.
+Como resultado, temos um middleware para cada componente fora do padrão e sempre que um novo é
+adicionado, precisamos de um middleware novo. Isso não está legal!
 
-#### Acessando os bindings
+**Proposta:** abraçar a falta de padrão e adotar uma solução mais fácil, clara e performática para
+o problema. A primeira coisa que fazemos ao receber um json é interpretar a árvore, quem são os nós
+e quem é filho de quem. Para isso, por padrão, verificamos apenas "children" e "child", mas os
+componentes provedenciados na config podem declarar onde estão seus filhos, de forma que não
+precisemos criar um middleware sempre que um componente aparece usando um padrão diferente.
 
-Um binding é identificado pelo prefixo `${` e sufixo `}`. Tudo entre os símbolos `${` e `}` identificam o valor do contexto pelo qual o binding deve ser trocado ao renderizar a tela. O valor é sempre identificado pelo id do contexto. Veja o exemplo a seguir:
-
-Contexto:
-```json
-{
-  "id": "myText",
-  "value": "Hello World"
-}
-```
-
-Para acessar o texto "Hello World" através de binding, bastaria especificar o id do contexto: `${myText}`.
-
-O exemplo acima funciona bem para strings e números, mas na maioria das vezes, o valor do contexto é um mapa <chave, valor>. Nesses casos, utiliza-se pontos para acessar as sub-estruturas. Veja o exemplo:
-
-Contexto:
-```json
-{
-  "id": "user",
-  "value": {
-    "cpf": "014.225.235-12",
-    "phoneNumbers": {
-      "cellphone": "(34) 98856-8563",
-      "telephone": "(34) 3214-5588"
-    }
-  }
-}
-```
-
-Para acessar o cpf através de binding: `${user.cpf}`.
-Para acessar o número de celular através de binding: `${user.phoneNumbers.cellphone}`.
-
-Se o valor no contexto for um array, deve-se utilizar os símbolos `[` e `]` para acessar posições específicas. Veja o exemplo:
-
-Contexto:
-```json
-{
-  "id": "movies",
-  "value": {
-    "genre": "sci-fi",
-    "titles": [
-      {
-        "title": "Inception",
-        "year": 2010,
-        "rating": 8.8,
-      },
-      {
-        "title": "Contact",
-        "year": 1997,
-        "rating": 7.4,
-      }
-    ]
-  }
-}
-````
-
-Para acessar o título do segundo filme: `${movies.titles[1].title}`.
-
-Note que a notação de array é sempre _zero-based_, ou seja, o primeiro elemento do array é sempre 0, e não 1.
-
-Um binding referente a um contexto só funciona dentro do escopo desse contexto. Bindings referentes a contextos de escopos diferentes ou inexistentes não serão resolvidos e na tela aparecerão como foram digitados. Por exemplo, se o binding é `${client.name}` e o contexto "client" não é acessível ou não possui o caminho "name", na tela, esse binding não sofrerá modificação, ou seja, aparecerá exatamente como `${client.name}`.
-
-Reforçando a ideia acima, bindings nunca devem lançar exceção! Se o contexto não é acessível, o binding não é substituído por valor algum.
-
-#### Tipos de dados dos bindings
-
-Considere o seguinte contexto:
-```json
-{
-  "id": "family",
-  "value": {
-    "father": {
-      "name": "Olavo Oliveira",
-      "age": 50
-    },
-    "mother": {
-      "name": "Olívia Oliveira",
-      "age": 52
-    },
-    "children": [
-      {
-        "name": "Paulo Oliveira",
-        "age": 18
-      },
-      {
-        "name": "Daniela Oliveira",
-        "age": 16
-      }
-    ]
-  }
-}
-```
-
-Se quisermos referenciar a idade do pai, podemos fazer isso de duas formas:
-1. `"${family.father.age}"`
-2. `"A idade do pai é ${family.father.age}"`
-
-No primeiro caso, o binding será substituído pelo número 50. No segundo caso, o binding será substituído pela string "50".
-
-Para referenciar os filhos:
-1. `"${family.children}"`
-2. `"Os filhos do casal são ${family.children}"`
-
-No primeiro caso, o binding será substituído pelo array de filhos. No segundo caso o binding será substituído por uma representação em string desse array (JSON).
-
-De forma geral, um binding sempre é representado por uma string. Se nessa string existe apenas o binding, o tipo de dado do valor substituído é o tipo da variável no contexto. Caso contrário, se o binding está no meio de um texto, o binding será substituído por uma representação em string do dado, independente do tipo de dado no contexto.
-
-#### Escapando um binding
-É possível que se queira escrever em um texto exatamente uma string no formato "${nome}", mas se isso for feito, as operações de bindings serão realizadas em cima dessa string. Para que os bindings não rodem em cima dessa string, deve-se escapar essa expressão. Veja um exemplo:
-
-Deseja-se escrever extamente "${client.name}", ou seja essa string não deve ser trocada.
-
-```json
-{
-  "_beagleComponent": "text",
-  "value": "\\${client.name}"
-}
-```
-
-Considerando um contexto onde `client.name` vale `João`, para fins de teste, é importante validar os seguintes casos:
-
-- `${client.name}` resulta em `João`.
-- `\\${client.name}` resulta em `${client.name}`.
-- `\\\\${client.name}` resulta em `\João`.
-- `\\\\\\${client.name}` resulta em `\${client.name}`.
-
-#### Limitações na nomenclatura de variáveis
-Variáveis em um binding podem conter apenas letras, números e o caracter "_".
-
-## Ações customizadas
-O Beagle oferecerá uma série de ações para o desenvolvedor, mas não é incomum que o desenvolvedor queira implementar comportamentos muito específicos que o Beagle sozinho não conseguiria oferecer. Para isso, o usuário poderá declarar suas próprias ações, chamadas de "customActions".
-
-Uma customAction possui obrigatoriamente um `_beagleAction_` que deve ser único e identificar a ação. Além do `_beagleAction_`, a customAction pode receber qualquer atributo que faça sentido para ela. Por exemplo, uma customAction que mostra mensagens de feedback na tela poderia chamar "showFeedbackMessage" e ter o seguinte esquema (notação Typescript):
+Essa definição de quem são os filhos pode ser feita através de uma anotação, veja o exemplo a
+seguir:
 
 ```typescript
-interface ShowFeedbackMessageAction {
-  _beagleAction_: 'beagle:showFeedbackMessage',
-  level?: 'info' | 'warning' | 'success' | 'error',
-  text: string,
-  duration?: number,
+@BeagleChildren({ propertyName: 'rows' })
+export class BeagleTable extends Component {
+  // ...
 }
 ```
 
-As funções que tratam as customActions são chamadas de "ActionHandlers" e devem ser declaradas no Beagle de forma que ele entenda qual função trata cada customAction. Cabe aos times de ios, android e web decidir o melhor local para declará-las em suas respectivas libs. Nas libs de web, por exemplo, as customActions e seus respectivos handlers são declarados na  configuração do Beagle como um mapa chave-valor, onde as chaves correspondem aos action types e os valores aos action handlers.
+`@BeagleChildren` recebe um objeto ao invés de uma string, pois podemos colocar outras propriedades
+interessantes alí. Veja a sessão "Validação de tipos".
 
-Um ActionHandler deve implementar uma interface pré-definida pela lib e sua execução deve receber a customAction lançada como parâmetro. Veja um exemplo em Typescript que apresenta o tratamento da customAction showFeedbackMessage apresentada anteriormente:
+### Middlewares/lifecycles por componente
+
+Hoje os middlewares são definidos na config, o que não parece um lugar muito legal para definir, por
+exemplo, algo que deve rodar por conta de um componente específico. Além disso, isso anda nos
+obrigando a misturar lógica dos componentes com o Beagle Web Core.
+
+**Proposta:** considerando que a proposta de substituir middlewares por lifecycles foi aceita,
+podemos definir um lifecycle específico do componente junto a ele, com annotation. Veja o exemplo:
 
 ```typescript
-import { ActionHandler } from '@zup-it/beagle-react'
-import { messageDelivery } from 'components/FeedbackMessage'
- 
-export const feedbackMessageHandler: ActionHandler<ShowFeedbackMessageAction> = ({ action }) => {
-  messageDelivery.send({
-    text: action.text,
-    level: action.level,
-    duration: action.duration,
-  })
+function createTabItemStructure(tabViewElement: BeagleUIElement) {
+  // ...
+}
+
+@BeagleBeforePreProcessing(createTabItemStructure)
+export class TabView extends Component {
+  // ...
 }
 ```
 
-Na configuração do Beagle, associa-se a função "feedbackMessageHandler" ao action type "showFeedbackMessage". Veja:
+### Validação de tipos
 
-```typescript
-export default createBeagleUIService({
-  baseUrl: 'http://beagleurl.com',
-  components: {
-    /* components go here */
-  },
-  customActions: {
-    showFeedbackMessage: feedbackMessageHandler,
-  },
-})
-```
+Hoje, validamos a tipagem dos componentes apenas com o Typescript. Em runtime, se algo vem errado do
+backend, se o cara transforma um tipo de dado errado em algum middleware ou se uma expressão resolve
+para um tipo de dado errado, acontecerá um erro no componente, sem avisarmos nada ao dev.
 
-## Contextos implícitos
-Contextos implícitos são qualquer contexto que existe, possui um escopo, pode ser acessado por bindings, mas não foi declarado através da palavra `_context_` no JSON. Contextos implícitos podem ser criados apenas por eventos.
+Por exemplo, suponha que o dev faça um middleware que transforma algo que era array para uma
+string, e o componente final espera array. Provavelmente vai ocorrer erro em runtime, pois, o
+componente pode usar `map`, por exemplo, que não existe em uma string. É difícil o dev saber que
+aconteceu um erro de tipo, que o JSON renderizado não respeitava o contrato do componente dele.
 
-Em alguns casos, é necessário acessar alguma informação particular do evento que disparou uma ação. Um exemplo muito comum é o evento de "onChange" lançado por qualquer tipo de componente que permite entrada de dados. Se o valor de um componente de entrada de dados muda e queremos disparar uma ação baseada nisso, é fundamental que sejamos capazes de saber qual o novo valor.
+Outro exemplo mais comum é o uso de uma expressão que resolve para um tipo de dado não esperado
+ou que se quer é resolvido. Suponha um componente que recebe um array e o JSON traz como valor
+`"@{clients}"`. `clients` deve existir no contexto e deve ser um array. Mas se isso não acontecer,
+vai ser difícil o dev descobrir onde está o erro.
 
-Ao ser disparado, o evento de "onChange" cria um contexto implícito chamado de "onChange". O contexto implícito sempre tem id igual ao nome do evento que o criou. O valor do contexto "onChange" criado é um objeto que possui o campo "value", o valor de "onChange.value", portanto, é o novo valor entrado no componente.
+Para resolver esse problema, devemos adicionar um passo no fluxo quando o modo de execução é
+"development". Isso não rodaria em produção. Nesse passo compararíamos o objeto que queremos
+renderizar com a definição de tipo do componente. Se algo estiver diferente, logamos um warning
+para o dev dizendo o que está errado.
 
-"OnChange" não é o único evento que cria um contexto implícito. Outros exemplos são "onFocus", "onBlur", "onSuccess" e "onError", sendo esses dois últimos eventos disparados pela ação de "sendRequest".
+Outra validação interessante seria quanto aos filhos. Alguns componentes podem ter apenas um
+filho, outros podem ter filhos de um único tipo. Junto a anotação "@BeagleChildren" poderíamos
+permitir especificar propriedades como "maximumNumberOfChildren", "minimumNumberOfChildren" e
+"allowedChildrenComponents".
 
-O escopo de um contexto implícito é apenas a ação ou o conjunto de ações relacionadas ao evento que criou o contexto.
+### Documentação
 
-Veja um exemplo de contexto criado implicitamente:
+Precisamos ter bem documentado em um formato fácil de se entender todo o fluxo do Beagle, desde a
+requição para o JSON até a renderização na tela.
 
-```json
-{
-  "_beagleComponent_": "custom:text-input",
-  "label": "CEP",
-  "onBlur": {
-    "_beagleAction_": "beagle:sendRequest",
-    "url": "https://viacep.com.br/ws/${onBlur.value}/json",
-    "method": "get"
-  }
-}
-```
+Já comecei a desenvolver isso, estou representando todo o fluxo (considerando as mudanças propostas)
+através de uma imagem.
 
-No exemplo acima, por mais que em nenhum momento tenha sido um declarado o contexto "onBlur", podemos usá-lo no binding, pois sabe-se que, de forma implícita, ele foi criado pelo evento "onBlur".
+![Beagle Web Flow](https://lh5.googleusercontent.com/JMy1AVpioDDniSZKu_lIf_s42e9k2I8L1pwqDfRZo00YIpY7PNvAnJ92ST54ptOL5_e9TnQ6rd541TuBrJf5=w2560-h1001-rw)
 
-## Hierarquia de contextos
+### Conclusão
 
-Como dito na seção de contextos, o escopo de um contexto é o próprio componente onde ele foi definido e seus descendentes. Mas, o que acontece se um dos descendentes também declara um contexto?
+Vale lembrar que tudo aqui está sujeito à modificações e é provável que isso aconteça, já que, com
+certeza, só vamos enxergar alguns problemas na hora que formos implementar.
 
-Nesse caso, existirá mais de um contexto no escopo, e eles podem ser identificados normalmente nos bindings através de seus ids. Se existem dois contextos com o mesmo id no mesmo escopo, vale o contexto correspondente ao primeiro ascendente, ou seja, o contexto mais próximo considerando a direção dos filhos para os pais.
+Estou particularmente insatisfeito com a nomenclatura dos processos e dos lifecycles (veja na
+imagem que descreve o fluxo/arquitetura). Por favor, Deem sugestões.
 
-Ao utilizar a ação "setContext", o atributo "context" indica o id do contexto que deve ser alterado. Se o atributo "context" é omitido, o contexto a ser alterado será o primeiro ascendente, desconsiderando qualquer contexto implícito.
-
-Considerando uma leitura da árvore que inicia na raiz e termina nas folhas, a hierarquia de contextos pode ser implementada como uma pilha, de forma que sempre que se encontra um contexto na árvore de componentes, esse contexto é adicionado como primeiro elemento no array de contextos. Assim, pode-se definir que a ordem de importância dos contextos nesse array é da primeira para a última posição.
-
-## Ações padrões
-Estas são ações que devem ser implementadas no Beagle e disponibilizadas para todos os desenvolvedores, sem a necessidade de declará-las como custom actions.
-
-### SetContext
-Essa é a ação mais importante e serve para estabelecer uma comunicação entre componentes. A ação de "setContext" tem a função de mudar valores em algum contexto disponível na hierarquia de contextos do componente. Veja a especificação do setContext em notação Typescript:
-
-```typescript
-interface SetContextAction {
-  _beagleAction_: 'beagle:setContext',
-  context?: string,
-  path?: string,
-  value: string,
-}
-```
-
-**Em uma ação de setContext, após alterar o valor no contexto indicado, deve-se reavaliar os bindings na árvore, considerando os novos valores.** Pode-se reavaliar apenas a parte da árvore no escopo do contexto alterado, já que o restante da árvore não é afetado pelo contexto em questão. Não há problema em reavaliar a árvore inteira, apenas não é necessário.
-
-#### context
-`context` é opcional e diz qual contexto na hierarquia de contextos deve ser alterado. A referência é feita através do id do contexto. Quando omitido, referencia o primeiro contexto da hierarquia, ou seja, primeiro contexto ascendente (direção dos filhos para os pais) desconsiderando qualquer contexto implícito. Esta ação altera apenas contextos explícitos.
-
-#### path
-`path` diz qual subestrutura do valor do contexto deve ser alterada. Considere o seguinte exemplo de valor para o contexto:
-
-```json
-{
-  "name": {
-    "first": "João",
-    "last": "Rodrigues"
-  },
-  "addresses": [
-    {
-      "zip": "25758-021",
-      "number": 580
-    }
-  ]
-}
-```
-
-Para alterar apenas o primeiro nome, o valor de `path` deve ser `name.first`. Para alterar o nome inteiro, `path` deve valer `name`. Para alterar o número do primeiro endereço, `path` deve valer `addresses[0].number`. `path` é opcional e quando omitido troca todo o valor do contexto.
-
-#### value
-`value` é um campo obrigatório que define o novo valor do contexto no campo indicado por `path`. Pode ser string, némero, array ou um objeto (mapa <chave, valor>).
-
-### SendRequest
-
-Esta ação é responsável por disparar requisições HTTP. Os dados retornados pela requisição podem ser acessados através do contexto implícito criado pelo evento "onSuccess". Esta ação dispara eventos que podem ser associados a outras ações, o que permite um encadeamento de ações. Veja a especificação do sendRequest em notação Typescript:
-
-```typescript
-interface SendRequestAction {
-  _beagleAction_: 'beagle:sendRequest',
-  url: string,
-  method?: 'get' | 'post' | 'put' | 'patch' | 'delete',
-  data?: any,
-  headers?: Record<string, string>,
-  onSuccess?: BeagleAction,
-  onError?: BeagleAction,
-  onFinish?: BeagleAction,
-}
-```
-
-#### url
-A URL para onde deve-se enviar a requisição. Utiliza o URLBuilder, ou seja, o padrão de URL aqui é o mesmo seguido no restante do Beagle, se inicia com "/" é um path relativo, caso contrário, é absoluto.
-
-#### method
-Opcional. Indica o método da requisição. Quando não especificado, o valor é "get".
-
-#### data
-Opcional. Valor a ser enviado no corpo da requisição. Esse valor será convertido para JSON ao enviar a requisição.
-
-#### headers
-Opcional. Mapa <chave, valor>, onde o valor é sempre uma string. Representa headers adicionais a serem enviados na requisição.
-
-#### onSuccess
-Opcional. É um evento, ou seja, deve ser associado a uma ação. A ação associada é executada assim que a requisição termina e é bem sucedida. O evento de onSuccess cria um contexto implícito com o seguinte valor:
-
-- `data`: corpo da resposta. Se a resposta era um JSON, `data` contem a resposta parseada. Caso contrário, é uma string. Se a resposta é vazia, `data` não tem valor.
-- `status`: número correspondente ao status da requisição. Exemplo: 422.
-- `statusText`: texto correspondente ao status da requisição. Exemplo: "Bad request".
-
-Por "requisição bem sucedida" entende-se qualquer requisição que foi enviada, obteve uma resposta e o status da resposta foi um código menor que 400.
-
-#### onError
-Opcional. É um evento, ou seja, deve ser associado a uma ação. A ação associada é executada assim que ocorre um erro na requisição. O evento de onError cria um contexto implícito com o seguinte valor:
-
-- `data`: corpo da resposta. Se a resposta era um JSON, `data` contem a resposta parseada. Caso contrário, é uma string. Se a resposta é vazia ou inexistente, `data` não tem valor.
-- `status`: número correspondente ao status da requisição. Se não houve resposta, `status` não tem valor.
-- `statusText`: texto correspondente ao status da requisição. Se não houve resposta, `statusText` não tem valor.
-- `message`: string com uma mensagem que identifica o erro ocorrido.
-
-`message` deve ter o seguinte comportamento: caso a requisição termine e tenha um status, deve valer o mesmo que `statusText`. Caso a requisição não termine devido a algum erro no processo (exceção, por exemplo), deve valer uma representação em string do erro.
-
-#### onFinish
-Opcional. É um evento, ou seja, deve ser associado a uma ação. A ação associada é executada sempre que a requisição termina, seja com sucesso ou erro. onFinish, diferente de onSuccess e onError, não cria um contexto implícito.
-
-### AddChildren
-Esta ação serve para alterar galhos da árvore de UI, ou seja, ela manipula os filhos de um nó mudando o atributo children de algum componente da árvore. Esta ação pode ser representada da seguinte forma em notação Typescript:
-
-```typescript
-interface AddChildrenAction {
-  _beagleAction_: 'beagle:addChildren',
-  componentId: string,
-  value: BeagleUIElement[],
-  mode?: 'append' | 'prepend' | 'replace',
-}
-```
-
-Na notação acima, o tipo `BeagleUIElement` representa um componente, ou seja, um nó da árvore.
-
-#### componentId
-Indica em qual componente deve-se adicionar os filhos. Deve sempre referenciar o id de algum componente na árvore.
-
-#### value
-Nesse campo deve-se passar os nós que devem ser adicionados como filho do elemento indicado pelo "componentId". Será sempre um array de elementos de UI (componentes).
-
-#### mode
-Opcional. Diz como os filhos em `value` devem ser adicionados ao elemento de id `componentId`. Existem três métodos de inserção possíveis:
-- `append`: padrão, `mode` assume esse valor quando não é especificado. Adiciona os filhos ao final da lista de filhos do componente.
-- `prepend`: adiciona os filhos no início da lista de filhos do componente.
-- `replace`: troca o array de filhos atual do componente pelo novo, perdendo todos os elementos que existiam anteriormente.
-
-### Ações de navegação
-Estas ações geram uma navegação na aplicação. Esta navegação pode afetar a aplicação como um todo ou apenas a view correspondente ao Beagle. As definições de como deve funcionar a navegação foram definidas previamente e devem ser replicadas aqui. A seguir, apresenta-se as definições de cada ação de navegação em notação Typescript.
-
-```typescript
-interface RemoteView {
-  url: string,
-  fallback?: BeagleUIElement,
-  shouldPrefetch?: boolean,
-}
-
-interface LocalView {
-  screen: BeagleUIElement,
-}
-
-type Route = LocalView | RemoteView
-
-interface OpenExternalURLAction {
-  _beagleAction_: 'beagle:openExternalURL',
-  url: string,
-}
-
-interface OpenNativeRouteAction {
-  _beagleAction_: 'beagle:openNativeRoute',
-  route: string,
-  data?: Record<string, any>,
-}
-
-interface PushStackAction {
-  _beagleAction_: 'beagle:pushStack',
-  route: Route,
-}
-
-interface PopStackAction {
-  _beagleAction_: 'beagle:popStack',
-}
-
-interface PushViewAction {
-  _beagleAction_: 'beagle:pushView',
-  route: Route,
-}
-
-interface PopViewAction {
-  _beagleAction_: 'beagle:popView',
-}
-
-interface PopToViewAction {
-  _beagleAction_: 'beagle:popToView',
-  route: string,
-}
-
-interface ResetNavigationAction {
-  _beagleAction_: 'beagle:resetNavigation',
-  route: Route,
-}
-```
-
-Para mais detalhes sobre estas ações, favor consultar as definições sobre navegação. Nenhuma dessas ações cria contextos implícitos.
-
-### Alert e confirm
-
-Mostram as caixas de diálogo nativas do sistema. Alert mostra uma mensagem e um botão "ok". Confirm mostra uma mensagem e dois botões: "ok" e "cancel". A seguir apresenta-se as definições de ambas ações em notação Typescript.
-
-```typescript
-interface AlertAction {
-  _beagleAction_: 'beagle:alert',
-  message: string,
-  onPressOk?: BeagleAction,
-}
-
-interface ConfirmAction {
-  _beagleAction_: 'beagle:confirm',
-  message: string,
-  onPressOk?: BeagleAction,
-  onPressCancel?: BeagleAction,
-}
-```
-
-`onPressOk` e `onPressCancel` são eventos, ou seja, serão associados à ações e permitem que se faça um encadeamento de ações. A ação associada ao `onPressOk` é executada quando o botão de ok é pressionado. A ação associada ao `onPressCancel` é executada quando o botão de cancel é pressionado.
-
-### Submit form
-
-Esta ação submete o formulário no qual o componente que a disparou está contido.
-
-```typescript
-interface SubmitFormAction {
-  _beagleAction_: 'beagle:submitForm',
-}
-```
-
-## Componentes padrões e eventos esperados
-
-### Button
-O componente de botão possui os eventos `onPress` e `onLongPress`. Nenhum desses eventos cria contexto implícito.
-
-### Simple form
-O componente simpleform é um novo componente padrão que deve funcionar exatamente como o container no mobile. A única propriedade a mais é o evento `onSubmit`. O evento `onSubmit` não cria contexto implícito e é emitido sempre que o formulário é submetido.
-
-Um formulário é submetido através da ação `beagle:submitForm`.
-
-### Inputs
-Todo componente de entrada de dados possui os eventos `onChange`, `onFocus` e `onBlur`. `onChange` é disparado quando o valor do input muda. `onFocus` é disparado quando o input recebe foco. `onBlur` é disparado quando o input perde foco.
-
-Esses três eventos criam um contexto implícito onde o valor é do tipo (notação Typescript):
-
-```typescript
-{
-  value: any,
-}
-```
-
-Onde `value` é o valor do campo. Na maioria dos casos, `value` será uma string, mas em checkboxes, por exemplo, `value` será booleano. Outros tipos de componentes para entrada de dados poderia ter outros tipos como valor. Por esse motivo, prefere-se não especificar um tipo para `value`.
-
-### Containers
-Containers devem disparar o evento `onInit` ao serem inicializados pela primeira vez.
-
-## Exemplos
-
-Veja e interaja com os exemplos no playground (`ctrl + b` para abrir o painel com todos os exemplos): 
-https://beagle-playground.netlify.app/#9603e04a34fc449ba84b15736740b92c
-
-**Atenção**: ainda não implementamos permissões no Playground. Por favor, não salve suas alterações em cima do projeto.
+Submetam PR's para esse documento para propor novas melhorias para v1.1 e para melhorar o que já
+foi proposto. Ou comentem na issue (todo) .
