@@ -62,7 +62,7 @@ erros aconteçam, pois poderemos garantir uma ordem nos nossos processos.
 Sobre não ter breaking changes, podemos deprecar os middlewares, mas continuar os executando como
 se fosse algum dos lifecycles.
 
-Além disso, algumas coisas que se tornaram muito comuns no decorrer do nosso desenvolvimento e podem
+Além disso, algumas coisas que se tornaram muito comuns no decorrer do nosso desenvolvimento podem
 virar annotations. Veja o exemplo do próximo tópico.
 
 ### Children, child, itens, rows, etc
