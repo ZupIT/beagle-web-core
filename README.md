@@ -144,7 +144,7 @@ requição para o JSON até a renderização na tela.
 Já comecei a desenvolver isso, estou representando todo o fluxo (considerando as mudanças propostas)
 através de uma imagem.
 
-![Beagle Web Flow](https://lh5.googleusercontent.com/JMy1AVpioDDniSZKu_lIf_s42e9k2I8L1pwqDfRZo00YIpY7PNvAnJ92ST54ptOL5_e9TnQ6rd541TuBrJf5=w2560-h1001-rw)
+![Beagle Web Flow](https://i.ibb.co/Bq5TScW/tm-J6c-JSPWT9-W-Et-Y1-I5-Mq-Trm-K9-Pkanozlh3y5-DCl-GOq-WG-Xhm-H3-Xf0svn-Pr-XI5-AXTNCw-Fax-TMy-CT8-Sz-W7n-w2560-h1001-rw.png)
 
 ### Conclusão
 
