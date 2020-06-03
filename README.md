@@ -155,4 +155,4 @@ Estou particularmente insatisfeito com a nomenclatura dos processos e dos lifecy
 imagem que descreve o fluxo/arquitetura). Por favor, Deem sugestões.
 
 Submetam PR's para esse documento para propor novas melhorias para v1.1 e para melhorar o que já
-foi proposto. Ou comentem na issue (todo) .
+foi proposto. Ou comentem na issue [#113](https://github.com/ZupIT/beagle-web-core/issues/113).
