@@ -52,9 +52,9 @@ export function createSocialMediaMock(): BeagleUIElement {
       {
         _beagleComponent_: 'profile-card',
         id: 'profile',
-        name: '${user.name}',
-        picture: '${user.picture}',
-        detailsPath: '/users/${user.id}',
+        name: '@{user.name}',
+        picture: '@{user.picture}',
+        detailsPath: '/users/@{user.id}',
       },
       {
         _beagleComponent_: 'container',
@@ -66,12 +66,12 @@ export function createSocialMediaMock(): BeagleUIElement {
           {
             _beagleComponent_: 'text',
             id: 'friendsTitle',
-            value: '${user.name}\'s friends:',
+            value: '@{user.name}\'s friends:',
           },
           {
             _beagleComponent_: 'friends-panel',
             id: 'friendsPanel',
-            friendList: '${friends}',
+            friendList: '@{friends}',
           },
           {
             _beagleComponent_: 'container',
@@ -90,7 +90,7 @@ export function createSocialMediaMock(): BeagleUIElement {
               {
                 _beagleComponent_: 'modal',
                 id: 'friendDetailsModal',
-                isOpen: '${isModalOpen}',
+                isOpen: '@{isModalOpen}',
               }
             ],
           }
@@ -106,25 +106,25 @@ export function createSocialMediaMock(): BeagleUIElement {
           {
             _beagleComponent_: 'post',
             id: 'firstPost',
-            author: '${posts[0].author}',
-            text: '${posts[0].text}',
+            author: '@{posts[0].author}',
+            text: '@{posts[0].text}',
           },
           {
             _beagleComponent_: 'post',
             id: 'secondPost',
-            author: '${posts[1].author}',
-            text: '${posts[1].text}',
+            author: '@{posts[1].author}',
+            text: '@{posts[1].text}',
           },
           {
             _beagleComponent_: 'post',
             id: 'thirdPost',
-            author: '${posts[2].author}',
-            text: '${posts[2].text}',
+            author: '@{posts[2].author}',
+            text: '@{posts[2].text}',
           },
           {
             _beagleComponent_: 'post',
             id: 'postWithWrongContext',
-            author: '${friends[0].name}',
+            author: '@{friends[0].name}',
             text: 'My new post',
           },
         ],
@@ -144,7 +144,7 @@ export function createMockWithSameIdContexts(): BeagleUIElement {
         children: [
           {
             _beagleComponent_: 'text',
-            value: '${ctx}',
+            value: '@{ctx}',
           },
         ],
       },

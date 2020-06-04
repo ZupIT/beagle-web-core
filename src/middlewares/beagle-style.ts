@@ -62,7 +62,7 @@ const SPECIAL_VALUES: Record<string, string> = {
 
 const verifyContext = (value: string | number) => {
   if (value && typeof value === 'string') {
-    const isContext = value.match(/^\$\{[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*\}$/)
+    const isContext = value.match(/^@\{[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*\}$/)
     return isContext
   }
   else return false

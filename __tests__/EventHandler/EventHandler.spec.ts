@@ -155,7 +155,7 @@ describe('EventHandler', () => {
 
   it('should replace bindings when handling an action', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
-    const action = { _beagleAction_: 'beagle:alert', message: '${test}' }
+    const action = { _beagleAction_: 'beagle:alert', message: '@{test}' }
     const mock = createContainerWithAction('onInit', action)
     mock._context_ = { id: 'test', value: 'Hello World!' }
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
