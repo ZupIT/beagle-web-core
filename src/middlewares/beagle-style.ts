@@ -62,7 +62,7 @@ const SPECIAL_VALUES: Record<string, string> = {
 
 const verifyContext = (value: string | number) => {
   if (value && typeof value === 'string') {
-    const isContext = value.match(/^\${[a-z0-9A-Z_]*}$/)
+    const isContext = value.match(/^\$\{[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*\}$/)
     return isContext
   }
   else return false
@@ -70,24 +70,23 @@ const verifyContext = (value: string | number) => {
 
 const handleContext = (item: string | number | EdgeDataFormat, key: string,
   uiTree: BeagleUIElement<any>, outsideObjectKey?: string) => {
-  let stringValue: string
+  let stringValue = ''
   let stringType = ''
   let isItemObject = false
+  
   if (isObject(item)) {
     isItemObject = true
-    if (item && item.value && typeof item.value === 'number')
-      stringValue = item.value.toString()
-    else {
-      // @ts-ignore
-      stringValue = item.value || ''
+    if (item && item.value) {
+      if (typeof item.value === 'number') stringValue = item.value.toString()
+      else stringValue = item.value
     }
 
     if (item && item.type)
       stringType = item.type.toString()
 
   } else {
-    // @ts-ignore
-    stringValue = item && typeof item === 'number' ? item.toString() : item || ''
+    if (item)
+      stringValue = typeof item === 'number' ? item.toString() : item
   }
 
   if (verifyContext(stringValue)) {
@@ -95,20 +94,20 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
       if (!isObject(uiTree.parsedStyle[outsideObjectKey]))
         uiTree.parsedStyle[outsideObjectKey] = {}
       if (isItemObject) {
+        const parsedItem = item as EdgeDataFormat
         uiTree.parsedStyle[outsideObjectKey][key] = {
           'value': stringValue,
-          // @ts-ignore
-          'type': item.type,
+          'type': parsedItem.type,
         }
       } else {
         uiTree.parsedStyle[outsideObjectKey][key] = stringValue
       }
     } else {
       if (isItemObject) {
+        const parsedItem = item as EdgeDataFormat
         uiTree.parsedStyle[key] = {
           'value': stringValue,
-          // @ts-ignore
-          'type': item.type,
+          'type': parsedItem.type,
         }
       } else {
         uiTree.parsedStyle[key] = stringValue
@@ -119,15 +118,16 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
     if (outsideObjectKey) {
       if (!isObject(uiTree.parsedStyle[outsideObjectKey]))
         uiTree.parsedStyle[outsideObjectKey] = {}
+      
+      const parsedItem = item as EdgeDataFormat
       uiTree.parsedStyle[outsideObjectKey][key] = {
-        // @ts-ignore
-        'value': item.value,
+        'value': parsedItem.value,
         'type': stringType,
       }
     } else {
+      const parsedItem = item as EdgeDataFormat
       uiTree.parsedStyle[key] = {
-        // @ts-ignore
-        'value': item.value,
+        'value': parsedItem.value,
         'type': stringType,
       }
 

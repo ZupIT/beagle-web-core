@@ -57,6 +57,10 @@ export interface ConfirmAction {
   onPressCancel?: BeagleAction,
 }
 
+export interface SubmitFormAction {
+  _beagleAction_: 'beagle:submitForm',
+}
+
 export interface CustomAction {
   _beagleAction_: string,
   [key: string]: any,
@@ -69,6 +73,7 @@ export type BeagleDefaultAction = (
   | AlertAction
   | ConfirmAction
   | BeagleNavigationAction
+  | SubmitFormAction
 )
 
 export type BeagleAction = BeagleDefaultAction | CustomAction

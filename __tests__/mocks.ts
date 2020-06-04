@@ -709,7 +709,11 @@ export const simpleTab: BeagleUIElement = {
     {
       title: 'Container2',
       child: {
-        _beagleComponent_: 'beagle:container'
+        _beagleComponent_: 'beagle:container',
+        child: {
+          _beagleComponent_: "text",
+          value: "Texto"
+        }
       }
     }
   ]
@@ -729,7 +733,8 @@ export const simpleTabParsed: BeagleUIElement = {
       _beagleComponent_: 'beagle:tabitem',
       title: 'Container2',
       children: [{
-        _beagleComponent_: 'beagle:container'
+        _beagleComponent_: 'beagle:container',
+        children: [{ _beagleComponent_: "text", value: "Texto" }]
       }]
     }
   ]
