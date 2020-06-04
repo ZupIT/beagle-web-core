@@ -186,7 +186,6 @@ export interface BeagleContext<T = any> {
   getElementId: () => string,
   getElement: () => IdentifiableBeagleUIElement<T> | null,
   getView: () => BeagleView<T>,
-  getAnalytics: () => Analytics,
 }
 
 export interface DataContext {

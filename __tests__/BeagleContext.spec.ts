@@ -121,11 +121,6 @@ describe('BeagleContext', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should get analytics service through BeagleContext', async () => {
-    const context = BeagleContext.getContext(viewId, 'A')
-    expect(context.getAnalytics()).toEqual(analytics)
-  })
-
   it('should throw an error trying to create a context for an unregistered view', () => {
     try {
       BeagleContext.getContext('viewNotRegistered', '1')

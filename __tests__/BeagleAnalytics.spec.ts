@@ -16,7 +16,7 @@
 import { Analytics } from '../src/types'
 import beagleAnalytics from '../src/BeagleAnalytics'
 
-describe.only('BeagleAnalytics', () => {
+describe('BeagleAnalytics', () => {
   it('should get custom analytics service', async () => {
     const analytics: Analytics = {
         trackEventOnClick: jest.fn(),
@@ -25,10 +25,7 @@ describe.only('BeagleAnalytics', () => {
     }
 
     beagleAnalytics.setAnalytics(analytics)
-    beagleAnalytics.getAnalytics().trackEventOnScreenAppeared({ screenName: '/home'})
 
-    expect(beagleAnalytics.getAnalytics()).toEqual(analytics)
-    expect(analytics.trackEventOnScreenAppeared).toHaveBeenCalledWith({ screenName: '/home'})
-    
+    expect(beagleAnalytics.getAnalytics()).toEqual(analytics)    
   })
 })
