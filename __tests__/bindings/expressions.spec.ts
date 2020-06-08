@@ -111,12 +111,12 @@ describe('Binding expressions: replacing with provided contexts', () => {
     ]
   
     const withValues = replaceBindings(
-      '@{user.name} is @{user.age} years old. His current plan is @{plan.name} and it costs @@{plan.value}. Please, call @{phones[0]} to talk to him.',
+      '@{user.name} is @{user.age} years old. His current plan is @{plan.name} and it costs $@{plan.value}. Please, call @{phones[0]} to talk to him.',
       contextHierarchy,
     )
 
     expect(withValues).toBe(
-      'John is 30 years old. His current plan is Premium and it costs @99.59. Please, call (34) 5599-5555 to talk to him.',
+      'John is 30 years old. His current plan is Premium and it costs $99.59. Please, call (34) 5599-5555 to talk to him.',
     )
   })
 
