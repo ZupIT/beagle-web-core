@@ -16,11 +16,12 @@
 
 import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
-import { BeagleView } from '../src/types'
+import { BeagleView, Analytics } from '../src/types'
 import { BeagleCacheError, BeagleNetworkError } from '../src/errors'
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB } from './mocks'
 import { mockLocalStorage, stripTreeIds } from './test-utils'
+import beagleAnalytics from '../src/BeagleAnalytics'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
