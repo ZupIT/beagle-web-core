@@ -24,7 +24,8 @@ interface TabItem extends BeagleUIElement {
 }
 
 const beagleTabViewMiddleware = (uiTree: BeagleUIElement<any>) => {
-    if (uiTree._beagleComponent_ === 'beagle:tabview' && !uiTree.children) {
+    const toLowerCaseName = uiTree._beagleComponent_.toString().toLowerCase()
+    if (toLowerCaseName === 'beagle:tabview' && !uiTree.children) {
         uiTree.children = []
         const parsedItems = uiTree.tabItems.map((tab: TabItem) => {
             tab._beagleComponent_ = 'beagle:tabitem'

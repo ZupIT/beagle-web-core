@@ -858,6 +858,51 @@ export const treeWithLazyComponentAndChildParsed: IdentifiableBeagleUIElement = 
   ]
 }
 
+export const tabViewWithCaseInsensitive: BeagleUIElement = {
+  _beagleComponent_: 'beagle:taBView',
+  tabItems: [
+    {
+      title: 'Container1',
+      child: {
+        _beagleComponent_: 'beagle:container'
+      }
+    },
+  ]
+}
+
+
+export const parsedTabViewWithCaseInsensitive: BeagleUIElement = {
+  _beagleComponent_: 'beagle:taBView',
+  children: [
+    {
+      _beagleComponent_: 'beagle:tabitem',
+      title: 'Container1',
+      children: [{
+        _beagleComponent_: 'beagle:container'
+      }]
+    },
+  ]
+}
+
+export const lazyComponentWithCaseInsensitive: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazYComponent',
+  initialState: {
+    id: 'A.0',
+    _beagleComponent_: 'type-B',
+  },
+}
+
+export const parsedlazyComponentWithCaseInsensitive: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazYComponent',
+  children: [{
+    id: 'A.0',
+    _beagleComponent_: 'type-B',
+  }],
+}
+
+
 export const configComponentsWrong: BeagleConfig<DefaultSchema>['components'] = {
   'beagle:button': 'Teste',
   'button': 'Teste'
