@@ -15,7 +15,7 @@ export function createSingleContextMock(
       {
         _beagleComponent_: 'button',
         id: btnId,
-        value: `@{@{ctxId}}`,
+        value: `@{${ctxId}}`,
       },
     ],
   }
