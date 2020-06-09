@@ -13,24 +13,17 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
+import { Analytics } from './types'
 
-import addChildren from './addChildren'
-import setContext from './setContext'
-import sendRequest from './sendRequest'
-import alert from './alert'
-import confirm from './confirm'
-import submitForm from './submitForm'
-import NavigationActions from './navigation'
-import { ActionHandler } from './types'
+  function createBeagleAnalytics() {
+    let analytics: Analytics
 
-const defaultActionHandlers: Record<string, ActionHandler> = {
-  'beagle:addChildren': addChildren,
-  'beagle:setContext': setContext,
-  'beagle:sendRequest': sendRequest,
-  'beagle:alert': alert,
-  'beagle:confirm': confirm,
-  'beagle:submitForm': submitForm,
-  ...NavigationActions,
-}
+    return {
+      setAnalytics: (newAnalytics: Analytics) => analytics = newAnalytics,
+      getAnalytics: () => analytics,
+    }
+  }
 
-export default defaultActionHandlers
+  const beagleAnalytics = createBeagleAnalytics()
+
+export default beagleAnalytics

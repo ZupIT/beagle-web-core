@@ -14,23 +14,22 @@
   * limitations under the License.
 */
 
-import addChildren from './addChildren'
-import setContext from './setContext'
-import sendRequest from './sendRequest'
-import alert from './alert'
-import confirm from './confirm'
-import submitForm from './submitForm'
-import NavigationActions from './navigation'
-import { ActionHandler } from './types'
+import { ActionHandler, SubmitFormAction } from './types'
 
-const defaultActionHandlers: Record<string, ActionHandler> = {
-  'beagle:addChildren': addChildren,
-  'beagle:setContext': setContext,
-  'beagle:sendRequest': sendRequest,
-  'beagle:alert': alert,
-  'beagle:confirm': confirm,
-  'beagle:submitForm': submitForm,
-  ...NavigationActions,
+const submitForm: ActionHandler<SubmitFormAction> = ({ element }) => {
+  const domNode = document.querySelector(`[data-beagle-id="${element.id}"]`)
+  if (!domNode) {
+    console.error('Could not submit the form because the element who triggered the action is not in the dom anymore.')
+    return
+  }
+
+  const form = domNode.closest('form')
+  if (!form) {
+    console.error('Could not submit because the element who triggered the action "submitForm" is not inside any form.')
+    return
+  }
+
+  form.requestSubmit()
 }
 
-export default defaultActionHandlers
+export default submitForm

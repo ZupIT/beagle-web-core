@@ -49,6 +49,20 @@ export type Strategy = (
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
+export type ClickEvent = {
+  category: string,
+  label?: string,
+  value?: string,
+}
+
+export type ScreenEvent = { screenName: string }
+
+export type Analytics = {
+  trackEventOnClick: (clickEvent: ClickEvent) => void,
+  trackEventOnScreenAppeared: (screenEvent: ScreenEvent) => void,
+  trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
+}
+
 export interface BeagleHttpClient {
   fetch: typeof fetch,
   setFetchFunction: (fetchFn: typeof fetch) => void,
@@ -60,6 +74,7 @@ export interface BeagleConfig<Schema> {
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
   fetchData?: typeof fetch,
+  analytics?: Analytics,
   components: {
     [K in ComponentName<Schema>]: any
   },

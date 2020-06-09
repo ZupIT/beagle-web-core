@@ -17,7 +17,7 @@
 import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
 import BeagleContext, { views } from '../src/BeagleContext'
-import { BeagleView } from '../src/types'
+import { BeagleView, Analytics } from '../src/types'
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB, treeC, treeD } from './mocks'
 import { mockLocalStorage } from './test-utils'
@@ -30,9 +30,14 @@ describe('BeagleContext', () => {
   let view: BeagleView
   const viewId = 'beagleId'
   const middleware = jest.fn(tree => tree)
+  const analytics: Analytics = {
+    trackEventOnClick: jest.fn(),
+    trackEventOnScreenAppeared: jest.fn(),
+    trackEventOnScreenDisappeared: jest.fn()
+  }
 
   beforeEach(() => {
-    view = createBeagleView({ baseUrl, components: {}, middlewares: [middleware] }, '/home')
+    view = createBeagleView({ baseUrl, components: {}, middlewares: [middleware], analytics }, '/home')
     view.updateWithTree({ sourceTree: treeA })
     middleware.mockClear()
     nock.cleanAll()

@@ -13,24 +13,19 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
+import { Analytics } from '../src/types'
+import beagleAnalytics from '../src/BeagleAnalytics'
 
-import addChildren from './addChildren'
-import setContext from './setContext'
-import sendRequest from './sendRequest'
-import alert from './alert'
-import confirm from './confirm'
-import submitForm from './submitForm'
-import NavigationActions from './navigation'
-import { ActionHandler } from './types'
+describe('BeagleAnalytics', () => {
+  it('should get custom analytics service', async () => {
+    const analytics: Analytics = {
+        trackEventOnClick: jest.fn(),
+        trackEventOnScreenAppeared: jest.fn(),
+        trackEventOnScreenDisappeared: jest.fn()
+    }
 
-const defaultActionHandlers: Record<string, ActionHandler> = {
-  'beagle:addChildren': addChildren,
-  'beagle:setContext': setContext,
-  'beagle:sendRequest': sendRequest,
-  'beagle:alert': alert,
-  'beagle:confirm': confirm,
-  'beagle:submitForm': submitForm,
-  ...NavigationActions,
-}
+    beagleAnalytics.setAnalytics(analytics)
 
-export default defaultActionHandlers
+    expect(beagleAnalytics.getAnalytics()).toEqual(analytics)    
+  })
+})

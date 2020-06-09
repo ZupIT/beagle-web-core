@@ -16,6 +16,7 @@
 
 import { findById } from './utils/tree-reading'
 import { BeagleView, BeagleContext } from './types'
+import beagleAnalytics from './BeagleAnalytics'
 
 export const views: Record<string, BeagleView> = {}
 
