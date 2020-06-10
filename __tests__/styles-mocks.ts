@@ -231,11 +231,11 @@ export const treePosition: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-E',
       style: {
         position: {
-          start: {
+          left: {
             value: 10.0,
             type: "REAL"
           },
-          end: {
+          right: {
             value: 15.0,
             type: "REAL"
           }
@@ -472,7 +472,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
           _beagleComponent_: 'type-D',
           style: {
             margin: {
-              start: {
+              left: {
                 value: 8.0,
                 type: 'REAL'
               }
@@ -484,7 +484,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
           _beagleComponent_: 'type-D',
           style: {
             margin: {
-              end: {
+              right: {
                 value: 12.0,
                 type: 'REAL'
               }
@@ -657,11 +657,11 @@ export const treePadding: IdentifiableBeagleUIElement = {
           _beagleComponent_: 'type-C',
           style: {
             padding: {
-              start: {
+              left: {
                 value: 3.0,
                 type: 'REAL'
               },
-              end: {
+              right: {
                 value: 5.0,
                 type: 'PERCENT'
               }
@@ -752,8 +752,7 @@ export const treeAttributesToKeepName: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-B',
       style: {
         display: 'FLEX',
-        backgroundColor: '#FFFFFF',
-        direction: 'LTR'
+        backgroundColor: '#FFFFFF'
       }
     }
   ],
@@ -772,8 +771,7 @@ export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-B',
       style: {
         display: 'flex',
-        backgroundColor: '#ffffff',
-        direction: 'ltr'
+        backgroundColor: '#ffffff'
       }
     }
   ],
@@ -887,8 +885,7 @@ export const treeAttributesToKeepNameWithContext: IdentifiableBeagleUIElement = 
       _beagleComponent_: 'type-B',
       style: {
         display: '${client.displayPlaceholder}',
-        backgroundColor: '${contextTest}',
-        direction: '${contextTest[0].Testing}'
+        backgroundColor: '${contextTest}'
       }
     }
   ],

@@ -38,7 +38,6 @@ const UNITY_TYPE: Record<string, string> = {
 const SINGLE_ATTRIBUTES: Record<string, string> = {
   'positionType': 'position',
   'backgroundColor': 'backgroundColor',
-  'direction': 'direction',
   'display': 'display',
 }
 
@@ -46,8 +45,6 @@ const EDGE_SPECIAL_VALUES: Record<string, string[]> = {
   'all': ['right', 'left', 'top', 'bottom'],
   'horizontal': ['right', 'left'],
   'vertical': ['top', 'bottom'],
-  'start': ['left'],
-  'end': ['right'],
 }
 
 const FLEX_PROPERTIES_TO_RENAME: Record<string, string> = {
@@ -317,7 +314,7 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
 
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
-
+  
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
   if (uiTree.style && typeof uiTree.style === 'object') {
