@@ -16,7 +16,8 @@
     "check-types": "tsc --noEmit",
     "check-test-types": "tsc __tests__/**/*.ts --noEmit --allowSyntheticDefaultImports",
     "test": "jest",
-    "lint": "eslint ./src/**/*.ts"
+    "lint": "eslint ./src/**/*.ts",
+    "watch": "nodemon --watch 'src/**/*.ts' -e ts --exec yarn build"
   },
   "husky": {
     "hooks": {
