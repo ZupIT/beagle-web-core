@@ -532,6 +532,6 @@ Containers devem disparar o evento `onInit` ao serem inicializados pela primeira
 ## Exemplos
 
 Veja e interaja com os exemplos no playground (`ctrl + b` para abrir o painel com todos os exemplos): 
-https://beagle-playground.netlify.app/#9603e04a34fc449ba84b15736740b92c
+https://beagle-playground.netlify.app/#/demo/component-interaction
 
 **Atenção**: ainda não implementamos permissões no Playground. Por favor, não salve suas alterações em cima do projeto.
