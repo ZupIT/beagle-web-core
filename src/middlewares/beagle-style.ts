@@ -70,7 +70,7 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
   let stringValue = ''
   let stringType = ''
   let isItemObject = false
-  
+
   if (isObject(item)) {
     isItemObject = true
     if (item && item.value) {
@@ -115,7 +115,7 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
     if (outsideObjectKey) {
       if (!isObject(uiTree.parsedStyle[outsideObjectKey]))
         uiTree.parsedStyle[outsideObjectKey] = {}
-      
+
       const parsedItem = item as EdgeDataFormat
       uiTree.parsedStyle[outsideObjectKey][key] = {
         'value': parsedItem.value,
@@ -295,18 +295,26 @@ const formatEdgeAttributes =
   }
 
 const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-  if (styleAttributes) {
+  if (styleAttributes && uiTree.style) {
     const keys = Object.keys(styleAttributes)
     const styleAtt = keys.filter((prop) => Object.keys(SINGLE_ATTRIBUTES).includes(prop))
     styleAtt.forEach((prop) => {
       if (handleContext(styleAttributes[prop], prop, uiTree)) return
       const propName = SINGLE_ATTRIBUTES[prop]
-      //@ts-ignore
-      uiTree.style[propName] = toLowerCase(styleAttributes[prop])
-      if (propName != prop) {
-        //@ts-ignore
-        delete uiTree.style[prop]
+      if (uiTree.style) {
+        uiTree.style[propName] = toLowerCase(styleAttributes[prop])
+        if (propName != prop) {
+          delete uiTree.style[prop]
+        }
       }
+    })
+
+    //In order to keep single attributes that are not in the array SINGLE_ATTRIBUTES
+    //for example, already parsed values, or suport for new attributes.
+    const keysToKeep = keys.filter((prop) => !styleAtt.includes(prop) && typeof styleAttributes[prop] === 'string')
+    keysToKeep.forEach((prop) => {
+      if (handleContext(styleAttributes[prop], prop, uiTree)) return
+      if (uiTree.style) uiTree.style[prop] = styleAttributes[prop]
     })
   }
   return uiTree
@@ -314,7 +322,7 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
 
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
-  
+
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
   if (uiTree.style && typeof uiTree.style === 'object') {

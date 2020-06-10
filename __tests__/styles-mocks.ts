@@ -1258,3 +1258,103 @@ export const notValidContextParsed = {
     backgroundColor: '${contexttest[}'
   }
 }
+
+export const treeStartEndEdgeValue = {
+  id: 'E.1',
+  _beagleComponent_: 'type-E',
+  style: {
+    position: {
+      start: {
+        value: 10.0,
+        type: "REAL"
+      },
+      end: {
+        value: 15.0,
+        type: "REAL"
+      }
+    },
+    margin: {
+      start: {
+        value: 10.0,
+        type: "REAL"
+      },
+      end: {
+        value: 15.0,
+        type: "REAL"
+      }
+    },
+    padding: {
+      start: {
+        value: 10.0,
+        type: "REAL"
+      },
+      end: {
+        value: 15.0,
+        type: "REAL"
+      }
+    }
+  }
+}
+
+export const treeStartEndEdgeValueParsed = {
+  id: 'E.1',
+  _beagleComponent_: 'type-E',
+  style: {
+    start: '10px',
+    end: '15px',
+    marginStart: '10px',
+    marginEnd: '15px',
+    paddingStart: '10px',
+    paddingEnd: '15px'
+  }
+}
+
+export const treeUnsuportedSingleProperties = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  children: [
+    {
+      id: 'G.1.1',
+      _beagleComponent_: 'type-G1',
+      style: {
+        direction: 'LTR'
+      }
+    }
+  ],
+  style: {
+    position: {
+      top: {
+        value: '10',
+        type: '${contextTest}'
+      },
+    },
+    display: '${contextTest}',
+    backgroundColor: '${contextTest[0]}',
+    direction: 'LTR'
+  }
+}
+
+export const treeUnsuportedSinglePropertiesParsed = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  children: [
+    {
+      id: 'G.1.1',
+      _beagleComponent_: 'type-G1',
+      style: {
+        direction: 'LTR'
+      }
+    }
+  ],
+  style: {
+    position: {
+      top: {
+        value: '10',
+        type: '${contextTest}'
+      },
+    },
+    display: '${contextTest}',
+    backgroundColor: '${contextTest[0]}',
+    direction: 'LTR'
+  }
+}
