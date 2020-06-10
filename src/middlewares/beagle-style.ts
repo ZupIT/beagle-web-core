@@ -295,7 +295,7 @@ const formatEdgeAttributes =
   }
 
 const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
-  if (styleAttributes && uiTree.style) {
+  if (styleAttributes) {
     const keys = Object.keys(styleAttributes)
     const styleAtt = keys.filter((prop) => Object.keys(SINGLE_ATTRIBUTES).includes(prop))
     styleAtt.forEach((prop) => {
