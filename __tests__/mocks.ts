@@ -884,6 +884,24 @@ export const parsedTabViewWithCaseInsensitive: BeagleUIElement = {
   ]
 }
 
+export const lazyComponentWithCaseInsensitive: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazYComponent',
+  initialState: {
+    id: 'A.0',
+    _beagleComponent_: 'type-B',
+  },
+}
+
+export const parsedlazyComponentWithCaseInsensitive: IdentifiableBeagleUIElement = {
+  id: 'A',
+  _beagleComponent_: 'beagle:lazYComponent',
+  children: [{
+    id: 'A.0',
+    _beagleComponent_: 'type-B',
+  }],
+}
+
 
 export const configComponentsWrong: BeagleConfig<DefaultSchema>['components'] = {
   'beagle:button': 'Teste',
