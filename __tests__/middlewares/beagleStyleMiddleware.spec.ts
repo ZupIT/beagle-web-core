@@ -26,7 +26,10 @@ import {
   treeAttributesToKeepNameWithContext,
   treeMixStyleWithContext, treeMixStyleWithContextParsed, 
   treeContextValue,
-  treeContextType, treeContextTypeParsed, notValidContext, notValidContextParsed,
+  treeContextType, treeContextTypeParsed, 
+  notValidContext, notValidContextParsed,
+  treeStartEndEdgeValue, treeStartEndEdgeValueParsed,
+  treeUnsuportedSingleProperties, treeUnsuportedSinglePropertiesParsed,
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 import { clone } from '../../src/utils/tree-manipulation'
@@ -149,5 +152,23 @@ describe('StyleMiddleware', () => {
     const tree = clone(notValidContext)
     const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(notValidContextParsed)
+  })
+
+  it('should keep already parsed tree with context', () => {
+    const tree = clone(treeMixStyleWithContextParsed)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeMixStyleWithContextParsed)
+  })
+
+  it('should not handle start and end as special margin, padding and position types', () => {
+    const tree = clone(treeStartEndEdgeValue)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeStartEndEdgeValueParsed)
+  })
+
+  it('should ignore invalid single property', () => {
+    const tree = clone(treeUnsuportedSingleProperties)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
   })
 })
