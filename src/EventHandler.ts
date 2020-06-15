@@ -20,6 +20,7 @@ import { IdentifiableBeagleUIElement, BeagleView, DataContext } from './types'
 import { getContextHierarchy } from './context'
 import defaultActionHandlers from './actions'
 import { ActionHandler, BeagleAction } from './actions/types'
+import { getValueByCaseInsentiveKey } from './utils/tolowercase'
 
 function createEventHandler(
   customActionHandlers: Record<string, ActionHandler> = {},
@@ -36,13 +37,14 @@ function createEventHandler(
 
   const handleAction: ActionHandler = (params) => {
     const actionType = params.action._beagleAction_
-    if (!actionHandlers[actionType]) {
+    const action = getValueByCaseInsentiveKey(actionHandlers, actionType)
+    if (!action) {
       console.warn(`There is no action handler for action with type "${actionType}"`)
       return
     }
     
     const actionWithEventValues = replaceBindings(params.action, params.eventContextHierarchy)
-    actionHandlers[actionType]({ ...params, action: actionWithEventValues })
+    action({ ...params, action: actionWithEventValues })
   }
 
   function isBeagleAction(element: IdentifiableBeagleUIElement) {

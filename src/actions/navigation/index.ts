@@ -19,6 +19,7 @@ import { createQueryString } from '../../utils/querystring'
 import { BeagleNavigator } from '../../types'
 import { loadFromCache } from '../../utils/tree-fetching'
 import { addPrefix } from '../../utils/string'
+import { navigationActionsMapKeys } from '../constant'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -49,7 +50,8 @@ interface Action {
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ action, beagleView }) => {
   try {
-    const functionName = action._beagleAction_.replace(/^beagle:/, '') as keyof BeagleNavigator
+    const actionNameLowercase = action._beagleAction_.toLowerCase()    
+    const functionName = navigationActionsMapKeys[actionNameLowercase].replace(/^beagle:/, '') as keyof BeagleNavigator
     const element = beagleView.getBeagleNavigator()[functionName]((action as Action).route)
     const screen = (element as LocalView).screen
     const { url, fallback, shouldPrefetch } = element as RemoteView
