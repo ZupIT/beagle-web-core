@@ -38,7 +38,6 @@ const UNITY_TYPE: Record<string, string> = {
 const SINGLE_ATTRIBUTES: Record<string, string> = {
   'positionType': 'position',
   'backgroundColor': 'backgroundColor',
-  'direction': 'direction',
   'display': 'display',
 }
 
@@ -46,8 +45,6 @@ const EDGE_SPECIAL_VALUES: Record<string, string[]> = {
   'all': ['right', 'left', 'top', 'bottom'],
   'horizontal': ['right', 'left'],
   'vertical': ['top', 'bottom'],
-  'start': ['left'],
-  'end': ['right'],
 }
 
 const FLEX_PROPERTIES_TO_RENAME: Record<string, string> = {
@@ -73,7 +70,7 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
   let stringValue = ''
   let stringType = ''
   let isItemObject = false
-  
+
   if (isObject(item)) {
     isItemObject = true
     if (item && item.value) {
@@ -118,7 +115,7 @@ const handleContext = (item: string | number | EdgeDataFormat, key: string,
     if (outsideObjectKey) {
       if (!isObject(uiTree.parsedStyle[outsideObjectKey]))
         uiTree.parsedStyle[outsideObjectKey] = {}
-      
+
       const parsedItem = item as EdgeDataFormat
       uiTree.parsedStyle[outsideObjectKey][key] = {
         'value': parsedItem.value,
@@ -304,12 +301,20 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
     styleAtt.forEach((prop) => {
       if (handleContext(styleAttributes[prop], prop, uiTree)) return
       const propName = SINGLE_ATTRIBUTES[prop]
-      //@ts-ignore
-      uiTree.style[propName] = toLowerCase(styleAttributes[prop])
-      if (propName != prop) {
-        //@ts-ignore
-        delete uiTree.style[prop]
+      if (uiTree.style) {
+        uiTree.style[propName] = toLowerCase(styleAttributes[prop])
+        if (propName != prop) {
+          delete uiTree.style[prop]
+        }
       }
+    })
+
+    //In order to keep single attributes that are not in the array SINGLE_ATTRIBUTES
+    //for example, already parsed values, or suport for new attributes.
+    const keysToKeep = keys.filter((prop) => !styleAtt.includes(prop) && typeof styleAttributes[prop] === 'string')
+    keysToKeep.forEach((prop) => {
+      if (handleContext(styleAttributes[prop], prop, uiTree)) return
+      if (uiTree.style) uiTree.style[prop] = styleAttributes[prop]
     })
   }
   return uiTree
