@@ -45,15 +45,13 @@ Portanto, para abrir uma caixa de alerta do sistema ao clicar em um botão, por 
 Atente-se para o fato de que a ação "alert" é apenas um exemplo. Qualquer ação, com qualquer `_beagleAction_` poderia ser lançada no evento de "onPress".
 
 ### Contexto
-Um contexto pode ser estabelecido em qualquer componente Beagle que implemente `LayoutComponent`, ou seja, `_context_` pode ser especificado nos seguintes componentes:
+Um contexto pode ser estabelecido em qualquer componente Beagle que implemente `ContextComponent`, ou seja, `_context_` pode ser especificado nos seguintes componentes:
 - container
-- form
 - screen
-- scrollView
-- lazyComponent
-- listView
+- listView (novo listView apenas)
 - pageView
-- custom components que implementam LayoutComponent
+- tabView
+- custom components que implementam ContextComponent
 
 Todo contexto é identificado pela chave `_context_`. Se a chave `_context_` é encontrada no JSON, então um contexto está sendo definido a partir daquele ponto na árvore, ou seja, o escopo desse contexto é o próprio elemento onde ele foi definido e todos seus descendentes.
 
@@ -479,12 +477,14 @@ Mostram as caixas de diálogo nativas do sistema. Alert mostra uma mensagem e um
 ```typescript
 interface AlertAction {
   _beagleAction_: 'beagle:alert',
+  title?: string,
   message: string,
   onPressOk?: BeagleAction,
 }
 
 interface ConfirmAction {
   _beagleAction_: 'beagle:confirm',
+  title?: string,
   message: string,
   onPressOk?: BeagleAction,
   onPressCancel?: BeagleAction,
