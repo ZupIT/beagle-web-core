@@ -85,5 +85,4 @@ describe('Utils: tree fetching (server)', () => {
     }
     expect(nock.isDone()).toBe(true)
   })
-
 })
