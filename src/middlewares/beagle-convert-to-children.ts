@@ -33,7 +33,7 @@ const convertChildToChildren = (uiTree: BeagleUIElement<any>) => {
 }
 
 const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
-  const toLowerCaseName = uiTree._beagleComponent_.toString().toLowerCase()
+  const toLowerCaseName = uiTree._beagleComponent_ && uiTree._beagleComponent_.toString().toLowerCase()
   if (toLowerCaseName === 'beagle:lazycomponent' && uiTree.initialState) {
       const initialState = uiTree.initialState
       if (typeof initialState !== 'object') return uiTree
