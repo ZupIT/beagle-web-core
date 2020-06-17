@@ -17,7 +17,7 @@
 import { 
   treeWithChild, treeWithChildAndChildren, treeTestChild,
   treeWithLazyComponent, treeWithLazyComponentParsed,
-  treeWithLazyComponentAndChild, treeWithLazyComponentAndChildParsed, lazyComponentWithCaseInsensitive, parsedTabViewWithCaseInsensitive, parsedlazyComponentWithCaseInsensitive
+  treeWithLazyComponentAndChild, treeWithLazyComponentAndChildParsed, lazyComponentWithCaseInsensitive, parsedTabViewWithCaseInsensitive, parsedlazyComponentWithCaseInsensitive, emptyPayload
 } from '../mocks'
 import beagleConvertToChildrenMiddleware from '../../src/middlewares/beagle-convert-to-children'
 
@@ -55,5 +55,11 @@ describe('ChildToChildren Middleware', () => {
   it('should ignore case insensitive and parse', () => {
     const parsedTree = beagleConvertToChildrenMiddleware(lazyComponentWithCaseInsensitive)
     expect(parsedTree).toEqual(parsedlazyComponentWithCaseInsensitive)
+  })
+
+  it('should handle empty payload', () => {
+    //@ts-ignore
+    const parsedTree = beagleConvertToChildrenMiddleware(emptyPayload)
+    expect(parsedTree).toEqual(emptyPayload)
   })
 })
