@@ -49,6 +49,7 @@ Um contexto pode ser estabelecido em qualquer componente Beagle que implemente `
 - container
 - screen
 - listView (novo listView apenas)
+- scrollView
 - pageView
 - tabView
 - custom components que implementam ContextComponent
@@ -82,7 +83,7 @@ A ideia de contexto não faz sentido por si só, é necessário poder acessá-lo
 
 #### Acessando os bindings
 
-Um binding é identificado pelo prefixo `${` e sufixo `}`. Tudo entre os símbolos `${` e `}` identificam o valor do contexto pelo qual o binding deve ser trocado ao renderizar a tela. O valor é sempre identificado pelo id do contexto. Veja o exemplo a seguir:
+Um binding é identificado pelo prefixo `@{` e sufixo `}`. Tudo entre os símbolos `@{` e `}` identificam o valor do contexto pelo qual o binding deve ser trocado ao renderizar a tela. O valor é sempre identificado pelo id do contexto. Veja o exemplo a seguir:
 
 Contexto:
 ```json
@@ -92,7 +93,7 @@ Contexto:
 }
 ```
 
-Para acessar o texto "Hello World" através de binding, bastaria especificar o id do contexto: `${myText}`.
+Para acessar o texto "Hello World" através de binding, bastaria especificar o id do contexto: `@{myText}`.
 
 O exemplo acima funciona bem para strings e números, mas na maioria das vezes, o valor do contexto é um mapa <chave, valor>. Nesses casos, utiliza-se pontos para acessar as sub-estruturas. Veja o exemplo:
 
@@ -110,8 +111,8 @@ Contexto:
 }
 ```
 
-Para acessar o cpf através de binding: `${user.cpf}`.
-Para acessar o número de celular através de binding: `${user.phoneNumbers.cellphone}`.
+Para acessar o cpf através de binding: `@{user.cpf}`.
+Para acessar o número de celular através de binding: `@{user.phoneNumbers.cellphone}`.
 
 Se o valor no contexto for um array, deve-se utilizar os símbolos `[` e `]` para acessar posições específicas. Veja o exemplo:
 
@@ -137,11 +138,11 @@ Contexto:
 }
 ````
 
-Para acessar o título do segundo filme: `${movies.titles[1].title}`.
+Para acessar o título do segundo filme: `@{movies.titles[1].title}`.
 
 Note que a notação de array é sempre _zero-based_, ou seja, o primeiro elemento do array é sempre 0, e não 1.
 
-Um binding referente a um contexto só funciona dentro do escopo desse contexto. Bindings referentes a contextos de escopos diferentes ou inexistentes não serão resolvidos e na tela aparecerão como foram digitados. Por exemplo, se o binding é `${client.name}` e o contexto "client" não é acessível ou não possui o caminho "name", na tela, esse binding não sofrerá modificação, ou seja, aparecerá exatamente como `${client.name}`.
+Um binding referente a um contexto só funciona dentro do escopo desse contexto. Bindings referentes a contextos de escopos diferentes ou inexistentes não serão resolvidos e na tela aparecerão como foram digitados. Por exemplo, se o binding é `@{client.name}` e o contexto "client" não é acessível ou não possui o caminho "name", na tela, esse binding não sofrerá modificação, ou seja, aparecerá exatamente como `@{client.name}`.
 
 Reforçando a ideia acima, bindings nunca devem lançar exceção! Se o contexto não é acessível, o binding não é substituído por valor algum.
 
@@ -175,37 +176,37 @@ Considere o seguinte contexto:
 ```
 
 Se quisermos referenciar a idade do pai, podemos fazer isso de duas formas:
-1. `"${family.father.age}"`
-2. `"A idade do pai é ${family.father.age}"`
+1. `"@{family.father.age}"`
+2. `"A idade do pai é @{family.father.age}"`
 
 No primeiro caso, o binding será substituído pelo número 50. No segundo caso, o binding será substituído pela string "50".
 
 Para referenciar os filhos:
-1. `"${family.children}"`
-2. `"Os filhos do casal são ${family.children}"`
+1. `"@{family.children}"`
+2. `"Os filhos do casal são @{family.children}"`
 
 No primeiro caso, o binding será substituído pelo array de filhos. No segundo caso o binding será substituído por uma representação em string desse array (JSON).
 
 De forma geral, um binding sempre é representado por uma string. Se nessa string existe apenas o binding, o tipo de dado do valor substituído é o tipo da variável no contexto. Caso contrário, se o binding está no meio de um texto, o binding será substituído por uma representação em string do dado, independente do tipo de dado no contexto.
 
 #### Escapando um binding
-É possível que se queira escrever em um texto exatamente uma string no formato "${nome}", mas se isso for feito, as operações de bindings serão realizadas em cima dessa string. Para que os bindings não rodem em cima dessa string, deve-se escapar essa expressão. Veja um exemplo:
+É possível que se queira escrever em um texto exatamente uma string no formato "@{nome}", mas se isso for feito, as operações de bindings serão realizadas em cima dessa string. Para que os bindings não rodem em cima dessa string, deve-se escapar essa expressão. Veja um exemplo:
 
-Deseja-se escrever extamente "${client.name}", ou seja essa string não deve ser trocada.
+Deseja-se escrever extamente "@{client.name}", ou seja essa string não deve ser trocada.
 
 ```json
 {
   "_beagleComponent": "text",
-  "value": "\\${client.name}"
+  "value": "\\@{client.name}"
 }
 ```
 
 Considerando um contexto onde `client.name` vale `João`, para fins de teste, é importante validar os seguintes casos:
 
-- `${client.name}` resulta em `João`.
-- `\\${client.name}` resulta em `${client.name}`.
-- `\\\\${client.name}` resulta em `\João`.
-- `\\\\\\${client.name}` resulta em `\${client.name}`.
+- `@{client.name}` resulta em `João`.
+- `\\@{client.name}` resulta em `@{client.name}`.
+- `\\\\@{client.name}` resulta em `\João`.
+- `\\\\\\@{client.name}` resulta em `\@{client.name}`.
 
 #### Limitações na nomenclatura de variáveis
 Variáveis em um binding podem conter apenas letras, números e o caracter "_".
@@ -274,7 +275,7 @@ Veja um exemplo de contexto criado implicitamente:
   "label": "CEP",
   "onBlur": {
     "_beagleAction_": "beagle:sendRequest",
-    "url": "https://viacep.com.br/ws/${onBlur.value}/json",
+    "url": "https://viacep.com.br/ws/@{onBlur.value}/json",
     "method": "get"
   }
 }
@@ -480,6 +481,7 @@ interface AlertAction {
   title?: string,
   message: string,
   onPressOk?: BeagleAction,
+  labelOk?: string,
 }
 
 interface ConfirmAction {
@@ -488,6 +490,8 @@ interface ConfirmAction {
   message: string,
   onPressOk?: BeagleAction,
   onPressCancel?: BeagleAction,
+  labelOk?: string,
+  labelCancel?: string,
 }
 ```
 
