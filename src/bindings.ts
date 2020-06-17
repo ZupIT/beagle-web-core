@@ -18,8 +18,8 @@ import get from 'lodash/get'
 import { getContextHierarchy, getContextInHierarchy } from './context'
 import { DataContext } from './types'
 
-const bindingRegex = /(\\*)\$\{([^\}]+)\}/g
-const fullBindingRegex = /^\$\{([^\}]+)\}$/
+const bindingRegex = /(\\*)@\{([^\}]+)\}/g
+const fullBindingRegex = /^@\{([^\}]+)\}$/
 
 function getBindingValue(
   path: string,
@@ -50,7 +50,7 @@ function replaceBindingsInString(str: string, contextHierarchy: DataContext[]) {
   return str.replace(bindingRegex, (bindingStr, slashes, path) => {
     const isBindingScaped = slashes.length % 2 === 1
     const scapedSlashes = slashes.replace(/\\\\/g, '\\')
-    if (isBindingScaped) return `${scapedSlashes.replace(/\\$/, '')}\${${path}}`
+    if (isBindingScaped) return `${scapedSlashes.replace(/\\$/, '')}@{${path}}`
     const bindingValue = getBindingValue(path, contextHierarchy)
     const asString = typeof bindingValue === 'object' ? JSON.stringify(bindingValue) : bindingValue
     return bindingValue === undefined ? bindingStr : `${scapedSlashes}${asString}`

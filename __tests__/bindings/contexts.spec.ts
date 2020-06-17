@@ -44,7 +44,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
       const mock = createSocialMediaMock()
       const treeWithValues = replaceBindings(mock)
       const postWithWrongContext = findById(treeWithValues, 'postWithWrongContext')
-      expect(postWithWrongContext.author).toBe('${friends[0].name}')
+      expect(postWithWrongContext.author).toBe('@{friends[0].name}')
     },
   )
 })

@@ -34,7 +34,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
       {
         _beagleComponent_: 'modal',
         id: 'modal',
-        isOpen: '${isModalOpen}',
+        isOpen: '@{isModalOpen}',
         title: 'My Modal',
         onClose: [
           {
@@ -57,7 +57,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
               onSuccess: {
                 _beagleAction_: 'addChildren',
                 mode: 'replace',
-                value: '${onSuccess.data}',
+                value: '@{onSuccess.data}',
               },
               onError: {
                 _beagleAction_: 'showErrorMessage',
