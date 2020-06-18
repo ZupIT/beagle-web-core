@@ -17,7 +17,7 @@
 import { 
   treeWithChild, treeWithChildAndChildren, treeTestChild,
   treeWithLazyComponent, treeWithLazyComponentParsed,
-  treeWithLazyComponentAndChild, treeWithLazyComponentAndChildParsed, lazyComponentWithCaseInsensitive, parsedTabViewWithCaseInsensitive, parsedlazyComponentWithCaseInsensitive
+  treeWithLazyComponentAndChild, treeWithLazyComponentAndChildParsed, lazyComponentWithCaseInsensitive, parsedlazyComponentWithCaseInsensitive,
 } from '../mocks'
 import beagleConvertToChildrenMiddleware from '../../src/middlewares/beagle-convert-to-children'
 
