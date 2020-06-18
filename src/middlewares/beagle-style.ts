@@ -320,12 +320,12 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
   return uiTree
 }
 
-const addPositionTypeProperty = (uiTree: BeagleUIElement<any>) => {
-  uiTree.style = {
-    ...uiTree.style,
+const addPositionTypeProperty = (style: Record<string,any>) => {
+  style = {
+    ...style,
     positionType: 'relative',
   }
-  return uiTree
+  return style
 }
 
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
@@ -334,13 +334,12 @@ const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<an
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
   if (uiTree.style && typeof uiTree.style === 'object') {
-    
-    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType')) {
-      uiTree = addPositionTypeProperty(uiTree)
-    }
+  
+    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType'))
+      uiTree.style = addPositionTypeProperty(uiTree.style)
 
     const styleObj = uiTree.style
-
+    
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)
