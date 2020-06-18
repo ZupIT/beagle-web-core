@@ -19,7 +19,7 @@ import {
   treeF,treeFParsed, treeA,
   treeG, treeGParsed,
   treeH, treeHParsed, tabViewWithCaseInsensitive, 
-  parsedTabViewWithCaseInsensitive, emptyPayload,
+  parsedTabViewWithCaseInsensitive,
 } from '../mocks'
 import beagleTabViewMiddleware from '../../src/middlewares/tab-view-component'
 
@@ -59,11 +59,4 @@ describe('TabViewMiddleware', () => {
     const parsedTree = beagleTabViewMiddleware(tabViewWithCaseInsensitive)
     expect(parsedTree).toEqual(parsedTabViewWithCaseInsensitive)
   })
-
-  it('should handle empty payload', () => {
-    //@ts-ignore
-    const parsedTree = beagleTabViewMiddleware(emptyPayload)
-    expect(parsedTree).toEqual(emptyPayload)
-  })
-
 })

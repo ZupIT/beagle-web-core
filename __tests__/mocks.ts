@@ -906,6 +906,3 @@ export const configComponentsWrong: BeagleConfig<DefaultSchema>['components'] = 
   'beagle:button': 'Teste',
   'button': 'Teste'
 }
-
-export const emptyPayload = {
-}
