@@ -323,7 +323,7 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
 const addPositionTypeProperty = (uiTree: BeagleUIElement<any>) => {
   uiTree.style = {
     ...uiTree.style,
-    positionType: 'relative'
+    positionType: 'relative',
   }
   return uiTree
 }
@@ -336,7 +336,7 @@ const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<an
   if (uiTree.style && typeof uiTree.style === 'object') {
     
     if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType')) {
-      uiTree = addPositionTypeProperty(uiTree);
+      uiTree = addPositionTypeProperty(uiTree)
     }
 
     const styleObj = uiTree.style
