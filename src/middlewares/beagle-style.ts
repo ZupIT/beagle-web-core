@@ -204,7 +204,6 @@ const formatSizeProperty =
 const handleSpecialPosition = (key: string,
   uiTree: BeagleUIElement, value: string) => {
   const parsedNames = EDGE_SPECIAL_VALUES[key]
-
   parsedNames.forEach((name) => uiTree.parsedStyle[name] = value)
   return uiTree
 }
@@ -215,6 +214,7 @@ const formatPositionProperty =
       if (typeof styleAttributes === 'object') {
         const keys = Object.keys(styleAttributes)
         keys.forEach((key) => {
+
           if (handleContext(styleAttributes[key], key, uiTree, 'position')) return
           const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
           if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
@@ -320,12 +320,25 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
   return uiTree
 }
 
+const addPositionTypeProperty = (uiTree: BeagleUIElement<any>) => {
+  uiTree.style = {
+    ...uiTree.style,
+    positionType: 'relative'
+  }
+  return uiTree
+}
+
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
 
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
   if (uiTree.style && typeof uiTree.style === 'object') {
+    
+    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType')) {
+      uiTree = addPositionTypeProperty(uiTree);
+    }
+
     const styleObj = uiTree.style
 
     uiTree = formatSizeProperty(uiTree, styleObj.size)
