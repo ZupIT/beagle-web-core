@@ -320,7 +320,7 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
   return uiTree
 }
 
-const addPositionTypeProperty = (style: Record<string,any>) => {
+const addPositionTypeProperty = (style: Record<string, any>) => {
   style = {
     ...style,
     positionType: 'relative',
