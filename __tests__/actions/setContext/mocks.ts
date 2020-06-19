@@ -5,7 +5,7 @@ export function createSingleContextMock(
   btnId = 'button',
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleComponent_: 'container_${ctxId}',
+    _beagleComponent_: 'container_@{ctxId}',
     id: 'container',
     _context_: {
       id: ctxId,
@@ -15,7 +15,7 @@ export function createSingleContextMock(
       {
         _beagleComponent_: 'button',
         id: btnId,
-        value: `\${${ctxId}}`,
+        value: `@{${ctxId}}`,
       },
     ],
   }
@@ -51,7 +51,7 @@ export function createMockWithDistantContext(): IdentifiableBeagleUIElement {
                   {
                     _beagleComponent_: 'button',
                     id: 'button',
-                    value: '${ctx_a}',
+                    value: '@{ctx_a}',
                   },
                 ],
               },
@@ -73,7 +73,7 @@ export function createSameLevelContextMock(
       id: 'ctx_a',
       value,
     },
-    value: '${ctx_a}',
+    value: '@{ctx_a}',
   }
 }
 

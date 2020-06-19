@@ -24,7 +24,8 @@ function createURLBuilder(baseUrl: string): URLBuilder {
       // According to the convention the relative path should start with '/'
       const relativePathRegex = /^\/+(\b|$)/
       const base = removeSuffix(baseUrl || defaultBaseUrl || '', '/')
-      return path.match(relativePathRegex) ? `${base}${path}` : path
+      const url = path.match(relativePathRegex) ? `${base}${path}` : path
+      return encodeURI(url)
     },
   }
 }

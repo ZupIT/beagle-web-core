@@ -19,6 +19,7 @@ import createEventHandler, { EventHandler } from './EventHandler'
 import { replaceBindings } from './bindings'
 import createBeagleUIView from './BeagleUIView'
 import BeagleContext from './BeagleContext'
+import BeagleAnalytics from './BeagleAnalytics'
 import createXMLConverter from './XMLConverter'
 import { loadFromCache, loadFromServer } from './utils/tree-fetching'
 import { checkPrefix } from './utils/tree-manipulation'
@@ -75,4 +76,5 @@ export {
   createEventHandler,
   EventHandler,
   replaceBindings,
+  BeagleAnalytics,
 }
