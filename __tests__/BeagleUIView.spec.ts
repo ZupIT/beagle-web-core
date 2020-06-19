@@ -124,6 +124,15 @@ describe('BeagleUIView', () => {
     expect(view.getTree().id).not.toBeUndefined()
   })
 
+  it('should not run global middlewares for empty tree', async () => {
+    const tree = {}
+    //@ts-ignore
+    view.updateWithTree({ sourceTree: tree })
+    expect(middleware).not.toHaveBeenCalled()
+    // empty tree should not have id
+    expect(view.getTree().id).toBeUndefined()
+  })
+
   it('should replace entire content with network response', async () => {
     view.updateWithTree({ sourceTree: treeA })
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
