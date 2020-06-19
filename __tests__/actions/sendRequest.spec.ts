@@ -211,21 +211,18 @@ describe('Actions: beagle:sendRequest', () => {
     nock.cleanAll()
   })
 
-  it('should run onError when response body is an invalid json', async () => {
+  it('should use a simple string when response is not a json', async () => {
     const response = '{ field: \'name\', error: \'name is required\' }'
     nock(domain).get(path).reply(200, response)
     const beagleView = createBeagleViewMock()
     const handleAction = jest.fn()
-    const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
-
-    const originalLogError = console.error
-    console.error = jest.fn()
+    const onSuccess = { _beagleAction_: 'beagle:alert', message: 'Success!' }
 
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
         url: `${domain}${path}`,
-        onError,
+        onSuccess,
       },
       beagleView,
       element,
@@ -235,25 +232,22 @@ describe('Actions: beagle:sendRequest', () => {
 
     expect(nock.isDone()).toBe(true)
     expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onError,
+      action: onSuccess,
       beagleView,
       element,
       handleAction,
       eventContextHierarchy: [
         {
-          id: 'onError',
+          id: 'onSuccess',
           value: {
             data: response,
             status: 200,
             statusText: 'OK',
-            message: 'Unexpected token f in JSON at position 2',
           },
         },
       ],
     })
 
-    expect(console.error).toHaveBeenCalled()
-    console.error = originalLogError
     nock.cleanAll()
   })
 
