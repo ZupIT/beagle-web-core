@@ -81,8 +81,13 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     contextResponse.status = response.status
     contextResponse.statusText = response.statusText
     contextResponse.data = resultText
-    const resultData = resultText && JSON.parse(resultText)
-    contextResponse.data = resultData
+
+    try {
+      const resultData = resultText && JSON.parse(resultText)
+      contextResponse.data = resultData
+    } catch {
+      contextResponse.data = resultText
+    }
     
     if (!response.ok) throw new Error(contextResponse.statusText)
     handleSuccess(contextResponse as ParsedResponse)
