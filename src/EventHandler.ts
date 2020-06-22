@@ -20,7 +20,7 @@ import { IdentifiableBeagleUIElement, BeagleView, DataContext } from './types'
 import { getContextHierarchy } from './context'
 import defaultActionHandlers from './actions'
 import { ActionHandler, BeagleAction } from './actions/types'
-import { getValueByCaseInsentiveKey } from './utils/tolowercase'
+import { getValueByCaseInsentiveKey } from './utils/object'
 
 function createEventHandler(
   customActionHandlers: Record<string, ActionHandler> = {},

@@ -43,3 +43,12 @@ export const getValueByCaseInsentiveKey = <Schema> (
   const originalKey = lowercaseKeyMap[(name as string).toLowerCase()]
   return values[originalKey]
 }
+
+export const getOriginalKeyByCaseInsensitiveKey = <Schema> (
+  values: BeagleValues<Schema>, 
+  name:  BeagleKeyName<Schema>
+) => {
+  const lowercaseKeyMap = getLowercaseMapOfKeys(values) || {}
+  const originalKey = lowercaseKeyMap[(name as string).toLowerCase()]
+  return originalKey
+}
