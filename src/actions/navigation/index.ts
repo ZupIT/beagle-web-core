@@ -44,7 +44,7 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
 
 interface Action {
   _beagleAction_: string,
-  route: Route,
+  route: Route & string,
 }
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ action, beagleView }) => {
