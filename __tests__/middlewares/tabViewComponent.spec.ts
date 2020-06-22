@@ -26,11 +26,14 @@ import beagleTabViewMiddleware from '../../src/middlewares/tab-view-component'
 describe('TabViewMiddleware', () => {
 
   it('should parse tabItems as a component ', () => {
+    // Trees with tabView don't respect type BeagleUIElement because they lack _beagleComponent_
+    // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(simpleTab)
     expect(parsedTree).toEqual(simpleTabParsed)
   })
 
   it('should parse tabItems without change other components', () => {
+    // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(treeF)
     expect(parsedTree).toEqual(treeFParsed)
   })
@@ -41,11 +44,13 @@ describe('TabViewMiddleware', () => {
   })
 
   it('should parse tabItems as a component with multiple children levels ', () => {
+    // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(treeH)
     expect(parsedTree).toEqual(treeHParsed)
   })
 
   it('should parse tabView in the tabItems array ', () => {
+    // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(treeG)
     expect(parsedTree).toEqual(treeGParsed)
   })
@@ -56,6 +61,7 @@ describe('TabViewMiddleware', () => {
   })
 
   it('should ignore case insensitive and parse', () => {
+    // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(tabViewWithCaseInsensitive)
     expect(parsedTree).toEqual(parsedTabViewWithCaseInsensitive)
   })

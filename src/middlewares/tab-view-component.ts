@@ -29,8 +29,9 @@ const beagleTabViewMiddleware = (uiTree: BeagleUIElement<any>) => {
         const tabItens = uiTree.children as TabItem[]
         const parsedItems = tabItens.map((tab: TabItem) => {
             tab._beagleComponent_ = 'beagle:tabitem'
-            tab.children = [tab.child]
-            tab.children.forEach(beagleConvertToChildrenMiddleware)
+            if (tab.child)
+                tab.children = [tab.child]
+            tab.children && tab.children.forEach(beagleConvertToChildrenMiddleware)
 
             delete tab.child
             return tab
@@ -40,7 +41,7 @@ const beagleTabViewMiddleware = (uiTree: BeagleUIElement<any>) => {
     }
     
     if (uiTree.children) uiTree.children.forEach(beagleTabViewMiddleware)
-    
+
     return uiTree
 }
 
