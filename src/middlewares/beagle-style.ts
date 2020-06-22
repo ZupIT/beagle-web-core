@@ -320,6 +320,13 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
   return uiTree
 }
 
+const formatCornerRadiusAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
+  if (styleAttributes && styleAttributes.radius) {
+    uiTree.parsedStyle['borderRadius'] = `${styleAttributes.radius}px`
+  }
+  return uiTree
+}
+
 const addPositionTypeProperty = (style: Record<string, any>) => {
   style = {
     ...style,
@@ -343,6 +350,7 @@ const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<an
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)
+    uiTree = formatCornerRadiusAttributes(uiTree, styleObj.cornerRadius)
     uiTree = formatEdgeAttributes(uiTree, 'margin', styleObj.margin)
     uiTree = formatEdgeAttributes(uiTree, 'padding', styleObj.padding)
     if (!isEmpty(uiTree.parsedStyle))
