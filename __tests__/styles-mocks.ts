@@ -291,7 +291,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
           _beagleComponent_: 'type-C',
           style: {
             top: '10px',
-            left: '10px'
+            left: '10px',
+            position: 'relative'
           }
         },
       ]
@@ -301,7 +302,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-D',
       style: {
         bottom: '10%',
-        right: '10%'
+        right: '10%',
+        position: 'relative'
       },
     },
     {
@@ -309,7 +311,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-E',
       style: {
         left: '10px',
-        right: '15px'
+        right: '15px',
+        position: 'relative'
       },
     },
     {
@@ -317,7 +320,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-F',
       style: {
         left: '10px',
-        right: '10px'
+        right: '10px',
+        position: 'relative'
       }
     },
     {
@@ -325,7 +329,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-G',
       style: {
         top: '15px',
-        bottom: '15px'
+        bottom: '15px',
+        position: 'relative'
       }
     }
   ],
@@ -333,7 +338,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
     left: '10px',
     right: '10px',
     top: '10px',
-    bottom: '10px'
+    bottom: '10px',
+    position: 'relative'
   }
 }
 
@@ -757,7 +763,7 @@ export const treeAttributesToKeepName: IdentifiableBeagleUIElement = {
     }
   ],
   style: {
-    positionType: 'RELATIVE'
+    positionType: 'ABSOLUTE'
   }
 }
 
@@ -776,7 +782,7 @@ export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
     }
   ],
   style: {
-    position: 'relative'
+    position: 'absolute'
   }
 }
 
@@ -884,13 +890,13 @@ export const treeAttributesToKeepNameWithContext: IdentifiableBeagleUIElement = 
       id: 'D.0',
       _beagleComponent_: 'type-B',
       style: {
-        display: '${client.displayPlaceholder}',
-        backgroundColor: '${contextTest}'
+        display: '@{client.displayPlaceholder}',
+        backgroundColor: '@{contextTest}'
       }
     }
   ],
   style: {
-    positionType: '${contextTest}'
+    positionType: '@{contextTest}'
   }
 }
 
@@ -904,16 +910,16 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
       id: 'testing-2',
       style: {
         flex: {
-          flexDirection: '${contextTest}'
+          flexDirection: '@{contextTest}'
         },
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
         size: {
-          height: '${contextTest[0].Testing}'
+          height: '@{contextTest[0].Testing}'
         },
         width: '300px',
         margin: {
-          all: '${contextTest}',
+          all: '@{contextTest}',
         }
       }
     },
@@ -921,16 +927,10 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        position: {
-          top: {
-            value: '${contextTest.testingContext}',
-            type: "REAL"
-          },
-          left: '${contextTest}'
-        },
+        position: 'relative',
         bottom: '10px',
         right: '20px',
-        padding: '${contextTest}'
+        padding: '@{contextTest}'
       }
     },
     {
@@ -938,11 +938,11 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-E',
       style: {
         size: {
-          width: '${contextTest}'
+          width: '@{contextTest}'
         },
         padding: {
           right: {
-            value: '${contextTest}',
+            value: '@{contextTest}',
             type: "REAL"
           }
         },
@@ -951,12 +951,12 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
     },
   ],
   style: {
-    display: "flex",
+    display: 'flex',
     position: 'relative',
-    flex: '${contextTest[0].testingContext}',
+    flex: '@{contextTest[0].testingContext}',
     paddingRight: '10px',
-    size: '${contextTest}',
-    margin: '${contextTest.testingContext.validContext}'
+    size: '@{contextTest}',
+    margin: '@{contextTest.testingContext.validContext}'
   }
 }
 
@@ -970,19 +970,19 @@ export const treeMixStyleWithContext: IdentifiableBeagleUIElement = {
       id: 'testing-2',
       style: {
         flex: {
-          flexDirection: '${contextTest}',
+          flexDirection: '@{contextTest}',
           flexWrap: 'WRAP',
           justifyContent: 'FLEX_START',
         },
         size: {
-          height: '${contextTest[0].Testing}',
+          height: '@{contextTest[0].Testing}',
           width: {
             value: 300.0,
             type: "REAL"
           },
         },
         margin: {
-          all: '${contextTest}',
+          all: '@{contextTest}',
         }
       }
     },
@@ -992,10 +992,10 @@ export const treeMixStyleWithContext: IdentifiableBeagleUIElement = {
       style: {
         position: {
           top: {
-            value: '${contextTest.testingContext}',
+            value: '@{contextTest.testingContext}',
             type: "REAL"
           },
-          left: '${contextTest}',
+          left: '@{contextTest}',
           bottom: {
             value: 10.0,
             type: "REAL"
@@ -1005,7 +1005,7 @@ export const treeMixStyleWithContext: IdentifiableBeagleUIElement = {
             type: "REAL"
           }
         },
-        padding: '${contextTest}'
+        padding: '@{contextTest}'
       }
     },
     {
@@ -1013,11 +1013,11 @@ export const treeMixStyleWithContext: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-E',
       style: {
         size: {
-          width: '${contextTest}'
+          width: '@{contextTest}'
         },
         padding: {
           right: {
-            value: '${contextTest}',
+            value: '@{contextTest}',
             type: "REAL"
           },
           top: {
@@ -1031,51 +1031,75 @@ export const treeMixStyleWithContext: IdentifiableBeagleUIElement = {
   style: {
     display: "FLEX",
     positionType: 'RELATIVE',
-    flex: '${contextTest[0].testingContext}',
+    flex: '@{contextTest[0].testingContext}',
     padding: {
       right: {
         value: 10,
         type: "REAL"
       }
     },
-    size: '${contextTest}',
-    margin: '${contextTest.testingContext.validContext}'
+    size: '@{contextTest}',
+    margin: '@{contextTest.testingContext.validContext}'
   }
 }
 
 export const treeContextValue: IdentifiableBeagleUIElement = {
   _beagleComponent_: "beagle:container",
   id: 'testing',
+  style: {
+    position: {
+      left: {
+        value: '10',
+        type: "REAL"
+      },
+      top: {
+        value: '10',
+        type: "REAL"
+      },
+      bottom: {
+        value: '10',
+        type: "REAL"
+      },
+      right: {
+        value: '10',
+        type: "REAL"
+      },
+    },
+  },
   children: [
     {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
+        positionType:'absolute',
         position: {
           top: {
-            value: '${contextTest}',
+            value: '10',
             type: "REAL"
           },
         },
       }
     },
-  ]
+  ],
 }
 
 export const treeContextValueParsed: IdentifiableBeagleUIElement = {
   _beagleComponent_: "beagle:container",
   id: 'testing',
+  style: {
+    top: '10px',
+    bottom: '10px',
+    left: '10px',
+    right: '10px',
+    position: 'relative'
+  },
   children: [
     {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        position: {
-          top: {
-            value: '${contextTest}',
-            type: "REAL"
-          },
-        },
+        top:'10px',
+        position: 'absolute'
       }
     },
   ]
@@ -1092,23 +1116,23 @@ export const treeContextType: IdentifiableBeagleUIElement = {
         position: {
           top: {
             value: '10',
-            type: '${contextTest}'
+            type: 'REAL'
           },
         },
         padding: {
           right: {
             value: '5',
-            type: '${contextTest}'
+            type: '@{contextTest}'
           }
         },
         size: {
           height: {
             value: 300.0,
-            type: '${contextTest}'
+            type: '@{contextTest}'
           },
           width: {
             value: 200.0,
-            type: '${contextTest}'
+            type: '@{contextTest}'
           }
         }
       }
@@ -1124,26 +1148,22 @@ export const treeContextTypeParsed: IdentifiableBeagleUIElement = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        position: {
-          top: {
-            value: '10',
-            type: '${contextTest}'
-          },
-        },
+        top:"10px",
+        position: 'relative',
         padding: {
           right: {
             value: '5',
-            type: '${contextTest}'
+            type: '@{contextTest}'
           }
         },
         size: {
           height: {
             value: 300.0,
-            type: '${contextTest}'
+            type: '@{contextTest}'
           },
           width: {
             value: 200.0,
-            type: '${contextTest}'
+            type: '@{contextTest}'
           }
         }
       }
@@ -1209,8 +1229,8 @@ export const notValidContext = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        display: '${contextTest',
-        backgroundColor: '${contextTest[a]}'
+        display: '@{contextTest',
+        backgroundColor: '@{contextTest[a]}'
       }
     },
     {
@@ -1218,17 +1238,17 @@ export const notValidContext = {
       _beagleComponent_: 'type-C',
       style: {
         position: {
-          top: '${contextTest.}'
+          top: '@{contextTest.}'
         },
         margin: {
-          all: '${contextTest.[a]}'
+          all: '@{contextTest.[a]}'
         },
       }
     },
   ],
   style: {
-    display: '${}',
-    backgroundColor: '${contextTest[}'
+    display: '@{}',
+    backgroundColor: '@{contextTest[}'
   }
 }
 
@@ -1240,22 +1260,23 @@ export const notValidContextParsed = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        display: '${contexttest',
-        backgroundColor: '${contexttest[a]}'
+        display: '@{contexttest',
+        backgroundColor: '@{contexttest[a]}'
       }
     },
     {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
+        position:'relative',
         top: '',
         margin: '',
       }
     },
   ],
   style: {
-    display: '${}',
-    backgroundColor: '${contexttest[}'
+    display: '@{}',
+    backgroundColor: '@{contexttest[}'
   }
 }
 
@@ -1305,7 +1326,8 @@ export const treeStartEndEdgeValueParsed = {
     marginStart: '10px',
     marginEnd: '15px',
     paddingStart: '10px',
-    paddingEnd: '15px'
+    paddingEnd: '15px',
+    position:"relative"
   }
 }
 
@@ -1325,11 +1347,11 @@ export const treeUnsuportedSingleProperties = {
     position: {
       top: {
         value: '10',
-        type: '${contextTest}'
+        type: 'REAL'
       },
     },
-    display: '${contextTest}',
-    backgroundColor: '${contextTest[0]}',
+    display: '@{contextTest}',
+    backgroundColor: '@{contextTest[0]}',
     direction: 'LTR'
   }
 }
@@ -1347,14 +1369,10 @@ export const treeUnsuportedSinglePropertiesParsed = {
     }
   ],
   style: {
-    position: {
-      top: {
-        value: '10',
-        type: '${contextTest}'
-      },
-    },
-    display: '${contextTest}',
-    backgroundColor: '${contextTest[0]}',
+    position: "relative" ,
+    top: "10px",
+    display: '@{contextTest}',
+    backgroundColor: '@{contextTest[0]}',
     direction: 'LTR'
   }
 }

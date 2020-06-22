@@ -124,6 +124,15 @@ describe('BeagleUIView', () => {
     expect(view.getTree().id).not.toBeUndefined()
   })
 
+  it('should not run global middlewares for empty tree', async () => {
+    const tree = {}
+    //@ts-ignore
+    view.updateWithTree({ sourceTree: tree })
+    expect(middleware).not.toHaveBeenCalled()
+    // empty tree should not have id
+    expect(view.getTree().id).toBeUndefined()
+  })
+
   it('should replace entire content with network response', async () => {
     view.updateWithTree({ sourceTree: treeA })
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
@@ -219,7 +228,7 @@ describe('BeagleUIView', () => {
     }, '')
     await view.updateWithFetch({ path })
  
-    expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { "method": "get" })
+    expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { 'method': 'get', 'headers': { 'beagle-platform': 'WEB'} })
   })
 
   it('should fallback to UIElement when fetch fails', async () => {
@@ -248,7 +257,7 @@ describe('BeagleUIView', () => {
       fetchData
     }, '')
     await view.updateWithFetch({ path })
-    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/${path}`, { "method": "get" })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB' } })
   })
 
   it('should handle relative path starting with /', async () => {
@@ -261,7 +270,7 @@ describe('BeagleUIView', () => {
       fetchData
     }, '')
     await view.updateWithFetch({ path })
-    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}${path}`, { "method": "get" })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB'} })
   })
 
   it('should make request for root baseUrl path', async () => {
@@ -274,6 +283,6 @@ describe('BeagleUIView', () => {
       fetchData
     }, '')
     await view.updateWithFetch({ path })
-    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get" })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get", 'headers': { 'beagle-platform': 'WEB'} })
   })
 })

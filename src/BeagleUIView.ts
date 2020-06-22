@@ -150,6 +150,12 @@ const createBeagleView = <Schema>({
     shouldRunMiddlewares = true,
     shouldRunListeners = true,
   }: UpdateWithTreeParams<Schema>) {
+
+    if (Object.keys(sourceTree).length === 0) {
+      updateRoot(sourceTree as IdentifiableBeagleUIElement<Schema>, mode, shouldRunListeners)
+      return
+    }
+
     const sourceTreeAfterApplyingUserMiddlewares = shouldRunMiddlewares
       ? runUserMiddlewares(sourceTree, localMiddlewares)
       : sourceTree
