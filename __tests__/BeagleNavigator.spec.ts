@@ -52,7 +52,7 @@ describe('BeagleNavigator', () => {
 
   it('should popToView', () => {
     navigator.pushView({ url: 'second' })
-    const route = navigator.popToView(initialRoute)
+    const route = navigator.popToView(initialRoute.url)
     expect(navigator.get()).toEqual([initialStack])
     expect(route).toBe(initialRoute)
   })
@@ -74,7 +74,7 @@ describe('BeagleNavigator', () => {
   })
 
   it('should throw an error when popToView with a non-existent route', () => {
-    const route = () => navigator.popToView({ url: 'non-existent-route' })
+    const route = () => navigator.popToView('non-existent-route')
     expect(route).toThrowError()
   })
 
