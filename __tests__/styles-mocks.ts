@@ -1376,3 +1376,23 @@ export const treeUnsuportedSinglePropertiesParsed = {
     direction: 'LTR'
   }
 }
+
+export const treeWithCornerRadius = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    cornerRadius: {
+      radius: 10
+    }
+  }
+}
+
+export const treeWithCornerRadiusParsed = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    borderRadius: '10px'
+  }
+}
