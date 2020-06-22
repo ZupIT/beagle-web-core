@@ -25,14 +25,15 @@ import beagleTabViewMiddleware from '../../src/middlewares/tab-view-component'
 
 describe('TabViewMiddleware', () => {
 
-  it('should parse tabItems as a component ', () => {
-    // Trees with tabView don't respect type BeagleUIElement because they lack _beagleComponent_
+  it('should parse children tabItems as a component ', () => {
+    // Trees with tabView don't respect type BeagleUIElement because 
+    // the children in tabViews component lack _beagleComponent_
     // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(simpleTab)
     expect(parsedTree).toEqual(simpleTabParsed)
   })
 
-  it('should parse tabItems without change other components', () => {
+  it('should parse children tabItems without change other components', () => {
     // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(treeF)
     expect(parsedTree).toEqual(treeFParsed)
@@ -43,13 +44,13 @@ describe('TabViewMiddleware', () => {
     expect(parsedTree).toEqual(treeFParsed)
   })
 
-  it('should parse tabItems as a component with multiple children levels ', () => {
+  it('should parse children tabItems as a component with multiple children levels ', () => {
     // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(treeH)
     expect(parsedTree).toEqual(treeHParsed)
   })
 
-  it('should parse tabView in the tabItems array ', () => {
+  it('should parse tabView in the children tabItems array ', () => {
     // @ts-ignore
     const parsedTree = beagleTabViewMiddleware(treeG)
     expect(parsedTree).toEqual(treeGParsed)
