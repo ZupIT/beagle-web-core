@@ -59,7 +59,7 @@ export interface PopViewAction {
 
 export interface PopToViewAction {
   _beagleAction_: 'beagle:popToView',
-  route: Route,
+  route: string,
 }
 
 export interface ResetStackAction {
