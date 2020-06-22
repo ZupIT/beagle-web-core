@@ -20,5 +20,5 @@ export function createQueryString(data: Record<string, string>) {
   const keys = Object.keys(data)
   const params = keys.map((key: string) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
   
-  return params.join('&')
+  return `?${params.join('&')}`
 }
