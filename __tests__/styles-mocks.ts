@@ -291,7 +291,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
           _beagleComponent_: 'type-C',
           style: {
             top: '10px',
-            left: '10px'
+            left: '10px',
+            position: 'relative'
           }
         },
       ]
@@ -301,7 +302,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-D',
       style: {
         bottom: '10%',
-        right: '10%'
+        right: '10%',
+        position: 'relative'
       },
     },
     {
@@ -309,7 +311,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-E',
       style: {
         left: '10px',
-        right: '15px'
+        right: '15px',
+        position: 'relative'
       },
     },
     {
@@ -317,7 +320,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-F',
       style: {
         left: '10px',
-        right: '10px'
+        right: '10px',
+        position: 'relative'
       }
     },
     {
@@ -325,7 +329,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
       _beagleComponent_: 'type-G',
       style: {
         top: '15px',
-        bottom: '15px'
+        bottom: '15px',
+        position: 'relative'
       }
     }
   ],
@@ -333,7 +338,8 @@ export const treePositionParsed: IdentifiableBeagleUIElement = {
     left: '10px',
     right: '10px',
     top: '10px',
-    bottom: '10px'
+    bottom: '10px',
+    position: 'relative'
   }
 }
 
@@ -757,7 +763,7 @@ export const treeAttributesToKeepName: IdentifiableBeagleUIElement = {
     }
   ],
   style: {
-    positionType: 'RELATIVE'
+    positionType: 'ABSOLUTE'
   }
 }
 
@@ -776,7 +782,7 @@ export const treeAttributesToKeepNameParsed: IdentifiableBeagleUIElement = {
     }
   ],
   style: {
-    position: 'relative'
+    position: 'absolute'
   }
 }
 
@@ -921,13 +927,7 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        position: {
-          top: {
-            value: '@{contextTest.testingContext}',
-            type: "REAL"
-          },
-          left: '@{contextTest}'
-        },
+        position: 'relative',
         bottom: '10px',
         right: '20px',
         padding: '@{contextTest}'
@@ -951,7 +951,7 @@ export const treeMixStyleWithContextParsed: IdentifiableBeagleUIElement = {
     },
   ],
   style: {
-    display: "flex",
+    display: 'flex',
     position: 'relative',
     flex: '@{contextTest[0].testingContext}',
     paddingRight: '10px',
@@ -1046,36 +1046,60 @@ export const treeMixStyleWithContext: IdentifiableBeagleUIElement = {
 export const treeContextValue: IdentifiableBeagleUIElement = {
   _beagleComponent_: "beagle:container",
   id: 'testing',
+  style: {
+    position: {
+      left: {
+        value: '10',
+        type: "REAL"
+      },
+      top: {
+        value: '10',
+        type: "REAL"
+      },
+      bottom: {
+        value: '10',
+        type: "REAL"
+      },
+      right: {
+        value: '10',
+        type: "REAL"
+      },
+    },
+  },
   children: [
     {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
+        positionType:'absolute',
         position: {
           top: {
-            value: '@{contextTest}',
+            value: '10',
             type: "REAL"
           },
         },
       }
     },
-  ]
+  ],
 }
 
 export const treeContextValueParsed: IdentifiableBeagleUIElement = {
   _beagleComponent_: "beagle:container",
   id: 'testing',
+  style: {
+    top: '10px',
+    bottom: '10px',
+    left: '10px',
+    right: '10px',
+    position: 'relative'
+  },
   children: [
     {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        position: {
-          top: {
-            value: '@{contextTest}',
-            type: "REAL"
-          },
-        },
+        top:'10px',
+        position: 'absolute'
       }
     },
   ]
@@ -1092,7 +1116,7 @@ export const treeContextType: IdentifiableBeagleUIElement = {
         position: {
           top: {
             value: '10',
-            type: '@{contextTest}'
+            type: 'REAL'
           },
         },
         padding: {
@@ -1124,12 +1148,8 @@ export const treeContextTypeParsed: IdentifiableBeagleUIElement = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        position: {
-          top: {
-            value: '10',
-            type: '@{contextTest}'
-          },
-        },
+        top:"10px",
+        position: 'relative',
         padding: {
           right: {
             value: '5',
@@ -1248,6 +1268,7 @@ export const notValidContextParsed = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
+        position:'relative',
         top: '',
         margin: '',
       }
@@ -1305,7 +1326,8 @@ export const treeStartEndEdgeValueParsed = {
     marginStart: '10px',
     marginEnd: '15px',
     paddingStart: '10px',
-    paddingEnd: '15px'
+    paddingEnd: '15px',
+    position:"relative"
   }
 }
 
@@ -1325,7 +1347,7 @@ export const treeUnsuportedSingleProperties = {
     position: {
       top: {
         value: '10',
-        type: '@{contextTest}'
+        type: 'REAL'
       },
     },
     display: '@{contextTest}',
@@ -1347,14 +1369,30 @@ export const treeUnsuportedSinglePropertiesParsed = {
     }
   ],
   style: {
-    position: {
-      top: {
-        value: '10',
-        type: '@{contextTest}'
-      },
-    },
+    position: "relative" ,
+    top: "10px",
     display: '@{contextTest}',
     backgroundColor: '@{contextTest[0]}',
     direction: 'LTR'
+  }
+}
+
+export const treeWithCornerRadius = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    cornerRadius: {
+      radius: 10
+    }
+  }
+}
+
+export const treeWithCornerRadiusParsed = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    borderRadius: '10px'
   }
 }

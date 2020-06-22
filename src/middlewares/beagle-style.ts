@@ -204,7 +204,6 @@ const formatSizeProperty =
 const handleSpecialPosition = (key: string,
   uiTree: BeagleUIElement, value: string) => {
   const parsedNames = EDGE_SPECIAL_VALUES[key]
-
   parsedNames.forEach((name) => uiTree.parsedStyle[name] = value)
   return uiTree
 }
@@ -215,6 +214,7 @@ const formatPositionProperty =
       if (typeof styleAttributes === 'object') {
         const keys = Object.keys(styleAttributes)
         keys.forEach((key) => {
+
           if (handleContext(styleAttributes[key], key, uiTree, 'position')) return
           const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
           if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
@@ -320,17 +320,37 @@ const singleAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style)
   return uiTree
 }
 
+const formatCornerRadiusAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
+  if (styleAttributes && styleAttributes.radius) {
+    uiTree.parsedStyle['borderRadius'] = `${styleAttributes.radius}px`
+  }
+  return uiTree
+}
+
+const addPositionTypeProperty = (style: Record<string, any>) => {
+  style = {
+    ...style,
+    positionType: 'relative',
+  }
+  return style
+}
+
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
 
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
   if (uiTree.style && typeof uiTree.style === 'object') {
-    const styleObj = uiTree.style
+  
+    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType'))
+      uiTree.style = addPositionTypeProperty(uiTree.style)
 
+    const styleObj = uiTree.style
+    
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)
+    uiTree = formatCornerRadiusAttributes(uiTree, styleObj.cornerRadius)
     uiTree = formatEdgeAttributes(uiTree, 'margin', styleObj.margin)
     uiTree = formatEdgeAttributes(uiTree, 'padding', styleObj.padding)
     if (!isEmpty(uiTree.parsedStyle))

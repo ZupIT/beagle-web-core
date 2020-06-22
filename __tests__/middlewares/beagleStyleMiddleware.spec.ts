@@ -25,7 +25,7 @@ import {
   treeWithoutStyle, treeMixStyle, treeMixStyleParsed,
   treeAttributesToKeepNameWithContext,
   treeMixStyleWithContext, treeMixStyleWithContextParsed, 
-  treeContextValue,
+  treeContextValue, treeContextValueParsed,
   treeContextType, treeContextTypeParsed, 
   notValidContext, notValidContextParsed,
   treeStartEndEdgeValue, treeStartEndEdgeValueParsed,
@@ -136,10 +136,10 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toEqual(treeMixStyleWithContextParsed)
   })
 
- it('should parse object with context on value without changing it', () => {
+ it('should keep position if positionType available otherwise add position:relative', () => {
     const tree = clone(treeContextValue)
     const parsedTree = beagleStyleMiddleware(tree)
-    expect(parsedTree).toEqual(treeContextValue)
+    expect(parsedTree).toEqual(treeContextValueParsed)
   })
 
   it('should parse object with context on type without changing it', () => {
@@ -167,6 +167,12 @@ describe('StyleMiddleware', () => {
   })
 
   it('should ignore invalid single property', () => {
+    const tree = clone(treeUnsuportedSingleProperties)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
+  })
+
+  it('should handle corner Radius', () => {
     const tree = clone(treeUnsuportedSingleProperties)
     const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
