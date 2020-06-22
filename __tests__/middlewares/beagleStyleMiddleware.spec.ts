@@ -171,4 +171,10 @@ describe('StyleMiddleware', () => {
     const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
   })
+
+  it('should handle corner Radius', () => {
+    const tree = clone(treeUnsuportedSingleProperties)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
+  })
 })

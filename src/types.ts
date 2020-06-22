@@ -151,7 +151,7 @@ export interface BeagleNavigator {
   popStack: () => Route,
   pushView: (route: Route) => Route,
   popView: () => Route,
-  popToView: (route: Route) => Route,
+  popToView: (route: string) => Route,
   resetStack: (route: Route) => Route,
   resetApplication: (route: Route) => Route,
   get: () => Stack[],
