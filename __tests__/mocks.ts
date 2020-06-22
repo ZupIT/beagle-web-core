@@ -171,7 +171,7 @@ export const treeD: IdentifiableBeagleUIElement = {
   ],
 }
 
-export const treeF: BeagleUIElement = {
+export const treeF = {
   _beagleComponent_: 'type-A',
   children: [
     {
@@ -198,7 +198,7 @@ export const treeF: BeagleUIElement = {
         },
         {
           _beagleComponent_: 'beagle:tabview',
-          tabItems: [
+          children: [
             {
               title: 'A.1.1.0',
               child: {
@@ -355,7 +355,7 @@ export const treeFParsed: BeagleUIElement = {
   ],
 }
 
-export const treeG: BeagleUIElement = {
+export const treeG = {
   _beagleComponent_: 'type-G',
   children: [
     {
@@ -382,12 +382,12 @@ export const treeG: BeagleUIElement = {
         },
         {
           _beagleComponent_: 'beagle:tabview',
-          tabItems: [
+          children: [
             {
               title: 'G.1.1.0',
               child: {
                 _beagleComponent_: 'beagle:tabview',
-                tabItems: [
+                children: [
                   {
                     title: 'G.1.1.0',
                     child: {
@@ -523,7 +523,7 @@ export const treeGParsed: BeagleUIElement = {
 }
 
 
-export const treeH: BeagleUIElement = {
+export const treeH = {
   _beagleComponent_: 'type-H',
   children: [
     {
@@ -550,7 +550,7 @@ export const treeH: BeagleUIElement = {
         },
         {
           _beagleComponent_: 'beagle:tabview',
-          tabItems: [
+          children: [
             {
               title: 'H.1.1.0',
               child: {
@@ -697,9 +697,9 @@ export const treeHParsed: BeagleUIElement = {
   ],
 }
 
-export const simpleTab: BeagleUIElement = {
+export const simpleTab = {
   _beagleComponent_: 'beagle:tabview',
-  tabItems: [
+  children: [
     {
       title: 'Container1',
       child: {
@@ -858,9 +858,9 @@ export const treeWithLazyComponentAndChildParsed: IdentifiableBeagleUIElement = 
   ]
 }
 
-export const tabViewWithCaseInsensitive: BeagleUIElement = {
+export const tabViewWithCaseInsensitive = {
   _beagleComponent_: 'beagle:taBView',
-  tabItems: [
+  children: [
     {
       title: 'Container1',
       child: {

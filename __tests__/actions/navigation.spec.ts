@@ -109,7 +109,7 @@ describe('Actions: Navigation', () => {
 
   it('should popToView on beagle navigator', () => {
     pushView()
-    NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: { url: '/home' } }, ...params })
+    NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: '/home' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
