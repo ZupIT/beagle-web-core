@@ -79,7 +79,7 @@ describe('Actions: Navigation', () => {
   })
 
   it('should open native route', () => {
-    NavigationActions['beagle:openNativeRoute']({ action: { _beagleAction_: 'beagle:openNativeRoute', route: '/teste' }, ...params })
+    NavigationActions['beagle:openNativeRoute']({ action: { _beagleAction_: 'beagle:openNativeRoute', route: 'teste' }, ...params })
     expect(window.location.href).toBe('origin/teste')
   })
 
