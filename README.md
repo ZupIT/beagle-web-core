@@ -463,8 +463,13 @@ interface PopToViewAction {
   route: string,
 }
 
-interface ResetNavigationAction {
-  _beagleAction_: 'beagle:resetNavigation',
+interface ResetStackAction {
+  _beagleAction_: 'beagle:resetStack',
+  route: Route,
+}
+
+interface ResetApplicationAction {
+  _beagleAction_: 'beagle:resetApplication',
   route: Route,
 }
 ```
