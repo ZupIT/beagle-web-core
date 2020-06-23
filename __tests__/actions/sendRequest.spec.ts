@@ -77,7 +77,7 @@ describe('Actions: beagle:sendRequest', () => {
     nock.cleanAll()
   })
 
-  it('should run onSuccess', async () => {
+  it('should run onSuccess with single action', async () => {
     const response = { name: 'Sylvanas', lastname: 'Windrunner', city: 'Undercity (Lordaeron)' }
     nock(domain).get(path).reply(200, JSON.stringify(response))
     const beagleView = createBeagleViewMock()
@@ -112,6 +112,70 @@ describe('Actions: beagle:sendRequest', () => {
           },
         },
       ],
+    })
+
+    nock.cleanAll()
+  })
+
+  it('should run onSuccess with multiple actions', async () => {
+    const response = { name: 'Sylvanas', lastname: 'Windrunner', city: 'Undercity (Lordaeron)' }
+    nock(domain).get(path).reply(200, JSON.stringify(response))
+    const beagleView = createBeagleViewMock()
+    const handleAction = jest.fn()
+    const onSuccess = [
+      { _beagleAction_: 'beagle:alert', message: 'Success 1!' },
+      { _beagleAction_: 'beagle:alert', message: 'Success 2!' },
+      { _beagleAction_: 'beagle:alert', message: 'Success 3!' }
+    ]
+
+    await sendRequest({
+      action: {
+        _beagleAction_: 'beagle:sendRequest',
+        url: `${domain}${path}`,
+        onSuccess,
+      },
+      beagleView,
+      element,
+      eventContextHierarchy: [],
+      handleAction,
+    })
+
+    expect(nock.isDone()).toBe(true)
+    expect(handleAction).toHaveBeenCalledTimes(3)
+
+    const expectedContextHierarchy = [
+      {
+        id: 'onSuccess',
+        value: {
+          data: response,
+          status: 200,
+          statusText: 'OK',
+        },
+      },
+    ]
+
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onSuccess[0],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: expectedContextHierarchy,
+    })
+
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onSuccess[1],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: expectedContextHierarchy,
+    })
+
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onSuccess[2],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: expectedContextHierarchy,
     })
 
     nock.cleanAll()
@@ -207,6 +271,75 @@ describe('Actions: beagle:sendRequest', () => {
     })
 
     expect(console.error).toHaveBeenCalled()
+    console.error = originalLogError
+    nock.cleanAll()
+  })
+
+  it('should run multiple onError callbacks', async () => {
+    const response = { field: 'name', error: 'name is required' }
+    nock(domain).get(path).reply(500, JSON.stringify(response))
+    const beagleView = createBeagleViewMock()
+    const handleAction = jest.fn()
+    const onError = [
+      { _beagleAction_: 'beagle:alert', message: 'Error 1!' },
+      { _beagleAction_: 'beagle:alert', message: 'Error 2!' },
+      { _beagleAction_: 'beagle:alert', message: 'Error 3!' },
+    ]
+
+    const originalLogError = console.error
+    console.error = jest.fn()
+
+    await sendRequest({
+      action: {
+        _beagleAction_: 'beagle:sendRequest',
+        url: `${domain}${path}`,
+        onError,
+      },
+      beagleView,
+      element,
+      eventContextHierarchy: [],
+      handleAction,
+    })
+
+    expect(nock.isDone()).toBe(true)
+    expect(handleAction).toHaveBeenCalledTimes(3)
+
+    const expectedContextHierarchy = [
+      {
+        id: 'onError',
+        value: {
+          data: response,
+          status: 500,
+          statusText: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+      },
+    ]
+    
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onError[0],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: expectedContextHierarchy,
+    })
+
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onError[1],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: expectedContextHierarchy,
+    })
+    
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onError[2],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: expectedContextHierarchy,
+    })
+
     console.error = originalLogError
     nock.cleanAll()
   })
@@ -313,5 +446,57 @@ describe('Actions: beagle:sendRequest', () => {
 
     nock.cleanAll()
     console.error = originalLogError
+  })
+
+  it('should onFinish with multiple actions', async () => {
+    nock(domain).get(path).reply(200)
+    const beagleView = createBeagleViewMock()
+    const handleAction = jest.fn()
+    const onFinish = [
+      { _beagleAction_: 'beagle:alert', message: 'Finish 1!' },
+      { _beagleAction_: 'beagle:alert', message: 'Finish 2!' },
+      { _beagleAction_: 'beagle:alert', message: 'Finish 3!' },
+    ]
+
+    await sendRequest({
+      action: {
+        _beagleAction_: 'beagle:sendRequest',
+        url: `${domain}${path}`,
+        onFinish,
+      },
+      beagleView,
+      element,
+      eventContextHierarchy: [],
+      handleAction,
+    })
+
+    expect(nock.isDone()).toBe(true)
+    expect(handleAction).toHaveBeenCalledTimes(3)
+
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onFinish[0],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: [],
+    })
+
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onFinish[1],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: [],
+    })
+
+    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
+      action: onFinish[2],
+      beagleView,
+      element,
+      handleAction,
+      eventContextHierarchy: [],
+    })
+
+    nock.cleanAll()
   })
 })
