@@ -42,7 +42,8 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
   const { route, data } = action
   const origin = window.location.origin
   const qs = data && createQueryString(data)
-  window.location.href = `${origin}${route}${qs || ''}`
+  const prefixedRoute = addPrefix(route, '/')
+  window.location.href = `${origin}${prefixedRoute}${qs || ''}`
 }
 
 interface Action {

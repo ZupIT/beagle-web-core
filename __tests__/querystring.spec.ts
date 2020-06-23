@@ -20,7 +20,7 @@ describe('Utils Query String', () => {
 
   it('should create a querystring', () => {
     const qs = createQueryString({ param1: 'param1', param2: 'param2' })
-    expect(qs).toEqual('param1=param1&param2=param2')
+    expect(qs).toEqual('?param1=param1&param2=param2')
   })
 
   it('should return empty string for empty object', () => {
@@ -33,6 +33,6 @@ describe('Utils Query String', () => {
 
   it('should encode uri correctly', () => {
     const qs = createQueryString({ param: '/param' })
-    expect(qs).toEqual('param=%2Fparam')
+    expect(qs).toEqual('?param=%2Fparam')
   })
 })
