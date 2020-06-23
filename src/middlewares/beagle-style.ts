@@ -275,7 +275,7 @@ const handleSpecialEdge = (key: string,
 }
 const orderSpecialKeys = ((keys: string[]) => {
   if (keys.length > 1) {
-    let orderedKeys: string[] = [];
+    const orderedKeys: string[] = []
     keys.map(key => {
       switch (key) {
         case 'all':
@@ -290,8 +290,7 @@ const orderSpecialKeys = ((keys: string[]) => {
           break
       }
     })
-    keys = orderedKeys;
-
+    keys = orderedKeys
   }
   return keys
 })
