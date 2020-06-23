@@ -19,6 +19,7 @@ import { createQueryString } from '../../utils/querystring'
 import { BeagleNavigator } from '../../types'
 import { loadFromCache } from '../../utils/tree-fetching'
 import { addPrefix } from '../../utils/string'
+import { getOriginalKeyByCaseInsensitiveKey } from '../../utils/object'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -27,6 +28,8 @@ import {
   LocalView,
   RemoteView,
 } from './types'
+
+let NavigationActions: Record<string, ActionHandler> = {}
 
 const openExternalURL: ActionHandler<OpenExternalURLAction> = ({ action }) => {
   const { url } = action
@@ -50,7 +53,10 @@ interface Action {
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ action, beagleView }) => {
   try {
-    const functionName = action._beagleAction_.replace(/^beagle:/, '') as keyof BeagleNavigator
+    
+    const actionNameLowercase = action._beagleAction_.toLowerCase()
+    const actionName = getOriginalKeyByCaseInsensitiveKey(NavigationActions, actionNameLowercase)
+    const functionName = actionName.replace(/^beagle:/, '') as keyof BeagleNavigator
     const element = beagleView.getBeagleNavigator()[functionName]((action as Action).route)
     const screen = (element as LocalView).screen
     const { url, fallback, shouldPrefetch } = element as RemoteView
@@ -73,7 +79,7 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
   }
 }
 
-const NavigationActions: Record<string, ActionHandler> = {
+NavigationActions = {
   'beagle:openExternalURL': openExternalURL,
   'beagle:openNativeRoute': openNativeRoute,
   'beagle:pushStack': navigateBeagleView,
