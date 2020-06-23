@@ -1609,7 +1609,17 @@ export const treeOrderPosition: IdentifiableBeagleUIElement = {
         value: 12.0,
         type: "REAL"
       },
-     
+    }
+  }
+}
+
+export const treeWithCornerRadius = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    cornerRadius: {
+      radius: 10
     }
   }
 }
@@ -1624,5 +1634,14 @@ export const treeOrderPositionParsed: IdentifiableBeagleUIElement = {
     left: '5px',
     right: '5px',    
     position: 'relative'
+  }
+}
+
+export const treeWithCornerRadiusParsed = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    borderRadius: '10px'
   }
 }

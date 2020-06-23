@@ -241,4 +241,22 @@ describe('EventHandler', () => {
     expect(typeof modal.onClose).toBe('function')
     expect(typeof modalContent.onInit).toBe('function')
   })
+
+  it('should handle action with upper letter', () => {
+    const beagleView = createBeagleViewMock()
+    const eventHandler = createEventHandler({},beagleView)
+    const action = { _beagleAction_: 'beagle:aLErt', value: 'test' }
+    const mock = createContainerWithAction('onInit', action)
+    const treeWithFunction = eventHandler.interpretEventsInTree(mock)
+    const alertEvent = defaultActionHandlers['beagle:alert'] as jest.Mock
+
+    treeWithFunction.onInit()
+
+    expectActionHandlerToHaveBeenCalled({
+      handler: alertEvent,
+      action,
+      beagleView,
+      element: treeWithFunction,
+    })
+  })
 })

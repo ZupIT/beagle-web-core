@@ -191,4 +191,9 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toStrictEqual(treeOrderPositionParsed)
   })
 
+  it('should handle corner Radius', () => {
+    const tree = clone(treeUnsuportedSingleProperties)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
+  })
 })

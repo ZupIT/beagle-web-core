@@ -79,8 +79,8 @@ describe('Actions: Navigation', () => {
   })
 
   it('should open native route', () => {
-    NavigationActions['beagle:openNativeRoute']({ action: { _beagleAction_: 'beagle:openNativeRoute', route: '/teste' }, ...params })
-    expect(window.location.href).toBe('origin/teste')
+    NavigationActions['beagle:openNativeRoute']({ action: { _beagleAction_: 'beagle:openNativeRoute', route: 'teste', data: { param: '1' } }, ...params })
+    expect(window.location.href).toBe('origin/teste?param=1')
   })
 
   it('should pushStack on beagle navigator', () => {
@@ -109,7 +109,7 @@ describe('Actions: Navigation', () => {
 
   it('should popToView on beagle navigator', () => {
     pushView()
-    NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: { url: '/home' } }, ...params })
+    NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: '/home' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 

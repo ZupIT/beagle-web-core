@@ -15,7 +15,7 @@
 */
 
 import { Stack, BeagleNavigator } from './types'
-import { Route } from './actions/navigation/types'
+import { Route, RemoteView } from './actions/navigation/types'
 
 const createBeagleNavigator = (initialRoute: Route): BeagleNavigator => {
   let initialStack = [initialRoute]
@@ -65,9 +65,9 @@ const createBeagleNavigator = (initialRoute: Route): BeagleNavigator => {
     return getCurrentRoute()
   }
 
-  function popToView(route: Route) {
+  function popToView(route: string) {
     const currentStack = getCurrentStack()
-    const routeIndex = currentStack.findIndex(item => JSON.stringify(item) === JSON.stringify(route))
+    const routeIndex = currentStack.findIndex(item => (item as RemoteView).url === route)
 
     if (routeIndex === -1) throw new Error('The route does not exist on the current stack')
     currentStack.splice(routeIndex + 1)

@@ -25,9 +25,9 @@ export interface SendRequestAction {
   method?: HTTPMethod,
   data?: any,
   headers?: Record<string, string>,
-  onSuccess?: BeagleAction,
-  onError?: BeagleAction,
-  onFinish?: BeagleAction,
+  onSuccess?: BeagleAction | BeagleAction[],
+  onError?: BeagleAction | BeagleAction[],
+  onFinish?: BeagleAction | BeagleAction[],
 }
 
 export interface AddChildrenAction {
@@ -47,14 +47,14 @@ export interface SetContextAction {
 export interface AlertAction {
   _beagleAction_: 'beagle:alert',
   message: string,
-  onPressOk?: BeagleAction,
+  onPressOk?: BeagleAction | BeagleAction[],
 }
 
 export interface ConfirmAction {
   _beagleAction_: 'beagle:confirm',
   message: string,
-  onPressOk?: BeagleAction,
-  onPressCancel?: BeagleAction,
+  onPressOk?: BeagleAction | BeagleAction[],
+  onPressCancel?: BeagleAction | BeagleAction[],
 }
 
 export interface SubmitFormAction {

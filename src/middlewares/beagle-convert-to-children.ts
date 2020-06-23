@@ -17,43 +17,42 @@
 import { BeagleUIElement } from '../types'
 
 const convertChildToChildren = (uiTree: BeagleUIElement<any>) => {
-    if (uiTree.child) {
-        const child = uiTree.child
-        if (typeof child !== 'object') return uiTree
+  if (uiTree.child) {
+    const child = uiTree.child
+    if (typeof child !== 'object') return uiTree
 
-        const childArray = Array.isArray(child) ? child : [child]
-        const children = uiTree.children
-        delete uiTree.children
-        
-        uiTree.children = children ? [...children, ...childArray] : childArray
-        delete uiTree.child
-    }
-        
-    return uiTree
+    const childArray = Array.isArray(child) ? child : [child]
+    const children = uiTree.children
+    delete uiTree.children
+
+    uiTree.children = children ? [...children, ...childArray] : childArray
+    delete uiTree.child
+  }
+  return uiTree
 }
 
 const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
-  const toLowerCaseName = uiTree._beagleComponent_.toString().toLowerCase()
+  const toLowerCaseName = uiTree._beagleComponent_ && uiTree._beagleComponent_.toString().toLowerCase()
   if (toLowerCaseName === 'beagle:lazycomponent' && uiTree.initialState) {
-      const initialState = uiTree.initialState
-      if (typeof initialState !== 'object') return uiTree
+    const initialState = uiTree.initialState
+    if (typeof initialState !== 'object') return uiTree
 
-      const initialStateArray = Array.isArray(initialState) ? initialState : [initialState]
-      const children = uiTree.children
-      delete uiTree.children
-      
-      uiTree.children = children ? [...children, ...initialStateArray] : initialStateArray
-      delete uiTree.initialState
+    const initialStateArray = Array.isArray(initialState) ? initialState : [initialState]
+    const children = uiTree.children
+    delete uiTree.children
+
+    uiTree.children = children ? [...children, ...initialStateArray] : initialStateArray
+    delete uiTree.initialState
   }
-      
+
   return uiTree
 }
 
 const beagleConvertToChildrenMiddleware = (uiTree: BeagleUIElement<any>) => {
   uiTree = convertChildToChildren(uiTree)
   uiTree = beagleLazyComponentMiddleware(uiTree)
-  
-  if (uiTree.children) uiTree.children.forEach(convertChildToChildren)
+
+  if (uiTree.children) uiTree.children.forEach(beagleConvertToChildrenMiddleware)
 
   return uiTree
 }
