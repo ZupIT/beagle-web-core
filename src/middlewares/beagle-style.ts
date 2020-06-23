@@ -57,6 +57,26 @@ const SPECIAL_VALUES: Record<string, string> = {
   'NO_WRAP': 'nowrap',
 }
 
+const EDGE_ORDER: Record<string, number> = {
+  'all': 0,
+  'vertical': 1,
+  'horizontal': 1,
+  'top': 2,
+  'right': 2,
+  'left': 2,
+  'bottom': 2,
+}
+
+const POSITION_ORDER: Record<string, number> = {
+  'all': 0,
+  'top': 1,
+  'right': 1,
+  'left': 1,
+  'bottom': 1,
+  'vertical': 2,
+  'horizontal': 2,
+}
+
 const verifyContext = (value: string | number) => {
   if (value && typeof value === 'string') {
     const isContext = value.match(/^@\{[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*\}$/)
@@ -208,13 +228,20 @@ const handleSpecialPosition = (key: string,
   return uiTree
 }
 
+const orderKeys = ((keys: string[], orderRule: Record<string, number>) => {
+  if (keys.length > 1) {
+    keys.sort((key1, key2) => (orderRule[key1] || -1) >= (orderRule[key2] || -1) ? 1 : -1)
+  }
+  return keys
+})
+
 const formatPositionProperty =
   (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
     if (styleAttributes) {
       if (typeof styleAttributes === 'object') {
-        const keys = Object.keys(styleAttributes)
+        let keys = Object.keys(styleAttributes)
+        keys = orderKeys(keys, POSITION_ORDER)
         keys.forEach((key) => {
-
           if (handleContext(styleAttributes[key], key, uiTree, 'position')) return
           const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
           if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
@@ -273,33 +300,13 @@ const handleSpecialEdge = (key: string,
   }
   return uiTree
 }
-const orderSpecialKeys = ((keys: string[]) => {
-  if (keys.length > 1) {
-    const orderedKeys: string[] = []
-    keys.map(key => {
-      switch (key) {
-        case 'all':
-          orderedKeys.splice(0, 0, key)
-          break
-        case 'horizontal':
-        case 'vertical':
-          orderedKeys.splice(1, 0, key)
-          break
-        default:
-          orderedKeys.push(key)
-          break
-      }
-    })
-    keys = orderedKeys
-  }
-  return keys
-})
+
 const formatEdgeAttributes =
   (uiTree: BeagleUIElement<any>, edgeType: string, styleAttributes?: Style) => {
     if (styleAttributes) {
       if (typeof styleAttributes === 'object') {
         let keys = Object.keys(styleAttributes)
-        keys = orderSpecialKeys(keys)
+        keys = orderKeys(keys, EDGE_ORDER)
         keys.forEach((key) => {
           if (handleContext(styleAttributes[key], key, uiTree, edgeType)) return
           const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
