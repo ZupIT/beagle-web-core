@@ -260,6 +260,8 @@ const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: St
 
 const handleSpecialEdge = (key: string,
   uiTree: BeagleUIElement, value: string, prefixName: string) => {
+
+
   if (key === 'all') {
     uiTree.parsedStyle[prefixName] = value
   } else {
@@ -271,12 +273,34 @@ const handleSpecialEdge = (key: string,
   }
   return uiTree
 }
+const orderSpecialKeys = ((keys: string[]) => {
+  if (keys.length > 1) {
+    let orderedKeys: string[] = [];
+    keys.map(key => {
+      switch (key) {
+        case 'all':
+          orderedKeys.splice(0, 0, key)
+          break
+        case 'horizontal':
+        case 'vertical':
+          orderedKeys.splice(1, 0, key)
+          break
+        default:
+          orderedKeys.push(key)
+          break
+      }
+    })
+    keys = orderedKeys;
 
+  }
+  return keys
+})
 const formatEdgeAttributes =
   (uiTree: BeagleUIElement<any>, edgeType: string, styleAttributes?: Style) => {
     if (styleAttributes) {
       if (typeof styleAttributes === 'object') {
-        const keys = Object.keys(styleAttributes)
+        let keys = Object.keys(styleAttributes)
+        keys = orderSpecialKeys(keys)
         keys.forEach((key) => {
           if (handleContext(styleAttributes[key], key, uiTree, edgeType)) return
           const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
@@ -328,18 +352,20 @@ const addPositionTypeProperty = (style: Record<string, any>) => {
   return style
 }
 
+
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
 
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
   if (uiTree.style && typeof uiTree.style === 'object') {
-  
-    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType'))
+
+    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType')) {
       uiTree.style = addPositionTypeProperty(uiTree.style)
+    }
 
     const styleObj = uiTree.style
-    
+
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)

@@ -16,6 +16,105 @@
 
 import { IdentifiableBeagleUIElement } from '../src/types'
 
+export const treeTest: IdentifiableBeagleUIElement = {
+  id: 'test',
+  _beagleComponent_: 'test-tree',
+  style: {
+    margin: {
+      right: {
+        value: 30,
+        type: "REAL"
+      },
+      left: {
+        value: 20,
+        type: "REAL"
+      },
+      all: {
+        value: 10,
+        type: "REAL"
+      },
+    }
+  },
+  children: [
+    {
+      id: 'D.0',
+      _beagleComponent_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleComponent_: 'type-C',
+          style: {
+            margin:{
+              right: {
+                value: 10,
+                type: "REAL"
+              }
+            }
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleComponent_: 'type-D',
+      style: {
+        maxWidth: "50%",
+        maxHeight: "50%"
+      },
+    },
+    {
+      id: 'D.2',
+      _beagleComponent_: 'type-D',
+      style: {
+        width: 'auto',
+        height: 'auto'
+      },
+    },
+  ],
+}
+
+export const treeTestParsed: IdentifiableBeagleUIElement = {
+  id: 'test',
+  _beagleComponent_: 'test-tree',
+  style: {
+    margin: "10px",
+    marginRight: "30px",
+    marginLeft: "20px"
+  },
+  children: [
+    {
+      id: 'D.0',
+      _beagleComponent_: 'type-B',
+      children: [
+        {
+          id: 'D.0.0',
+          _beagleComponent_: 'type-C',
+          style: {
+            marginRight: "10px"
+          }
+        },
+      ]
+    },
+    {
+      id: 'D.1',
+      _beagleComponent_: 'type-D',
+      style: {
+        maxWidth: "50%",
+        maxHeight: "50%"
+      },
+    },
+    {
+      id: 'D.2',
+      _beagleComponent_: 'type-D',
+      style: {
+        width: 'auto',
+        height: 'auto'
+      },
+    },
+  ],
+
+}
+
 export const treeSize: IdentifiableBeagleUIElement = {
   id: 'Size',
   _beagleComponent_: 'type-Size',
@@ -204,7 +303,8 @@ export const treePosition: IdentifiableBeagleUIElement = {
               left: {
                 value: 10.0,
                 type: "REAL"
-              }
+              },
+            
             }
           }
         },
@@ -448,6 +548,7 @@ export const treeMargin: IdentifiableBeagleUIElement = {
           _beagleComponent_: 'type-D',
           style: {
             margin: {
+           
               top: {
                 value: 5.0,
                 type: 'PERCENT'
@@ -455,7 +556,11 @@ export const treeMargin: IdentifiableBeagleUIElement = {
               left: {
                 value: 10.0,
                 type: 'AUTO'
-              }
+              },
+              all: {
+                value: 8.0,
+                type: 'REAL'
+              },
             }
           }
         },
@@ -547,7 +652,7 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
           _beagleComponent_: 'type-D',
           style: {
             marginTop: '5%',
-            marginLeft: 'auto'
+            marginLeft: 'auto',
           }
         },
       ],
