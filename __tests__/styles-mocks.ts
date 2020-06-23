@@ -1574,3 +1574,55 @@ export const treeStyleOrderParsed: IdentifiableBeagleUIElement = {
     "backgroundColor": "red"
   }
 }
+
+export const treeOrderPosition: IdentifiableBeagleUIElement = {
+  id: 'Position',
+  _beagleComponent_: 'type-Position',
+  value: 'testing',
+  style: {
+    position: {
+      vertical: {
+        value: 25.0,
+        type: "REAL"
+      },
+      bottom: {
+        value: 8.0,
+        type: "PERCENT"
+      },
+      all: {
+        value: 9.0,
+        type: "REAL"
+      },
+      horizontal: {
+        value: 5.0,
+        type: "REAL"
+      },
+      right: {
+        value: 18.0,
+        type: "REAL"
+      },
+      top: {
+        value: 22.0,
+        type: "REAL"
+      },
+      left: {
+        value: 12.0,
+        type: "REAL"
+      },
+     
+    }
+  }
+}
+
+export const treeOrderPositionParsed: IdentifiableBeagleUIElement = {
+  id: 'Position',
+  _beagleComponent_: 'type-Position',
+  value: 'testing',
+  style: {
+    top: '25px',
+    bottom: '25px',
+    left: '5px',
+    right: '5px',    
+    position: 'relative'
+  }
+}
