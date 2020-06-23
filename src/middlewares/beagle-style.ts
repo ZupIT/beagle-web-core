@@ -57,24 +57,24 @@ const SPECIAL_VALUES: Record<string, string> = {
   'NO_WRAP': 'nowrap',
 }
 
-const EDGE_ORDER: Record<string, number> = {
-  'all': 0,
-  'vertical': 1,
-  'horizontal': 1,
-  'top': 2,
-  'right': 2,
-  'left': 2,
-  'bottom': 2,
+const EDGE_ORDER: Record<string, boolean> = {
+  'all': false,
+  'vertical': false,
+  'horizontal': false,
+  'top': false,
+  'right': false,
+  'left': false,
+  'bottom': false,
 }
 
-const POSITION_ORDER: Record<string, number> = {
-  'all': 0,
-  'top': 1,
-  'right': 1,
-  'left': 1,
-  'bottom': 1,
-  'vertical': 2,
-  'horizontal': 2,
+const POSITION_ORDER: Record<string, boolean> = {
+  'all': false,
+  'top': false,
+  'right': false,
+  'left': false,
+  'bottom': false,
+  'vertical': false,
+  'horizontal': false,
 }
 
 const verifyContext = (value: string | number) => {
@@ -228,11 +228,12 @@ const handleSpecialPosition = (key: string,
   return uiTree
 }
 
-const orderKeys = ((keys: string[], orderRule: Record<string, number>) => {
-  if (keys.length > 1) {
-    keys.sort((key1, key2) => (orderRule[key1] || -1) >= (orderRule[key2] || -1) ? 1 : -1)
-  }
-  return keys
+const orderKeys = ((keys: string[], orderRule: Record<string, boolean>) => {
+  const arrayOrdered = { ...orderRule }
+  
+  keys.forEach((key) => arrayOrdered[key] = true)
+
+  return Object.keys(arrayOrdered).filter((key) => arrayOrdered[key])
 })
 
 const formatPositionProperty =
