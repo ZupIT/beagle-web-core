@@ -185,7 +185,7 @@ describe('StyleMiddleware', () => {
     expect(parsedTree).toStrictEqual(treeStyleOrderAllParsed)
   })
 
-  it('should reorder padding attributes with all having lesser priority', () => {
+  it('should reorder position attribute', () => {
     const tree = clone(treeOrderPosition)
     const parsedTree = beagleStyleMiddleware(tree)
     expect(parsedTree).toStrictEqual(treeOrderPositionParsed)
