@@ -34,38 +34,41 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
 
   function handleSuccess(parsedResponse: ParsedResponse) {
     if (!onSuccess) return
+    const actions = Array.isArray(onSuccess) ? onSuccess : [onSuccess]
 
-    handleAction({
-      action: onSuccess,
+    actions.forEach(action => handleAction({
+      action,
       eventContextHierarchy: [{ id: 'onSuccess', value: parsedResponse }, ...eventContextHierarchy],
       handleAction,
       beagleView,
       ...otherParameters,
-    })
+    }))
   }
 
   function handleError(error: any) {
     if (!onError) return
+    const actions = Array.isArray(onError) ? onError : [onError]
 
-    handleAction({
-      action: onError,
+    actions.forEach(action => handleAction({
+      action,
       eventContextHierarchy: [{ id: 'onError', value: error }, ...eventContextHierarchy],
       handleAction,
       beagleView,
       ...otherParameters,
-    })
+    }))
   }
 
   function handleFinish() {
     if (!onFinish) return
+    const actions = Array.isArray(onFinish) ? onFinish : [onFinish]
 
-    handleAction({
-      action: onFinish,
+    actions.forEach(action => handleAction({
+      action,
       eventContextHierarchy,
       handleAction,
       beagleView,
       ...otherParameters,
-    })
+    }))
   }
 
   const contextResponse: Partial<ParsedResponse> = {}
