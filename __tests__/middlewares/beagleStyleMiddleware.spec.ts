@@ -30,7 +30,8 @@ import {
   notValidContext, notValidContextParsed,
   treeStartEndEdgeValue, treeStartEndEdgeValueParsed,
   treeStyleOrder, treeStyleOrderParsed, treeStyleOrderAll, treeStyleOrderAllParsed, 
-  treeUnsuportedSingleProperties, treeUnsuportedSinglePropertiesParsed, treeOrderPositionParsed, treeOrderPosition
+  treeUnsupportedSingleProperties, treeUnsupportedSinglePropertiesParsed, treeOrderPositionParsed, treeOrderPosition,
+  treeWithCornerRadius, treeWithCornerRadiusParsed
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 import { clone } from '../../src/utils/tree-manipulation'
@@ -168,9 +169,9 @@ describe('StyleMiddleware', () => {
   })
 
   it('should ignore invalid single property', () => {
-    const tree = clone(treeUnsuportedSingleProperties)
+    const tree = clone(treeUnsupportedSingleProperties)
     const parsedTree = beagleStyleMiddleware(tree)
-    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
+    expect(parsedTree).toEqual(treeUnsupportedSinglePropertiesParsed)
   })
 
   it('should reorder margin for the default order when having all attributes', () => {
@@ -192,8 +193,8 @@ describe('StyleMiddleware', () => {
   })
 
   it('should handle corner Radius', () => {
-    const tree = clone(treeUnsuportedSingleProperties)
+    const tree = clone(treeWithCornerRadius)
     const parsedTree = beagleStyleMiddleware(tree)
-    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
+    expect(parsedTree).toEqual(treeWithCornerRadiusParsed)
   })
 })

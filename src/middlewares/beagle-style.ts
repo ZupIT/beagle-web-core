@@ -229,11 +229,11 @@ const handleSpecialPosition = (key: string,
 }
 
 const orderKeys = ((keys: string[], orderRule: Record<string, boolean>) => {
-  const arrayOrdered = { ...orderRule }
+  const objectWithOrderRule = { ...orderRule }
   
-  keys.forEach((key) => arrayOrdered[key] = true)
+  keys.forEach((key) => objectWithOrderRule[key] = true)
 
-  return Object.keys(arrayOrdered).filter((key) => arrayOrdered[key])
+  return Object.keys(objectWithOrderRule).filter((key) => objectWithOrderRule[key])
 })
 
 const formatPositionProperty =

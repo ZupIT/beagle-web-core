@@ -1331,7 +1331,7 @@ export const treeStartEndEdgeValueParsed = {
   }
 }
 
-export const treeUnsuportedSingleProperties = {
+export const treeUnsupportedSingleProperties = {
   id: 'G.1',
   _beagleComponent_: 'type-G',
   children: [
@@ -1356,7 +1356,7 @@ export const treeUnsuportedSingleProperties = {
   }
 }
 
-export const treeUnsuportedSinglePropertiesParsed = {
+export const treeUnsupportedSinglePropertiesParsed = {
   id: 'G.1',
   _beagleComponent_: 'type-G',
   children: [
