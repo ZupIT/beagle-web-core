@@ -19,7 +19,7 @@ import { getContextHierarchyByElementId, getContextInHierarchy } from '../contex
 import { ActionHandler, SetContextAction } from './types'
 
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
-  const { value, context: contextId, path } = action
+  const { value, contextId, path } = action
   const uiTree = beagleView.getTree()
   const contextHierarchy = getContextHierarchyByElementId(uiTree, element.id) || []
   const context = getContextInHierarchy(contextHierarchy, contextId)

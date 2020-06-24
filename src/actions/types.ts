@@ -40,7 +40,7 @@ export interface AddChildrenAction {
 
 export interface SetContextAction {
   _beagleAction_: 'beagle:setContext',
-  context?: string,
+  contextId?: string,
   path?: string,
   value: any,
 }
