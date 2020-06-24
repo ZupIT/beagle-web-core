@@ -57,6 +57,26 @@ const SPECIAL_VALUES: Record<string, string> = {
   'NO_WRAP': 'nowrap',
 }
 
+const EDGE_ORDER: Record<string, boolean> = {
+  'all': false,
+  'vertical': false,
+  'horizontal': false,
+  'top': false,
+  'right': false,
+  'left': false,
+  'bottom': false,
+}
+
+const POSITION_ORDER: Record<string, boolean> = {
+  'all': false,
+  'top': false,
+  'right': false,
+  'left': false,
+  'bottom': false,
+  'vertical': false,
+  'horizontal': false,
+}
+
 const verifyContext = (value: string | number) => {
   if (value && typeof value === 'string') {
     const isContext = value.match(/^@\{[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*\}$/)
@@ -208,13 +228,21 @@ const handleSpecialPosition = (key: string,
   return uiTree
 }
 
+const orderKeys = ((keys: string[], orderRule: Record<string, boolean>) => {
+  const objectWithOrderRule = { ...orderRule }
+  
+  keys.forEach((key) => objectWithOrderRule[key] = true)
+
+  return Object.keys(objectWithOrderRule).filter((key) => objectWithOrderRule[key])
+})
+
 const formatPositionProperty =
   (uiTree: BeagleUIElement<any>, styleAttributes?: Style) => {
     if (styleAttributes) {
       if (typeof styleAttributes === 'object') {
-        const keys = Object.keys(styleAttributes)
+        let keys = Object.keys(styleAttributes)
+        keys = orderKeys(keys, POSITION_ORDER)
         keys.forEach((key) => {
-
           if (handleContext(styleAttributes[key], key, uiTree, 'position')) return
           const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
           if (Object.keys(EDGE_SPECIAL_VALUES).includes(key)) {
@@ -260,6 +288,8 @@ const formatFlexAttributes = (uiTree: BeagleUIElement<any>, styleAttributes?: St
 
 const handleSpecialEdge = (key: string,
   uiTree: BeagleUIElement, value: string, prefixName: string) => {
+
+
   if (key === 'all') {
     uiTree.parsedStyle[prefixName] = value
   } else {
@@ -276,7 +306,8 @@ const formatEdgeAttributes =
   (uiTree: BeagleUIElement<any>, edgeType: string, styleAttributes?: Style) => {
     if (styleAttributes) {
       if (typeof styleAttributes === 'object') {
-        const keys = Object.keys(styleAttributes)
+        let keys = Object.keys(styleAttributes)
+        keys = orderKeys(keys, EDGE_ORDER)
         keys.forEach((key) => {
           if (handleContext(styleAttributes[key], key, uiTree, edgeType)) return
           const valueWithType = parseValuesWithUnit(styleAttributes[key].type, styleAttributes[key].value)
@@ -335,18 +366,20 @@ const addPositionTypeProperty = (style: Record<string, any>) => {
   return style
 }
 
+
 const beagleStyleMiddleware: BeagleMiddleware<any> = (uiTree: BeagleUIElement<any>) => {
   if (uiTree.children) uiTree.children.forEach(beagleStyleMiddleware)
 
   if (!uiTree.parsedStyle) uiTree.parsedStyle = {}
 
   if (uiTree.style && typeof uiTree.style === 'object') {
-  
-    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType'))
+
+    if (uiTree.style.hasOwnProperty('position') && !uiTree.style.hasOwnProperty('positionType')) {
       uiTree.style = addPositionTypeProperty(uiTree.style)
+    }
 
     const styleObj = uiTree.style
-    
+
     uiTree = formatSizeProperty(uiTree, styleObj.size)
     uiTree = formatPositionProperty(uiTree, styleObj.position)
     uiTree = formatFlexAttributes(uiTree, styleObj.flex)

@@ -29,7 +29,9 @@ import {
   treeContextType, treeContextTypeParsed, 
   notValidContext, notValidContextParsed,
   treeStartEndEdgeValue, treeStartEndEdgeValueParsed,
-  treeUnsuportedSingleProperties, treeUnsuportedSinglePropertiesParsed,
+  treeStyleOrder, treeStyleOrderParsed, treeStyleOrderAll, treeStyleOrderAllParsed, 
+  treeUnsupportedSingleProperties, treeUnsupportedSinglePropertiesParsed, treeOrderPositionParsed, treeOrderPosition,
+  treeWithCornerRadius, treeWithCornerRadiusParsed
 } from '../styles-mocks'
 import beagleStyleMiddleware from '../../src/middlewares/beagle-style'
 import { clone } from '../../src/utils/tree-manipulation'
@@ -167,14 +169,32 @@ describe('StyleMiddleware', () => {
   })
 
   it('should ignore invalid single property', () => {
-    const tree = clone(treeUnsuportedSingleProperties)
+    const tree = clone(treeUnsupportedSingleProperties)
     const parsedTree = beagleStyleMiddleware(tree)
-    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
+    expect(parsedTree).toEqual(treeUnsupportedSinglePropertiesParsed)
+  })
+
+  it('should reorder margin for the default order when having all attributes', () => {
+    const tree = clone(treeStyleOrder)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toStrictEqual(treeStyleOrderParsed)
+  })
+
+  it('should reorder padding attributes with all having lesser priority', () => {
+    const tree = clone(treeStyleOrderAll)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toStrictEqual(treeStyleOrderAllParsed)
+  })
+
+  it('should reorder position attribute', () => {
+    const tree = clone(treeOrderPosition)
+    const parsedTree = beagleStyleMiddleware(tree)
+    expect(parsedTree).toStrictEqual(treeOrderPositionParsed)
   })
 
   it('should handle corner Radius', () => {
-    const tree = clone(treeUnsuportedSingleProperties)
+    const tree = clone(treeWithCornerRadius)
     const parsedTree = beagleStyleMiddleware(tree)
-    expect(parsedTree).toEqual(treeUnsuportedSinglePropertiesParsed)
+    expect(parsedTree).toEqual(treeWithCornerRadiusParsed)
   })
 })
