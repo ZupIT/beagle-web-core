@@ -204,7 +204,8 @@ export const treePosition: IdentifiableBeagleUIElement = {
               left: {
                 value: 10.0,
                 type: "REAL"
-              }
+              },
+
             }
           }
         },
@@ -587,7 +588,6 @@ export const treeMarginParsed: IdentifiableBeagleUIElement = {
     marginTop: '5px'
   }
 }
-
 
 export const treePadding: IdentifiableBeagleUIElement = {
   id: 'F',
@@ -1071,7 +1071,7 @@ export const treeContextValue: IdentifiableBeagleUIElement = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        positionType:'absolute',
+        positionType: 'absolute',
         position: {
           top: {
             value: '10',
@@ -1098,7 +1098,7 @@ export const treeContextValueParsed: IdentifiableBeagleUIElement = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        top:'10px',
+        top: '10px',
         position: 'absolute'
       }
     },
@@ -1148,7 +1148,7 @@ export const treeContextTypeParsed: IdentifiableBeagleUIElement = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        top:"10px",
+        top: "10px",
         position: 'relative',
         padding: {
           right: {
@@ -1268,7 +1268,7 @@ export const notValidContextParsed = {
       id: 'D.0.0',
       _beagleComponent_: 'type-C',
       style: {
-        position:'relative',
+        position: 'relative',
         top: '',
         margin: '',
       }
@@ -1327,11 +1327,11 @@ export const treeStartEndEdgeValueParsed = {
     marginEnd: '15px',
     paddingStart: '10px',
     paddingEnd: '15px',
-    position:"relative"
+    position: "relative"
   }
 }
 
-export const treeUnsuportedSingleProperties = {
+export const treeUnsupportedSingleProperties = {
   id: 'G.1',
   _beagleComponent_: 'type-G',
   children: [
@@ -1356,7 +1356,7 @@ export const treeUnsuportedSingleProperties = {
   }
 }
 
-export const treeUnsuportedSinglePropertiesParsed = {
+export const treeUnsupportedSinglePropertiesParsed = {
   id: 'G.1',
   _beagleComponent_: 'type-G',
   children: [
@@ -1369,11 +1369,161 @@ export const treeUnsuportedSinglePropertiesParsed = {
     }
   ],
   style: {
-    position: "relative" ,
+    position: "relative",
     top: "10px",
     display: '@{contextTest}',
     backgroundColor: '@{contextTest[0]}',
     direction: 'LTR'
+  }
+}
+
+export const treeStyleOrderAll: IdentifiableBeagleUIElement = {
+  "_beagleComponent_": "beagle:container",
+  "id": "testing",
+  "style": {
+    "flex": {
+      "alignItems": "CENTER",
+      "justifyContent": "CENTER"
+    },
+    "margin": {
+      "vertical": {
+        "value": 40,
+        "type": "REAL"
+      },
+      "right": {
+        "value": 60,
+        "type": "REAL"
+      },
+      "top": {
+        "value": 20,
+        "type": "REAL"
+      },
+      "all": {
+        "value": 75,
+        "type": "REAL"
+      },
+      "bottom": {
+        "value": 30,
+        "type": "REAL"
+      },
+      "horizontal": {
+        "value": 10,
+        "type": "REAL"
+      },
+      "left": {
+        "value": 100,
+        "type": "REAL"
+      }
+    },
+    "backgroundColor": "red"
+  }
+}
+
+export const treeStyleOrderAllParsed: IdentifiableBeagleUIElement = {
+  "_beagleComponent_": "beagle:container",
+  "id": "testing",
+  "style": {
+    "alignItems": "center",
+    "justifyContent": "center",
+    "margin": "75px",
+    "marginTop": "20px",
+    "marginBottom": "30px",
+    "marginRight": "60px",
+    "marginLeft": "100px",
+    "backgroundColor": "red"
+  }
+}
+
+export const treeStyleOrder: IdentifiableBeagleUIElement = {
+  "_beagleComponent_": "beagle:container",
+  "id": "testing",
+  "style": {
+    "flex": {
+      "alignItems": "CENTER",
+      "justifyContent": "CENTER"
+    },
+    "padding": {
+      "vertical": {
+        "value": 40,
+        "type": "REAL"
+      },
+      "all": {
+        "value": 75,
+        "type": "REAL"
+      },
+      "horizontal": {
+        "value": 10,
+        "type": "REAL"
+
+      },
+    },
+    "backgroundColor": "red"
+  }
+}
+
+export const treeStyleOrderParsed: IdentifiableBeagleUIElement = {
+  "_beagleComponent_": "beagle:container",
+  "id": "testing",
+  "style": {
+    "alignItems": "center",
+    "justifyContent": "center",
+    "padding": "75px",
+    "paddingTop": "40px",
+    "paddingBottom": "40px",
+    "paddingRight": "10px",
+    "paddingLeft": "10px",
+    "backgroundColor": "red"
+  }
+}
+
+export const treeOrderPosition: IdentifiableBeagleUIElement = {
+  id: 'Position',
+  _beagleComponent_: 'type-Position',
+  value: 'testing',
+  style: {
+    position: {
+      vertical: {
+        value: 25.0,
+        type: "REAL"
+      },
+      bottom: {
+        value: 8.0,
+        type: "PERCENT"
+      },
+      all: {
+        value: 9.0,
+        type: "REAL"
+      },
+      horizontal: {
+        value: 5.0,
+        type: "REAL"
+      },
+      right: {
+        value: 18.0,
+        type: "REAL"
+      },
+      top: {
+        value: 22.0,
+        type: "REAL"
+      },
+      left: {
+        value: 12.0,
+        type: "REAL"
+      },
+    }
+  }
+}
+
+export const treeOrderPositionParsed: IdentifiableBeagleUIElement = {
+  id: 'Position',
+  _beagleComponent_: 'type-Position',
+  value: 'testing',
+  style: {
+    top: '25px',
+    bottom: '25px',
+    left: '5px',
+    right: '5px',    
+    position: 'relative'
   }
 }
 
