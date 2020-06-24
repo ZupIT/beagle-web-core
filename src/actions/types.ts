@@ -17,7 +17,8 @@
 import { IdentifiableBeagleUIElement, BeagleView, DataContext } from '../types'
 import { BeagleNavigationAction } from './navigation/types'
 
-type HTTPMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
+type HTTPMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' |
+  'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 export interface SendRequestAction {
   _beagleAction_: 'beagle:sendRequest',
