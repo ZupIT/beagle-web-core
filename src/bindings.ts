@@ -67,7 +67,7 @@ export function replaceBindings(
 
   if (typeof data === 'object') {
     const hierarchy = getContextHierarchy(data, contextHierarchy)
-    const ignore = ['id', ' _beagleComponent_', '_context_']
+    const ignore = ['id', ' _beagleComponent_', 'context']
 
     return Object.keys(data).reduce((result, key) => ({
       ...result,

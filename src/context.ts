@@ -20,7 +20,7 @@ export function getContextHierarchy(
   element: BeagleUIElement,
   currentHierarchy: DataContext[] = [],
 ) {
-  return element._context_ ? [element._context_, ...currentHierarchy] : currentHierarchy
+  return element.context ? [element.context, ...currentHierarchy] : currentHierarchy
 }
 
 export function getContextHierarchyByElementId(

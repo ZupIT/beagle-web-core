@@ -44,7 +44,7 @@ export function createSocialMediaMock(): BeagleUIElement {
   const data = createSocialMediaData()
   return {
     _beagleComponent_: 'container',
-    _context_: {
+    context: {
       id: 'user',
       value: data.user,
     },
@@ -58,7 +58,7 @@ export function createSocialMediaMock(): BeagleUIElement {
       },
       {
         _beagleComponent_: 'container',
-        _context_: {
+        context: {
           id: 'friends',
           value: data.friends,
         },
@@ -75,7 +75,7 @@ export function createSocialMediaMock(): BeagleUIElement {
           },
           {
             _beagleComponent_: 'container',
-            _context_: {
+            context: {
               id: 'isModalOpen',
               value: false,
             },
@@ -98,7 +98,7 @@ export function createSocialMediaMock(): BeagleUIElement {
       },
       {
         _beagleComponent_: 'container',
-        _context_: {
+        context: {
           id: 'posts',
           value: data.posts,
         },
@@ -136,11 +136,11 @@ export function createSocialMediaMock(): BeagleUIElement {
 export function createMockWithSameIdContexts(): BeagleUIElement {
   return {
     _beagleComponent_: 'container',
-    _context_: { id: 'ctx', value: 'jest-1' },
+    context: { id: 'ctx', value: 'jest-1' },
     children: [
       {
         _beagleComponent_: 'container',
-        _context_: { id: 'ctx', value: 'jest-2' },
+        context: { id: 'ctx', value: 'jest-2' },
         children: [
           {
             _beagleComponent_: 'text',
