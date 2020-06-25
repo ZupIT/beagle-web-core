@@ -75,7 +75,7 @@ describe('Actions: beagle:setContext', () => {
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
-        context: 'ctx_a',
+        contextId: 'ctx_a',
         value: 'new value',
       },
       beagleView,
@@ -272,7 +272,7 @@ describe('Actions: beagle:setContext', () => {
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
-        context: 'ctx_a',
+        contextId: 'ctx_a',
         value: 'test',
       },
       beagleView,
