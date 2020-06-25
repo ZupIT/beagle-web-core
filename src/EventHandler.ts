@@ -73,7 +73,7 @@ function createEventHandler(
     contextHierarchy?: DataContext[],
   ) {
     const keys = Object.keys(element)
-    const ignore = ['id', '_beagleComponent_', '_context_', 'children']
+    const ignore = ['id', '_beagleComponent_', 'context', 'children']
     const hierarchy = getContextHierarchy(element, contextHierarchy)
 
     keys.forEach((key) => {
