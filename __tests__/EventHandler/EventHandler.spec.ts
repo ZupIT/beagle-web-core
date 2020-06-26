@@ -157,7 +157,7 @@ describe('EventHandler', () => {
     const eventHandler = createEventHandler({}, createBeagleViewMock())
     const action = { _beagleAction_: 'beagle:alert', message: '@{test}' }
     const mock = createContainerWithAction('onInit', action)
-    mock._context_ = { id: 'test', value: 'Hello World!' }
+    mock.context = { id: 'test', value: 'Hello World!' }
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
     
     treeWithFunction.onInit()

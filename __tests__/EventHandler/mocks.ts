@@ -18,7 +18,7 @@ export function createModalMock(): IdentifiableBeagleUIElement {
   return {
     _beagleComponent_: 'container',
     id: 'container',
-    _context_: {
+    context: {
       id: 'isModalOpen',
       value: false,
     },

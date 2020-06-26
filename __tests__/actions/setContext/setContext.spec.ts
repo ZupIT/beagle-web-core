@@ -29,7 +29,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: 'new value',
         },
@@ -58,7 +58,7 @@ describe('Actions: beagle:setContext', () => {
         children: [
           {
             ...mock.children[0],
-            _context_: {
+            context: {
               id: 'ctx_b',
               value: 'new value',
             },
@@ -87,7 +87,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: 'new value',
         },
@@ -113,7 +113,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: 'new value',
         },
@@ -139,7 +139,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: 'new value',
         },
@@ -172,7 +172,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: { ...contextValue, age: 32 },
         },
@@ -205,7 +205,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: { ...contextValue, phones: ['(00) 00000-0000', '(34) 3212-2221'] },
         },
@@ -233,7 +233,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: ['Lorem', 'Ipsum', 'Dolor', 'It'],
         },
@@ -306,7 +306,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: { name: 'Jest', lorem: { ipsum: { sin: { it: { dolor: 'amet' } } } } },
         },
@@ -334,7 +334,7 @@ describe('Actions: beagle:setContext', () => {
     expect(beagleView.updateWithTree).toHaveBeenCalledWith({
       sourceTree: {
         ...mock,
-        _context_: {
+        context: {
           id: 'ctx_a',
           value: {
             name: 'Jest',
