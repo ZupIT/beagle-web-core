@@ -1,3 +1,11 @@
+# Motivação
+
+Este primeiro tópico será retirado depois que a proposta for aceita, e até por isso está em português.
+
+Como tínhamos discutido anteriormente, o fluxo de renderização do Beagle, não é algo muito bem definido hoje e a maior parte dele está implementada via middlewares, que apesar de ser um recurso interessante, não escalou bem com a quantidade de coisas que tivemos a necessidade de fazer. Lá na [issue para a v1.1](https://github.com/ZupIT/beagle-web-core/issues/113) eu já tinha falado sobre esse problema e dado algumas ideias de como resolvê-lo. Resumindo, eu falei sobre a ideia de deixar o processo de renderização muito bem definido, indicando a ordem de tudo e quando cada coisa acontece. Além disso, sugeri a substituição de middlewares por lifecycles.
+
+Este documento é a documentação sobre a feature escrita como se ela já estivesse pronta. Por favor leiam e opinem sobre o conteúdo. Como nada foi implementado ainda, agora é a hora de fazer qualquer mudança ou se discutir inclusive se vale implementar.
+
 # List of contents
 
 - [TL;DR;](#tldr)
