@@ -1,158 +1,460 @@
-# Resumo
+# List of contents
 
-Este documento tem como objetivo sugerir propostas para a primeira versão do Beagle Web após a 1.0
-(provavelmente a 1.1). Acredito que devemos focar no aperfeiçoamento daquilo que já oferecemos.
-Portanto, vejo os seguintes pontos como os principais em que devemos trabalhar:
+- [TL;DR;](#TL;DR;)
+- [Beagle Payload and Tree of components](#Beagle-Payload-and-Tree-of-components)
+    * [What is the Tree of Components?](#What-is-the-Tree-of-Components?)
+    * [The `children` property](#The-`children`-property)
+- [Process and lifecycles](#Process-and-lifecycles)
+    * [Process to render a view](#Process-to-render-a-view)
+    * [BeforeStart](#BeforeStart)
+    * [BeforeViewSnapshot](#BeforeViewSnapshot)
+    * [AfterViewSnapshot](#AfterViewSnapshot)
+    * [BeforeRender](#BeforeRender)
 
-1. Aperfeiçoamento da arquitetura
-2. Melhorias de performance
-3. Correção de bugs
-4. Documentação top sobre a arquitetura, getting started, exemplos no playground e tópicos avançados
-5. Aperfeiçoar o playground
-6. ~~Rever o funcionamento do Beagle Angular. O que podemos melhorar? Vale trocar a abordagem?~~
-7. ~~Implementar o Beagle no React Native~~
-8. ~~Implementar o Beagle no React Electron~~
+# TL;DR;
 
-Risquei os ponto 6, pois, apesar de ser um grande ponto de melhoria, é algo muito complexo e
-acredito que seria mais prudente colocá-lo para a versão seguinte (provavelmente 1.2).
+Sometimes, an image can tell more than words, the following graphic shows the full rendering process
+of Beagle Web:
 
-Risquei os pontos 7 e 8, pois acredito que sejam menos importantes em relação aos demais e poderiam
-estar na versão 1.2 ao invés de a 1.1.
+![Beagle Web Flow](https://i.ibb.co/kSGxFVx/beagle-web-flow.png)
 
-Os pontos 6, 7 e 8 podem ser desenvolvidos em paralelo com o restante, caso faltem tasks para a
-equipe.
+The Beagle lifecycles are:
+- BeforeStart
+- BeforeViewSnapshot
+- AfterViewSnapshot
+- BeforeRender
 
-**É importante lembrar que não podemos ter breaking changes nessas versões.**
-
-# Propostas
-
-A proposta 1 e a 2 são as únicas que precisam de um grande detalhamento, as demais são auto-explicativas.
-
-## Melhorias de arquitetura e performance (core)
-
-O Beagle web hoje funciona bem para nós, é um código extensível e desacoplado que nos permite
-implementar novas funcionalidades com muita agilidade. Mas isso traz um problema: como não temos
-uma definição clara e objetiva da arquitetura, não é fácil entender como tudo funciona, o que acaba
-levando ao uso errado de middlewares ou outras funcionalidades da lib. Até mesmo para nós, é comum
-criarmos middlewares que executam em ordem errada. Precisamos que o dev saiba claramente como tudo
-funciona e em que momentos seu código irá rodar.
-
-Destacamos os seguintes pontos que precisamos melhorar na arquitetura:
-
-### Middlewares
-
-Middlewares foi uma boa ideia para criar um ponto de extensão fácil de se usar na lib, mas a medida
-que o projeto cresceu em complexidade, a utilização de middlewares se tornou algo confuso e perigoso.
-
-- A ordem dos middlewares é excessivamente importante
-- O dev pode criar um middleware que sobrescreve uma expressão (`${exemplo.de.expressao}`), nesse
-caso, todo o contexto vai parar de funcionar e ele provavelmente não vai saber o por que.
-- Não está claro o momento em que os middlewares rodam.
-- Muitos problemas são resolvidos com middlewares, o que pode levar a um problema de performance.
-
-**Proposta:** remover os middlewares. Não remover a funcionalidade, mas oferecê-la de forma mais
-bem organizada. Um dos pontos é melhor documentar a arquitetura, nessa documentação fica claro
-quais passos executamos e a ordem em que eles são executados. Existem alguns pontos chave nesse
-processo, por exemplo, logo após o JSON chegar do servidor, logo antes de se atribuir a árvore ao
-Beagle View ou logo antes de renderizar a view. Esses deveriam ser nossos pontos de extensão, e ao
-invés de chamá-los de middlewares, poderíamos chamá-los de lifecycles, como em outros frameworks de
-renderização. Dessa forma, fica mais claro onde cada coisa será executada e impedimos que alguns
-erros aconteçam, pois poderemos garantir uma ordem nos nossos processos.
-
-Sobre não ter breaking changes, podemos deprecar os middlewares, mas continuar os executando como
-se fosse algum dos lifecycles.
-
-Além disso, algumas coisas que se tornaram muito comuns no decorrer do nosso desenvolvimento podem
-virar annotations. Veja o exemplo do próximo tópico.
-
-### Children, child, itens, rows, etc
-
-Tentamos mudar o restante das frentes para padronizarem tudo como "children", mas não funcionou.
-Como resultado, temos um middleware para cada componente fora do padrão e sempre que um novo é
-adicionado, precisamos de um middleware novo. Isso não está legal!
-
-**Proposta:** abraçar a falta de padrão e adotar uma solução mais fácil, clara e performática para
-o problema. A primeira coisa que fazemos ao receber um json é interpretar a árvore, quem são os nós
-e quem é filho de quem. Para isso, por padrão, verificamos apenas "children" e "child", mas os
-componentes provedenciados na config podem declarar onde estão seus filhos, de forma que não
-precisemos criar um middleware sempre que um componente aparece usando um padrão diferente.
-
-Essa definição de quem são os filhos pode ser feita através de uma anotação, veja o exemplo a
-seguir:
+They can be used as global hooks to the lifecycle:
 
 ```typescript
-@BeagleChildren({ propertyName: 'rows' })
-export class BeagleTable extends Component {
+const config = {
+  // ...
+  lifecycles: {
+    beforeStart: (payload) => {
+      // ...
+    },
+    beforeViewSnapshot: (payload) => {
+      // ...
+    },
+    afterViewSnapshot: (payload) => {
+      // ...
+    },
+    beforeRender: (payload) => {
+      // ...
+    },
+  }
+}
+```
+
+or local hooks to the lifecycles in a per-component basis (annotations):
+
+```typescript
+@BeagleBeforeStart((textComponentPayload) => {
+  // ...
+})
+@BeagleBeforeViewSnapshot((textComponentPayload) => {
+  // ...
+})
+@BeagleAfterViewSnapshot((textComponentPayload) => {
+  // ...
+})
+@BeagleBeforeRender((textComponentPayload) => {
+  // ...
+})
+@Component({
+  // ...
+})
+class Text {
   // ...
 }
 ```
 
-`@BeagleChildren` recebe um objeto ao invés de uma string, pois podemos colocar outras propriedades
-interessantes alí. Veja a sessão "Validação de tipos".
-
-### Middlewares/lifecycles por componente
-
-Hoje os middlewares são definidos na config, o que não parece um lugar muito legal para definir, por
-exemplo, algo que deve rodar por conta de um componente específico. Além disso, isso anda nos
-obrigando a misturar lógica dos componentes com o Beagle Web Core.
-
-**Proposta:** considerando que a proposta de substituir middlewares por lifecycles foi aceita,
-podemos definir um lifecycle específico do componente junto a ele, com annotation. Veja o exemplo:
+If the children of a component comes with a different name than `children` or `child` from the
+backend, the annotation `@BeagleChildren` can be used to fix the problem:
 
 ```typescript
-function createTabItemStructure(tabViewElement: BeagleUIElement) {
+@BeagleChildren({ property: 'rows' })
+@Component({
   // ...
-}
-
-@BeagleBeforePreProcessing(createTabItemStructure)
-export class TabView extends Component {
+})
+class Table {
   // ...
 }
 ```
 
-### Validação de tipos
+# Beagle Payload and Tree of components
 
-Hoje, validamos a tipagem dos componentes apenas com o Typescript. Em runtime, se algo vem errado do
-backend, se o cara transforma um tipo de dado errado em algum middleware ou se uma expressão resolve
-para um tipo de dado errado, acontecerá um erro no componente, sem avisarmos nada ao dev.
+The payload for beagle returned by the backend can be anything, but internally Beagle must work with
+a tree of components. We must be able to traverse the tree and detect every component and its
+children. We say the payload can be anything, because we give the developer the opportunity to
+change it before it gets processed by Beagle.
 
-Por exemplo, suponha que o dev faça um middleware que transforma algo que era array para uma
-string, e o componente final espera array. Provavelmente vai ocorrer erro em runtime, pois, o
-componente pode usar `map`, por exemplo, que não existe em uma string. É difícil o dev saber que
-aconteceu um erro de tipo, que o JSON renderizado não respeitava o contrato do componente dele.
+We recommend that the backend always return a JSON representing a tree of components, as it is
+expected by Beagle, but if, for some reason, it is not possible, Beagle Web makes it possible to
+pre-process the response and build the tree in the front-end before Beagle actually works upon it.
 
-Outro exemplo mais comum é o uso de uma expressão que resolve para um tipo de dado não esperado
-ou que se quer é resolvido. Suponha um componente que recebe um array e o JSON traz como valor
-`"@{clients}"`. `clients` deve existir no contexto e deve ser um array. Mas se isso não acontecer,
-vai ser difícil o dev descobrir onde está o erro.
+## What is the Tree of Components?
 
-Para resolver esse problema, devemos adicionar um passo no fluxo quando o modo de execução é
-"development". Isso não rodaria em produção. Nesse passo compararíamos o objeto que queremos
-renderizar com a definição de tipo do componente. Se algo estiver diferente, logamos um warning
-para o dev dizendo o que está errado.
+The tree of components is the data structure used by Beagle Web. As the name suggests, it is a tree.
+Each node in this tree has a type, several attributes and children. The type of the node is given by
+the property `_beagleComponent_` and it is mandatory. The node type tells us which UI component the
+node represents. A component will, most of the time, have attributes which are specific to that
+component. e.g. a button, can have attributes like `text`, `onPress` and `disabled`, while an input
+will have attributes like `value` and `placeholder`. If a node is not a leaf, i.e. if the component
+has another component or set of components inside it, the node in the tree will have a property
+called "children", which is an array of nodes and represents the child nodes of a node.
 
-Outra validação interessante seria quanto aos filhos. Alguns componentes podem ter apenas um
-filho, outros podem ter filhos de um único tipo. Junto a anotação "@BeagleChildren" poderíamos
-permitir especificar propriedades como "maximumNumberOfChildren", "minimumNumberOfChildren" e
-"allowedChildrenComponents".
+Below, we show an example of a tree of components ready to be processed by Beagle:
 
-### Documentação
+```json
+{
+  "_beagleComponent_": "container",
+  "children": [
+    {
+      "_beagleComponent_": "image",
+      "url": "https://i.ibb.co/rvRN9kv/logo.png"
+    },
+    {
+      "_beagleComponent_": "text",
+      "text": "Welcome to the Beagle playground!"
+    },
+    {
+      "_beagleComponent_": "text",
+      "text": "Use the panel on the left to start coding!"
+    },
+    {
+      "_beagleComponent_": "button",
+      "text": "Access the fast guide"
+    }
+  ]
+}
+```
 
-Precisamos ter bem documentado em um formato fácil de se entender todo o fluxo do Beagle, desde a
-requição para o JSON até a renderização na tela.
+The json above is a simpler version of the welcome page of the Beagle Playground website. It
+renders a container to hold the rest of the elements: an image, two texts and a button. To see the
+full example and the UI rendered by it, access the [Beagle Playground](http://playground.beagle.com).
 
-Já comecei a desenvolver isso, estou representando todo o fluxo (considerando as mudanças propostas)
-através de uma imagem.
+### The `children` property
 
-![Beagle Web Flow](https://i.ibb.co/Bq5TScW/tm-J6c-JSPWT9-W-Et-Y1-I5-Mq-Trm-K9-Pkanozlh3y5-DCl-GOq-WG-Xhm-H3-Xf0svn-Pr-XI5-AXTNCw-Fax-TMy-CT8-Sz-W7n-w2560-h1001-rw.png)
+We recommend to always use an array named `children` to specify the child nodes of a component. But,
+Beagle will work out of the box if instead of an array of components, a single node is passed, and
+will also work if instead of `children`, the name `child` is used. In some cases, the backend
+programmer will have named the child nodes as something else. For instance, in a component that
+represents a table, the children might be named `rows` instead of `children`, in this case, the
+front-end developer can inform Beagle that, for this specific component, the name of the property
+`children` is different. See the example below:
 
-### Conclusão
+```typescript
+@BeagleChildren({ property: 'rows' })
+@Component({
+  // ...
+})
+class Table {
+  // ...
+}
+```
 
-Vale lembrar que tudo aqui está sujeito à modificações e é provável que isso aconteça, já que, com
-certeza, só vamos enxergar alguns problemas na hora que formos implementar.
+The example above is for Angular, but it would work the same way in other platforms. Click
+[here](#todo) to see the full documentation of the annotation `@BeagleChildren`.
 
-Estou particularmente insatisfeito com a nomenclatura dos processos e dos lifecycles (veja na
-imagem que descreve o fluxo/arquitetura). Por favor, Deem sugestões.
+# Process and lifecycles
 
-Submetam PR's para esse documento para propor novas melhorias para v1.1 e para melhorar o que já
-foi proposto. Ou comentem na issue [#113](https://github.com/ZupIT/beagle-web-core/issues/113).
+> Observation: lifecycles deprecates the feature middlewares. Middlewares will still be supported
+at least until the next major version (2.0.0) and they will be interpreted as they were part of the
+lifecycle `beforeRender`.
+
+Beagle Web has a very well defined process from when a new payload is received to the moment it
+gets rendered in the browser screen. We also have some "breakpoints" in this process where we let
+the developer do his own stuff if he needs to. We call these breakpoints "lifecycles". If you're
+familiar with frameworks like Angular and React you probably already know how lifecycles work. If
+not, it is pretty simple! Keep reading.
+
+## Process to render a view 
+
+1. Run the global **beforeStart** hook;
+2. Run the **beforeStart** hook of each component;
+3. Assign an id to every node that doesn't have an id yet;
+4. If needed, pre-fetch views that could be accessed next;
+5. Run the global **beforeViewSnapshot** hook;
+6. Run the **beforeViewSnapshot** hook of each component;
+7. Takes a snapshot of the current tree and stores it. From now on, any reference to the current
+rendered tree will be referencing a copy of this tree.
+8. Starts processing a copy of the snapshotted view, the next lifecycles will run over this copy.
+9. Run the global **afterViewSnapshot** hook;
+10. Run the **afterViewSnapshot** hook of each component;
+11. Deserialize beagle actions into javascript functions;
+12. Evaluates contexts and expressions;
+13. Interpret styles, converting the Beagle styling syntax to css;
+14. Run the global **beforeRender** hook;
+15. Run the **beforeRender** hook of each component;
+16. If in development mode, check the types in the JSON, validating them against the interface of
+each component.
+17. Hand the component tree to the render function, which is responsible to render each component
+in the tree. This function is different to each framework, Angular has a renderer and React has
+another.
+
+Steps 1 to 7 are run once for every payload, they are not run on every re-render of the view. Steps
+8 to 17 are run every time a re-render is triggered on the view. Re-renders are triggered by the
+`setContext` action. When using the internal BeagleView directly, any call to `updateWithFetch` or
+`updateWithTree` considers the tree passed as a parameter a new tree, i.e. the full set of steps
+will be run over the new tree (or branch). The behavior is the same for the action `addChildren`,
+since it uses `updateWithTree` internally.
+
+## BeforeStart
+
+In the previous section, we said we let the user alter the payload before Beagle gets started, this
+is our first lifecycle and we call it "BeforeStart". In an ideal scenario the payload would always
+be correct and this would never be needed, but, unfortunately, it's not always the case.
+
+This doesn't need to be used only to alter the payload, if the developer wants to run some code
+every time a payload will get processed by Beagle, but before Beagle actually acts upon it, this is
+where he would do it.
+
+### Example of usage
+
+Let's say we're developing an application that will work for WEB, iOS and Android.
+Sometimes a payload will make sense for the mobile platforms, but not for web and we have to
+transform it somehow. This will mainly happen if the components for the mobile apps were built
+before realizing they would also be used for web. Again, this is not the ideal scenario, but it does
+happen.
+
+Even when all platforms are considered, there are scenarios where a payload won't make sense
+for a particular platform, let's take the case of the default Beagle Component `screen`. `screen`
+tells us things like the title of the view, the presence of a back button, and other interactivity
+that will be made available in the navigation bar of a mobile app. See below an example of a JSON
+defining a screen and an image corresponding to the UI it renders:
+
+> TODO
+
+Web applications have no equivalent to the mobile navigation bar and the default implementation of
+the component `screen` in Beagle Web ignores the json describing the navigation bar. To interpret
+the navigation bar and render it in a way that makes sense in a web environment, we have two
+options: replace the default implementation of the component `screen` or transform the original
+payload taking the data of the navigation bar inside the screen component and creating a component
+we can understand.
+
+If we choose the second alternative, this would be done via the lifecycle `BeforeStart`. See the
+example below:
+
+```typescript
+const config = {
+  // ...
+  lifecycles: {
+    beforeStart: (payload) => {
+      // the screen component can only appear as the root of the component tree
+      if (!payload._beagleComponent_ === 'beagle:screenComponent') return
+      const navComponent = payload.navigationBar && {
+        _beagleComponent_: 'custom:navigationBar',
+        title: payload.navigationBar.title,
+        items: payload.navigationBar.navigationBarItems,
+      }
+      // in the particular component (screen), the children is a single element, is mandatory and is named child
+      payload.children = navComponent ? [navComponent, payload.child] : [payload.child]
+      delete payload.child
+    }
+  }
+}
+```
+
+The example above considers we have a custom component called `custom:navigationBar` that will
+render a nav bar for us.
+
+In the example above we set up a global hook to the `beforeStart` lifecycle. We can also use any
+lifecycle in a per-component basis. Let's take the non-realistic example of renaming the property
+`text` to `value` in a component called `Text`:
+
+```typescript
+@BeagleBeforeStart((textComponentPayload) => {
+  textComponentPayload.value = textComponentPayload.text
+  delete textComponentPayload.text
+})
+@Component({
+  // ...
+})
+class Text {
+  // ...
+}
+```
+
+In this case, the payload received as parameter is not the entire tree, but the payload of the
+component itself.
+
+In any of the lifecycles, if nothing is returned, the process will continue with the tree passed
+as parameter to the lifecycle function. If a new tree is returned by the function, the process
+will continue with the tree returned.
+
+## BeforeViewSnapshot
+
+Runs just before the view snapshot, useful to alter the payload, but after the ids were already
+assigned.
+
+### Example of usage
+
+Let's say you want to expose the internal beagle id as a property of the component. This could
+be done with the following code:
+
+```typescript
+@BeagleBeforeViewSnapshot((myComponentPayload) => {
+  myComponentPayload.exposedId = id
+})
+@Component({
+  // ...
+})
+class MyComponent {
+  @Input() exposedId: string
+  // ...
+}
+```
+
+Just like any other lifecycle, a hook to it could also have been set globally, via the
+configuration:
+
+```typescript
+const config = {
+  // ...
+  lifecycles: {
+    beforeViewSnapshot: (payload) => { /* ... */ }
+    // ...
+  },
+}
+```
+
+## AfterViewSnapshot
+
+Differently from the two previous lifecycles, the changes done here are valid for the current
+render only, since any update to the view is done over a tree based on the snapshotted view, the 
+modifications done in this lifecycle are not permanent and will be executed in every render.
+
+This lifecycle can be used to run code that needs to run every time the view is rendered but
+doesn't require actions, context, expressions and styles to have already been processed.
+
+### Example of usage
+
+> Achei legal colocar esse lifecycle, pois é um ponto bem definido durante o processo de
+renderização. Mas, de fato, não consegui pensar em nada que poderia ser feito aqui que não poderia
+ser feito em algum outro lifecycle. A solução é deixar, para caso o dev encontre esse caso de uso
+ou tirar, para evitar confusões. Vcs conseguem pensar em algum caso de uso interessante?
+
+## BeforeRender
+
+Just like the previous lifecycle (AfterViewSnapshot), the changes done here are valid for the
+current render only and is executed in every render. The difference from BeforeRender to
+AfterViewSnapshot, is that it is guaranteed that all actions, expressions and styles have already
+been processed.
+
+### Example of usage
+
+Let's say the backend decided to express colors in the following format:
+`{ red: number, green: number, blue: number }`. For example, black would be
+`{ red: 0, green: 0, blue: 0 }`. This is not a valid color for browsers, so we decide to
+convert the value of every color property to a valid RGB format. Basically, the function that could
+do this work is the following:
+
+```typescript
+const colorProperties: ['color', 'backgroundColor', 'borderColor']
+
+function fixColorCodes(componentPayload) {
+  const style = componentPayload.style
+  if (!style) return
+  colorProperties.forEach((property) => {
+    if (!style[property]) return
+    style[property] = `rgb(${style[property].red}, ${style[property].green}, ${style[property].blue})`
+  })
+}
+```
+
+Now we just need to execute the function above for every component in the tree. But when exactly
+should we call it?
+
+Suppose we want to have a dynamic behavior for the color by changing it via the context feature.
+Check the JSON below:
+
+```json
+{
+  "_beagleComponent_": "beagle:container",
+  "context": {
+    "id": "bgColor",
+    "value": {
+      "red": 255,
+      "green": 255,
+      "blue": 255
+    },
+  },
+  "children": [
+    {
+      "_beagleComponent_": "beagle:text",
+      "text": "My dynamically colored text",
+      "style": {
+        "backgroundColor": "@{bgColor}"
+      }
+    },
+    {
+      "_beagleComponent_": "beagle:button",
+      "text": "red",
+      "onPress": [
+        {
+          "_beagleAction_": "setContext",
+          "contextId": "bgColor",
+          "value": {
+            "red": 255,
+            "green": 0,
+            "blue": 0
+          }
+        }
+      ],
+      "_beagleComponent_": "beagle:button",
+      "text": "green",
+      "onPress": [
+        {
+          "_beagleAction_": "setContext",
+          "contextId": "bgColor",
+          "value": {
+            "red": 0,
+            "green": 255,
+            "blue": 0
+          }
+        }
+      ],
+      "_beagleComponent_": "beagle:button",
+      "text": "blue",
+      "onPress": [
+        {
+          "_beagleAction_": "setContext",
+          "contextId": "bgColor",
+          "value": {
+            "red": 0,
+            "green": 0,
+            "blue": 255
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+From the JSON above we can see that the text starts with a white background (no value for
+backgroundColor) and as soon as the user presses a button, the background color changes.
+
+If we call `fixColorCodes` before the context is evaluated, we'll be trying to execute it over the
+string `@{bgColor}` instead of the object `{ red: 255, green: 255, blue: 255` }` which will get
+us a massive runtime error, since `red`, `green` or `blue` are not properties of a string.
+BeforeStart, BeforeViewSnapshot and AfterViewSnapshot are all executed before the context gets
+evaluated, so everything that might be affected by the context, must be executed in the last
+lifecycle: BeforeRender.
+
+```typescript
+function fixColorForComponentTree(tree) {
+  fixColorCodes(tree)
+  if (!tree.children) return
+  tree.children.forEach(fixColorForComponentTree)
+}
+
+const config = {
+  // ...
+  lifecycles: {
+    // ...
+    beforeRender: fixColorForComponentTree,
+  }
+}
+```
