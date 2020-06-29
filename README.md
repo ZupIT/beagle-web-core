@@ -1,9 +1,9 @@
 # List of contents
 
-- [TL;DR;](#TL;DR;)
+- [TL;DR;](#tldr)
 - [Beagle Payload and Tree of components](#Beagle-Payload-and-Tree-of-components)
     * [What is the Tree of Components?](#What-is-the-Tree-of-Components?)
-    * [The `children` property](#The-`children`-property)
+    * [The `children` property](#The-children-property)
 - [Process and lifecycles](#Process-and-lifecycles)
     * [Process to render a view](#Process-to-render-a-view)
     * [BeforeStart](#BeforeStart)
@@ -132,7 +132,8 @@ Below, we show an example of a tree of components ready to be processed by Beagl
 
 The json above is a simpler version of the welcome page of the Beagle Playground website. It
 renders a container to hold the rest of the elements: an image, two texts and a button. To see the
-full example and the UI rendered by it, access the [Beagle Playground](http://playground.beagle.com).
+full example and the UI rendered by it, access the
+[Beagle Playground](http://playground.usebeagle.io).
 
 ### The `children` property
 
@@ -183,7 +184,7 @@ rendered tree will be referencing a copy of this tree.
 9. Run the global **afterViewSnapshot** hook;
 10. Run the **afterViewSnapshot** hook of each component;
 11. Deserialize beagle actions into javascript functions;
-12. Evaluates contexts and expressions;
+12. Evaluate contexts and expressions;
 13. Interpret styles, converting the Beagle styling syntax to css;
 14. Run the global **beforeRender** hook;
 15. Run the **beforeRender** hook of each component;
@@ -330,10 +331,10 @@ doesn't require actions, context, expressions and styles to have already been pr
 
 ### Example of usage
 
-> Achei legal colocar esse lifecycle, pois é um ponto bem definido durante o processo de
-renderização. Mas, de fato, não consegui pensar em nada que poderia ser feito aqui que não poderia
-ser feito em algum outro lifecycle. A solução é deixar, para caso o dev encontre esse caso de uso
-ou tirar, para evitar confusões. Vcs conseguem pensar em algum caso de uso interessante?
+> Achei que seria interessante colocar esse lifecycle, pois é um ponto bem definido durante o processo de
+renderização. Mas, de fato, não consegui pensar em nada que poderia ser feito aqui que não pudesse
+ser feito em algum outro lifecycle. A solução é deixar, para caso o dev encontre esse caso de uso?
+Ou tirar, para evitar confusões? Vcs conseguem pensar em algum caso de uso interessante?
 
 ## BeforeRender
 
@@ -433,11 +434,11 @@ Check the JSON below:
 }
 ```
 
-From the JSON above we can see that the text starts with a white background (no value for
-backgroundColor) and as soon as the user presses a button, the background color changes.
+From the JSON above we can see that the text starts with a white background and as soon as the user
+presses a button, the background color changes.
 
 If we call `fixColorCodes` before the context is evaluated, we'll be trying to execute it over the
-string `@{bgColor}` instead of the object `{ red: 255, green: 255, blue: 255` }` which will get
+string `@{bgColor}` instead of the object `{ red: 255, green: 255, blue: 255 }` which will get
 us a massive runtime error, since `red`, `green` or `blue` are not properties of a string.
 BeforeStart, BeforeViewSnapshot and AfterViewSnapshot are all executed before the context gets
 evaluated, so everything that might be affected by the context, must be executed in the last
