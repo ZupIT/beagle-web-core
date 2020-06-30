@@ -376,7 +376,7 @@ the example below:
 ```typescript
 function findContextById(payload, id) {
   if (payload.context && payload.context.id === id) return payload.context
-  const it = Beagle.Children.iterator()
+  const it = Beagle.Children.iterator(payload)
   while (!it.done) {
     const context = findContextById(it.next(), id)
     if (context) return context
