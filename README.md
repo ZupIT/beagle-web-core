@@ -257,7 +257,7 @@ const config = {
         title: payload.navigationBar.title,
         items: payload.navigationBar.navigationBarItems,
       }
-      // in the particular component (screen), the children is a single element, is mandatory and is named child
+      // in this particular component (screen), the children is a single element, is mandatory and is named child
       payload.children = navComponent ? [navComponent, payload.child] : [payload.child]
       delete payload.child
     }
@@ -339,10 +339,73 @@ doesn't require actions, context, expressions and styles to have already been pr
 
 ### Example of usage
 
-> Achei que seria interessante colocar esse lifecycle, pois é um ponto bem definido durante o processo de
-renderização. Mas, de fato, não consegui pensar em nada que poderia ser feito aqui que não pudesse
-ser feito em algum outro lifecycle. A solução é deixar, para caso o dev encontre esse caso de uso?
-Ou tirar, para evitar confusões? Vcs conseguem pensar em algum caso de uso interessante?
+Contexts are defined, referenced and manipulated in the JSON of the view. But what if we want to
+access data of the application and not the view itself? Beagle offers a feature called
+"[Global context](#todo)" that is able to deal with this scenario, but suppose there is no Global
+context, we can still implement this behavior by using the AfterViewSnapshot lifecycle.
+
+Let's say we have a financial application and we want to show the user's balance. We must guarantee
+that, in every re-render the most recent value for the balance will be used, for this reason, it
+can't be done in the previous lifecycles (BeforeStart and BeforeViewSnapshot).
+
+```json
+{
+  "_beagleComponent_": "container",
+  "context": {
+    "id": "user",
+    "value": {
+      "name": "",
+      "balance": 0
+    }
+  },
+  "children": [
+    {
+      "_beagleComponent_": "text",
+      "text": "@{user.name}, your balance is $@{user.balance}"
+    }
+  ]
+
+}
+```
+
+In the JSON above, we use the context `user`, this context starts with empty values and the view
+has no way of knowing the correct values. So, before processing the contexts and expressions, 
+we can replace the values of the context in the JSON by the values we have in our application. See
+the example below:
+
+```typescript
+function findContextById(payload, id) {
+  if (payload.context && payload.context.id === id) return payload.context
+  const it = Beagle.Children.iterator()
+  while (!it.done) {
+    const context = findContextById(it.next(), id)
+    if (context) return context
+  }
+}
+
+const config = {
+  // ...
+  lifecycles: {
+    afterViewSnapshot: (payload) => {
+      const userContext = findContextById(payload, 'user')
+      const userData = getUserData() // this method gets the user data from the application
+      userContext.name = userData.name
+      userContext.balance = userData.balance
+    }
+  }
+}
+```
+
+With the code above we tell Beagle to replace the values in the context "user" by the values in
+the application. This piece of code cannot be placed before the view is snapshotted because we have
+the requirement to update the balance value in every render. It also can't be placed in the next
+lifecycle (BeforeRender), because the context would then be already evaluated and our values
+wouldn't be processed.
+
+It is important to notice that the action `setContext` would not work over the context `user`, since
+we are always replacing the values for this context before processing any expression. This is just
+an example to show how this lifecycle could be used. To use application values in your beagle view,
+it is always preferred to use the [global context](#todo).
 
 ## BeforeRender
 
