@@ -24,7 +24,7 @@ Este documento é a documentação sobre a feature escrita como se ela já estiv
 Sometimes, an image can tell more than words, the following graphic shows the full rendering process
 of Beagle Web:
 
-![Beagle Web Flow](https://i.ibb.co/kSGxFVx/beagle-web-flow.png)
+![Beagle Web Flow](https://i.ibb.co/ygdgKhQ/beagle-web-flow.png)
 
 The Beagle lifecycles are:
 - BeforeStart
