@@ -21,7 +21,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "sh ./bin/check-license.sh"
+      "pre-commit": "sh ./bin/check-license.sh",
+      "pre-push": "yarn lint"
     }
   },
   "dependencies": {
