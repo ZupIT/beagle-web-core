@@ -17,6 +17,10 @@
 import { URLBuilder } from '../types'
 import { removeSuffix } from './string'
 
+function shouldEncodeUrl(baseUrl: string): boolean {
+  return decodeURI(baseUrl) === baseUrl
+}
+
 function createURLBuilder(baseUrl: string): URLBuilder {
   const defaultBaseUrl = baseUrl
   return {
@@ -30,8 +34,5 @@ function createURLBuilder(baseUrl: string): URLBuilder {
   }
 }
 
-function shouldEncodeUrl(baseUrl: string): Boolean {
-  return decodeURI(baseUrl) === baseUrl
-}
 
 export default createURLBuilder
