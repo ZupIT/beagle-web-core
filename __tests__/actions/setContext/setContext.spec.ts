@@ -1,6 +1,6 @@
 import setContext from '../../../src/actions/setContext'
 import { findById } from '../../../src/utils/tree-reading'
-import { createBeagleViewMock } from '../../test-utils'
+import { createBeagleViewMock } from '../../utils/test-utils'
 import { IdentifiableBeagleUIElement } from '../../../src/types'
 import {
   createSingleContextMock,

@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, IdentifiableBeagleUIElement, BeagleView } from '../src/types'
+import { BeagleUIElement, BeagleView } from '../../src/types'
 
 export function mockLocalStorage(storage: Record<string, string> = {}) {
   const initialStorage = { ...storage }

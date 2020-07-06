@@ -1,7 +1,7 @@
 import addChildren from '../../../src/actions/addChildren'
 import { findById } from '../../../src/utils/tree-reading'
 import { clone } from '../../../src/utils/tree-manipulation'
-import { createBeagleViewMock } from '../../test-utils'
+import { createBeagleViewMock } from '../../utils/test-utils'
 import { createSimpleMock } from './mocks'
 
 describe('Actions: addChildren', () => {
