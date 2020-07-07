@@ -17,7 +17,7 @@
 import nock from 'nock'
 import { load } from '../../../src/utils/tree-fetching'
 import { treeA, treeB } from '../../mocks'
-import { mockLocalStorage } from '../../test-utils'
+import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleCacheError, BeagleNetworkError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'

@@ -17,6 +17,10 @@
 import { URLBuilder } from '../types'
 import { removeSuffix } from './string'
 
+function shouldEncodeUrl(baseUrl: string): boolean {
+  return decodeURI(baseUrl) === baseUrl
+}
+
 function createURLBuilder(baseUrl: string): URLBuilder {
   const defaultBaseUrl = baseUrl
   return {
@@ -25,9 +29,10 @@ function createURLBuilder(baseUrl: string): URLBuilder {
       const relativePathRegex = /^\/+(\b|$)/
       const base = removeSuffix(baseUrl || defaultBaseUrl || '', '/')
       const url = path.match(relativePathRegex) ? `${base}${path}` : path
-      return encodeURI(url)
+      return shouldEncodeUrl(url) ? encodeURI(url) : url
     },
   }
 }
+
 
 export default createURLBuilder
