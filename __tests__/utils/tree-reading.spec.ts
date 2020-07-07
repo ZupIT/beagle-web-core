@@ -20,8 +20,8 @@ import {
   findByType,
   findParentByChildId,
   indexOf,
-} from '../src/utils/tree-reading'
-import { treeA } from './mocks'
+} from '../../src/utils/tree-reading'
+import { treeA } from '../mocks'
 
 describe('Utils: tree reading', () => {
   it('should find by attribute', () => {

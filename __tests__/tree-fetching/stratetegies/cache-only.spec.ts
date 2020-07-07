@@ -16,7 +16,7 @@
 
 import { load } from '../../../src/utils/tree-fetching'
 import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../test-utils'
+import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleCacheError } from '../../../src/errors'
 import handleBeagleHeaders from '../../../src/utils/beagle-headers'

@@ -17,7 +17,7 @@
 import createShouldPrefetchMiddleware from '../../src/middlewares/beagle-should-prefetch'
 import { BeagleUIElement, URLBuilder } from '../../src/types'
 import createURLBuilder from '../../src/utils/url-builder'
-import { mockLocalStorage } from '../test-utils'
+import { mockLocalStorage } from '../utils/test-utils'
 import { namespace } from '../../src/utils/tree-fetching'
 import { treeA } from '../mocks'
 import nock from 'nock'
