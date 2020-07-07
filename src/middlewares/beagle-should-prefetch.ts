@@ -14,12 +14,12 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, URLBuilder } from '../types'
+import { BeagleUIElement, URLBuilder, BeagleHeaders } from '../types'
 import { loadFromServer } from '../utils/tree-fetching'
 import NavigationActions from '../actions/navigation'
 import { addPrefix } from '../utils/string'
 
-const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder) => {
+const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder, beagleHeaders: BeagleHeaders) => {
 
   const beagleShouldPrefetch = (uiTree: BeagleUIElement<any>) => {
     const keys = Object.keys(uiTree)
@@ -30,12 +30,12 @@ const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder) => {
       if (isNavigationAction && shouldPrefetch) {
         const path = addPrefix(uiTree[key].route.url, '/')
         const url = urlFormatter.build(path)
-        loadFromServer(url)
+        loadFromServer(url, beagleHeaders)
       }
     })
-    
+
     if (uiTree.children) uiTree.children.forEach(beagleShouldPrefetch)
-    
+
     return uiTree
   }
 

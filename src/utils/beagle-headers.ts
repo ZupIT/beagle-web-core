@@ -14,30 +14,17 @@
   * limitations under the License.
 */
 
-export class BeagleError extends Error {
-  constructor(message: string) {
-    super(`Beagle: ${message}`)
-  }
+import { HttpMethod, BeagleHeaders } from '../types'
+import beagleMetadata from './beagle-metadata'
+
+function handleBeagleHeaders(useBeagleHeaders?: boolean): BeagleHeaders {
+  const beagleHeaders = { 'beagle-platform': 'WEB', 'beagle-hash': '' }
+  const useDefaultHeaders = useBeagleHeaders !== undefined ? useBeagleHeaders : true
+
+  return {
+    getBeagleHeaders: (url: string, method: HttpMethod) => (useDefaultHeaders ?
+      { ...beagleHeaders, 'beagle-hash': beagleMetadata.getHash(url, method) } : {}),
+    }
 }
 
-export class BeagleCacheError extends BeagleError {
-  constructor(path: string) {
-    super(`cache for ${path} has not been found.`)
-  }
-}
-
-export class BeagleExpiredCacheError extends BeagleError {
-  constructor(path: string) {
-    super(`cache for ${path} has expired.`)
-  }
-}
-
-
-export class BeagleNetworkError extends BeagleError {
-  public response: Response
-
-  constructor(path: string, response: Response) {
-    super(`network error while trying to access ${path}.`)
-    this.response = response
-  }
-}
+export default handleBeagleHeaders

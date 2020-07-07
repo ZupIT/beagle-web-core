@@ -14,11 +14,12 @@
   * limitations under the License.
 */
 
-import { BeagleNetworkError, BeagleCacheError } from '../errors'
-import { BeagleUIElement, Strategy, HttpMethod, ComponentName } from '../types'
+import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../errors'
+import { BeagleUIElement, Strategy, HttpMethod, ComponentName, BeagleHeaders, beagleCacheNamespace, BeagleMetadata } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
+import beagleMetadata from './beagle-metadata'
 
-type StrategyType = 'network' | 'cache'
+type StrategyType = 'network' | 'cache' | 'cache-ttl' | 'network-beagle'
 
 interface StrategyArrays {
   fetch: Array<StrategyType>,
@@ -36,11 +37,14 @@ interface Params<Schema> {
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
   onChangeTree: (tree: BeagleUIElement<Schema>) => void,
+  beagleHeaders: BeagleHeaders,
 }
 
 export const namespace = '@beagle-web/cache'
 
 const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
+  'beagle-cache-only': { fetch: ['cache-ttl', 'network-beagle'], fallback: [] },
+  'beagle-with-fallback-to-cache': { fetch: ['cache-ttl', 'network-beagle'], fallback: ['cache'] },
   'network-with-fallback-to-cache': { fetch: ['network'], fallback: ['cache'] },
   'cache-with-fallback-to-network': { fetch: ['cache'], fallback: ['network'] },
   'cache-only': { fetch: ['cache'], fallback: [] },
@@ -57,52 +61,102 @@ export async function loadFromCache<Schema>(url: string, method: HttpMethod = 'g
   return uiTree
 }
 
+export async function loadFromCacheCheckingTTL(url: string, method: HttpMethod = 'get') {
+  const metadata = beagleMetadata.getMetadata(url, method)
+  const timeInMs = Date.now()
+  // console.log('metadata', metadata)
+  const isCacheValid = metadata && (timeInMs - +metadata.requestTime) < +metadata.ttl
+  // console.log('isCacheValid', isCacheValid)
+  if (!metadata || !isCacheValid) {
+    throw new BeagleExpiredCacheError(url)
+  }
+  return loadFromCache(url, method)
+}
+
 export async function loadFromServer<Schema>(
   url: string,
+  beagleHeaders: BeagleHeaders,
   method: HttpMethod = 'get',
   headers?: Record<string, string>,
   shouldSaveCache = true,
+  hasBeagleMetadata = true
 ) {
   let response: Response
-
+  const defaultHeaders = beagleHeaders.getBeagleHeaders(url, method)
+  const requestTime = Date.now()
   try {
     response = await beagleHttpClient.fetch(
       url,
-      { method, headers: { ...headers, 'beagle-platform': 'WEB' } }
+      { method, headers: { ...headers, ...defaultHeaders } }
     )
   } catch (error) {
     throw new BeagleNetworkError(url, error)
   }
 
   if (response.status < 100 || response.status >= 400) throw new BeagleNetworkError(url, response)
-  const uiTree = await response.json() as BeagleUIElement<Schema>
 
-  if (shouldSaveCache) {
-    localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+  let uiTree = {} as BeagleUIElement<Schema>
+  // console.log('hasBeagleMetadata', hasBeagleMetadata)
+  if (hasBeagleMetadata) {
+    const beagleHash = response.headers.get('beagle-hash') || ''
+    const cacheControl = response.headers.get('cache-control') || ''
+    const maxAge = cacheControl && cacheControl.match(/max-age=(\d+)/)
+    const ttl = (maxAge && maxAge[1]) || ''
+
+    // console.log('beagleHash', beagleHash)
+    // console.log('cacheControl', cacheControl)
+    const metadata: BeagleMetadata = {
+      beagleHash,
+      requestTime,
+      ttl,
+    }
+    // console.log('metadata', metadata)
+    beagleHash && beagleMetadata.updateMetadata(metadata, url, method)
+    if (response.status === 304) {
+      uiTree = await loadFromCache(url, method)
+    } else {
+      uiTree = await response.json() as BeagleUIElement<Schema>
+
+      if (shouldSaveCache) {
+        // console.log('dentro 1')
+        localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+      }
+    }
+  } else {
+    uiTree = await response.json() as BeagleUIElement<Schema>
+
+    if (shouldSaveCache) {
+      // console.log('dentro 2')
+      localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+    }
   }
-
   return uiTree
 }
 
 export async function load<Schema>({
   url,
   fallbackUIElement,
+  beagleHeaders,
   method = 'get',
   headers,
-  strategy = 'network-with-fallback-to-cache',
+  strategy = 'beagle-with-fallback-to-cache',
   loadingComponent = 'custom:loading',
   errorComponent = 'custom:error',
   shouldShowLoading = true,
   shouldShowError = true,
   onChangeTree,
 }: Params<Schema>) {
-  async function loadNetwork(hasPreviousSuccess = false) {
-    if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({  _beagleComponent_: loadingComponent })
-    onChangeTree(await loadFromServer(url, method, headers, strategy !== 'network-only'))
+  async function loadNetwork(hasPreviousSuccess = false, hasBeagleMetadata = true) {
+    if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleComponent_: loadingComponent })
+    onChangeTree(await loadFromServer(url, beagleHeaders, method, headers, strategy !== 'network-only', hasBeagleMetadata))
   }
 
   async function loadCache() {
     onChangeTree(await loadFromCache(url, method))
+  }
+
+  async function loadCacheTTL() {
+    onChangeTree(await loadFromCacheCheckingTTL(url, method))
   }
 
   async function runStrategies(
@@ -111,10 +165,13 @@ export async function load<Schema>({
   ): Promise<[boolean, Array<Error>]> {
     const errors: Array<Error> = []
     let hasSuccess = false
-  
+
     for (let i = 0; i < strategies.length; i++) {
       try {
-        await (strategies[i] === 'network' ? loadNetwork(hasSuccess) : loadCache())
+        if (strategies[i] === 'network') await loadNetwork(hasSuccess, false)
+        else if (strategies[i] === 'network-beagle') await loadNetwork(hasSuccess, true)
+        else if (strategies[i] === 'cache-ttl') await loadCacheTTL()
+        else await loadCache()
         hasSuccess = true
         if (stopOnSuccess) return [hasSuccess, errors]
       } catch (error) {
@@ -127,6 +184,7 @@ export async function load<Schema>({
 
   async function start() {
     const { fetch, fallback: fallbackStrategy } = strategyNameToStrategyArrays[strategy]
+    //MEXER AQUI
     const [hasFetchSuccess, fetchErrors] = await runStrategies(fetch, false)
     if (hasFetchSuccess) return
     if (fallbackUIElement) return onChangeTree(fallbackUIElement)

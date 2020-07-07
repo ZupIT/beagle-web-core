@@ -20,6 +20,7 @@ import { mockLocalStorage } from '../../test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleNetworkError, BeagleCacheError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
+import handleBeagleHeaders from '../../../src/utils/beagle-headers'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -28,6 +29,7 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: cache-with-fallback-to-network)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
+  const beagleHeaders = handleBeagleHeaders(true)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -39,14 +41,14 @@ describe('Utils: tree fetching (load: cache-with-fallback-to-network)', () => {
   it('should render cached view', async () => {
     localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'cache-with-fallback-to-network' })
+    await load({ url, beagleHeaders, onChangeTree, strategy: 'cache-with-fallback-to-network' })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
   })
 
   it('should fallback to network', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'cache-with-fallback-to-network' })
+    await load({ url, beagleHeaders, onChangeTree, strategy: 'cache-with-fallback-to-network' })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })
@@ -55,6 +57,7 @@ describe('Utils: tree fetching (load: cache-with-fallback-to-network)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await expect(load({
       url,
+      beagleHeaders,
       onChangeTree: jest.fn(),
       strategy: 'cache-with-fallback-to-network',
     })).rejects.toEqual([

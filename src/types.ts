@@ -18,6 +18,8 @@ import { ActionHandler } from './actions/types'
 import { BeagleError } from './errors'
 import { Route } from './actions/navigation/types'
 
+export const beagleCacheNamespace = '@beagle-web/beagle-cache'
+
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
 export type ComponentName<Schema> = keyof Schema | 'custom:error' | 'custom:loading'
@@ -40,7 +42,9 @@ export type ErrorListener = (errors: Array<BeagleError>) => void
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type Strategy = (
-  'network-with-fallback-to-cache'
+  'beagle-cache-only'
+  | 'beagle-with-fallback-to-cache'
+  | 'network-with-fallback-to-cache'
   | 'cache-with-fallback-to-network'
   | 'cache-only'
   | 'network-only'
@@ -63,6 +67,23 @@ export type Analytics = {
   trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
 }
 
+export interface BeagleDefaultHeaders {
+  'beagle-platform': 'WEB',
+  'beagle-hash': string,
+}
+
+export interface BeagleHeaders {
+  getBeagleHeaders: (url: string, method: HttpMethod) => BeagleDefaultHeaders | {},
+}
+
+export interface BeagleMetadata {
+  'beagleHash': string,
+  'requestTime': number,
+  'ttl': string,
+}
+
+export type BeagleConfigMetadata = Record<string, BeagleMetadata>
+
 export interface BeagleHttpClient {
   fetch: typeof fetch,
   setFetchFunction: (fetchFn: typeof fetch) => void,
@@ -79,6 +100,7 @@ export interface BeagleConfig<Schema> {
     [K in ComponentName<Schema>]: any
   },
   customActions?: Record<string, ActionHandler>,
+  useBeagleHeaders?: boolean,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -116,7 +138,7 @@ export interface XmlOptions<Schema> {
 }
 
 export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConfig<Schema>> {
-  loadBeagleUITreeFromServer: (url: string, method?: HttpMethod) =>
+  loadBeagleUITreeFromServer: (url: string,  beagleHeaders: BeagleHeaders, method?: HttpMethod) =>
     Promise<BeagleUIElement<Schema>>,
   loadBeagleUITreeFromCache: (
     url: string,
@@ -192,3 +214,5 @@ export interface DataContext {
   id: string,
   value?: any,
 }
+
+

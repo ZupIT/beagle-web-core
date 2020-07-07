@@ -19,6 +19,7 @@ import { load } from '../../src/utils/tree-fetching'
 import { treeA } from '../mocks'
 import { mockLocalStorage } from '../test-utils'
 import beagleHttpClient from '../../src/BeagleHttpClient'
+import handleBeagleHeaders from '../../src/utils/beagle-headers'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -27,6 +28,7 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: general)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
+  const beagleHeaders = handleBeagleHeaders(true)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -38,7 +40,12 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should render loading before resulting view', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    const promise = load({ url, onChangeTree })
+    const promise = load({
+      url,
+      beagleHeaders, 
+      strategy: 'network-with-fallback-to-cache',
+      onChangeTree,
+    })
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:loading' })
     onChangeTree.mockClear()
     await promise
@@ -49,12 +56,12 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should render loading before error', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
-    const promise = load({ url, onChangeTree })
+    const promise = load({ url, beagleHeaders, strategy: 'network-with-fallback-to-cache', onChangeTree })
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:loading' })
     onChangeTree.mockClear()
     try {
       await promise
-    } catch {}
+    } catch { }
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:error' })
     expect(nock.isDone()).toBe(true)
   })
@@ -62,7 +69,7 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should not render loading', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    const promise = load({ url, onChangeTree, shouldShowLoading: false })
+    const promise = load({ url, beagleHeaders, strategy: 'network-with-fallback-to-cache', onChangeTree, shouldShowLoading: false })
     expect(onChangeTree).not.toHaveBeenCalled()
     await promise
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
@@ -73,8 +80,8 @@ describe('Utils: tree fetching (load: general)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
     try {
-      await load({ url, onChangeTree, shouldShowLoading: false, shouldShowError: false })
-    } catch {}
+      await load({ url, beagleHeaders, strategy: 'network-with-fallback-to-cache', onChangeTree, shouldShowLoading: false, shouldShowError: false })
+    } catch { }
     expect(onChangeTree).not.toHaveBeenCalledWith()
     expect(nock.isDone()).toBe(true)
   })
@@ -82,7 +89,7 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should render custom loading component', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    const promise = load({ url, onChangeTree, loadingComponent: 'custom-loading' })
+    const promise = load({ url, beagleHeaders,strategy: 'network-with-fallback-to-cache',  onChangeTree, loadingComponent: 'custom-loading' })
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom-loading' })
     await promise
     expect(nock.isDone()).toBe(true)
@@ -92,8 +99,8 @@ describe('Utils: tree fetching (load: general)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
     try {
-      await load({ url, onChangeTree, errorComponent: 'custom-error' })
-    } catch {}
+      await load({ url, beagleHeaders, strategy: 'network-with-fallback-to-cache', onChangeTree, errorComponent: 'custom-error' })
+    } catch { }
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom-error' })
     expect(nock.isDone()).toBe(true)
   })
@@ -101,7 +108,7 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should use post and send headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).post(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, method: 'post', headers: { test: 'test' }, onChangeTree })
+    await load({ url, beagleHeaders, method: 'post', headers: { test: 'test' }, strategy: 'network-with-fallback-to-cache', onChangeTree })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })
