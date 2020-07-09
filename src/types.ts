@@ -73,7 +73,7 @@ export interface BeagleDefaultHeaders {
 }
 
 export interface BeagleHeaders {
-  getBeagleHeaders: (url: string, method: HttpMethod) => BeagleDefaultHeaders | {},
+  getBeagleHeaders: (url: string, method: HttpMethod) => Promise<{} | BeagleDefaultHeaders>,
 }
 
 export interface BeagleMetadata {

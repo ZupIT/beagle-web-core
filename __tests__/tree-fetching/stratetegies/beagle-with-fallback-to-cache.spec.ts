@@ -16,13 +16,13 @@
 
 import nock from 'nock'
 import { load } from '../../../src/utils/tree-fetching'
-import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../test-utils'
+import { treeA, treeB } from '../../mocks'
+import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
 import handleBeagleHeaders from '../../../src/utils/beagle-headers'
-import beagleMetadata from '../../../src/utils/beagle-metadata'
+import { beagleCacheNamespace } from '../../../src/types'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -32,8 +32,10 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
   const beagleHeaders = handleBeagleHeaders(true)
-  Date.now = jest.fn(() => 2020)
-  
+  Date.now = jest.fn(() => 20203030)
+  const cacheKey = `${beagleCacheNamespace}/${url}/get`
+  const treeKey = `${namespace}/${url}/get`
+
   afterAll(() => localStorageMock.unmock())
 
   beforeEach(() => {
@@ -41,51 +43,77 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
     localStorageMock.clear()
   })
 
-  it('should render view, save cache, save beagle-hash and not call loadCache when no metadata defined', async () => {
-    const metadata =  {
-      beagleHash: 'testing',
-      requestTime: 2020,
-      ttl: '5'
-    }
-    beagleMetadata.updateMetadata = jest.fn(),
+  it('should render view, save cache, save beagle-hash and dont get item from storage when no metadata defined', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA), { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
 
     await load({ url, beagleHeaders, onChangeTree })
-    
+
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
-    expect(beagleMetadata.updateMetadata).toHaveBeenCalledWith(metadata, url, 'get')
-    expect(localStorage.getItem).not.toHaveBeenCalled()
-    expect(localStorage.setItem).toHaveBeenCalled()
+    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(localStorage.getItem).not.toHaveBeenCalledWith(treeKey)
+    expect(localStorage.setItem).toHaveBeenCalledTimes(2)
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should get view from cache when receiving status 304 and render view', async () => {
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
-    nock(basePath).get(path).reply(304, JSON.stringify(treeA))
+  it('should get view from cache when receiving status 304, update metadata and render view', async () => {
+    const metadataCache = {
+      beagleHash: 'testing',
+      requestTime: 20201010,
+      ttl: ''
+    }
+    localStorage.setItem(cacheKey, JSON.stringify(metadataCache))
+    localStorage.setItem(treeKey, JSON.stringify(treeA))
+    nock(basePath).get(path).reply(304, null, { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
+
     const onChangeTree = jest.fn()
     await load({ url, beagleHeaders, onChangeTree })
-    expect(localStorage.getItem).toHaveBeenCalled()
+    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
+    const metadataCacheResult = {
+      beagleHash: 'testing',
+      requestTime: 20203030,
+      ttl: '5'
+    }
+    expect(localStorage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadataCacheResult))
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should get view from cache when ', async () => {
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
-    nock(basePath).get(path).reply(304, JSON.stringify(treeA))
+  it('should not get tree from storage when max age exceeded and should render view, save cache and save beagle-hash ', async () => {
+    const metadata = {
+      beagleHash: 'testing',
+      requestTime: 20101010,
+      ttl: '5'
+    }
+    localStorage.setItem(treeKey, JSON.stringify(treeA))
+    localStorage.setItem(cacheKey, JSON.stringify(metadata))
+    nock(basePath).get(path).reply(200, JSON.stringify(treeB), { 'beagle-hash': 'testing-new-tree', 'cache-control': 'max-age=10' })
     const onChangeTree = jest.fn()
-    await load({ url, beagleHeaders, onChangeTree })
-    expect(localStorage.getItem).toHaveBeenCalled()
-    expect(onChangeTree).toHaveBeenCalledWith(treeA)
+    const metadataCacheResult = {
+      beagleHash: 'testing-new-tree',
+      requestTime: 20203030,
+      ttl: '10'
+    }
+
+    await load({ url, beagleHeaders, onChangeTree, })
+
+    expect(onChangeTree).toHaveBeenCalledWith(treeB)
+    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(localStorage.getItem).not.toHaveBeenCalledWith(treeKey)
+    expect(localStorage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadataCacheResult))
+    expect(localStorage.setItem).toHaveBeenCalledWith(treeKey, JSON.stringify(treeB))
     expect(nock.isDone()).toBe(true)
   })
+  
 
   it('should fallback to cache', async () => {
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
+    localStorage.setItem(treeKey, JSON.stringify(treeA))
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
     await load({ url, beagleHeaders, onChangeTree })
-    expect(localStorage.getItem).toHaveBeenCalled()
+    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })

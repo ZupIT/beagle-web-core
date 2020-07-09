@@ -14,24 +14,18 @@
   * limitations under the License.
 */
 
-import { beagleCacheNamespace, HttpMethod, BeagleMetadata, BeagleConfigMetadata } from '../types'
+import { beagleCacheNamespace, HttpMethod, BeagleMetadata } from '../types'
 
-function handleBeagleMetadata() {
-  const beagleMetadata = {} as BeagleConfigMetadata
-
-  return {
-    getMetadata: (url: string, method: HttpMethod) => beagleMetadata[`${url}/${method}`],
-    getHash: (url: string, method: HttpMethod) => {
-      const metadata = beagleMetadata[`${url}/${method}`]
-      return metadata ? metadata.beagleHash : ''
-    },
-    updateMetadata: (metadata: BeagleMetadata, url: string, method: HttpMethod) => {
-      beagleMetadata[`${url}/${method}`] = metadata
-      // localStorage.setItem(`${beagleCacheNamespace}/${url}/${method}`, JSON.stringify(metadata))
-    },
-  }
+export async function getMetadata(url: string, method: HttpMethod) {
+  const metadataFromStorage = await localStorage.getItem(`${beagleCacheNamespace}/${url}/${method}`)  
+  return metadataFromStorage ? JSON.parse(metadataFromStorage) as BeagleMetadata : null
 }
 
-const beagleMetadata = handleBeagleMetadata()
+export async function getHash(url: string, method: HttpMethod) {
+  const metadataFromStorage =  await getMetadata(url, method)
+  return metadataFromStorage ? metadataFromStorage.beagleHash : ''
+}
 
-export default beagleMetadata
+export function updateMetadata(metadata: BeagleMetadata, url: string, method: HttpMethod) {
+  localStorage.setItem(`${beagleCacheNamespace}/${url}/${method}`, JSON.stringify(metadata))
+}

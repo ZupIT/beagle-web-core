@@ -15,15 +15,15 @@
 */
 import { Analytics } from './types'
 
-  function createBeagleAnalytics() {
-    let analytics: Analytics
+function createBeagleAnalytics() {
+  let analytics: Analytics
 
-    return {
-      setAnalytics: (newAnalytics: Analytics) => analytics = newAnalytics,
-      getAnalytics: () => analytics,
-    }
+  return {
+    setAnalytics: (newAnalytics: Analytics) => analytics = newAnalytics,
+    getAnalytics: () => analytics,
   }
+}
 
-  const beagleAnalytics = createBeagleAnalytics()
+const beagleAnalytics = createBeagleAnalytics()
 
 export default beagleAnalytics
