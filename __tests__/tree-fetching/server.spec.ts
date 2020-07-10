@@ -20,6 +20,7 @@ import { treeA } from '../mocks'
 import { mockLocalStorage } from '../utils/test-utils'
 import { BeagleNetworkError } from '../../src/errors'
 import beagleHttpClient from '../../src/BeagleHttpClient'
+import { treeEWithNull, cleanedTreeE } from '../utils/mock-tree-null'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -83,6 +84,13 @@ describe('Utils: tree fetching (server)', () => {
       expect(error.response.status).toBe(500)
       expect(await error.response.json()).toEqual({ error: 'unexpected error' })
     }
+    expect(nock.isDone()).toBe(true)
+  })
+
+  it('should remove null values before returning tree', async () => {
+    nock(basePath).get(path).reply(200, JSON.stringify(treeEWithNull))
+    const result = await loadFromServer(url, 'get')
+    expect(result).toEqual(cleanedTreeE)
     expect(nock.isDone()).toBe(true)
   })
 })
