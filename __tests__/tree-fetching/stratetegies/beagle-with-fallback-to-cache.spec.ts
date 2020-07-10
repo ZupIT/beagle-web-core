@@ -118,6 +118,25 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
     expect(nock.isDone()).toBe(true)
   })
 
+  it('should throw error if received 304 from bff and doesnt find item in the storage', async () => {
+    const metadata = {
+      beagleHash: 'testing',
+      requestTime: 20203030,
+      ttl: '5'
+    }
+    
+    nock(basePath).get(path).reply(304, null,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
+    const onChangeTree = jest.fn()
+    await expect(load({ url, beagleHeaders, onChangeTree})).rejects.toEqual([
+      new BeagleExpiredCacheError(url),
+      new BeagleCacheError(url),
+      new BeagleCacheError(url)
+    ])
+    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
+    expect(nock.isDone()).toBe(true)
+  })
+
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await expect(load({ url, beagleHeaders, onChangeTree: jest.fn() })).rejects.toEqual([

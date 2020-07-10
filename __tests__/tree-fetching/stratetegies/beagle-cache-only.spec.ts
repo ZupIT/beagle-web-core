@@ -18,7 +18,7 @@ import { load } from '../../../src/utils/tree-fetching'
 import { treeA } from '../../mocks'
 import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
-import { BeagleNetworkError, BeagleExpiredCacheError } from '../../../src/errors'
+import { BeagleNetworkError, BeagleExpiredCacheError, BeagleCacheError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
 import handleBeagleHeaders from '../../../src/utils/beagle-headers'
 import { beagleCacheNamespace } from '../../../src/types'
@@ -78,6 +78,25 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
     expect(localStorage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadata))
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
+    expect(nock.isDone()).toBe(true)
+  })
+
+
+  it('should throw error if received 304 from bff and doesnt find item in the storage', async () => {
+    const metadata = {
+      beagleHash: 'testing',
+      requestTime: 20203030,
+      ttl: '5'
+    }
+    
+    nock(basePath).get(path).reply(304, null,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
+    const onChangeTree = jest.fn()
+    await expect(load({ url, beagleHeaders, onChangeTree, strategy: 'beagle-cache-only' })).rejects.toEqual([
+      new BeagleExpiredCacheError(url),
+      new BeagleCacheError(url)
+    ])
+    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
     expect(nock.isDone()).toBe(true)
   })
 
