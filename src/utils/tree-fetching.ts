@@ -15,7 +15,7 @@
 */
 
 import { BeagleNetworkError, BeagleCacheError } from '../errors'
-import { BeagleUIElement, Strategy, HttpMethod, ComponentName } from '../types'
+import { BeagleUIElement, Strategy, HttpMethod, ComponentName, StorageInterface } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
 
 type StrategyType = 'network' | 'cache'
@@ -36,6 +36,7 @@ interface Params<Schema> {
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
   onChangeTree: (tree: BeagleUIElement<Schema>) => void,
+  customStorage?: StorageInterface,
 }
 
 export const namespace = '@beagle-web/cache'
@@ -50,8 +51,8 @@ const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
 
 /* The following function is async for future compatibility with environments other than web. React
 native's localStorage, for instance, always returns promises. */
-export async function loadFromCache<Schema>(url: string, method: HttpMethod = 'get') {
-  const fromStorage = await localStorage.getItem(`${namespace}/${url}/${method}`)
+export async function loadFromCache<Schema>(url: string, method: HttpMethod = 'get', storage: StorageInterface = localStorage) {
+  const fromStorage = await storage.getItem(`${namespace}/${url}/${method}`)
   const uiTree = fromStorage ? JSON.parse(fromStorage) as BeagleUIElement<Schema> : null
   if (!uiTree) throw new BeagleCacheError(url)
   return uiTree
@@ -60,8 +61,9 @@ export async function loadFromCache<Schema>(url: string, method: HttpMethod = 'g
 export async function loadFromServer<Schema>(
   url: string,
   method: HttpMethod = 'get',
-  headers?: Record<string, string>,
   shouldSaveCache = true,
+  storage: StorageInterface = localStorage,
+  headers?: Record<string, string>,
 ) {
   let response: Response
 
@@ -78,7 +80,7 @@ export async function loadFromServer<Schema>(
   const uiTree = await response.json() as BeagleUIElement<Schema>
 
   if (shouldSaveCache) {
-    localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+    storage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
   }
 
   return uiTree
@@ -95,14 +97,15 @@ export async function load<Schema>({
   shouldShowLoading = true,
   shouldShowError = true,
   onChangeTree,
+  customStorage = localStorage,
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false) {
     if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({  _beagleComponent_: loadingComponent })
-    onChangeTree(await loadFromServer(url, method, headers, strategy !== 'network-only'))
+    onChangeTree(await loadFromServer(url, method, strategy !== 'network-only', customStorage, headers))
   }
 
   async function loadCache() {
-    onChangeTree(await loadFromCache(url, method))
+    onChangeTree(await loadFromCache(url, method, customStorage))
   }
 
   async function runStrategies(

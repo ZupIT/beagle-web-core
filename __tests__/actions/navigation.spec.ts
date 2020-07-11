@@ -17,6 +17,9 @@
 import { BeagleView } from "../../src/types"
 import createBeagleView from "../../src/BeagleUIView"
 import NavigationActions from '../../src/actions/navigation'
+import { namespace } from '../../src/utils/tree-fetching'
+import { mockLocalStorage } from "../utils/test-utils"
+import { treeA } from "../mocks"
 
 describe('Actions: Navigation', () => {
 
@@ -24,9 +27,15 @@ describe('Actions: Navigation', () => {
   let params
   const baseUrl = 'http://teste.com'
   const element = { _beagleComponent_: 'button', id: 'button' }
-  const externlUrl = 'http://google.com'
+  const externalUrl = 'http://google.com'
   const originalError = console.error
   const initialStack = [{ url: '/home' }]
+  const url = 'http://my-app/my-view'
+
+  const localStorageMock = mockLocalStorage({
+    [`${namespace}/${url}/get`]: JSON.stringify(treeA),
+    [`${namespace}/${url}/post`]: JSON.stringify(treeA),
+  })
 
   const pushStack = () => {
     NavigationActions['beagle:pushStack']({
@@ -63,19 +72,22 @@ describe('Actions: Navigation', () => {
     console.error = jest.fn()
     // @ts-ignore
     window = { open: jest.fn((url) => {}), location: { origin: 'origin', href: '' } }
+    localStorageMock.clear()
   })
 
   afterEach(() => {
     console.error = originalError
   })
 
+  afterAll(() => localStorageMock.unmock())
+
   it('should init beagle navigator correctly', () => {
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
   it('should open exeternal url', () => {
-    NavigationActions['beagle:openExternalURL']({ action: { _beagleAction_: 'beagle:openExternalURL', url: externlUrl }, ...params })
-    expect(window.open).toBeCalledWith(externlUrl)
+    NavigationActions['beagle:openExternalURL']({ action: { _beagleAction_: 'beagle:openExternalURL', url: externalUrl }, ...params })
+    expect(window.open).toBeCalledWith(externalUrl)
   })
 
   it('should open native route', () => {

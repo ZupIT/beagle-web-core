@@ -52,7 +52,7 @@ describe('Utils: tree fetching (server)', () => {
 
   it('should load from server with headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).get(path).reply(200, JSON.stringify(treeA))
-    const result = await loadFromServer(url, 'get', {test: 'test'},  true)
+    const result = await loadFromServer(url, 'get',  true, localStorage, { test: 'test' })
     expect(result).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })
@@ -68,7 +68,7 @@ describe('Utils: tree fetching (server)', () => {
   it('should not save cache after loading from server', async () => {
     const treeAString = JSON.stringify(treeA)
     nock(basePath).get(path).reply(200, treeAString)
-    await loadFromServer(url, 'get', {},  false)
+    await loadFromServer(url, 'get',  false)
     expect(localStorage.setItem).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })

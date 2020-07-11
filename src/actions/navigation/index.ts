@@ -66,7 +66,7 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
       try {
         const path = addPrefix(url, '/')
         const baseUrl = beagleView.getUrlBuilder().build(path)
-        const cachedTree = await loadFromCache(baseUrl)
+        const cachedTree = await loadFromCache(baseUrl, 'get', beagleView.getStorage())
         return beagleView.updateWithTree({ sourceTree: cachedTree })
       } catch (error) {
         console.error(error)

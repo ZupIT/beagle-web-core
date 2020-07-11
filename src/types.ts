@@ -68,6 +68,11 @@ export interface BeagleHttpClient {
   setFetchFunction: (fetchFn: typeof fetch) => void,
 }
 
+export type StorageInterface = {
+  getItem: (key: string) => any,
+  setItem: (key: string, value: any) => any,
+}
+
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
@@ -79,6 +84,7 @@ export interface BeagleConfig<Schema> {
     [K in ComponentName<Schema>]: any
   },
   customActions?: Record<string, ActionHandler>,
+  customStorage?: StorageInterface,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -116,13 +122,14 @@ export interface XmlOptions<Schema> {
 }
 
 export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConfig<Schema>> {
-  loadBeagleUITreeFromServer: (url: string, method?: HttpMethod) =>
-    Promise<BeagleUIElement<Schema>>,
+  loadBeagleUITreeFromServer: (
+    url: string,
+    method?: HttpMethod,
+    shouldSaveCache?: boolean,
+  ) => Promise<BeagleUIElement<Schema>>,
   loadBeagleUITreeFromCache: (
     url: string,
     method?: HttpMethod,
-    headers?: Record<string, string>,
-    shouldSaveCache?: boolean,
   ) => Promise<BeagleUIElement<Schema> | null>,
   createView: (initialRoute: string) => BeagleView<Schema>,
   convertBeagleUiTreeToXml: (
@@ -176,6 +183,7 @@ export interface BeagleView<Schema = DefaultSchema> {
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
   getUrlBuilder: () => URLBuilder,
+  getStorage: () => StorageInterface,
 }
 
 export interface BeagleContext<T = any> {

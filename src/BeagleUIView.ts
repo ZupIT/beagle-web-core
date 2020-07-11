@@ -46,6 +46,7 @@ const createBeagleView = <Schema>({
   middlewares = [],
   fetchData,
   analytics,
+  customStorage = localStorage,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
@@ -199,6 +200,7 @@ const createBeagleView = <Schema>({
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
+        customStorage,
       })
     } catch (errors) {
       // removes the loading component when an error component should no be rendered
@@ -220,6 +222,10 @@ const createBeagleView = <Schema>({
     return urlFormatter
   }
 
+  function getStorage() {
+    return customStorage
+  }
+
   return {
     subscribe,
     addErrorListener,
@@ -228,6 +234,7 @@ const createBeagleView = <Schema>({
     getTree,
     getBeagleNavigator,
     getUrlBuilder,
+    getStorage,
   }
 }
 
