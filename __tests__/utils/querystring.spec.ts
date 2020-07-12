@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { createQueryString } from '../src/utils/querystring'
+import { createQueryString } from '../../src/utils/querystring'
 
 describe('Utils Query String', () => {
 

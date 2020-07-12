@@ -14,9 +14,9 @@
   * limitations under the License.
 */
 
-import { addChild, clone, insertIntoTree, replaceInTree, checkPrefix } from '../src/utils/tree-manipulation'
-import { BeagleUIElement } from '../src/types'
-import { treeA, treeB, configComponentsWrong } from './mocks'
+import { addChild, clone, insertIntoTree, replaceInTree, checkPrefix } from '../../src/utils/tree-manipulation'
+import { BeagleUIElement } from '../../src/types'
+import { treeA, treeB, configComponentsWrong } from '../mocks'
 import { last, hasDifferentPointers } from './test-utils'
 
 describe('Utils: tree manipulation', () => {

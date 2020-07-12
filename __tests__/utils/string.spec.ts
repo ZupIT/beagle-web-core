@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { capitalizeFirstLetter, removePrefix, removeSuffix, addPrefix } from '../src/utils/string'
+import { capitalizeFirstLetter, removePrefix, removeSuffix, addPrefix } from '../../src/utils/string'
 
 describe('Utils String', () => {
 

@@ -15,7 +15,7 @@
 */
 import { loadFromCache, namespace } from '../../src/utils/tree-fetching'
 import { treeA } from '../mocks'
-import { mockLocalStorage } from '../test-utils'
+import { mockLocalStorage } from '../utils/test-utils'
 import { BeagleCacheError } from '../../src/errors'
 
 const url = 'http://my-app/my-view'

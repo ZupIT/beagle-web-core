@@ -20,7 +20,7 @@ import BeagleContext, { views } from '../src/BeagleContext'
 import { BeagleView, Analytics } from '../src/types'
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB, treeC, treeD } from './mocks'
-import { mockLocalStorage } from './test-utils'
+import { mockLocalStorage } from './utils/test-utils'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
