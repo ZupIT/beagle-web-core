@@ -16,16 +16,15 @@
 
 import { findById } from './utils/tree-reading'
 import { BeagleView, BeagleContext } from './types'
-import beagleAnalytics from './BeagleAnalytics'
 
 export const views: Record<string, BeagleView> = {}
 
 function createContext<T>(view: BeagleView<T>, elementId: string): BeagleContext<T> {
   return {
-    replace: params => view.updateWithFetch(params, elementId, 'replace'),
-    append: params => view.updateWithFetch(params, elementId, 'append'),
-    prepend: params => view.updateWithFetch(params, elementId, 'prepend'),
-    updateWithTree: params => view.updateWithTree({ ...params, elementId }),
+    replaceComponent: params => view.fetch(params, elementId, 'replaceComponent'),
+    replace: params => view.fetch(params, elementId, 'replace'),
+    append: params => view.fetch(params, elementId, 'append'),
+    prepend: params => view.fetch(params, elementId, 'prepend'),
     getElementId: () => elementId,
     getElement: () => findById(view.getTree(), elementId),
     getView: () => view,

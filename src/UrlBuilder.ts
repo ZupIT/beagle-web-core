@@ -14,20 +14,26 @@
   * limitations under the License.
 */
 
-import { URLBuilder } from '../types'
-import { removeSuffix } from './string'
+import { removeSuffix } from './utils/string'
 
-function createURLBuilder(baseUrl: string): URLBuilder {
-  const defaultBaseUrl = baseUrl
+function createURLBuilder() {
+  let baseUrl: string | undefined
+
   return {
-    build: (path: string, baseUrl?: string) => {
+    setBaseUrl: (url: string) => baseUrl = url,
+    build: (path: string) => {
+      if (typeof baseUrl === 'undefined') {
+        throw new Error('The URLBuilder has not been initialized yet.')
+      }
       // According to the convention the relative path should start with '/'
       const relativePathRegex = /^\/+(\b|$)/
-      const base = removeSuffix(baseUrl || defaultBaseUrl || '', '/')
+      const base = removeSuffix(baseUrl, '/')
       const url = path.match(relativePathRegex) ? `${base}${path}` : path
       return encodeURI(url)
     },
   }
 }
 
-export default createURLBuilder
+const urlBuilder = createURLBuilder()
+
+export default urlBuilder

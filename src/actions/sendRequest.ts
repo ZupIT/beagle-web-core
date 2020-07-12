@@ -15,6 +15,7 @@
 */
 
 import httpClient from '../BeagleHttpClient'
+import urlBuilder from '../UrlBuilder'
 import { ActionHandler, SendRequestAction } from './types'
 
 interface ParsedResponse {
@@ -25,56 +26,13 @@ interface ParsedResponse {
 
 const sendRequest: ActionHandler<SendRequestAction> = async ({
   action,
-  handleAction,
-  eventContextHierarchy,
-  beagleView,
-  ...otherParameters
+  executeAction,
 }) => {
   const { url, method, data, headers, onSuccess, onError, onFinish } = action
-
-  function handleSuccess(parsedResponse: ParsedResponse) {
-    if (!onSuccess) return
-    const actions = Array.isArray(onSuccess) ? onSuccess : [onSuccess]
-
-    actions.forEach(action => handleAction({
-      action,
-      eventContextHierarchy: [{ id: 'onSuccess', value: parsedResponse }, ...eventContextHierarchy],
-      handleAction,
-      beagleView,
-      ...otherParameters,
-    }))
-  }
-
-  function handleError(error: any) {
-    if (!onError) return
-    const actions = Array.isArray(onError) ? onError : [onError]
-
-    actions.forEach(action => handleAction({
-      action,
-      eventContextHierarchy: [{ id: 'onError', value: error }, ...eventContextHierarchy],
-      handleAction,
-      beagleView,
-      ...otherParameters,
-    }))
-  }
-
-  function handleFinish() {
-    if (!onFinish) return
-    const actions = Array.isArray(onFinish) ? onFinish : [onFinish]
-
-    actions.forEach(action => handleAction({
-      action,
-      eventContextHierarchy,
-      handleAction,
-      beagleView,
-      ...otherParameters,
-    }))
-  }
 
   const contextResponse: Partial<ParsedResponse> = {}
 
   try {
-    const urlBuilder = beagleView.getUrlBuilder()
     const response = await httpClient.fetch(
       urlBuilder.build(url),
       { method, body: JSON.stringify(data), headers },
@@ -93,15 +51,16 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     }
     
     if (!response.ok) throw new Error(contextResponse.statusText)
-    handleSuccess(contextResponse as ParsedResponse)
+    onSuccess && executeAction(onSuccess, 'onSuccess', contextResponse)
   } catch (error) {
     console.error(error)
-    handleError({
+    const event = {
       ...contextResponse,
       message: error.message || 'Unexpected error',
-    })
+    }
+    onError && executeAction(onError, 'onError', event)
   } finally {
-    handleFinish()
+    onFinish && onFinish
   }
 }
 

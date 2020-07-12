@@ -20,6 +20,7 @@ import { BeagleNavigator } from '../../types'
 import { loadFromCache } from '../../utils/tree-fetching'
 import { addPrefix } from '../../utils/string'
 import { getOriginalKeyByCaseInsensitiveKey } from '../../utils/object'
+import urlBuilder from '../../URLBuilder'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -61,19 +62,19 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
     const screen = (element as LocalView).screen
     const { url, fallback, shouldPrefetch } = element as RemoteView
 
-    if (screen) return beagleView.updateWithTree({ sourceTree: screen })
+    if (screen) return beagleView.getRenderer().doFullRender(screen)
     if (shouldPrefetch) {
       try {
         const path = addPrefix(url, '/')
-        const baseUrl = beagleView.getUrlBuilder().build(path)
+        const baseUrl = urlBuilder.build(path)
         const cachedTree = await loadFromCache(baseUrl)
-        return beagleView.updateWithTree({ sourceTree: cachedTree })
+        return beagleView.getRenderer().doFullRender(cachedTree)
       } catch (error) {
         console.error(error)
       }
     }
     
-    return beagleView.updateWithFetch({ path: url, fallback })
+    return beagleView.fetch({ path: url, fallback })
   } catch (error) {
     console.error(error)
   }

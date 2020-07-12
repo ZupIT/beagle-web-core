@@ -15,15 +15,15 @@
 */
 import { BeagleHttpClient } from './types'
 
-  function createBeagleHttpClient(): BeagleHttpClient {
-    let fetchFn: typeof fetch
+function createBeagleHttpClient(): BeagleHttpClient {
+  let fetchFn: typeof fetch
 
-    return {
-        fetch: (...args) => fetchFn(...args),
-        setFetchFunction: (newFetchFn: typeof fetch) => fetchFn = newFetchFn,
-    }
+  return {
+      fetch: (...args) => fetchFn(...args),
+      setFetchFunction: (newFetchFn: typeof fetch) => fetchFn = newFetchFn,
   }
-  
-  const beagleHttpClient = createBeagleHttpClient()
+}
+
+const beagleHttpClient = createBeagleHttpClient()
 
 export default beagleHttpClient
