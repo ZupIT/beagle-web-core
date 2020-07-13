@@ -181,4 +181,14 @@ describe('Binding expressions: replacing with provided contexts', () => {
       expect(withValues).toBe('\\@{myContext}')
     },
   )
+
+  it('should execute complex expression with operations', () => {
+    const contextHierarchy = [{ id: 'counter', value: { a: 0, b: 1 } }]
+    const expression = '@{condition(lte(sum(counter.a, 2, counter.b), 5), \'a + 2 + b <= 5, (true)\', \'a + 2 + b > 5, (false)\')}'
+    const result1 = replaceBindings(expression, contextHierarchy)
+    contextHierarchy[0].value.a = 3
+    const result2 = replaceBindings(expression, contextHierarchy)
+    expect(result1).toBe('a + 2 + b <= 5, (true)')
+    expect(result2).toBe('a + 2 + b > 5, (false)')
+  })
 })
