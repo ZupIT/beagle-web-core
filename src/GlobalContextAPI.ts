@@ -19,17 +19,37 @@ import getLodash from 'lodash/get'
 import { GlobalContextAPI, GlobalDataContext } from './types'
 import beagleTreeHelper from './BeagleTree'
 
-function deleteItemTree(tree: Record<string, any>, pathKeys: string[]): boolean {
-  if (!pathKeys.length) {
+export function deleteItemTree(tree: Record<string, any>, pathKeys: string[]): boolean {
+  if (!pathKeys.length || !tree) {
     console.warn('Invalid path')
     return false
   }
 
+  const hasArrayIndex = pathKeys[0].match(/[\d]/)
+  const index = hasArrayIndex ? +hasArrayIndex[0] : null
+
   if (pathKeys.length === 1) {
-    delete tree[pathKeys[0]]
+    if (index !== null && hasArrayIndex && hasArrayIndex['index']) {
+      const objectRef = pathKeys[0].substr(0, hasArrayIndex['index'] - 1)
+      if (tree[objectRef] && tree[objectRef][index]) {
+        tree[objectRef][index] = null
+        return true
+      } else {
+        return false
+      }
+    }
+    else
+      delete tree[pathKeys[0]]
     return true
   }
-  const subTree = tree[pathKeys[0]]
+
+  let subTree
+  if (index !== null && hasArrayIndex && hasArrayIndex['index']) {
+    const objectRef = pathKeys[0].substr(0, hasArrayIndex['index'] - 1)
+    subTree = tree[objectRef][index]
+  } else
+    subTree = tree[pathKeys[0]]
+
   if (!subTree) {
     console.warn('Invalid path')
     return false
@@ -38,13 +58,14 @@ function deleteItemTree(tree: Record<string, any>, pathKeys: string[]): boolean 
   return deleteItemTree(subTree, pathKeys)
 }
 
-function cloneObject(object: any) {
+export function cloneObject(object: any) {
   return object && JSON.parse(JSON.stringify(object))
 }
 
-function callUpdateTree() {
+export function callUpdateTree() {
   const tree = beagleTreeHelper.getBeagleTree()
   const view = beagleTreeHelper.getBeagleView()
+  
   if (view && tree) {
     view.updateWithTree({ sourceTree: tree })
   }
@@ -69,7 +90,7 @@ function globalContextService(): GlobalContextAPI {
   function set(value: any, path?: string) {
     if (!path)
       globalContext.value = value
-    else{
+    else {
       globalContext.value = globalContext.value || {}
       setLodash(globalContext.value, path, value)
     }
@@ -77,27 +98,17 @@ function globalContextService(): GlobalContextAPI {
     callUpdateTree()
   }
 
-
   function clear(path?: string) {
-    if (!path)
+    if (!path) {
       globalContext.value = null
+      callUpdateTree()
+    }
     else {
-      const data = getLodash(globalContext.value, path)
-      if (Array.isArray(data)) {
-        setLodash(globalContext.value, path, null)
+      const splittedPath = path.split('.')
+      const deletedItem = deleteItemTree(globalContext.value, splittedPath)
+      if (deletedItem) {
         //TODO: update the view
         callUpdateTree()
-      }
-      else if (typeof data === 'object') {
-        const splittedPath = path.split('.')
-        const deletedItem = deleteItemTree(globalContext.value, splittedPath)
-        if (deletedItem) {
-          //TODO: update the view
-          callUpdateTree()
-        }
-
-      } else {
-        console.warn('Invalid path')
       }
     }
   }
