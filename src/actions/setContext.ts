@@ -22,14 +22,14 @@ import { ActionHandler, SetContextAction } from './types'
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
   const { value, contextId, path } = action
 
-  if (contextId === 'global') {
-    globalContextApi.set(value,  path)
-    return
-  }
-
   const uiTree = beagleView.getTree()
   const contextHierarchy = getContextHierarchyByElementId(uiTree, element.id) || []
   const context = getContextInHierarchy(contextHierarchy, contextId)
+
+  if (contextId === 'global' || (contextHierarchy.length === 1 && context && context.id === 'global')) {
+    globalContextApi.set(value,  path)
+    return
+  }
 
   if (!context) {
     const specificContextMessage = (
