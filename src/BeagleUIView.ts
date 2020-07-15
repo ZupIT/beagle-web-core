@@ -40,6 +40,7 @@ import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import beagleAnalytics from './BeagleAnalytics'
 import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
+import handleBeagleTree from './BeagleTree'
 
 const createBeagleView = <Schema>({
   baseUrl,
@@ -76,6 +77,8 @@ const createBeagleView = <Schema>({
 
   function setTree(newUITree: IdentifiableBeagleUIElement<Schema>, shouldRunListeners = true) {
     currentUITree = newUITree
+    //@ts-ignore
+    handleBeagleTree.save(newUITree)
     // to avoid errors, we should never give access to our own tree to third parties
     const treeCopy = clone(currentUITree)
     if (shouldRunListeners) listeners.forEach(listener => listener(treeCopy))

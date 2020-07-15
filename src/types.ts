@@ -130,6 +130,7 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
     options?: Partial<XmlOptions<Schema>>,
   ) => string,
   getConfig: () => ConfigType,
+  globalContext: () => GlobalContextAPI,
 }
 
 export interface UpdateWithTreeParams<Schema> {
@@ -190,5 +191,17 @@ export interface BeagleContext<T = any> {
 
 export interface DataContext {
   id: string,
+  value?: any,
+}
+
+export interface GlobalContextAPI {
+  get: (path?: string) => any,
+  set: (value: any, path?: string) => void,
+  clear: (path?: string) => void,
+  getEntireGlobalContext: () => any,
+}
+
+export interface GlobalDataContext {
+  id: 'global',
   value?: any,
 }
