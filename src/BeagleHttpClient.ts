@@ -19,7 +19,7 @@ function createBeagleHttpClient(): BeagleHttpClient {
   let fetchFn: typeof fetch
 
   return {
-      fetch: (...args) => fetchFn(...args),
+      fetch: (...args) => (fetchFn || fetch)(...args),
       setFetchFunction: (newFetchFn: typeof fetch) => fetchFn = newFetchFn,
   }
 }

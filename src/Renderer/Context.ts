@@ -14,6 +14,8 @@
   * limitations under the License.
 */
 
+import findLast from 'lodash/findLast'
+import last from 'lodash/last'
 import { IdentifiableBeagleUIElement, DataContext } from '../types'
 
 /**
@@ -58,8 +60,8 @@ function evaluate(viewTree: IdentifiableBeagleUIElement): Record<string, DataCon
  */
 function find(contextHierarchy: DataContext[], contextId?: string) {
   return contextId
-    ? contextHierarchy.find(({ id }) => id === contextId)
-    : contextHierarchy[0]
+    ? findLast(contextHierarchy, { id: contextId })
+    : last(contextHierarchy)
 }
 
 export default {

@@ -29,6 +29,7 @@ type Iteratee<ItemType, ReturnType> = (item: ItemType, index: number) => ReturnT
  * @param iteratee the function to call for each node of the tree
  */
 function forEach<T extends BeagleUIElement>(tree: T, iteratee: Iteratee<T, void>): void {
+  if (Object.keys(tree).length === 0) return
   let index = 0
 
   function run(node: T) {
@@ -58,6 +59,7 @@ function replaceEach<T extends BeagleUIElement>(
   tree: T,
   iteratee: Iteratee<T, T>,
 ): T {
+  if (Object.keys(tree).length === 0) return tree
   let index = 0
 
   function run(node: BeagleUIElement) {
@@ -83,6 +85,8 @@ function replaceEach<T extends BeagleUIElement>(
  * @returns the iterator to iterate over the nodes
  */
 function iterator(tree: BeagleUIElement): Iterator<BeagleUIElement> {
+  if (Object.keys(tree).length === 0) return (function* () {})()
+  
   function* generator(node: BeagleUIElement): Iterator<BeagleUIElement> {
     yield node
     if (!node.children) return

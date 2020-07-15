@@ -21,11 +21,10 @@ describe('Actions: addChildren', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
 
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({ sourceTree: expected })
+    expect(beagleView.getRenderer().doFullRender).toHaveBeenCalledWith(content, content.id)
   })
 
   it('should append children', () => {
@@ -45,11 +44,10 @@ describe('Actions: addChildren', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
 
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({ sourceTree: expected })
+    expect(beagleView.getRenderer().doFullRender).toHaveBeenCalledWith(content, content.id)
   })
 
   it('should prepend children', () => {
@@ -69,11 +67,10 @@ describe('Actions: addChildren', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
 
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({ sourceTree: expected })
+    expect(beagleView.getRenderer().doFullRender).toHaveBeenCalledWith(content, content.id)
   })
 
   it('should replace children', () => {
@@ -93,11 +90,10 @@ describe('Actions: addChildren', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
 
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({ sourceTree: expected })
+    expect(beagleView.getRenderer().doFullRender).toHaveBeenCalledWith(content, content.id)
   })
 
   it('should warn and not update view when component is not found', () => {
@@ -115,12 +111,11 @@ describe('Actions: addChildren', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
 
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
-    expect(beagleView.updateWithTree).not.toHaveBeenCalled()
+    expect(beagleView.getRenderer().doFullRender).not.toHaveBeenCalled()
   })
 })

@@ -18,7 +18,7 @@ import { IdentifiableBeagleUIElement, DataContext, BeagleView } from '../types'
 import { BeagleAction, ActionHandler } from '../actions/types'
 import Expression from './Expression'
 
-const IGNORE = ['id', 'context', 'children', '_beagleComponent_']
+const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
 
 interface Parameters {
   component: IdentifiableBeagleUIElement,
@@ -69,13 +69,9 @@ function deserializeAction(
         console.warn(`Beagle: couldn't find an action handler for "${action._beagleAction_}"`)
         return
       }
-
-      const isSubAction = (data: any) => (
-        data !== action && isBeagleAction(data)
-      )
     
       handler({
-        action: Expression.resolve(action, hierarchy, isSubAction),
+        action: Expression.resolveForAction(action, hierarchy),
         beagleView: params.beagleView,
         element: params.component,
         executeAction: executeSubAction,
@@ -139,8 +135,8 @@ function findAndDeserializeActions(data: any, propertyName: string, params: Para
 function deserialize(params: Parameters) {
   const keys = Object.keys(params.component)
   keys.forEach((key) => {
-    if (IGNORE.includes(key)) return
-    params.component[key] = findAndDeserializeActions(params.component[key], '', params)
+    if (IGNORE_COMPONENT_KEYS.includes(key)) return
+    params.component[key] = findAndDeserializeActions(params.component[key], key, params)
   })
 }
 

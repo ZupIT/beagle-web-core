@@ -69,8 +69,8 @@ const createBeagleView = <Schema>(
     currentUITree = newUITree
   }
 
-  function runListeners() {
-    listeners.forEach(l => l(currentUITree))
+  function runListeners(viewTree: IdentifiableBeagleUIElement<Schema>) {
+    listeners.forEach(l => l(viewTree))
   }
 
   function runErrorListeners(errors: any) {
@@ -107,6 +107,7 @@ const createBeagleView = <Schema>(
     } catch (errors) {
       // removes the loading component when an error component should not be rendered
       if (params.shouldShowLoading && !params.shouldShowError) setTree(originalTree)
+      if (errorListeners.length === 0) console.error(errors)
       runErrorListeners(errors)
     }
   }

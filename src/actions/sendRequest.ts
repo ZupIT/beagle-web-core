@@ -60,7 +60,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     }
     onError && executeAction(onError, 'onError', event)
   } finally {
-    onFinish && onFinish
+    onFinish && executeAction(onFinish)
   }
 }
 

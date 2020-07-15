@@ -41,6 +41,7 @@ function formatChildrenProperty(
     if (!component[property]) return false
     component.children = component[property]
     delete component[property]
+    return true
   })
 
   if (component.children && !Array.isArray(component.children)) {
@@ -60,7 +61,30 @@ function assignId(component: BeagleUIElement) {
   component.id = component.id || `${ID_PREFIX}${nextId++}`
 }
 
+/**
+ * Removes every property in `component` that has the value `null`.
+ * 
+ * This function alters the parameter `component`.
+ * 
+ * @param component the component to have the null properties removed
+ */
+function eraseNullProperties(component: BeagleUIElement) {
+  function eraseNulls(data: any) {
+    if (!data || typeof data !== 'object') return
+    if (Array.isArray(data)) data.forEach(eraseNulls)
+    const keys = Object.keys(data)
+    keys.forEach((key) => {
+      if (data === component && key === 'children') return
+      if (component[key] === null) delete component[key]
+      else eraseNulls(component[key])
+    })
+  }
+
+  eraseNulls(component)
+}
+
 export default {
   formatChildrenProperty,
   assignId,
+  eraseNullProperties,
 }

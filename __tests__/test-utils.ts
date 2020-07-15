@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, IdentifiableBeagleUIElement, BeagleView } from '../src/types'
+import { BeagleUIElement, BeagleView, Renderer } from '../src/types'
 
 export function mockLocalStorage(storage: Record<string, string> = {}) {
   const initialStorage = { ...storage }
@@ -81,14 +81,22 @@ export function stripTreeIds(tree: BeagleUIElement<any>): BeagleUIElement<any> {
   return newTree
 }
 
+export function createRenderer(): Renderer {
+  return {
+    doFullRender: jest.fn(),
+    doPartialRender: jest.fn(),
+  }
+}
+
 export function createBeagleViewMock(custom: Partial<BeagleView> = {}): BeagleView {
+  const renderer = createRenderer()
+
   return {
     addErrorListener: jest.fn(custom.addErrorListener),
     getTree: jest.fn(custom.getTree),
     subscribe: jest.fn(custom.subscribe),
-    updateWithFetch: jest.fn(custom.updateWithFetch),
-    updateWithTree: jest.fn(custom.updateWithTree),
-    getUrlBuilder: jest.fn(custom.getUrlBuilder || (() => ({ build: jest.fn((url => url)) }))),
+    fetch: jest.fn(custom.fetch),
     getBeagleNavigator: jest.fn(),
+    getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
   }
 }

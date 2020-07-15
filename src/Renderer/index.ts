@@ -59,6 +59,7 @@ function createRenderer({
   actionHandlers,
 }: Params) {
   function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
+    if (Object.keys(viewTree).length === 0) return viewTree
     const hook = lifecycleHooks[lifecycle].global
     if (!hook) return viewTree
     const newTree = hook(viewTree)
@@ -67,7 +68,7 @@ function createRenderer({
 
   function runComponentLifecycleHook(component: any, lifecycle: Lifecycle) {
     const hook = lifecycleHooks[lifecycle].components[component._beagleComponent_]
-    if (!hook) return
+    if (!hook) return component
     const newComponent = hook(component)
     return newComponent || component
   }
@@ -81,6 +82,7 @@ function createRenderer({
   
   function preProcess(viewTree: BeagleUIElement) {
     Tree.forEach(viewTree, (component) => {
+      Component.eraseNullProperties(component)
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
       Component.assignId(component)
       Navigation.preFetchViews(component)
@@ -94,17 +96,17 @@ function createRenderer({
     anchor: string,
     mode: TreeUpdateMode,
   ) {
-    if (!anchor || viewTree.id === anchor) {
-      setTree(viewTree)
-      return
-    }
+    let currentTree = beagleView.getTree()
+    if (!currentTree) return setTree(viewTree)
+    anchor = anchor || currentTree.id
 
-    const currentTree = beagleView.getTree()
     if (mode === 'replaceComponent') {
-      replaceInTree(currentTree, viewTree, anchor)
+      if (anchor === currentTree.id) currentTree = viewTree
+      else replaceInTree(currentTree, viewTree, anchor)
     } else {
       insertIntoTree(currentTree, viewTree, anchor, mode)
     }
+  
     setTree(currentTree)
   }
   
@@ -117,7 +119,7 @@ function createRenderer({
         actionHandlers,
         beagleView,
       })
-      Expression.resolve(component, contextMap[component.id])
+      Expression.resolveForComponent(component, contextMap[component.id])
       Styling.convert(component)
     })
   }
@@ -159,8 +161,8 @@ function createRenderer({
     branch = runLifecycle(branch, 'beforeRender')
     checkTypes(branch)
     // we must render the entire tree to the screen, not just the branch we've been updating
-    if (viewTree.id !== branch.id) replaceInTree(viewTree, branch, anchor)
-    renderToScreen(viewTree)
+    if (currentViewTree.id !== branch.id) replaceInTree(currentViewTree, branch, anchor)
+    renderToScreen(currentViewTree)
   }
   
   /**

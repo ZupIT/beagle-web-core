@@ -14,11 +14,18 @@
   * limitations under the License.
 */
 
-import createShouldPrefetchMiddleware from '../../src/middlewares/beagle-should-prefetch'
+/**
+ * fixme: should follow the new organization and test Renderer/Navigation.ts. Maybe it would be
+ * better not to couple this with the utils "Tree".
+ */
+
+import Navigation from '../../src/Renderer/Navigation'
 import { BeagleUIElement, URLBuilder } from '../../src/types'
-import createURLBuilder from '../../src/utils/url-builder'
+import UrlBuilder from '../../src/UrlBuilder'
 import { mockLocalStorage } from '../test-utils'
 import { namespace } from '../../src/utils/tree-fetching'
+import { clone } from '../../src/utils/tree-manipulation'
+import Tree from '../../src/utils/Tree'
 import { treeA } from '../mocks'
 import nock from 'nock'
 import beagleHttpClient from '../../src/BeagleHttpClient'
@@ -29,8 +36,6 @@ describe('ShouldPrefetch Middleware', () => {
   const url = `${baseUrl}${path}`
   beagleHttpClient.setFetchFunction(fetch)
 
-  let shouldPrefetchMiddleware
-  let urlFormatter: URLBuilder
   const localStorageMock = mockLocalStorage()
 
   const createUiTree = (shouldPrefetch: boolean): BeagleUIElement => ({
@@ -40,7 +45,7 @@ describe('ShouldPrefetch Middleware', () => {
         _beagleComponent_: 'button',
         onPress: {
           _beagleAction_: 'beagle:pushStack',
-          route: { url: path, shouldPrefetch, }
+          route: { url: path, shouldPrefetch }
         }
       }
     ]
@@ -52,8 +57,7 @@ describe('ShouldPrefetch Middleware', () => {
   })
 
   beforeAll(() => {
-    urlFormatter = createURLBuilder(baseUrl)
-    shouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter)
+    UrlBuilder.setBaseUrl(baseUrl)
   })
 
   afterAll(() => localStorageMock.unmock())
@@ -61,23 +65,26 @@ describe('ShouldPrefetch Middleware', () => {
   it('should load uiTree and store it in cache when shouldprefetch flag is true', async () => {
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
     const uiTree = createUiTree(true)
-    const newUiTree = shouldPrefetchMiddleware(uiTree)
+    const newUiTree = clone(uiTree)
+    Tree.forEach(newUiTree, Navigation.preFetchViews)
     await new Promise(res => setTimeout(async () => {
       const cachedTree = await localStorage.getItem(`${namespace}/${url}/get`)
       expect(cachedTree).toStrictEqual(JSON.stringify(treeA))
-      expect(newUiTree).toBe(uiTree)
+      expect(newUiTree).toEqual(uiTree)
       expect(nock.isDone()).toBe(true)
       res()
     }, 200))
+    expect(nock.isDone()).toBe(true)
   })
 
   it('should not load uiTree and store it in cache when shouldprefetch flag is false', async () => {
     const uiTree = createUiTree(false)
-    const newUiTree = shouldPrefetchMiddleware(uiTree)
+    const newUiTree = clone(uiTree)
+    Tree.forEach(newUiTree, Navigation.preFetchViews)
     await new Promise(res => setTimeout(async () => {
       const cachedTree = await localStorage.getItem(`${namespace}/${url}/get`)
       expect(cachedTree).toBeNull()
-      expect(newUiTree).toBe(uiTree)
+      expect(newUiTree).toEqual(uiTree)
       expect(nock.isDone()).toBe(true)
       res()
     }, 200))

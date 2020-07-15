@@ -15,11 +15,13 @@
 */
 
 import get from 'lodash/get'
-import { DataContext } from '../types'
+import { BeagleAction } from '../actions/types'
+import { DataContext, BeagleUIElement } from '../types'
 import Context from './Context'
 
 const expressionRegex = /(\\*)@\{([^\}]+)\}/g
 const fullExpressionRegex = /^@\{([^\}]+)\}$/
+const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
 
 function getExpressionValue(
   path: string,
@@ -65,44 +67,121 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
  * 
  * If an expression has no match, it will be kept unchanged.
  * 
- * Supposing the data is a complex object and we don't want to resolve expressions in certain parts
- * of the object, a third parameter can be passed (`ignore`). If the function `ignore` is specified,
- * it will be called for each part of the object before we try to resolve the expressions on it. If
- * `ignore` returns true, the expression resolution will be skipped.
+ * If the third parameter (`shouldIgnore`) is passed, before evaluating a property of an object,
+ * this function will be called with the value and key of the property. If
+ * `shouldIgnore(value, key)` returns true, the entire property will be skipped and its expressions
+ * won't be evaluated.
  * 
  * This function doesn't alter its parameters, instead, the data with the expressions replaced will
  * be its return value.
  * 
  * @param data the data with the expressions to be replaced.
  * @param contextHierarchy the data source to search for the values of the expressions.
- * @param ignore optional. This function will be called for every property (or element) in `data`.
- * When it returns true, the property (or element) will be skipped.
+ * @param shouldIgnore optional. Function to verify if a property of an object should be ignored
  * @returns data with all its expressions replaced by their corresponding values.
  */
 export function resolve<T extends any>(
   data: T,
   contextHierarchy: DataContext[],
-  ignore?: (data: T) => boolean,
+  shouldIgnore?: (value: any, key: string) => boolean,
 ): T {
-  if (ignore && ignore(data)) return data
-
   if (typeof data === 'string') return resolveExpressionsInString(data, contextHierarchy)
 
   if (Array.isArray(data)) {
-    return data.map((item: any) => resolve(item, contextHierarchy)) as T
+    return data.map(item => resolve(item, contextHierarchy, shouldIgnore)) as T
   }
 
   if (typeof data === 'object') {
     const map = data as Record<string, any>
-    return Object.keys(map).reduce((result, key) => ({
-      ...result,
-      [key]: resolve(map[key], contextHierarchy),
-    }), {}) as T
+    return Object.keys(map).reduce((result, key) => {
+      const value = map[key]
+      return (shouldIgnore && shouldIgnore(value, key))
+        ? { ...result, [key]: value }
+        : { ...result, [key]: resolve(value, contextHierarchy, shouldIgnore) }
+    }, {}) as T
   }
 
   return data
 }
 
+function isComponentOrComponentList(data: any) {
+  return (
+    data
+    && typeof data === 'object'
+    && (data._beagleComponent_ || (Array.isArray(data) && data[0] && data[0]._beagleComponent_))
+  )
+}
+
+function isActionOrActionList(data: any) {
+  return (
+    data
+    && typeof data === 'object'
+    && (data._beagleAction_ || (Array.isArray(data) && data[0] && data[0]._beagleAction_))
+  )
+}
+
+/**
+ * Similar to `resolve`. It replaces every reference to an expression in `component` (parameter) by
+ * its value in the `contextHierarchy` (parameter). The difference is that it takes into
+ * consideration that it is a component and doesn't evaluate sub-components, actions or properties
+ * that can't contain expressions (`id`, `context`, `children` and `_beagleComponent_`).
+ * 
+ * When resolving expressions in a component it is important to ignore actions because an action
+ * should only be evaluated when it's executed, and not when it's rendered.
+ * 
+ * When resolving expressions in a component, it is important to ignore sub-components because
+ * they haven't been rendered yet. Take for instance a component called list-view that has the
+ * property "template", template is an array of components that doesn't render as soon as the view
+ * is rendered, instead, it is used to create the component's children at runtime. We don't need to
+ * resolve its expressions when rendering the list-view.
+ * 
+ * @param component the component with the expressions to be replaced
+ * @param contextHierarchy the data source to search for the values of the expressions
+ * @returns the component with all its expressions replaced by their corresponding values
+ */
+function resolveForComponent<T extends BeagleUIElement>(
+  component: T,
+  contextHierarchy: DataContext[],
+) {
+  const shouldIgnore = (value: any, key: string) => (
+    isComponentOrComponentList(value)
+    || isActionOrActionList(value)
+    || IGNORE_COMPONENT_KEYS.includes(key)
+  )
+
+  return resolve(component, contextHierarchy, shouldIgnore)
+}
+
+/**
+ * Similar to `resolve`. It replaces every reference to an expression in `action` (parameter) by
+ * its value in the `contextHierarchy` (parameter). The difference is that it takes into
+ * consideration that it is an action and doesn't evaluate sub-components or sub-actions.
+ * 
+ * When resolving expressions inside an action it is important to ignore sub-actions because an
+ * action should only be evaluated when it's executed. Take the action "sendRequest" for instance,
+ * we should not resolve the expressions in the sub-action "onSuccess", these should be resolved
+ * only when "onSuccess" is actually executed, i.e. when the request completes successfully.
+ * 
+ * When resolving expressions inside an action, it is important to ignore components because they
+ * haven't been rendered yet. Take for instance the action "addChildren", we don't need to evaluate
+ * the expressions of the components in "value", they will be evaluated when they actually get
+ * rendered.
+ * 
+ * @param action the action with the expressions to be replaced
+ * @param contextHierarchy the data source to search for the values of the expressions
+ * @returns the action with all its expressions replaced by their corresponding values
+ */
+function resolveForAction(action: BeagleAction, contextHierarchy: DataContext[]) {
+  const shouldIgnore = (value: any) => (
+    isComponentOrComponentList(value)
+    || isActionOrActionList(value)
+  )
+
+  return resolve(action, contextHierarchy, shouldIgnore)
+}
+
 export default {
   resolve,
+  resolveForComponent,
+  resolveForAction,
 }

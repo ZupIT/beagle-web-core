@@ -17,14 +17,11 @@
 import { removeSuffix } from './utils/string'
 
 function createURLBuilder() {
-  let baseUrl: string | undefined
+  let baseUrl = ''
 
   return {
-    setBaseUrl: (url: string) => baseUrl = url,
+    setBaseUrl: (url: string) => baseUrl = (url || ''),
     build: (path: string) => {
-      if (typeof baseUrl === 'undefined') {
-        throw new Error('The URLBuilder has not been initialized yet.')
-      }
       // According to the convention the relative path should start with '/'
       const relativePathRegex = /^\/+(\b|$)/
       const base = removeSuffix(baseUrl, '/')

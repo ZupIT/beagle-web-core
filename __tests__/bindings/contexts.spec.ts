@@ -1,4 +1,12 @@
-import { replaceBindings } from '../../src/bindings'
+/**
+ * FIXME: This test refers to the old structure. It should be reorganized so that both
+ * bindings/contexts.spec.ts and bindings/expressions.spec.ts explicitly test the functions of
+ * Render/Context.ts and Render/Expression.ts.
+ */
+
+import Context from '../../src/Renderer/Context'
+import Expression from '../../src/Renderer/Expression'
+import Tree from '../../src/utils/Tree'
 import { findById, findByType } from '../../src/utils/tree-reading'
 import { createMockWithSameIdContexts, createSocialMediaData, createSocialMediaMock } from './mocks'
 
@@ -6,7 +14,12 @@ describe('Binding expressions: replacing with calculated contexts', () => {
   it('should use contexts declared in the data structure', () => {
     const socialMediaData = createSocialMediaData()
     const mock = createSocialMediaMock()
-    const treeWithValues = replaceBindings(mock)
+    const contexts = Context.evaluate(mock)
+    
+    const treeWithValues = Tree.replaceEach(
+      mock,
+      component => Expression.resolveForComponent(component, contexts[component.id]),
+    )
   
     const profile = findById(treeWithValues, 'profile')
     const friendsTitle = findById(treeWithValues, 'friendsTitle')
@@ -32,7 +45,13 @@ describe('Binding expressions: replacing with calculated contexts', () => {
 
   it('should use closest context if two contexts are declared with the same id', () => {
     const mock = createMockWithSameIdContexts()
-    const treeWithValues = replaceBindings(mock)
+    const contexts = Context.evaluate(mock)
+
+    const treeWithValues = Tree.replaceEach(
+      mock,
+      component => Expression.resolveForComponent(component, contexts[component.id]),
+    )
+
     const text = findByType(treeWithValues, 'text')[0]
     expect(text).toBeDefined()
     expect(text.value).toBe('jest-2')
@@ -42,7 +61,13 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     'should not replace if referred context exists but is not in the current scope (hierarchy)',
     () => {
       const mock = createSocialMediaMock()
-      const treeWithValues = replaceBindings(mock)
+      const contexts = Context.evaluate(mock)
+
+      const treeWithValues = Tree.replaceEach(
+        mock,
+        component => Expression.resolveForComponent(component, contexts[component.id]),
+      )
+      
       const postWithWrongContext = findById(treeWithValues, 'postWithWrongContext')
       expect(postWithWrongContext.author).toBe('@{friends[0].name}')
     },

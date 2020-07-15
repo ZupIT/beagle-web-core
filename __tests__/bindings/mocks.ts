@@ -1,4 +1,4 @@
-import { BeagleUIElement } from '../../src/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement } from '../../src/types'
 
 export function createPerson() {
   return {
@@ -40,10 +40,11 @@ export function createSocialMediaData() {
   }
 }
 
-export function createSocialMediaMock(): BeagleUIElement {
+export function createSocialMediaMock(): IdentifiableBeagleUIElement {
   const data = createSocialMediaData()
   return {
     _beagleComponent_: 'container',
+    id: 'container1',
     context: {
       id: 'user',
       value: data.user,
@@ -58,6 +59,7 @@ export function createSocialMediaMock(): BeagleUIElement {
       },
       {
         _beagleComponent_: 'container',
+        id: 'container2',
         context: {
           id: 'friends',
           value: data.friends,
@@ -75,6 +77,7 @@ export function createSocialMediaMock(): BeagleUIElement {
           },
           {
             _beagleComponent_: 'container',
+            id: 'container3',
             context: {
               id: 'isModalOpen',
               value: false,
@@ -82,6 +85,7 @@ export function createSocialMediaMock(): BeagleUIElement {
             children: [
               {
                 _beagleComponent_: 'button',
+                id: 'btn1',
                 onPress: {
                   _beagleAction_: 'beagle:setContext',
                   value: true,
@@ -98,6 +102,7 @@ export function createSocialMediaMock(): BeagleUIElement {
       },
       {
         _beagleComponent_: 'container',
+        id: 'container4',
         context: {
           id: 'posts',
           value: data.posts,
@@ -133,17 +138,20 @@ export function createSocialMediaMock(): BeagleUIElement {
   }
 }
 
-export function createMockWithSameIdContexts(): BeagleUIElement {
+export function createMockWithSameIdContexts(): IdentifiableBeagleUIElement {
   return {
     _beagleComponent_: 'container',
+    id: 'container1',
     context: { id: 'ctx', value: 'jest-1' },
     children: [
       {
         _beagleComponent_: 'container',
+        id: 'container2',
         context: { id: 'ctx', value: 'jest-2' },
         children: [
           {
             _beagleComponent_: 'text',
+            id: 'text',
             value: '@{ctx}',
           },
         ],
