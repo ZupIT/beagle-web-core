@@ -870,7 +870,6 @@ export const tabViewWithCaseInsensitive = {
   ]
 }
 
-
 export const parsedTabViewWithCaseInsensitive: BeagleUIElement = {
   _beagleComponent_: 'beagle:taBView',
   children: [

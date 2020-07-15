@@ -17,6 +17,7 @@
 import { BeagleNetworkError, BeagleCacheError } from '../errors'
 import { BeagleUIElement, Strategy, HttpMethod, ComponentName } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
+import { removeNullValues } from './tree-manipulation'
 
 type StrategyType = 'network' | 'cache'
 
@@ -76,6 +77,7 @@ export async function loadFromServer<Schema>(
 
   if (response.status < 100 || response.status >= 400) throw new BeagleNetworkError(url, response)
   const uiTree = await response.json() as BeagleUIElement<Schema>
+  removeNullValues(uiTree)
 
   if (shouldSaveCache) {
     localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
