@@ -65,7 +65,7 @@ export function cloneObject(object: any) {
 export function callUpdateTree() {
   const tree = beagleTreeHelper.getBeagleTree()
   const view = beagleTreeHelper.getBeagleView()
-  
+
   if (view && tree) {
     view.updateWithTree({ sourceTree: tree })
   }
@@ -81,10 +81,11 @@ function globalContextService(): GlobalContextAPI {
   }
 
   function get(path?: string) {
-    if (!path)
+    if (!path) 
       return cloneObject(globalContext.value)
-    else
-      return getLodash(globalContext.value, path)
+    
+    return getLodash(globalContext.value, path)
+
   }
 
   function set(value: any, path?: string) {

@@ -21,13 +21,11 @@ export function getContextHierarchy(
   element: BeagleUIElement,
   currentHierarchy: DataContext[] = [],
 ) {
-  const globalContext = globalContextApi.getEntireGlobalContext()
-  const index = currentHierarchy.findIndex((item) => item.id === 'global')
-  if (index !== -1)
-    currentHierarchy[index] = globalContext
-  else
+  if (currentHierarchy.length === 0) {
+    const globalContext = globalContextApi.getEntireGlobalContext()
     currentHierarchy.push(globalContext)
-  
+  }
+
   return element.context ? [element.context, ...currentHierarchy] : currentHierarchy
 }
 
