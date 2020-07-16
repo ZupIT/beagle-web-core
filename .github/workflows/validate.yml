@@ -18,7 +18,7 @@ name: Pull request validation
 
 on:
   pull_request:
-    branches: [ development, master ]
+    branches: [ development, master, release/* ]
 
 jobs:
   validation:
@@ -40,5 +40,8 @@ jobs:
     - name: type-check for tests
       run: yarn check-test-types
 
-    - name: test
-      run: yarn test
+    - name: Jest Annotations & Coverage
+      uses: mattallty/jest-github-action@v1.0.3
+      with:
+        test-command: "yarn test"
+
