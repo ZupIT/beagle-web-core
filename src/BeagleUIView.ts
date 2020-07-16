@@ -40,7 +40,6 @@ import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import beagleAnalytics from './BeagleAnalytics'
 import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
-import handleBeagleTree from './BeagleTree'
 
 const createBeagleView = <Schema>({
   baseUrl,

@@ -37,7 +37,6 @@ import {
   Strategy,
 } from './types'
 import globalContext from './GlobalContextAPI'
-import beagleTreeHelper from './BeagleTree'
 
 function createBeagleUIService<
   Schema = DefaultSchema,
@@ -80,5 +79,4 @@ export {
   EventHandler,
   replaceBindings,
   BeagleAnalytics,
-  beagleTreeHelper,
 }

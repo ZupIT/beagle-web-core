@@ -16,8 +16,7 @@
 
 import setLodash from 'lodash/set'
 import getLodash from 'lodash/get'
-import { GlobalContextAPI, GlobalDataContext } from './types'
-import beagleTreeHelper from './BeagleTree'
+import { GlobalContextAPI, GlobalDataContext, ListenerView } from './types'
 
 export function deleteItemTree(tree: Record<string, any>, pathKeys: string[]): boolean {
   if (!pathKeys.length || !tree) {
@@ -62,18 +61,23 @@ export function cloneObject(object: any) {
   return object && JSON.parse(JSON.stringify(object))
 }
 
-export function callUpdateTree() {
-  const tree = beagleTreeHelper.getBeagleTree()
-  const view = beagleTreeHelper.getBeagleView()
-
-  if (view && tree) {
-    view.updateWithTree({ sourceTree: tree })
-  }
-}
-
 function globalContextService(): GlobalContextAPI {
+  const listeners: Array<ListenerView> = []
   const globalContext: GlobalDataContext = {
     id: 'global',
+  }
+
+  function subscribe(listener: ListenerView) {
+    listeners.push(listener)
+
+    return () => {
+      const index = listeners.indexOf(listener)
+      if (index !== -1) listeners.splice(index, 1)
+    }
+  }
+
+  function callUpdateListeners() {
+    listeners.forEach(listener => listener())
   }
 
   function getEntireGlobalContext() {
@@ -81,9 +85,9 @@ function globalContextService(): GlobalContextAPI {
   }
 
   function get(path?: string) {
-    if (!path) 
+    if (!path)
       return cloneObject(globalContext.value)
-    
+
     return getLodash(globalContext.value, path)
 
   }
@@ -95,30 +99,31 @@ function globalContextService(): GlobalContextAPI {
       globalContext.value = globalContext.value || {}
       setLodash(globalContext.value, path, value)
     }
-    //TODO: update the view
-    callUpdateTree()
+    callUpdateListeners()
   }
 
   function clear(path?: string) {
     if (!path) {
       globalContext.value = null
-      callUpdateTree()
+      callUpdateListeners()
     }
     else {
       const splittedPath = path.split('.')
       const deletedItem = deleteItemTree(globalContext.value, splittedPath)
       if (deletedItem) {
         //TODO: update the view
-        callUpdateTree()
+        callUpdateListeners()
       }
     }
   }
+
 
   return {
     get,
     set,
     clear,
     getEntireGlobalContext,
+    subscribe,
   }
 }
 
