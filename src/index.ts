@@ -55,7 +55,7 @@ function createBeagleUIService<
     convertBeagleUiTreeToXml: xmlConverter.convertBeagleUiTreeToXml,
     createView: (initialRoute: string) => createBeagleUIView<Schema>(config, initialRoute),
     getConfig: () => config,
-    globalContext: () => globalContext,
+    globalContext: globalContext,
   }
 }
 

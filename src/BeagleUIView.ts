@@ -77,8 +77,6 @@ const createBeagleView = <Schema>({
 
   function setTree(newUITree: IdentifiableBeagleUIElement<Schema>, shouldRunListeners = true) {
     currentUITree = newUITree
-    //@ts-ignore
-    handleBeagleTree.save(newUITree)
     // to avoid errors, we should never give access to our own tree to third parties
     const treeCopy = clone(currentUITree)
     if (shouldRunListeners) listeners.forEach(listener => listener(treeCopy))

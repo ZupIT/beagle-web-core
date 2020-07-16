@@ -21,8 +21,8 @@ function beagleTree<Schema>() {
   let actualBeagleView: BeagleView
 
   return {
-    save: (newBeagleTree: IdentifiableBeagleUIElement<Schema>, newBeagleView: BeagleView) => {
-      actualBeagleView = newBeagleView
+    save: (newBeagleTree: IdentifiableBeagleUIElement<Schema>, newBeagleView?: BeagleView) => {
+      actualBeagleView = newBeagleView || actualBeagleView
       actualBeagleTree = newBeagleTree
     },
     getBeagleTree: () => actualBeagleTree,

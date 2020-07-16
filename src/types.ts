@@ -130,7 +130,7 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
     options?: Partial<XmlOptions<Schema>>,
   ) => string,
   getConfig: () => ConfigType,
-  globalContext: () => GlobalContextAPI,
+  globalContext: GlobalContextAPI,
 }
 
 export interface UpdateWithTreeParams<Schema> {
