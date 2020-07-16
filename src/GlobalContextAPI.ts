@@ -110,10 +110,9 @@ function globalContextService(): GlobalContextAPI {
     else {
       const splittedPath = path.split('.')
       const deletedItem = deleteItemTree(globalContext.value, splittedPath)
-      if (deletedItem) {
-        //TODO: update the view
+      if (deletedItem) 
         callUpdateListeners()
-      }
+      
     }
   }
 
