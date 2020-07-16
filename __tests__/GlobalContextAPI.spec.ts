@@ -16,23 +16,16 @@
 import globalContextApi, { cloneObject } from "../src/GlobalContextAPI"
 import { hasDifferentPointers } from "./utils/test-utils"
 import { usersObjectCellphone, usersObject } from "./mocks-global-context"
-import beagleTreeHelper from "../src/BeagleTree"
-import createBeagleView from "../src/BeagleUIView"
-import { BeagleView } from "../src/types"
-import { treeA } from './mocks'
 
 const baseUrl = 'http://teste.com'
 
 describe.only('globalContextApi', () => {
-  let view: BeagleView
-  view = createBeagleView({ baseUrl, components: {}, middlewares: [] }, '/home')
-  view.updateWithTree = jest.fn()
-  beagleTreeHelper.getBeagleView = jest.fn(() => view)
-  //@ts-ignore
-  beagleTreeHelper.getBeagleTree = jest.fn(() => treeA)
-
+  let listener
+  
   beforeEach(() => {
     jest.clearAllMocks();
+    listener = jest.fn()
+    globalContextApi.subscribe(listener)
   });
 
   it('should initialize context with \'global\' as id and return it with getEntireGlobalContext', async () => {
@@ -43,8 +36,9 @@ describe.only('globalContextApi', () => {
 
   // Testing global context with object
 
-  it('set with path should alter the object creating the hierarch path and update tree', () => {
+  it('set with path should alter the object creating the hierarch path and trigger listeners', () => {
     const path = 'testing.path'
+
     globalContextApi.set('testingValue', path)
     const obj = {
       id: 'global',
@@ -54,8 +48,7 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-
-    expect(view.updateWithTree).toHaveBeenCalled()
+    expect(listener).toHaveBeenCalled()
     expect(globalContextApi.getEntireGlobalContext()).toEqual(obj)
   })
 
@@ -78,7 +71,7 @@ describe.only('globalContextApi', () => {
     expect(globalContextApi.get(path)).toEqual(undefined)
   })
 
-  it('set without path should override entire context and update tree', () => {
+  it('set without path should override entire context and trigger listeners', () => {
     const text = 'new Value without path'
     globalContextApi.set(text)
     const obj = {
@@ -86,18 +79,18 @@ describe.only('globalContextApi', () => {
       value: text
     }
     
-    expect(view.updateWithTree).toHaveBeenCalled()
+    expect(listener).toHaveBeenCalled()
     expect(globalContextApi.getEntireGlobalContext()).toEqual(obj)
   })
 
-  it('clear without path should clean value prop and update tree', () => {
+  it('clear without path should clean value prop and trigger listeners', () => {
     globalContextApi.clear()
     const cleanedContext = { id: 'global', value: null }
-    expect(view.updateWithTree).toHaveBeenCalled()
+    expect(listener).toHaveBeenCalled()
     expect(globalContextApi.getEntireGlobalContext()).toEqual(cleanedContext)
   })
 
-  it('clear with path should clean value prop and update tree', () => {
+  it('clear with path should clean value prop and trigger listeners', () => {
     // Set to prepare for clear testing
     const path = 'testing.clear.path'
     globalContextApi.set('testingValue', path)
@@ -123,7 +116,7 @@ describe.only('globalContextApi', () => {
     }
     globalContextApi.clear(path)
     
-    expect(view.updateWithTree).toHaveBeenCalledTimes(2)
+    expect(listener).toHaveBeenCalledTimes(2)
     expect(globalContextApi.getEntireGlobalContext()).toEqual(newObj)
   })
 
@@ -154,7 +147,7 @@ describe.only('globalContextApi', () => {
       }
     }
     globalContextApi.clear('testing.clear')
-    expect(view.updateWithTree).toHaveBeenCalledTimes(3)
+    expect(listener).toHaveBeenCalledTimes(3)
     expect(globalContextApi.getEntireGlobalContext()).toEqual(newObj)
   })
 
