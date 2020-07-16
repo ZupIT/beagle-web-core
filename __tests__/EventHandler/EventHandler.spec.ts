@@ -147,7 +147,7 @@ describe('EventHandler', () => {
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expect(alert).toHaveBeenCalledWith(
       expect.objectContaining({
-        eventContextHierarchy: [{ id: 'onInit', value: event }, { id: 'global' }]]
+        eventContextHierarchy: [{ id: 'onInit', value: event }, { id: 'global' }]
       })
     )
     alert.mockClear()
