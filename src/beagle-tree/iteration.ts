@@ -16,7 +16,7 @@
 
 import { BeagleUIElement } from '../types'
 
-type Iteratee<ItemType, ReturnType> = (item: ItemType, index: number) => ReturnType
+export type Iteratee<ItemType, ReturnType> = (item: ItemType, index: number) => ReturnType
 
 /**
  * Uses a depth first search algorithm to traverse the tree. The iteratee function will be run for
@@ -28,7 +28,7 @@ type Iteratee<ItemType, ReturnType> = (item: ItemType, index: number) => ReturnT
  * @param tree the tree to traverse
  * @param iteratee the function to call for each node of the tree
  */
-function forEach<T extends BeagleUIElement>(tree: T, iteratee: Iteratee<T, void>): void {
+export function forEach<T extends BeagleUIElement>(tree: T, iteratee: Iteratee<T, void>): void {
   if (Object.keys(tree).length === 0) return
   let index = 0
 
@@ -55,7 +55,7 @@ function forEach<T extends BeagleUIElement>(tree: T, iteratee: Iteratee<T, void>
  * which will be used to replace the current node of the tree.
  * @returns the new tree
  */
-function replaceEach<T extends BeagleUIElement>(
+export function replaceEach<T extends BeagleUIElement>(
   tree: T,
   iteratee: Iteratee<T, T>,
 ): T {
@@ -84,7 +84,7 @@ function replaceEach<T extends BeagleUIElement>(
  * @param tree the tree to traverse
  * @returns the iterator to iterate over the nodes
  */
-function iterator(tree: BeagleUIElement): Iterator<BeagleUIElement> {
+export function iterator(tree: BeagleUIElement): Iterator<BeagleUIElement> {
   if (Object.keys(tree).length === 0) return (function* () {})()
   
   function* generator(node: BeagleUIElement): Iterator<BeagleUIElement> {
@@ -101,10 +101,4 @@ function iterator(tree: BeagleUIElement): Iterator<BeagleUIElement> {
   }
 
   return generator(tree)
-}
-
-export default {
-  forEach,
-  replaceEach,
-  iterator,
 }

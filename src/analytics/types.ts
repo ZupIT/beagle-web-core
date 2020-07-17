@@ -13,17 +13,19 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { Analytics } from './types'
 
-function createBeagleAnalytics() {
-  let analytics: Analytics
-
-  return {
-    setAnalytics: (newAnalytics: Analytics) => analytics = newAnalytics,
-    getAnalytics: () => analytics,
-  }
+export interface ClickEvent {
+  category: string,
+  label?: string,
+  value?: string,
 }
 
-const beagleAnalytics = createBeagleAnalytics()
+export interface ScreenEvent {
+  screenName: string,
+}
 
-export default beagleAnalytics
+export interface Analytics {
+  trackEventOnClick: (clickEvent: ClickEvent) => void,
+  trackEventOnScreenAppeared: (screenEvent: ScreenEvent) => void,
+  trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
+}

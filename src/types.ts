@@ -20,7 +20,7 @@ import { Route } from './actions/navigation/types'
 
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
-export type ComponentName<Schema> = keyof Schema | 'custom:error' | 'custom:loading'
+
 
 export type TreeInsertionMode = 'prepend' | 'append' | 'replace'
 
@@ -28,8 +28,6 @@ export type TreeUpdateMode = TreeInsertionMode | 'replaceComponent'
 
 export type BeagleMiddleware<Schema = DefaultSchema> = (uiTree: BeagleUIElement<Schema>) =>
   BeagleUIElement<Schema>
-
-export type DefaultSchema = Record<string, Record<string, any>>
 
 export type Style = Record<string, any>
 
@@ -63,22 +61,6 @@ export type LifecycleHookMap = Record<Lifecycle, {
   global?: (tree: any) => any,
   components: Record<string, LifecycleHook>,
 }>
-
-export interface ClickEvent {
-  category: string,
-  label?: string,
-  value?: string,
-}
-
-export interface ScreenEvent {
-  screenName: string,
-}
-
-export interface Analytics {
-  trackEventOnClick: (clickEvent: ClickEvent) => void,
-  trackEventOnScreenAppeared: (screenEvent: ScreenEvent) => void,
-  trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
-}
 
 export interface BeagleHttpClient {
   fetch: typeof fetch,
@@ -114,19 +96,7 @@ export interface LoadParams<Schema = DefaultSchema> {
   errorComponent?: ComponentName<Schema>,
 }
 
-export interface BeagleUIElement<Schema = DefaultSchema> {
-  _beagleComponent_: ComponentName<Schema>,
-  context?: DataContext,
-  children?: Array<BeagleUIElement<Schema>>,
-  style?: Record<string, any>,
-  [key: string]: any,
-}
 
-export interface IdentifiableBeagleUIElement<Schema = DefaultSchema>
-  extends BeagleUIElement<Schema> {
-  id: string,
-  children?: Array<IdentifiableBeagleUIElement<Schema>>,
-}
 
 export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConfig<Schema>> {
   loadBeagleUITreeFromServer: (url: string, method?: HttpMethod) =>
@@ -184,10 +154,7 @@ export interface BeagleContext<T = any> {
   getView: () => BeagleView<T>,
 }
 
-export interface DataContext {
-  id: string,
-  value?: any,
-}
+
 
 export interface ChildrenMetadata {
   property: string,

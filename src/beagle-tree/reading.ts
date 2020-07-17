@@ -14,8 +14,13 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, IdentifiableBeagleUIElement } from '../types'
+import { BeagleUIElement, IdentifiableBeagleUIElement } from './types'
 
+/**
+ * todo: write documentation
+ * @param tree 
+ * @param id 
+ */
 export function findById<Schema>(
   tree: IdentifiableBeagleUIElement<Schema>,
   id: string,
@@ -32,6 +37,12 @@ export function findById<Schema>(
   return component
 }
 
+/**
+ * todo: write documentation
+ * @param tree 
+ * @param attributeName 
+ * @param attributeValue 
+ */
 export function findByAttribute<T extends BeagleUIElement<any>>(
   tree: T,
   attributeName: string,
@@ -54,6 +65,11 @@ export function findByAttribute<T extends BeagleUIElement<any>>(
   return components
 }
 
+/**
+ * todo: write documentation
+ * @param tree 
+ * @param type 
+ */
 export function findByType<T extends BeagleUIElement<any>>(
   tree: T,
   type: string,
@@ -61,6 +77,11 @@ export function findByType<T extends BeagleUIElement<any>>(
   return findByAttribute(tree, '_beagleComponent_', type)
 }
 
+/**
+ * todo: write documentation
+ * @param tree 
+ * @param childId 
+ */
 export function findParentByChildId<Schema>(
   tree: IdentifiableBeagleUIElement<Schema>,
   childId: string,
@@ -77,6 +98,11 @@ export function findParentByChildId<Schema>(
   return parent
 }
 
+/**
+ * todo: write documentation
+ * @param tree 
+ * @param childId 
+ */
 export function indexOf(
   tree: BeagleUIElement<any>,
   childId: string,
