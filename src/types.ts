@@ -200,11 +200,6 @@ export interface GlobalContextAPI {
   get: (path?: string) => any,
   set: (value: any, path?: string) => void,
   clear: (path?: string) => void,
-  getEntireGlobalContext: () => any,
+  asDataContext: () => DataContext,
   subscribe: (listener: ListenerView) => (() => void),
-}
-
-export interface GlobalDataContext {
-  id: 'global',
-  value?: any,
 }

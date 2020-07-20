@@ -16,7 +16,7 @@
 
 import setLodash from 'lodash/set'
 import getLodash from 'lodash/get'
-import { GlobalContextAPI, GlobalDataContext, ListenerView } from './types'
+import { GlobalContextAPI, DataContext, ListenerView } from './types'
 
 export function deleteItemTree(tree: Record<string, any>, pathKeys: string[]): boolean {
   if (!pathKeys.length || !tree) {
@@ -63,7 +63,7 @@ export function cloneObject(object: any) {
 
 function globalContextService(): GlobalContextAPI {
   const listeners: Array<ListenerView> = []
-  const globalContext: GlobalDataContext = {
+  const globalContext: DataContext = {
     id: 'global',
   }
 
