@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, URLBuilder, BeagleHeaders } from '../types'
+import { BeagleUIElement, URLBuilder } from '../types'
 import { loadFromServer } from '../utils/tree-fetching'
 import NavigationActions from '../actions/navigation'
 import { addPrefix } from '../utils/string'

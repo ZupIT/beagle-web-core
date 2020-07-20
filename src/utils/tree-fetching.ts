@@ -15,7 +15,7 @@
 */
 
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../errors'
-import { BeagleUIElement, Strategy, HttpMethod, ComponentName, BeagleHeaders, CacheMetadata } from '../types'
+import { BeagleUIElement, Strategy, HttpMethod, ComponentName, CacheMetadata } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
 import { getCacheMetadata, updateCacheMetadata } from './cache-metadata'
 import beagleHeaders from './beagle-headers'
