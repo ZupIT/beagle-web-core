@@ -17,41 +17,28 @@
 import get from 'lodash/get'
 import { getContextHierarchy, getContextInHierarchy } from './context'
 import { DataContext } from './types'
+import operations from './operations'
 import Automaton from './utils/Automaton'
+import { BeagleParseError, BeagleNotFoundError } from './errors'
 
 const bindingRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullBindingRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
-
-const OPERATIONS: Record<string, (...args: any) => any> = {
-  sum: (...args: number[]) => args.reduce((result, current) => result + current, 0),
-  subtract: (...args: number[]) => args.reduce((result, current) => result - current, args[0] * 2),
-  multiply: (...args: number[]) => args.reduce((result, current) => result * current, 1),
-  divide: (...args: number[]) => args.reduce((result, current) => result / current, args[0] * args[0]),
-  condition: (premise: boolean, trueValue: any, falseValue: any) => premise ? trueValue : falseValue,
-  not: (value: boolean) => !value,
-  and: (...args: boolean[]) => !args.includes(false),
-  or: (...args: boolean[]) => args.includes(true),
-  gt: (a: number, b: number) => a > b,
-  gte: (a: number, b: number) => a >= b,
-  lt: (a: number, b: number) => a < b,
-  lte: (a: number, b: number) => a <= b,
-  eq: (a: any, b: any) => a === b,
-  exists: (value: any) => value !== null && value !== undefined,
-}
 
 function getBindingValue(
   path: string,
   contextHierarchy: DataContext[],
 ) {
-  if (!path.match(/^[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*$/))
-    console.warn(
-      `Invalid path "${path}". Please, make sure your variable names contain only letters, numbers and the symbol "_". To access substructures use "." and to access array indexes use "[index]".`
+  if (!path.match(/^[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*$/)) {
+    throw new BeagleParseError(
+      `invalid path "${path}". Please, make sure your variable names contain only letters, numbers and the symbol "_". To access substructures use "." and to access array indexes use "[index]".`
     )
+  }
 
   const pathMatch = path.match(/^([^\.\[\]]+)\.?(.*)/)
   if (!pathMatch || pathMatch.length < 1) return
   const contextId = pathMatch[1]
   const contextPath = pathMatch[2]
+
   const context = getContextInHierarchy(contextHierarchy, contextId)
   if (!context) return
   
@@ -70,10 +57,10 @@ function getBindingValue(
 function parseParameters(parameterString: string) {
   const transitions = {
     initial: [
-      { read: /,|$/, next: 'end' }, // end of parameter
+      { read: /,|$/, next: 'final' }, // end of parameter
       { read: '(', push: '(', next: 'insideParameterList' }, // start of a parameter list
       { read: /'([^']|(\\.))*'/, next: 'initial' }, // strings
-      { read: /./, next: 'initial' }, // general symbols
+      { read: /[^\)]/, next: 'initial' }, // general symbols
     ],
     insideParameterList: [
       { read: '(', push: '(', next: 'insideParameterList' }, // start of another parameter list
@@ -87,17 +74,14 @@ function parseParameters(parameterString: string) {
     ],
   }
 
-  const dpa = Automaton.createDPA({ initial: 'initial', end: 'end', transitions })
+  const dpa = Automaton.createDPA({ initial: 'initial', final: 'final', transitions })
   const parameters = []
   let position = 0
 
   while (position < parameterString.length) {
     const match = dpa.match(parameterString.substr(position))
-    if (!match) {
-      console.warn(`Wrong format for list of parameters: ${parameterString}`)
-      return []
-    }
-    parameters.push(match.trim().replace(/,$/, ''))
+    if (!match) throw new BeagleParseError(`wrong format for parameters: ${parameterString}`)
+    parameters.push(match.replace(/,$/, '').trim())
     position += match.length
   }
 
@@ -107,19 +91,17 @@ function parseParameters(parameterString: string) {
 function getOperationValue(operation: string, contextHierarchy: DataContext[]) {
   const match = operation.match(/^(\w[\w\d_]*)\((.*)\)$/)
   if (!match) {
-    console.warn(`Invalid operation in expression: ${operation}`)
-    return null
+    throw new BeagleParseError(`invalid operation in expression: ${operation}`)
   }
   const [_, operationName, paramString] = match
-  if (!OPERATIONS[operationName]) {
-    console.warn(`Operation with name "${operationName}" doesn't exist.`)
-    return null
+  if (!operations[operationName]) {
+    throw new BeagleNotFoundError(`operation with name "${operationName}" doesn't exist.`)
   }
   const params = parseParameters(paramString)
   // eslint-disable-next-line
   const resolvedParams: any[] = params.map(param => evaluateExpression(param, contextHierarchy))
 
-  return OPERATIONS[operationName](...resolvedParams)
+  return operations[operationName](...resolvedParams)
 }
 
 function getLiteralValue(literal: string) {
@@ -129,18 +111,17 @@ function getLiteralValue(literal: string) {
   if (literal === 'null') return null
 
   // number
-  const literalAsNumber = parseFloat(literal)
-  if (!isNaN(literalAsNumber)) return literalAsNumber
+  if (literal.match(/^\d+(\.\d+)?$/)) return parseFloat(literal)
 
   // string
   if (literal.startsWith('\'') && literal.endsWith('\'')) {
-    return literal.replace(/(^')|('$)/g, '').replace(/\\'/, '\'')
+    return literal.replace(/(^')|('$)/g, '').replace(/\\'/g, '\'')
   }
 }
 
 function evaluateExpression(expression: string, contextHierarchy: DataContext[]) {
   const literalValue = getLiteralValue(expression)
-  if (literalValue) return literalValue
+  if (literalValue !== undefined) return literalValue
 
   const isOperation = expression.includes('(')
   if (isOperation) return getOperationValue(expression, contextHierarchy)
@@ -152,15 +133,25 @@ function evaluateExpression(expression: string, contextHierarchy: DataContext[])
 function replaceBindingsInString(str: string, contextHierarchy: DataContext[]) {
   const fullMatch = str.match(fullBindingRegex)
   if (fullMatch) {
-    const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy)
-    return bindingValue === undefined ? str : bindingValue
+    try {
+      const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy)
+      return bindingValue === undefined ? str : bindingValue
+    } catch (error) {
+      console.warn(error)
+      return str
+    }
   }
 
   return str.replace(bindingRegex, (bindingStr, slashes, path) => {
     const isBindingScaped = slashes.length % 2 === 1
     const scapedSlashes = slashes.replace(/\\\\/g, '\\')
     if (isBindingScaped) return `${scapedSlashes.replace(/\\$/, '')}@{${path}}`
-    const bindingValue = evaluateExpression(path, contextHierarchy)
+    let bindingValue: string | undefined
+    try {
+      bindingValue = evaluateExpression(path, contextHierarchy)
+    } catch (error) {
+      console.warn(error)
+    }
     const asString = typeof bindingValue === 'object' ? JSON.stringify(bindingValue) : bindingValue
     return bindingValue === undefined ? bindingStr : `${scapedSlashes}${asString}`
   })
