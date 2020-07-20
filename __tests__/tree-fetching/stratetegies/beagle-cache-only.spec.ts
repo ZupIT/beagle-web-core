@@ -20,8 +20,7 @@ import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleNetworkError, BeagleExpiredCacheError, BeagleCacheError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
-import handleBeagleHeaders from '../../../src/utils/beagle-headers'
-import { beagleCacheNamespace } from '../../../src/types'
+import { beagleCacheNamespace } from '../../../src/utils/cache-metadata'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -30,7 +29,6 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: beagle-cache-only)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
-  const beagleHeaders = handleBeagleHeaders(true)
   const cacheKey = `${beagleCacheNamespace}/${url}/get`
   const treeKey = `${namespace}/${url}/get`
 
@@ -53,7 +51,7 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA), { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
 
-    await load({ url, beagleHeaders, onChangeTree, strategy: 'beagle-cache-only' })
+    await load({ url, onChangeTree, strategy: 'beagle-cache-only' })
 
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
@@ -73,7 +71,7 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     
     nock(basePath).get(path).reply(304, null,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
-    await load({ url, beagleHeaders, onChangeTree, strategy: 'beagle-cache-only' })
+    await load({ url, onChangeTree, strategy: 'beagle-cache-only' })
     expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
     expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
     expect(localStorage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadata))
@@ -91,7 +89,7 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     
     nock(basePath).get(path).reply(304, null,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
-    await expect(load({ url, beagleHeaders, onChangeTree, strategy: 'beagle-cache-only' })).rejects.toEqual([
+    await expect(load({ url, onChangeTree, strategy: 'beagle-cache-only' })).rejects.toEqual([
       new BeagleExpiredCacheError(url),
       new BeagleCacheError(url)
     ])
@@ -103,7 +101,7 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
   it('should not fallback to cache and throw errors', async () => {
     localStorage.setItem(treeKey, JSON.stringify(treeA))
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await expect(load({ url, beagleHeaders, onChangeTree: jest.fn(), strategy: 'beagle-cache-only' })).rejects.toEqual([
+    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'beagle-cache-only' })).rejects.toEqual([
       new BeagleExpiredCacheError(url),
       new BeagleNetworkError(url, {} as Response)
     ])
@@ -123,7 +121,7 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     localStorage.setItem(treeKey, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
 
-    const test = await load({ url, beagleHeaders, onChangeTree, strategy: 'beagle-cache-only' })
+    const test = await load({ url, onChangeTree, strategy: 'beagle-cache-only' })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
     expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)

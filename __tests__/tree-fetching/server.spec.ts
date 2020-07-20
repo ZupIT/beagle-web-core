@@ -20,7 +20,6 @@ import { treeA } from '../mocks'
 import { mockLocalStorage } from '../utils/test-utils'
 import { BeagleNetworkError } from '../../src/errors'
 import beagleHttpClient from '../../src/BeagleHttpClient'
-import handleBeagleHeaders from '../../src/utils/beagle-headers'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -29,7 +28,6 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (server)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
-  const beagleHeaders = handleBeagleHeaders(true)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -40,21 +38,21 @@ describe('Utils: tree fetching (server)', () => {
 
   it('should load from server (get)', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
-    const result = await loadFromServer(url, beagleHeaders)
+    const result = await loadFromServer(url)
     expect(result).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })
 
   it('should load from server (post)', async () => {
     nock(basePath).post(path).reply(200, JSON.stringify(treeA))
-    const result = await loadFromServer(url, beagleHeaders, 'post')
+    const result = await loadFromServer(url, 'post')
     expect(result).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })
 
   it('should load from server with headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).get(path).reply(200, JSON.stringify(treeA))
-    const result = await loadFromServer(url, beagleHeaders, 'get', {test: 'test'},  true)
+    const result = await loadFromServer(url, 'get', {test: 'test'},  true)
     expect(result).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })
@@ -62,7 +60,7 @@ describe('Utils: tree fetching (server)', () => {
   it('should save cache after loading from server', async () => {
     const treeAString = JSON.stringify(treeA)
     nock(basePath).get(path).reply(200, treeAString)
-    await loadFromServer(url, beagleHeaders)
+    await loadFromServer(url)
     expect(localStorage.setItem).toHaveBeenCalledWith(`${namespace}/${url}/get`, treeAString)
     expect(nock.isDone()).toBe(true)
   })
@@ -70,7 +68,7 @@ describe('Utils: tree fetching (server)', () => {
   it('should not save cache after loading from server', async () => {
     const treeAString = JSON.stringify(treeA)
     nock(basePath).get(path).reply(200, treeAString)
-    await loadFromServer(url, beagleHeaders, 'get', {},  false)
+    await loadFromServer(url, 'get', {},  false, false)
     expect(localStorage.setItem).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })
@@ -78,7 +76,7 @@ describe('Utils: tree fetching (server)', () => {
   it('should throw error', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     try {
-      await loadFromServer(url, beagleHeaders)
+      await loadFromServer(url)
       expect(true).toBe(false) // should never reach this line
     } catch (error) {
       expect(error instanceof BeagleNetworkError).toBe(true)

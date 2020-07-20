@@ -15,9 +15,10 @@
 */
 
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../errors'
-import { BeagleUIElement, Strategy, HttpMethod, ComponentName, BeagleHeaders, BeagleMetadata } from '../types'
+import { BeagleUIElement, Strategy, HttpMethod, ComponentName, BeagleHeaders, CacheMetadata } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
-import { getMetadata, updateMetadata } from './beagle-metadata'
+import { getCacheMetadata, updateCacheMetadata } from './cache-metadata'
+import beagleHeaders from './beagle-headers'
 
 type StrategyType = 'network' | 'cache' | 'cache-ttl' | 'network-beagle'
 
@@ -37,7 +38,6 @@ interface Params<Schema> {
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
   onChangeTree: (tree: BeagleUIElement<Schema>) => void,
-  beagleHeaders: BeagleHeaders,
 }
 
 export const namespace = '@beagle-web/cache'
@@ -62,30 +62,64 @@ export async function loadFromCache<Schema>(url: string, method: HttpMethod = 'g
 }
 
 export async function loadFromCacheCheckingTTL(url: string, method: HttpMethod = 'get') {
-  const metadata = await getMetadata(url, method)
+  const metadata = await getCacheMetadata(url, method)
   const timeInMs = Date.now()
-  const isCacheValid = metadata && (timeInMs - +metadata.requestTime) / 1000 < +metadata.ttl
+  const isCacheValid = metadata && (timeInMs - metadata.requestTime) / 1000 < parseInt(metadata.ttl)
   if (!metadata || !isCacheValid) {
     throw new BeagleExpiredCacheError(url)
   }
   return loadFromCache(url, method)
 }
 
+export function updateCacheMetadataFromResponse(
+  response: Response,
+  requestTime: number,
+  url: string,
+  method: HttpMethod
+) {
+  const beagleHash = response.headers.get('beagle-hash') || ''
+  const cacheControl = response.headers.get('cache-control') || ''
+  const maxAge = cacheControl && cacheControl.match(/max-age=(\d+)/)
+  const ttl = (maxAge && maxAge[1]) || ''
+  const metadata: CacheMetadata = {
+    beagleHash,
+    requestTime,
+    ttl,
+  }
+  updateCacheMetadata(metadata, url, method)
+}
+
+export async function getUITreeCacheProtocol<Schema>(
+  response: Response,
+  url: string,
+  method: HttpMethod,
+  shouldSaveCache: boolean,
+) {
+  let uiTree = {} as BeagleUIElement<Schema>
+  if (response.status === 304) {
+    uiTree = await loadFromCache(url, method)
+  } else {
+    uiTree = await response.json() as BeagleUIElement<Schema>
+    if (shouldSaveCache) {
+      localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+    }
+  }
+  return uiTree
+}
+
 export async function loadFromServer<Schema>(
   url: string,
-  beagleHeaders: BeagleHeaders,
   method: HttpMethod = 'get',
   headers?: Record<string, string>,
   shouldSaveCache = true,
   hasBeagleMetadata = true
 ) {
   let response: Response
-  const defaultHeaders = await beagleHeaders.getBeagleHeaders(url, method)
   const requestTime = Date.now()
   try {
     response = await beagleHttpClient.fetch(
       url,
-      { method, headers: { ...headers, ...defaultHeaders } }
+      { method, headers: headers }
     )
   } catch (error) {
     throw new BeagleNetworkError(url, error)
@@ -95,25 +129,8 @@ export async function loadFromServer<Schema>(
 
   let uiTree = {} as BeagleUIElement<Schema>
   if (hasBeagleMetadata) {
-    const beagleHash = response.headers.get('beagle-hash') || ''
-    const cacheControl = response.headers.get('cache-control') || ''
-    const maxAge = cacheControl && cacheControl.match(/max-age=(\d+)/)
-    const ttl = (maxAge && maxAge[1]) || ''
-    const metadata: BeagleMetadata = {
-      beagleHash,
-      requestTime,
-      ttl,
-    }
-    beagleHash && updateMetadata(metadata, url, method)
-    if (response.status === 304) {
-      uiTree = await loadFromCache(url, method)
-    } else {
-      uiTree = await response.json() as BeagleUIElement<Schema>
-
-      if (shouldSaveCache) {
-        localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
-      }
-    }
+    updateCacheMetadataFromResponse(response, requestTime, url, method)
+    uiTree = await getUITreeCacheProtocol(response, url, method, shouldSaveCache)
   } else {
     uiTree = await response.json() as BeagleUIElement<Schema>
 
@@ -127,7 +144,6 @@ export async function loadFromServer<Schema>(
 export async function load<Schema>({
   url,
   fallbackUIElement,
-  beagleHeaders,
   method = 'get',
   headers,
   strategy = 'beagle-with-fallback-to-cache',
@@ -139,7 +155,9 @@ export async function load<Schema>({
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false, hasBeagleMetadata = true) {
     if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleComponent_: loadingComponent })
-    onChangeTree(await loadFromServer(url, beagleHeaders, method, headers, strategy !== 'network-only', hasBeagleMetadata))
+    const defaultHeaders = await beagleHeaders.getBeagleHeaders(url, method)
+    const requestHeaders = { ...headers, ...defaultHeaders }
+    onChangeTree(await loadFromServer(url, method, requestHeaders, strategy !== 'network-only', hasBeagleMetadata))
   }
 
   async function loadCache() {

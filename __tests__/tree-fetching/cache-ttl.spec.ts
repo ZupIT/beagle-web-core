@@ -17,8 +17,7 @@ import { loadFromCacheCheckingTTL, namespace } from '../../src/utils/tree-fetchi
 import { treeA } from '../mocks'
 import { mockLocalStorage } from '../utils/test-utils'
 import { BeagleExpiredCacheError } from '../../src/errors'
-import { getMetadata } from '../../src/utils/beagle-metadata'
-import { beagleCacheNamespace } from '../../src/types'
+import { beagleCacheNamespace } from '../../src/utils/cache-metadata'
 
 const url = 'http://my-app/my-view'
 

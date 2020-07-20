@@ -15,23 +15,30 @@
 */
 
 import { HttpMethod, BeagleHeaders } from '../types'
-import { getHash } from './beagle-metadata'
+import { getCacheHash } from './cache-metadata'
 
-function handleBeagleHeaders(useBeagleHeaders?: boolean): BeagleHeaders {
+function handleBeagleHeaders(): BeagleHeaders {
   const beagleHeaders = { 'beagle-platform': 'WEB', 'beagle-hash': '' }
-  const useDefaultHeaders = useBeagleHeaders !== undefined ? useBeagleHeaders : true
+  let useDefaultHeaders = true
+
+  function setUseBeagleHeaders(useDefaultBeagleHeaders?: boolean) {
+    useDefaultHeaders = useDefaultBeagleHeaders !== undefined ? useDefaultBeagleHeaders : true
+  }
 
   async function getBeagleHeaders(url: string, method: HttpMethod) {
     if (!useDefaultHeaders) return {}
     else {
-      const hash = await getHash(url, method)
+      const hash = await getCacheHash(url, method)
       return { ...beagleHeaders, 'beagle-hash': hash }
     }
   }
 
   return {
     getBeagleHeaders,
+    setUseBeagleHeaders,
   }
 }
 
-export default handleBeagleHeaders
+const beagleHeaders = handleBeagleHeaders()
+
+export default beagleHeaders

@@ -14,16 +14,20 @@
   * limitations under the License.
 */
 import nock from 'nock'
-import { beagleCacheNamespace } from '../../src/types'
 import { mockLocalStorage } from './test-utils'
-import { getMetadata, getHash, updateMetadata } from '../../src/utils/beagle-metadata'
+import {
+  getCacheMetadata,
+  getCacheHash,
+  updateCacheMetadata,
+  beagleCacheNamespace
+} from '../../src/utils/cache-metadata'
 
-describe.only('beagle-metadata', () => {
+describe.only('cache-metadata', () => {
   const localStorageMock = mockLocalStorage()
   const url = 'http://test.com'
 
   afterAll(() => localStorageMock.unmock())
-  
+
   beforeEach(() => {
     localStorageMock.clear()
     nock.cleanAll()
@@ -37,12 +41,12 @@ describe.only('beagle-metadata', () => {
     }
 
     localStorage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
-    const returnedMetadata = await getMetadata(url, 'get')
+    const returnedMetadata = await getCacheMetadata(url, 'get')
     expect(returnedMetadata).toEqual(metadata)
   })
 
   it('should handle storage without metadata', async () => {
-    const returnedMetadata = await getMetadata(url, 'get')
+    const returnedMetadata = await getCacheMetadata(url, 'get')
     expect(returnedMetadata).toEqual(null)
   })
 
@@ -54,12 +58,12 @@ describe.only('beagle-metadata', () => {
     }
 
     localStorage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
-    const returnedHash = await getHash(url, 'get')
+    const returnedHash = await getCacheHash(url, 'get')
     expect(returnedHash).toEqual('testing')
   })
 
-  it('should handle storage without metadata on getHash', async () => {
-    const returnedMetadata = await getHash(url, 'get')
+  it('should handle storage without metadata on getCacheHash', async () => {
+    const returnedMetadata = await getCacheHash(url, 'get')
     expect(returnedMetadata).toEqual('')
   })
 
@@ -70,13 +74,13 @@ describe.only('beagle-metadata', () => {
       ttl: '5'
     }
 
-    updateMetadata(metadata, url, 'get')
+    updateCacheMetadata(metadata, url, 'get')
     const storageData = await localStorage.getItem(`${beagleCacheNamespace}/${url}/get`)
     expect(storageData).toEqual(JSON.stringify(metadata))
     expect(localStorage.setItem).toHaveBeenCalled()
   })
 
-  
+
   it('should add to storage the metadata info', async () => {
     const metadata = {
       beagleHash: 'testing',
@@ -84,13 +88,13 @@ describe.only('beagle-metadata', () => {
       ttl: '5'
     }
     localStorage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
-    
+
     const newMetadata = {
       beagleHash: 'testing-new',
       requestTime: 30303030,
       ttl: '10'
     }
-    updateMetadata(newMetadata, url, 'get')
+    updateCacheMetadata(newMetadata, url, 'get')
     const storageData = await localStorage.getItem(`${beagleCacheNamespace}/${url}/get`)
     expect(storageData).toEqual(JSON.stringify(newMetadata))
     expect(localStorage.setItem).toHaveBeenCalledTimes(2)

@@ -21,7 +21,6 @@ import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleCacheError, BeagleNetworkError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
-import handleBeagleHeaders from '../../../src/utils/beagle-headers'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -30,7 +29,6 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: cache-first)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
-  const beagleHeaders = handleBeagleHeaders(true)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -42,7 +40,7 @@ describe('Utils: tree fetching (load: cache-first)', () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeB))
     const onChangeTree = jest.fn()
-    await load({ url, beagleHeaders, onChangeTree, strategy: 'cache-first' })
+    await load({ url, onChangeTree, strategy: 'cache-first' })
     expect(onChangeTree.mock.calls).toEqual([[treeB], [treeA]])
     expect(nock.isDone()).toBe(true)
   })
@@ -50,7 +48,7 @@ describe('Utils: tree fetching (load: cache-first)', () => {
   it('should render loading and view from network when cache is not available', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, beagleHeaders, onChangeTree, strategy: 'cache-first' })
+    await load({ url, onChangeTree, strategy: 'cache-first' })
     expect(onChangeTree.mock.calls).toEqual([[{_beagleComponent_: 'custom:loading' }], [treeA]])
     expect(nock.isDone()).toBe(true)
   })
@@ -59,7 +57,7 @@ describe('Utils: tree fetching (load: cache-first)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeB))
     const onChangeTree = jest.fn()
-    await load({ url, beagleHeaders, onChangeTree, strategy: 'cache-first' })
+    await load({ url, onChangeTree, strategy: 'cache-first' })
     expect(onChangeTree.mock.calls).toEqual([[treeB]])
     expect(nock.isDone()).toBe(true)
   })
@@ -67,7 +65,7 @@ describe('Utils: tree fetching (load: cache-first)', () => {
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
-    await expect(load({ url, beagleHeaders, onChangeTree, strategy: 'cache-first' })).rejects.toEqual([
+    await expect(load({ url, onChangeTree, strategy: 'cache-first' })).rejects.toEqual([
       new BeagleCacheError(url),
       // @ts-ignore
       new BeagleNetworkError(url),

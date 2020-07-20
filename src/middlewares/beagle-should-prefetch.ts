@@ -19,7 +19,7 @@ import { loadFromServer } from '../utils/tree-fetching'
 import NavigationActions from '../actions/navigation'
 import { addPrefix } from '../utils/string'
 
-const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder, beagleHeaders: BeagleHeaders) => {
+const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder) => {
 
   const beagleShouldPrefetch = (uiTree: BeagleUIElement<any>) => {
     const keys = Object.keys(uiTree)
@@ -30,7 +30,7 @@ const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder, beagleHeaders:
       if (isNavigationAction && shouldPrefetch) {
         const path = addPrefix(uiTree[key].route.url, '/')
         const url = urlFormatter.build(path)
-        loadFromServer(url, beagleHeaders)
+        loadFromServer(url)
       }
     })
 

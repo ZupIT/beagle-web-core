@@ -19,7 +19,6 @@ import { treeA } from '../../mocks'
 import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleCacheError } from '../../../src/errors'
-import handleBeagleHeaders from '../../../src/utils/beagle-headers'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -27,8 +26,6 @@ const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: cache-only)', () => {
   const localStorageMock = mockLocalStorage()
-  const beagleHeaders = handleBeagleHeaders(true)
-
   afterAll(() => localStorageMock.unmock())
 
   beforeEach(() => {
@@ -38,12 +35,12 @@ describe('Utils: tree fetching (load: cache-only)', () => {
   it('should render cached view', async () => {
     localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, beagleHeaders, onChangeTree, strategy: 'cache-only' })
+    await load({ url, onChangeTree, strategy: 'cache-only' })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
   })
 
   it('should throw error', async () => {
-    await expect(load({ url, beagleHeaders, onChangeTree: jest.fn(), strategy: 'cache-only' })).rejects.toEqual([
+    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'cache-only' })).rejects.toEqual([
       new BeagleCacheError(url),
     ])
   })

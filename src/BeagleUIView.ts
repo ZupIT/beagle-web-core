@@ -40,7 +40,7 @@ import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import beagleAnalytics from './BeagleAnalytics'
 import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
-import handleBeagleHeaders from './utils/beagle-headers'
+import beagleHeaders from './utils/beagle-headers'
 
 const createBeagleView = <Schema>({
   baseUrl,
@@ -53,8 +53,8 @@ const createBeagleView = <Schema>({
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
-  const beagleHeaders = handleBeagleHeaders(useBeagleHeaders)
-  const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter, beagleHeaders)
+  beagleHeaders.setUseBeagleHeaders(useBeagleHeaders)
+  const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter,)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   beagleHttpClient.setFetchFunction(fetchData || fetch)
   analytics && beagleAnalytics.setAnalytics(analytics)
@@ -195,7 +195,6 @@ const createBeagleView = <Schema>({
       await loadUITree({
         url,
         fallbackUIElement,
-        beagleHeaders,
         onChangeTree,
         errorComponent: params.errorComponent,
         loadingComponent: params.loadingComponent,

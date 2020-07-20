@@ -18,8 +18,6 @@ import { ActionHandler } from './actions/types'
 import { BeagleError } from './errors'
 import { Route } from './actions/navigation/types'
 
-export const beagleCacheNamespace = '@beagle-web/beagle-cache'
-
 export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
 export type ComponentName<Schema> = keyof Schema | 'custom:error' | 'custom:loading'
@@ -73,16 +71,17 @@ export interface BeagleDefaultHeaders {
 }
 
 export interface BeagleHeaders {
+  setUseBeagleHeaders: (useDefaultBeagleHeaders?: boolean) => void,
   getBeagleHeaders: (url: string, method: HttpMethod) => Promise<{} | BeagleDefaultHeaders>,
 }
 
-export interface BeagleMetadata {
+export interface CacheMetadata {
   'beagleHash': string,
   'requestTime': number,
   'ttl': string,
 }
 
-export type BeagleConfigMetadata = Record<string, BeagleMetadata>
+export type ConfigCacheMetadata = Record<string, CacheMetadata>
 
 export interface BeagleHttpClient {
   fetch: typeof fetch,
@@ -138,7 +137,7 @@ export interface XmlOptions<Schema> {
 }
 
 export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConfig<Schema>> {
-  loadBeagleUITreeFromServer: (url: string,  beagleHeaders: BeagleHeaders, method?: HttpMethod) =>
+  loadBeagleUITreeFromServer: (url: string, method?: HttpMethod) =>
     Promise<BeagleUIElement<Schema>>,
   loadBeagleUITreeFromCache: (
     url: string,

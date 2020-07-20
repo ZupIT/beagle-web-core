@@ -19,7 +19,6 @@ import { treeA } from '../../mocks'
 import { mockLocalStorage } from '../../utils/test-utils'
 import { BeagleNetworkError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
-import handleBeagleHeaders from '../../../src/utils/beagle-headers'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -28,7 +27,6 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: network only)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
-  const beagleHeaders = handleBeagleHeaders(true)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -40,7 +38,7 @@ describe('Utils: tree fetching (load: network only)', () => {
   it('should render view and not save cache', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, beagleHeaders, onChangeTree, strategy: 'network-only' })
+    await load({ url, onChangeTree, strategy: 'network-only' })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(localStorage.setItem).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
@@ -48,7 +46,7 @@ describe('Utils: tree fetching (load: network only)', () => {
 
   it('should throw error', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await expect(load({ url, beagleHeaders, onChangeTree: jest.fn(), strategy: 'network-only' })).rejects.toEqual([
+    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'network-only' })).rejects.toEqual([
       // @ts-ignore
       new BeagleNetworkError(url),
     ])

@@ -14,9 +14,9 @@
   * limitations under the License.
 */
 import nock from 'nock'
-import handleBeagleHeaders from '../../src/utils/beagle-headers'
-import { beagleCacheNamespace } from '../../src/types'
 import { mockLocalStorage } from './test-utils'
+import beagleHeaders from '../../src/utils/beagle-headers'
+import { beagleCacheNamespace } from '../../src/utils/cache-metadata'
 
 describe.only('beagle-headers', () => {
   const localStorageMock = mockLocalStorage()
@@ -30,13 +30,13 @@ describe.only('beagle-headers', () => {
   })
 
   it('should return default headers by default even if no beagle-hash defined', async () => {
-    const beagleHeaders = handleBeagleHeaders()
+    beagleHeaders.setUseBeagleHeaders()
     const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
     expect(headers).toEqual({ 'beagle-platform': 'WEB', 'beagle-hash': '' })
   })
 
   it('should not return default headers when useBeagleHeaders is set to false', async () => {
-    const beagleHeaders = handleBeagleHeaders(false)
+    beagleHeaders.setUseBeagleHeaders(false)
     const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
     expect(headers).toEqual({})
   })
@@ -49,7 +49,7 @@ describe.only('beagle-headers', () => {
     }
     
     localStorage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
-    const beagleHeaders = handleBeagleHeaders()
+    beagleHeaders.setUseBeagleHeaders(true)
     const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
     expect(headers).toEqual({ 'beagle-platform': 'WEB', 'beagle-hash': 'testing' })
   })
