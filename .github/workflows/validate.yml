@@ -21,21 +21,12 @@ on:
     branches: [ development, master, release/* ]
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        node-version: [14.x]
-        platform: [ubuntu-latest]
-    runs-on: ${{ matrix.platform }}
+  validation:
+    runs-on: ubuntu-latest
 
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
 
     - name: install
       run: yarn
@@ -49,12 +40,10 @@ jobs:
     - name: type-check for tests
       run: yarn check-test-types
 
-    - name: test
-      run: yarn test
+    - name: Jest Annotations & Coverage
+      uses: mattallty/jest-github-action@v1.0.3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        test-command: "yarn test --maxWorkers=2"
 
-    # - name: Jest Annotations & Coverage
-    #   uses: mattallty/jest-github-action@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    # 
