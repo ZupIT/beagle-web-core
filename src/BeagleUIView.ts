@@ -40,18 +40,22 @@ import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import beagleAnalytics from './BeagleAnalytics'
 import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
+import beagleHeaders from './utils/beagle-headers'
+import globalContextApi from './GlobalContextAPI'
 
 const createBeagleView = <Schema>({
   baseUrl,
   middlewares = [],
   fetchData,
   analytics,
+  useBeagleHeaders,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
-  const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter)
+  beagleHeaders.setUseBeagleHeaders(useBeagleHeaders)
+  const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter,)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   beagleHttpClient.setFetchFunction(fetchData || fetch)
   analytics && beagleAnalytics.setAnalytics(analytics)
@@ -219,6 +223,8 @@ const createBeagleView = <Schema>({
   function getUrlBuilder() {
     return urlFormatter
   }
+
+  globalContextApi.subscribe(() => updateWithTree({ sourceTree: getTree() }))
 
   return {
     subscribe,

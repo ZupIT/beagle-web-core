@@ -5,8 +5,9 @@ export function createSingleContextMock(
   btnId = 'button',
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleComponent_: 'container_@{ctxId}',
+    _beagleComponent_: 'testComponent',
     id: 'container',
+    value: '@{ctxId}',
     context: {
       id: ctxId,
       value: `value of ${ctxId}`,
@@ -84,6 +85,28 @@ export function createMultipleScopesMock() {
     children: [
       createSingleContextMock('ctx_a', 'btn_a'),
       createSingleContextMock('ctx_b', 'btn_b'),
+    ],
+  }
+}
+
+export function createGlobalContextMock(
+  ctxId = 'global',
+  btnId = 'button',
+): IdentifiableBeagleUIElement {
+  return {
+    _beagleComponent_: 'testComponent',
+    id: 'container',
+    value: '@{global}',
+    context: {
+      id: ctxId,
+      value: `value of ${ctxId}`,
+    },
+    children: [
+      {
+        _beagleComponent_: 'button',
+        id: btnId,
+        value: `@{${ctxId}}`,
+      },
     ],
   }
 }

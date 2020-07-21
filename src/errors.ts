@@ -26,11 +26,30 @@ export class BeagleCacheError extends BeagleError {
   }
 }
 
+export class BeagleExpiredCacheError extends BeagleError {
+  constructor(path: string) {
+    super(`cache for ${path} has expired.`)
+  }
+}
+
+
 export class BeagleNetworkError extends BeagleError {
   public response: Response
 
   constructor(path: string, response: Response) {
     super(`network error while trying to access ${path}.`)
     this.response = response
+  }
+}
+
+export class BeagleParseError extends BeagleError {
+  constructor(message: string) {
+    super(`parse error: ${message}`)
+  }
+}
+
+export class BeagleNotFoundError extends BeagleError {
+  constructor(message: string) {
+    super(`not found error: ${message}`)
   }
 }

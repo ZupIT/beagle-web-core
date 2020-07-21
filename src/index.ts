@@ -36,6 +36,7 @@ import {
   BeagleView,
   Strategy,
 } from './types'
+import globalContext from './GlobalContextAPI'
 
 function createBeagleUIService<
   Schema = DefaultSchema,
@@ -53,6 +54,7 @@ function createBeagleUIService<
     convertBeagleUiTreeToXml: xmlConverter.convertBeagleUiTreeToXml,
     createView: (initialRoute: string) => createBeagleUIView<Schema>(config, initialRoute),
     getConfig: () => config,
+    globalContext: globalContext,
   }
 }
 
