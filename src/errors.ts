@@ -26,6 +26,13 @@ export class BeagleCacheError extends BeagleError {
   }
 }
 
+export class BeagleExpiredCacheError extends BeagleError {
+  constructor(path: string) {
+    super(`cache for ${path} has expired.`)
+  }
+}
+
+
 export class BeagleNetworkError extends BeagleError {
   public response: Response
 
