@@ -41,6 +41,7 @@ import beagleAnalytics from './BeagleAnalytics'
 import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
 import beagleStorage from './BeagleStorage'
+import beagleHeaders from './utils/beagle-headers'
 
 const createBeagleView = <Schema>({
   baseUrl,
@@ -48,12 +49,14 @@ const createBeagleView = <Schema>({
   fetchData,
   analytics,
   customStorage,
+  useBeagleHeaders,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
   const urlFormatter = createURLBuilder(baseUrl)
-  const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter)
+  beagleHeaders.setUseBeagleHeaders(useBeagleHeaders)
+  const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter,)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   beagleHttpClient.setFetchFunction(fetchData || fetch)
   beagleStorage.setStorage(customStorage || localStorage)

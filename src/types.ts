@@ -40,7 +40,9 @@ export type ErrorListener = (errors: Array<BeagleError>) => void
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type Strategy = (
-  'network-with-fallback-to-cache'
+  'beagle-cache-only'
+  | 'beagle-with-fallback-to-cache'
+  | 'network-with-fallback-to-cache'
   | 'cache-with-fallback-to-network'
   | 'cache-only'
   | 'network-only'
@@ -62,6 +64,24 @@ export type Analytics = {
   trackEventOnScreenAppeared: (screenEvent: ScreenEvent) => void,
   trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
 }
+
+export interface BeagleDefaultHeaders {
+  'beagle-platform': 'WEB',
+  'beagle-hash': string,
+}
+
+export interface BeagleHeaders {
+  setUseBeagleHeaders: (useDefaultBeagleHeaders?: boolean) => void,
+  getBeagleHeaders: (url: string, method: HttpMethod) => Promise<{} | BeagleDefaultHeaders>,
+}
+
+export interface CacheMetadata {
+  'beagleHash': string,
+  'requestTime': number,
+  'ttl': string,
+}
+
+export type ConfigCacheMetadata = Record<string, CacheMetadata>
 
 export interface BeagleHttpClient {
   fetch: typeof fetch,
@@ -85,6 +105,7 @@ export interface BeagleConfig<Schema> {
   },
   customActions?: Record<string, ActionHandler>,
   customStorage?: Storage,
+  useBeagleHeaders?: boolean,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -125,7 +146,7 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
   loadBeagleUITreeFromServer: (
     url: string,
     method?: HttpMethod,
-    shouldSaveCache?: boolean,
+    headers?: Record<string, string>,
   ) => Promise<BeagleUIElement<Schema>>,
   loadBeagleUITreeFromCache: (
     url: string,
@@ -199,3 +220,5 @@ export interface DataContext {
   id: string,
   value?: any,
 }
+
+

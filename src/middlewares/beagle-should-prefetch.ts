@@ -33,9 +33,9 @@ const createShouldPrefetchMiddleware = (urlFormatter: URLBuilder) => {
         loadFromServer(url)
       }
     })
-    
+
     if (uiTree.children) uiTree.children.forEach(beagleShouldPrefetch)
-    
+
     return uiTree
   }
 
