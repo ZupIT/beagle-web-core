@@ -26,7 +26,6 @@ const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: cache-only)', () => {
   const localStorageMock = mockLocalStorage()
-
   afterAll(() => localStorageMock.unmock())
 
   beforeEach(() => {
