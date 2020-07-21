@@ -68,7 +68,7 @@ describe('Utils: tree fetching (server)', () => {
   it('should not save cache after loading from server', async () => {
     const treeAString = JSON.stringify(treeA)
     nock(basePath).get(path).reply(200, treeAString)
-    await loadFromServer(url, 'get', {},  false)
+    await loadFromServer(url, 'get', {},  false, false)
     expect(localStorage.setItem).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })

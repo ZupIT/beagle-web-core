@@ -16,13 +16,20 @@
 
 import set from 'lodash/set'
 import { getContextHierarchyByElementId, getContextInHierarchy } from '../context'
+import globalContextApi from '../GlobalContextAPI'
 import { ActionHandler, SetContextAction } from './types'
 
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
   const { value, contextId, path } = action
+
   const uiTree = beagleView.getTree()
   const contextHierarchy = getContextHierarchyByElementId(uiTree, element.id) || []
   const context = getContextInHierarchy(contextHierarchy, contextId)
+
+  if (context && context.id === 'global') {
+    globalContextApi.set(value,  path)
+    return
+  }
 
   if (!context) {
     const specificContextMessage = (
