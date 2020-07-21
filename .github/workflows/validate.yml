@@ -40,9 +40,9 @@ jobs:
     - name: type-check for tests
       run: yarn check-test-types
 
-    - name: Jest Annotations & Coverage
-      uses: ziishaned/jest-reporter-action@v0.0.1
+    - name: Jest Code Coverage Report
+      uses: ziishaned/jest-reporter-action@0.1.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        test-command: "yarn jest --coverage --passWithNoTests"
+        test-command: npm run test
 
