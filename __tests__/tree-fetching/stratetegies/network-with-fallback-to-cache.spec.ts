@@ -21,6 +21,7 @@ import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleNetworkError, BeagleCacheError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
+import beagleStorage from '../../../src/BeagleStorage'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -29,6 +30,7 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: network-with-fallback-to-cache)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
+  beagleStorage.setStorage(localStorage)
 
   afterAll(() => localStorageMock.unmock())
 

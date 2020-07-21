@@ -40,13 +40,14 @@ import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import beagleAnalytics from './BeagleAnalytics'
 import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
+import beagleStorage from './BeagleStorage'
 
 const createBeagleView = <Schema>({
   baseUrl,
   middlewares = [],
   fetchData,
   analytics,
-  customStorage = localStorage,
+  customStorage,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
@@ -55,6 +56,7 @@ const createBeagleView = <Schema>({
   const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   beagleHttpClient.setFetchFunction(fetchData || fetch)
+  beagleStorage.setStorage(customStorage || localStorage)
   analytics && beagleAnalytics.setAnalytics(analytics)
 
   function subscribe(listener: Listener<Schema>) {
@@ -200,7 +202,6 @@ const createBeagleView = <Schema>({
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
-        customStorage,
       })
     } catch (errors) {
       // removes the loading component when an error component should no be rendered
@@ -222,10 +223,6 @@ const createBeagleView = <Schema>({
     return urlFormatter
   }
 
-  function getStorage() {
-    return customStorage
-  }
-
   return {
     subscribe,
     addErrorListener,
@@ -234,7 +231,6 @@ const createBeagleView = <Schema>({
     getTree,
     getBeagleNavigator,
     getUrlBuilder,
-    getStorage,
   }
 }
 

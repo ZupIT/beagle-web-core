@@ -19,6 +19,7 @@ import { load } from '../../src/utils/tree-fetching'
 import { treeA } from '../mocks'
 import { mockLocalStorage } from '../utils/test-utils'
 import beagleHttpClient from '../../src/BeagleHttpClient'
+import beagleStorage from '../../src/BeagleStorage'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -27,6 +28,7 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: general)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
+  beagleStorage.setStorage(localStorage)
 
   afterAll(() => localStorageMock.unmock())
 

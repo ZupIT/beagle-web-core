@@ -20,6 +20,7 @@ import { treeA } from '../mocks'
 import { mockLocalStorage } from '../utils/test-utils'
 import { BeagleNetworkError } from '../../src/errors'
 import beagleHttpClient from '../../src/BeagleHttpClient'
+import beagleStorage from '../../src/BeagleStorage'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -28,6 +29,7 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (server)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
+  beagleStorage.setStorage(localStorage)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -52,7 +54,7 @@ describe('Utils: tree fetching (server)', () => {
 
   it('should load from server with headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).get(path).reply(200, JSON.stringify(treeA))
-    const result = await loadFromServer(url, 'get',  true, localStorage, { test: 'test' })
+    const result = await loadFromServer(url, 'get',  true, { test: 'test' })
     expect(result).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })

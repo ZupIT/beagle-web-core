@@ -68,9 +68,9 @@ export interface BeagleHttpClient {
   setFetchFunction: (fetchFn: typeof fetch) => void,
 }
 
-export type StorageInterface = {
-  getItem: (key: string) => any,
-  setItem: (key: string, value: any) => any,
+export interface BeagleStorage {
+  getStorage: () => Storage,
+  setStorage: (newStorageFn: Storage) => void,
 }
 
 export interface BeagleConfig<Schema> {
@@ -84,7 +84,7 @@ export interface BeagleConfig<Schema> {
     [K in ComponentName<Schema>]: any
   },
   customActions?: Record<string, ActionHandler>,
-  customStorage?: StorageInterface,
+  customStorage?: Storage,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -183,7 +183,6 @@ export interface BeagleView<Schema = DefaultSchema> {
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
   getUrlBuilder: () => URLBuilder,
-  getStorage: () => StorageInterface,
 }
 
 export interface BeagleContext<T = any> {
