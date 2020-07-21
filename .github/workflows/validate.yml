@@ -18,7 +18,7 @@ name: Pull request validation
 
 on:
   pull_request:
-    branches: [ development, master, release/* ]
+    branches: [ development, master, release/*, feature/ ]
 
 jobs:
   validation:
@@ -41,9 +41,8 @@ jobs:
       run: yarn check-test-types
 
     - name: Jest Annotations & Coverage
-      uses: mattallty/jest-github-action@v1.0.3
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        test-command: "yarn test"
+      uses: ziishaned/jest-reporter-action@v0.0.1
+    with:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      test-command: "yarn jest --coverage --passWithNoTests"
 
