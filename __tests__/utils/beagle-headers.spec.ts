@@ -48,7 +48,7 @@ describe.only('beagle-headers', () => {
       ttl: '5'
     }
     
-    localStorage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
+    beagleStorage.getStorage().setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
     beagleHeaders.setUseBeagleHeaders(true)
     const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
     expect(headers).toEqual({ 'beagle-platform': 'WEB', 'beagle-hash': 'testing' })
