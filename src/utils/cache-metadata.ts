@@ -15,11 +15,12 @@
 */
 
 import { HttpMethod, CacheMetadata } from '../types'
+import beagleStorage from '../BeagleStorage'
 
 export const beagleCacheNamespace = '@beagle-web/beagle-cache'
 
 export async function getCacheMetadata(url: string, method: HttpMethod) {
-  const cacheMetadataFromStorage = await localStorage.getItem(`${beagleCacheNamespace}/${url}/${method}`)  
+  const cacheMetadataFromStorage = await beagleStorage.getStorage().getItem(`${beagleCacheNamespace}/${url}/${method}`)  
   return cacheMetadataFromStorage ? JSON.parse(cacheMetadataFromStorage) as CacheMetadata : null
 }
 

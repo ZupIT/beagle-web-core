@@ -13,20 +13,20 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import nock from 'nock'
 import { mockLocalStorage } from './test-utils'
 import beagleHeaders from '../../src/utils/beagle-headers'
 import { beagleCacheNamespace } from '../../src/utils/cache-metadata'
+import beagleStorage from '../../src/BeagleStorage'
 
 describe.only('beagle-headers', () => {
   const localStorageMock = mockLocalStorage()
+  beagleStorage.setStorage(localStorage)
   const url = 'http://test.com'
 
   afterAll(() => localStorageMock.unmock())
   
   beforeEach(() => {
     localStorageMock.clear()
-    nock.cleanAll()
   })
 
   it('should return default headers by default even if no beagle-hash defined', async () => {
