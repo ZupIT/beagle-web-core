@@ -40,6 +40,9 @@ jobs:
     - name: type-check for tests
       run: yarn check-test-types
 
+    - name: test
+      run: yarn test
+
     - name: Jest Annotations & Coverage
       uses: mattallty/jest-github-action@v1
       env:
