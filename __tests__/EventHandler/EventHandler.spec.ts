@@ -95,9 +95,9 @@ describe('EventHandler', () => {
     ]
     const mock = createContainerWithAction('onInit', actions)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
-  
+
     treeWithFunction.onInit()
-  
+
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expectActionHandlerToHaveBeenCalled({
       handler: alert,
@@ -147,7 +147,7 @@ describe('EventHandler', () => {
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expect(alert).toHaveBeenCalledWith(
       expect.objectContaining({
-        eventContextHierarchy: [{ id: 'onInit', value: event }]
+        eventContextHierarchy: [{ id: 'onInit', value: event }, { id: 'global', value: null }]
       })
     )
     alert.mockClear()
@@ -159,7 +159,7 @@ describe('EventHandler', () => {
     const mock = createContainerWithAction('onInit', action)
     mock.context = { id: 'test', value: 'Hello World!' }
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
-    
+
     treeWithFunction.onInit()
 
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
@@ -199,7 +199,7 @@ describe('EventHandler', () => {
     const eventHandler = createEventHandler(customHandlers, beagleView)
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
-  
+
     const action = { _beagleAction_: 'beagle:alert', message: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
@@ -220,7 +220,7 @@ describe('EventHandler', () => {
     const action = { _beagleAction_: 'blah', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     const treeWithFunction = eventHandler.interpretEventsInTree(mock)
-  
+
     const originalWarn = console.warn
     console.warn = jest.fn()
     treeWithFunction.onInit()

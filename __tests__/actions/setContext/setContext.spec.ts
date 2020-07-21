@@ -8,7 +8,9 @@ import {
   createMockWithDistantContext,
   createSameLevelContextMock,
   createMultipleScopesMock,
+  createGlobalContextMock,
 } from './mocks'
+import globalContextApi from '../../../src/GlobalContextAPI'
 
 describe('Actions: beagle:setContext', () => {
   it('should set single context', () => {
@@ -241,11 +243,10 @@ describe('Actions: beagle:setContext', () => {
     })
   })
 
-  it('should warn and not update view if context doesn\'t exist', () => {
+  it('should update global context if it is the only context present', () => {
+    globalContextApi.set = jest.fn()
     const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const originalWarn = console.warn
-    console.warn = jest.fn()
 
     setContext({
       action: {
@@ -257,10 +258,48 @@ describe('Actions: beagle:setContext', () => {
       eventContextHierarchy: [],
       handleAction: jest.fn(),
     }) 
+    expect(globalContextApi.set).toHaveBeenCalled()
+  })
 
-    expect(console.warn).toHaveBeenCalled()
-    expect(beagleView.updateWithTree).not.toHaveBeenCalled()
-    console.warn = originalWarn
+  it('should call set global context when updating a global context', () => {
+    globalContextApi.set = jest.fn()
+    const mock = createGlobalContextMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+  
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'global',
+        value: 'new value',
+      },
+      beagleView,
+      element: findById(mock, 'button'),
+      eventContextHierarchy: [],
+      handleAction: jest.fn(),
+    })
+  
+    expect(globalContextApi.set).toHaveBeenCalledWith('new value', undefined)
+  })
+
+  it('should call set global context when updating a global context and pass path if defined', () => {
+    globalContextApi.set = jest.fn()
+    const mock = createGlobalContextMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+  
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'global',
+        value: 'new value',
+        path: 'testing.path'
+      },
+      beagleView,
+      element: findById(mock, 'button'),
+      eventContextHierarchy: [],
+      handleAction: jest.fn()
+    })
+  
+    expect(globalContextApi.set).toHaveBeenCalledWith('new value', 'testing.path')
   })
 
   it('should warn and not update view if context is not part of current hierarchy', () => {
