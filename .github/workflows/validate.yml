@@ -18,7 +18,7 @@ name: Pull request validation
 
 on:
   pull_request:
-    branches: [ development, master, release/*, feature/* ]
+    branches: [ development, master, release/* ]
 
 jobs:
   validation:
@@ -42,7 +42,7 @@ jobs:
 
     - name: Jest Annotations & Coverage
       uses: ziishaned/jest-reporter-action@v0.0.1
-    with:
-      github-token: ${{ secrets.GITHUB_TOKEN }}
-      test-command: "yarn jest --coverage --passWithNoTests"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        test-command: "yarn jest --coverage --passWithNoTests"
 
