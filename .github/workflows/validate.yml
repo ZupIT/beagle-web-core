@@ -40,12 +40,10 @@ jobs:
     - name: type-check for tests
       run: yarn check-test-types
 
-    - name: generate coverage
-      run: yarn test
-
-    - name: Code Coverage Report
-      uses: romeovs/lcov-reporter-action@v0.2.11
+    - name: Jest Annotations & Coverage
+      uses: mattallty/jest-github-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        lcov-file: ../../coverage/lcov.info
+        test-command: yarn test
 
