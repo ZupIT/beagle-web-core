@@ -41,3 +41,15 @@ export class BeagleNetworkError extends BeagleError {
     this.response = response
   }
 }
+
+export class BeagleParseError extends BeagleError {
+  constructor(message: string) {
+    super(`parse error: ${message}`)
+  }
+}
+
+export class BeagleNotFoundError extends BeagleError {
+  constructor(message: string) {
+    super(`not found error: ${message}`)
+  }
+}
