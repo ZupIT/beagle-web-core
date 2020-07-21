@@ -21,6 +21,7 @@ import { BeagleCacheError, BeagleNetworkError, BeagleExpiredCacheError } from '.
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB } from './mocks'
 import { mockLocalStorage, stripTreeIds } from './utils/test-utils'
+import globalContextApi from '../src/GlobalContextAPI'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -30,6 +31,7 @@ describe('BeagleUIView', () => {
   const localStorageMock = mockLocalStorage()
   let view: BeagleView
   const middleware = jest.fn(tree => tree)
+  globalContextApi.subscribe = jest.fn()
 
   beforeEach(() => {
     view = createBeagleView({
@@ -48,6 +50,7 @@ describe('BeagleUIView', () => {
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 1', id: '1' })
     view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 2', id: '2' } })
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 2', id: '2' })
+    expect(globalContextApi.subscribe).toHaveBeenCalled()
   })
 
   it('should subscribe to view changes', async () => {

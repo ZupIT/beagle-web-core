@@ -42,6 +42,7 @@ import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch
 import { addPrefix } from './utils/string'
 import beagleStorage from './BeagleStorage'
 import beagleHeaders from './utils/beagle-headers'
+import globalContextApi from './GlobalContextAPI'
 
 const createBeagleView = <Schema>({
   baseUrl,
@@ -225,6 +226,8 @@ const createBeagleView = <Schema>({
   function getUrlBuilder() {
     return urlFormatter
   }
+
+  globalContextApi.subscribe(() => updateWithTree({ sourceTree: getTree() }))
 
   return {
     subscribe,
