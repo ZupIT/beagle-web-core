@@ -28,9 +28,9 @@ describe.only('globalContextApi', () => {
     globalContextApi.subscribe(listener)
   });
 
-  it('should initialize context with \'global\' as id and return it with getEntireGlobalContext', async () => {
-    const initialContext = { id: 'global' }
-    const getAllResult = globalContextApi.getEntireGlobalContext()
+  it('should initialize context with \'global\' as id and return it with getAsDataContext', async () => {
+    const initialContext = { id: 'global', value: null }
+    const getAllResult = globalContextApi.getAsDataContext()
     expect(getAllResult).toEqual(initialContext)
   })
 
@@ -49,7 +49,7 @@ describe.only('globalContextApi', () => {
       }
     }
     expect(listener).toHaveBeenCalled()
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(obj)
+    expect(globalContextApi.getAsDataContext()).toEqual(obj)
   })
 
   it('get with path should return only corresponding value', () => {
@@ -80,14 +80,14 @@ describe.only('globalContextApi', () => {
     }
     
     expect(listener).toHaveBeenCalled()
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(obj)
+    expect(globalContextApi.getAsDataContext()).toEqual(obj)
   })
 
   it('clear without path should clean value prop and trigger listeners', () => {
     globalContextApi.clear()
     const cleanedContext = { id: 'global', value: null }
     expect(listener).toHaveBeenCalled()
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(cleanedContext)
+    expect(globalContextApi.getAsDataContext()).toEqual(cleanedContext)
   })
 
   it('clear with path should clean value prop and trigger listeners', () => {
@@ -104,7 +104,7 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(obj)
+    expect(globalContextApi.getAsDataContext()).toEqual(obj)
 
     const newObj = {
       id: 'global',
@@ -117,7 +117,7 @@ describe.only('globalContextApi', () => {
     globalContextApi.clear(path)
     
     expect(listener).toHaveBeenCalledTimes(2)
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(newObj)
+    expect(globalContextApi.getAsDataContext()).toEqual(newObj)
   })
 
   it('clear with path should delete subtree only preserving siblings', () => {
@@ -136,7 +136,7 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(obj)
+    expect(globalContextApi.getAsDataContext()).toEqual(obj)
 
     const newObj = {
       id: 'global',
@@ -148,7 +148,7 @@ describe.only('globalContextApi', () => {
     }
     globalContextApi.clear('testing.clear')
     expect(listener).toHaveBeenCalledTimes(3)
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(newObj)
+    expect(globalContextApi.getAsDataContext()).toEqual(newObj)
   })
 
   it('should set object in context when receiving one', () => {
@@ -169,7 +169,7 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    expect(globalContextApi.getEntireGlobalContext()).toEqual(obj)
+    expect(globalContextApi.getAsDataContext()).toEqual(obj)
     expect(globalContextApi.get()).toEqual(obj.value)
   })
 

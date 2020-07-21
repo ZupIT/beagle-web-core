@@ -22,7 +22,7 @@ export function getContextHierarchy(
   currentHierarchy: DataContext[] = [],
 ) {
   if (currentHierarchy.length === 0) {
-    const globalContext = globalContextApi.getEntireGlobalContext()
+    const globalContext = globalContextApi.getAsDataContext()
     currentHierarchy.push(globalContext)
   }
 

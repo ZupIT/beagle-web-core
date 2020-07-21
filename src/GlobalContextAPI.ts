@@ -16,58 +16,23 @@
 
 import setLodash from 'lodash/set'
 import getLodash from 'lodash/get'
-import { GlobalContextAPI, DataContext, ListenerView } from './types'
+import unset from 'lodash/unset'
+import has from 'lodash/has'
 
-export function deleteItemTree(tree: Record<string, any>, pathKeys: string[]): boolean {
-  if (!pathKeys.length || !tree) {
-    console.warn('Invalid path')
-    return false
-  }
-
-  const hasArrayIndex = pathKeys[0].match(/[\d]/)
-  const index = hasArrayIndex ? +hasArrayIndex[0] : null
-
-  if (pathKeys.length === 1) {
-    if (index !== null && hasArrayIndex && hasArrayIndex['index']) {
-      const objectRef = pathKeys[0].substr(0, hasArrayIndex['index'] - 1)
-      if (tree[objectRef] && tree[objectRef][index]) {
-        tree[objectRef][index] = null
-        return true
-      } else {
-        return false
-      }
-    }
-    else
-      delete tree[pathKeys[0]]
-    return true
-  }
-
-  let subTree
-  if (index !== null && hasArrayIndex && hasArrayIndex['index']) {
-    const objectRef = pathKeys[0].substr(0, hasArrayIndex['index'] - 1)
-    subTree = tree[objectRef][index]
-  } else
-    subTree = tree[pathKeys[0]]
-
-  if (!subTree) {
-    console.warn('Invalid path')
-    return false
-  }
-  pathKeys.splice(0, 1)
-  return deleteItemTree(subTree, pathKeys)
-}
+import { GlobalContextAPI, DataContext, GlobalContextListener } from './types'
 
 export function cloneObject(object: any) {
   return object && JSON.parse(JSON.stringify(object))
 }
 
 function globalContextService(): GlobalContextAPI {
-  const listeners: Array<ListenerView> = []
+  const listeners: Array<GlobalContextListener> = []
   const globalContext: DataContext = {
     id: 'global',
+    value: null,
   }
 
-  function subscribe(listener: ListenerView) {
+  function subscribe(listener: GlobalContextListener) {
     listeners.push(listener)
 
     return () => {
@@ -80,7 +45,7 @@ function globalContextService(): GlobalContextAPI {
     listeners.forEach(listener => listener())
   }
 
-  function getEntireGlobalContext() {
+  function getAsDataContext() {
     return cloneObject(globalContext)
   }
 
@@ -89,7 +54,6 @@ function globalContextService(): GlobalContextAPI {
       return cloneObject(globalContext.value)
 
     return getLodash(globalContext.value, path)
-
   }
 
   function set(value: any, path?: string) {
@@ -108,11 +72,11 @@ function globalContextService(): GlobalContextAPI {
       callUpdateListeners()
     }
     else {
-      const splittedPath = path.split('.')
-      const deletedItem = deleteItemTree(globalContext.value, splittedPath)
-      if (deletedItem) 
+      if (has(globalContext.value, path)) {
+        unset(globalContext.value, path)
         callUpdateListeners()
-      
+      }
+      else console.warn(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
     }
   }
 
@@ -121,7 +85,7 @@ function globalContextService(): GlobalContextAPI {
     get,
     set,
     clear,
-    getEntireGlobalContext,
+    getAsDataContext,
     subscribe,
   }
 }

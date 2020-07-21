@@ -26,7 +26,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   const contextHierarchy = getContextHierarchyByElementId(uiTree, element.id) || []
   const context = getContextInHierarchy(contextHierarchy, contextId)
 
-  if (contextId === 'global' || (contextHierarchy.length === 1 && context && context.id === 'global')) {
+  if (context && context.id === 'global') {
     globalContextApi.set(value,  path)
     return
   }

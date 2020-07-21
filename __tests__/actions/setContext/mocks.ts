@@ -5,8 +5,9 @@ export function createSingleContextMock(
   btnId = 'button',
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleComponent_: 'container_@{ctxId}',
+    _beagleComponent_: 'testComponent',
     id: 'container',
+    value: '@{ctxId}',
     context: {
       id: ctxId,
       value: `value of ${ctxId}`,
@@ -93,8 +94,9 @@ export function createGlobalContextMock(
   btnId = 'button',
 ): IdentifiableBeagleUIElement {
   return {
-    _beagleComponent_: 'container_@{global}',
+    _beagleComponent_: 'testComponent',
     id: 'container',
+    value: '@{global}',
     context: {
       id: ctxId,
       value: `value of ${ctxId}`,

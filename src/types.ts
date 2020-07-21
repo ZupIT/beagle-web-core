@@ -194,12 +194,12 @@ export interface DataContext {
   value?: any,
 }
 
-export type ListenerView = () => void
+export type GlobalContextListener = () => void
 
 export interface GlobalContextAPI {
   get: (path?: string) => any,
   set: (value: any, path?: string) => void,
   clear: (path?: string) => void,
-  asDataContext: () => DataContext,
-  subscribe: (listener: ListenerView) => (() => void),
+  getAsDataContext: () => DataContext,
+  subscribe: (listener: GlobalContextListener) => (() => void),
 }
