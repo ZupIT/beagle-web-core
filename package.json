@@ -15,7 +15,7 @@
     "build": "tsc --declaration && node bin/copy-files",
     "check-types": "tsc --noEmit",
     "check-test-types": "tsc __tests__/**/*.ts --noEmit --allowSyntheticDefaultImports",
-    "test": "jest --coverage --passWithNoTests --runInBand --detectOpenHandles",
+    "test": "jest",
     "lint": "eslint ./src/**/*.ts",
     "watch": "yarn nodemon --watch 'src/**/*.ts' -e ts --exec yarn build"
   },
