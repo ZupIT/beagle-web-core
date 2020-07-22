@@ -15,7 +15,14 @@
 */
 
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../errors'
-import { BeagleUIElement, Strategy, HttpMethod, ComponentName, CacheMetadata } from '../types'
+import {
+  BeagleUIElement,
+  Strategy,
+  HttpMethod,
+  ComponentName,
+  CacheMetadata,
+  ErrorComponentParams,
+} from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
 import { getCacheMetadata, updateCacheMetadata } from './cache-metadata'
 import beagleHeaders from './beagle-headers'
@@ -38,6 +45,7 @@ interface Params<Schema> {
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
   onChangeTree: (tree: BeagleUIElement<Schema>) => void,
+  retry: () => void,
 }
 
 export const namespace = '@beagle-web/cache'
@@ -119,7 +127,7 @@ export async function loadFromServer<Schema>(
   try {
     response = await beagleHttpClient.fetch(
       url,
-      { method, headers: headers }
+      { method, headers }
     )
   } catch (error) {
     throw new BeagleNetworkError(url, error)
@@ -152,6 +160,7 @@ export async function load<Schema>({
   shouldShowLoading = true,
   shouldShowError = true,
   onChangeTree,
+  retry,
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false, useBeagleCacheProtocol = true) {
     if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleComponent_: loadingComponent })
@@ -205,8 +214,16 @@ export async function load<Schema>({
     if (fallbackUIElement) return onChangeTree(fallbackUIElement)
     const [hasFallbackStrategySuccess, fallbackStrategyErrors] = await runStrategies(fallbackStrategy, true)
     if (hasFallbackStrategySuccess) return
-    if (shouldShowError) onChangeTree({ _beagleComponent_: errorComponent })
-    throw [...fetchErrors, ...fallbackStrategyErrors]
+    const errors = [...fetchErrors, ...fallbackStrategyErrors]
+    if (shouldShowError) {
+      const errorUITree: BeagleUIElement<Schema> & ErrorComponentParams = {
+        _beagleComponent_: errorComponent,
+        retry,
+        errors: errors.map(e => e.message),
+      }
+      onChangeTree(errorUITree)
+    }
+    throw errors
   }
 
   await start()

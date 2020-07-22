@@ -15,6 +15,7 @@
 */
 
 import mapKeys from 'lodash/mapKeys'
+import cloneData from 'lodash/clone'
 import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode, BeagleConfig, DefaultSchema } from '../types'
 import { ActionHandler } from '../actions/types'
 import { findById, findParentByChildId, indexOf } from './tree-reading'
@@ -63,7 +64,7 @@ export function replaceInTree<Schema>(
 }
 
 export function clone<T extends BeagleUIElement<any>>(tree: T): T {
-  return tree && JSON.parse(JSON.stringify(tree))
+  return cloneData(tree)
 }
 
 export function checkPrefix(items: ItemsToCustom) {
@@ -75,5 +76,3 @@ export function checkPrefix(items: ItemsToCustom) {
     }
   })
 }
-
-
