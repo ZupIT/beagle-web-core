@@ -67,7 +67,7 @@ export type Analytics = {
 
 export interface BeagleDefaultHeaders {
   'beagle-platform': 'WEB',
-  'beagle-hash': string,
+  'beagle-hash'?: string,
 }
 
 export interface BeagleHeaders {

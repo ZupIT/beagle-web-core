@@ -32,7 +32,7 @@ describe.only('beagle-headers', () => {
   it('should return default headers by default even if no beagle-hash defined', async () => {
     beagleHeaders.setUseBeagleHeaders()
     const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
-    expect(headers).toEqual({ 'beagle-platform': 'WEB', 'beagle-hash': '' })
+    expect(headers).toEqual({ 'beagle-platform': 'WEB', })
   })
 
   it('should not return default headers when useBeagleHeaders is set to false', async () => {

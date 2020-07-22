@@ -14,11 +14,11 @@
   * limitations under the License.
 */
 
-import { HttpMethod, BeagleHeaders } from '../types'
+import { HttpMethod, BeagleHeaders, BeagleDefaultHeaders } from '../types'
 import { getCacheHash } from './cache-metadata'
 
 function handleBeagleHeaders(): BeagleHeaders {
-  const beagleHeaders = { 'beagle-platform': 'WEB', 'beagle-hash': '' }
+  const beagleHeaders: BeagleDefaultHeaders = { 'beagle-platform': 'WEB' }
   let useDefaultHeaders = true
 
   function setUseBeagleHeaders(useDefaultBeagleHeaders?: boolean) {
@@ -29,7 +29,11 @@ function handleBeagleHeaders(): BeagleHeaders {
     if (!useDefaultHeaders) return {}
     else {
       const hash = await getCacheHash(url, method)
-      return { ...beagleHeaders, 'beagle-hash': hash }
+      let requestHeaders = { ...beagleHeaders }
+      if (hash) {
+        requestHeaders = { ...beagleHeaders, 'beagle-hash': hash }
+      }
+      return requestHeaders
     }
   }
 
