@@ -146,7 +146,7 @@ export async function load<Schema>({
   fallbackUIElement,
   method = 'get',
   headers,
-  strategy = 'beagle-with-fallback-to-cache',
+  strategy = 'network-with-fallback-to-cache',
   loadingComponent = 'custom:loading',
   errorComponent = 'custom:error',
   shouldShowLoading = true,

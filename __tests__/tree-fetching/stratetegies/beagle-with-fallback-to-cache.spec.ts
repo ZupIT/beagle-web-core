@@ -45,7 +45,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA), { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
 
-    await load({ url, onChangeTree })
+    await load({ url, onChangeTree, strategy: 'beagle-with-fallback-to-cache' })
 
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
@@ -65,7 +65,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
     nock(basePath).get(path).reply(304, null, { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
 
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree })
+    await load({ url, onChangeTree, strategy: 'beagle-with-fallback-to-cache' })
     expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
     expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
@@ -94,7 +94,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
       ttl: '10'
     }
 
-    await load({ url, onChangeTree, })
+    await load({ url, onChangeTree, strategy: 'beagle-with-fallback-to-cache' })
 
     expect(onChangeTree).toHaveBeenCalledWith(treeB)
     expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
@@ -109,7 +109,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
     localStorage.setItem(treeKey, JSON.stringify(treeA))
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree })
+    await load({ url, onChangeTree, strategy: 'beagle-with-fallback-to-cache' })
     expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
     expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
@@ -125,7 +125,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
     
     nock(basePath).get(path).reply(304, null,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
-    await expect(load({ url, onChangeTree})).rejects.toEqual([
+    await expect(load({ url, onChangeTree, strategy: 'beagle-with-fallback-to-cache'})).rejects.toEqual([
       new BeagleExpiredCacheError(url),
       new BeagleCacheError(url),
       new BeagleCacheError(url)
@@ -137,7 +137,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
 
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await expect(load({ url, onChangeTree: jest.fn() })).rejects.toEqual([
+    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'beagle-with-fallback-to-cache' })).rejects.toEqual([
       new BeagleExpiredCacheError(url),
       new BeagleNetworkError(url, {} as Response),
       new BeagleCacheError(url),

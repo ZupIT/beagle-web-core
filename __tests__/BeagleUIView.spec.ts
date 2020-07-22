@@ -88,7 +88,7 @@ describe('BeagleUIView', () => {
     view.addErrorListener(listener2)
     await view.updateWithFetch({ path })
     // @ts-ignore
-    const expectedErrors = [new BeagleExpiredCacheError(url), new BeagleNetworkError(url), new BeagleCacheError(url)]
+    const expectedErrors = [new BeagleNetworkError(url), new BeagleCacheError(url)]
     expect(listener1).toHaveBeenCalledWith(expectedErrors)
     expect(listener2).toHaveBeenCalledWith(expectedErrors)
     expect(nock.isDone()).toBe(true)
@@ -230,7 +230,7 @@ describe('BeagleUIView', () => {
     }, '')
     await view.updateWithFetch({ path })
  
-    expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { 'method': 'get', 'headers': { 'beagle-platform': 'WEB',  'beagle-hash': '' } })
+    expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { 'method': 'get', 'headers': {} })
   })
 
   it('should fallback to UIElement when fetch fails', async () => {
@@ -256,7 +256,8 @@ describe('BeagleUIView', () => {
       baseUrl,
       components: {},
       middlewares: [middleware],
-      fetchData
+      fetchData, 
+      useBeagleHeaders: true
     }, '')
     await view.updateWithFetch({ path })
     expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB', 'beagle-hash': '' } })
@@ -269,7 +270,8 @@ describe('BeagleUIView', () => {
       baseUrl,
       components: {},
       middlewares: [middleware],
-      fetchData
+      fetchData,
+      useBeagleHeaders: true
     }, '')
     await view.updateWithFetch({ path })
     expect(fetchData).toHaveBeenCalledWith(`${baseUrl}${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB',  'beagle-hash': '' } })
@@ -282,7 +284,8 @@ describe('BeagleUIView', () => {
       baseUrl,
       components: {},
       middlewares: [middleware],
-      fetchData
+      fetchData,
+      useBeagleHeaders: true
     }, '')
     await view.updateWithFetch({ path })
     expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get", 'headers': { 'beagle-platform': 'WEB', 'beagle-hash': '' } })

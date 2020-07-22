@@ -19,10 +19,10 @@ import { getCacheHash } from './cache-metadata'
 
 function handleBeagleHeaders(): BeagleHeaders {
   const beagleHeaders = { 'beagle-platform': 'WEB', 'beagle-hash': '' }
-  let useDefaultHeaders = true
+  let useDefaultHeaders = false
 
   function setUseBeagleHeaders(useDefaultBeagleHeaders?: boolean) {
-    useDefaultHeaders = useDefaultBeagleHeaders !== undefined ? useDefaultBeagleHeaders : true
+    useDefaultHeaders = useDefaultBeagleHeaders !== undefined ? useDefaultBeagleHeaders : false
   }
 
   async function getBeagleHeaders(url: string, method: HttpMethod) {

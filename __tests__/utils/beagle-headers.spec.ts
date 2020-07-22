@@ -29,8 +29,14 @@ describe.only('beagle-headers', () => {
     nock.cleanAll()
   })
 
-  it('should return default headers by default even if no beagle-hash defined', async () => {
+  it('should not return default headers by default', async () => {
     beagleHeaders.setUseBeagleHeaders()
+    const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
+    expect(headers).toEqual({ })
+  })
+
+  it('should return default headers even if no beagle-hash defined', async () => {
+    beagleHeaders.setUseBeagleHeaders(true)
     const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
     expect(headers).toEqual({ 'beagle-platform': 'WEB', 'beagle-hash': '' })
   })
