@@ -102,7 +102,7 @@ export async function getUITreeCacheProtocol<Schema>(
   } else {
     uiTree = await response.json() as BeagleUIElement<Schema>
     if (shouldSaveCache) {
-      localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+      beagleStorage.getStorage().setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
     }
   }
   return uiTree

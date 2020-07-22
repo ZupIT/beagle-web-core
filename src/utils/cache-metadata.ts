@@ -30,5 +30,5 @@ export async function getCacheHash(url: string, method: HttpMethod) {
 }
 
 export function updateCacheMetadata(metadata: CacheMetadata, url: string, method: HttpMethod) {
-  localStorage.setItem(`${beagleCacheNamespace}/${url}/${method}`, JSON.stringify(metadata))
+  beagleStorage.getStorage().setItem(`${beagleCacheNamespace}/${url}/${method}`, JSON.stringify(metadata))
 }
