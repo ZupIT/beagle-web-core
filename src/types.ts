@@ -231,3 +231,8 @@ export interface GlobalContextAPI {
   getAsDataContext: () => DataContext,
   subscribe: (listener: GlobalContextListener) => (() => void),
 }
+
+export interface ErrorComponentParams {
+  retry: () => void,
+  errors: string[],
+}

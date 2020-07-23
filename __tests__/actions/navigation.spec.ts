@@ -28,7 +28,8 @@ describe('Actions: Navigation', () => {
   const baseUrl = 'http://teste.com'
   const element = { _beagleComponent_: 'button', id: 'button' }
   const externalUrl = 'http://google.com'
-  const originalError = console.error
+  const originalConsoleError = console.error
+  console.error = jest.fn()
   const initialStack = [{ url: '/home' }]
   const url = 'http://my-app/my-view'
 
@@ -63,29 +64,34 @@ describe('Actions: Navigation', () => {
 
   beforeEach(() => {
     beagleView = createBeagleView({ baseUrl, components: {} }, '/home')
+    /* fixme: the tests in this file execute async operations that will result in errors since
+     * the route they call doesn't exist. These async operations should be awaited before returning.
+     * Since they're not being awaited, the beagle view tries to log to the console after the tests
+     * are done. These operations should, somehow, be awaited before the tests finish. As a fast
+     * fix, the following line prevents the beagle view from logging errors.
+     */
+    beagleView.addErrorListener(() => { /* ignore errors */ })
     params = {
       beagleView,
       element,
       eventContextHierarchy: [],
       handleAction: jest.fn(),
     }
-    console.error = jest.fn()
     // @ts-ignore
     window = { open: jest.fn((url) => {}), location: { origin: 'origin', href: '' } }
     localStorageMock.clear()
   })
 
-  afterEach(() => {
-    console.error = originalError
+  afterAll(() => {
+    console.error = originalConsoleError
+    localStorageMock.unmock()
   })
-
-  afterAll(() => localStorageMock.unmock())
 
   it('should init beagle navigator correctly', () => {
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
-  it('should open exeternal url', () => {
+  it('should open external url', () => {
     NavigationActions['beagle:openExternalURL']({ action: { _beagleAction_: 'beagle:openExternalURL', url: externalUrl }, ...params })
     expect(window.open).toBeCalledWith(externalUrl)
   })

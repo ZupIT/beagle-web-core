@@ -206,10 +206,12 @@ const createBeagleView = <Schema>({
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
+        retry: () => updateWithFetch(params, elementId, mode),
       })
     } catch (errors) {
       // removes the loading component when an error component should no be rendered
       if (params.shouldShowLoading && !params.shouldShowError) setTree(originalTree)
+      if (errorListeners.length === 0) console.error(errors)
       errorListeners.forEach(listener => listener(errors))
     }
   }
