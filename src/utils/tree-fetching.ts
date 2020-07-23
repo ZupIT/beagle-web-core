@@ -17,6 +17,7 @@
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../errors'
 import { BeagleUIElement, Strategy, HttpMethod, ComponentName, CacheMetadata } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
+import beagleStorage from '../BeagleStorage'
 import { getCacheMetadata, updateCacheMetadata } from './cache-metadata'
 import beagleHeaders from './beagle-headers'
 
@@ -55,7 +56,7 @@ const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
 /* The following function is async for future compatibility with environments other than web. React
 native's localStorage, for instance, always returns promises. */
 export async function loadFromCache<Schema>(url: string, method: HttpMethod = 'get') {
-  const fromStorage = await localStorage.getItem(`${namespace}/${url}/${method}`)
+  const fromStorage = await beagleStorage.getStorage().getItem(`${namespace}/${url}/${method}`)
   const uiTree = fromStorage ? JSON.parse(fromStorage) as BeagleUIElement<Schema> : null
   if (!uiTree) throw new BeagleCacheError(url)
   return uiTree
@@ -101,7 +102,7 @@ export async function getUITreeCacheProtocol<Schema>(
   } else {
     uiTree = await response.json() as BeagleUIElement<Schema>
     if (shouldSaveCache) {
-      localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+      beagleStorage.getStorage().setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
     }
   }
   return uiTree
@@ -112,7 +113,7 @@ export async function loadFromServer<Schema>(
   method: HttpMethod = 'get',
   headers?: Record<string, string>,
   shouldSaveCache = true,
-  useBeagleCacheProtocol = true
+  useBeagleCacheProtocol = true,
 ) {
   let response: Response
   const requestTime = Date.now()
@@ -135,7 +136,7 @@ export async function loadFromServer<Schema>(
     uiTree = await response.json() as BeagleUIElement<Schema>
 
     if (shouldSaveCache) {
-      localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+      beagleStorage.getStorage().setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
     }
   }
   return uiTree
