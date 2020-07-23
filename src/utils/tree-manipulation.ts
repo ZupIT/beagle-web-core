@@ -76,4 +76,14 @@ export function checkPrefix(items: ItemsToCustom) {
   })
 }
 
+export function removeNullValues<Schema>(uiTree: BeagleUIElement<Schema>) {
+  Object.keys(uiTree).forEach(key => {
+    if (uiTree[key] === null)
+      delete uiTree[key]
+    else if (Array.isArray(uiTree[key]))
+      uiTree[key].forEach(removeNullValues)
+    else if (typeof uiTree[key] === 'object')
+      removeNullValues(uiTree[key])
+  })
+}
 

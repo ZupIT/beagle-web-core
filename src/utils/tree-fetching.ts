@@ -17,6 +17,7 @@
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../errors'
 import { BeagleUIElement, Strategy, HttpMethod, ComponentName, CacheMetadata } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
+import { removeNullValues } from './tree-manipulation'
 import beagleStorage from '../BeagleStorage'
 import { getCacheMetadata, updateCacheMetadata } from './cache-metadata'
 import beagleHeaders from './beagle-headers'
@@ -139,6 +140,7 @@ export async function loadFromServer<Schema>(
       beagleStorage.getStorage().setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
     }
   }
+  removeNullValues(uiTree)
   return uiTree
 }
 
