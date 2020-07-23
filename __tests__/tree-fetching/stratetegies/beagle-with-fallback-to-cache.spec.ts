@@ -21,6 +21,7 @@ import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
+import beagleStorage from '../../../src/BeagleStorage'
 import { beagleCacheNamespace } from '../../../src/utils/cache-metadata'
 
 const basePath = 'http://teste.com'
@@ -29,6 +30,7 @@ const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
   const localStorageMock = mockLocalStorage()
+  beagleStorage.setStorage(localStorage)
   beagleHttpClient.setFetchFunction(fetch)
   Date.now = jest.fn(() => 20203030)
   const cacheKey = `${beagleCacheNamespace}/${url}/get`

@@ -22,6 +22,7 @@ import { namespace } from '../../src/utils/tree-fetching'
 import { treeA } from '../mocks'
 import nock from 'nock'
 import beagleHttpClient from '../../src/BeagleHttpClient'
+import beagleStorage from '../../src/BeagleStorage'
 
 describe('ShouldPrefetch Middleware', () => {
   const baseUrl = 'http://teste.com'
@@ -32,6 +33,7 @@ describe('ShouldPrefetch Middleware', () => {
   let shouldPrefetchMiddleware
   let urlFormatter: URLBuilder
   const localStorageMock = mockLocalStorage()
+  beagleStorage.setStorage(localStorage)
 
   const createUiTree = (shouldPrefetch: boolean): BeagleUIElement => ({
     _beagleComponent_: 'container',
