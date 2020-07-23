@@ -24,8 +24,8 @@ import {
   ErrorComponentParams,
 } from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
-import { removeNullValues } from './tree-manipulation'
 import beagleStorage from '../BeagleStorage'
+import { removeNullValues } from './tree-manipulation'
 import { getCacheMetadata, updateCacheMetadata } from './cache-metadata'
 import beagleHeaders from './beagle-headers'
 
