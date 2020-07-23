@@ -21,6 +21,7 @@ import { mockLocalStorage } from '../../utils/test-utils'
 import { namespace } from '../../../src/utils/tree-fetching'
 import { BeagleNetworkError, BeagleCacheError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
+import beagleStorage from '../../../src/BeagleStorage'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -29,6 +30,7 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (load: network-with-fallback-to-cache)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
+  beagleStorage.setStorage(localStorage)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -40,7 +42,7 @@ describe('Utils: tree fetching (load: network-with-fallback-to-cache)', () => {
   it('should render view and save cache', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree })
+    await load({ url, onChangeTree, strategy: 'network-with-fallback-to-cache' })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(localStorage.setItem).toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
@@ -50,14 +52,14 @@ describe('Utils: tree fetching (load: network-with-fallback-to-cache)', () => {
     localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree })
+    await load({ url, onChangeTree, strategy: 'network-with-fallback-to-cache' })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })
 
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await expect(load({ url, onChangeTree: jest.fn() })).rejects.toEqual([
+    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'network-with-fallback-to-cache' })).rejects.toEqual([
       // @ts-ignore
       new BeagleNetworkError(url),
       new BeagleCacheError(url),

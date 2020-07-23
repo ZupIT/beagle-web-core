@@ -15,11 +15,22 @@
 */
 
 import { BeagleUIElement, IdentifiableBeagleUIElement, DataContext } from './types'
+import globalContextApi from './GlobalContextAPI'
 
 export function getContextHierarchy(
   element: BeagleUIElement,
   currentHierarchy: DataContext[] = [],
 ) {
+  if (currentHierarchy.length === 0) {
+    const globalContext = globalContextApi.getAsDataContext()
+    currentHierarchy.push(globalContext)
+  }
+
+  if (element.context && element.context.id === 'global') {
+    console.warn(`You are defining a context with the global id. \'global\' is a reserved word for context id. 
+    The resulted behavior might not be what you expected. Please consider renaming your context`)
+  }
+
   return element.context ? [element.context, ...currentHierarchy] : currentHierarchy
 }
 

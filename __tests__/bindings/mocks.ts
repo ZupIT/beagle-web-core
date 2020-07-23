@@ -151,3 +151,75 @@ export function createMockWithSameIdContexts(): BeagleUIElement {
     ],
   }
 }
+
+export const treeWithGlobalContext = {
+  "context": {
+    "id": "global",
+    "value": {
+      "text": "testing value of context with global id"
+    }
+  },
+  "_beagleComponent_":"beagle:container",
+  "children":[
+    {
+      "_beagleComponent_":"beagle:container",
+      "children":[
+        {
+          "_beagleComponent_":"beagle:text1",
+          "text":"@{global.text}"
+        },
+        {
+          "_beagleComponent_":"beagle:text2",
+          "text":"@{global.obj.inner.text}"
+        }
+      ]
+    }
+  ]
+}
+
+export const treeWithValidContext = {
+  "context": {
+    "id": "contextId",
+    "value": {
+      "text": "teste"
+    }
+  },
+  "_beagleComponent_":"beagle:container",
+  "children":[
+    {
+      "_beagleComponent_":"beagle:container",
+      "children":[
+        {
+          
+          "_beagleComponent_":"beagle:text",
+          "text":"@{contextId.text}"
+        },
+        {
+          "_beagleComponent_":"beagle:text",
+          "text":"@{global.obj.inner.text}"
+        }
+      ]
+    },
+    {
+      "_beagleComponent_":"beagle:container",
+      "children":[
+        {
+          "_beagleComponent_":"beagle:text",
+          "text":"Hello @{global.user.name}, your current balance is @{global.user.balance}."
+        },
+        {
+          "_beagleComponent_":"beagle:button",
+          "text":"Testing set global context",
+          "onPress":[
+            {
+              "_beagleAction_":"beagle:setContext",
+              "contextId":"global",
+              "path":"user.balance",
+              "value":97.87
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

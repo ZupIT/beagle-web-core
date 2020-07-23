@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "module": "amd",
+    "module": "commonjs",
     "outDir": "./dist/",
     "preserveConstEnums": true,
     "removeComments": true,

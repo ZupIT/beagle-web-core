@@ -13,17 +13,17 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { Analytics } from './types'
+import { BeagleStorage } from './types'
 
-function createBeagleAnalytics() {
-  let analytics: Analytics
+function createBeagleStorage(): BeagleStorage {
+  let storage: Storage
 
   return {
-    setAnalytics: (newAnalytics: Analytics) => analytics = newAnalytics,
-    getAnalytics: () => analytics,
+      getStorage: () => storage,
+      setStorage: (newStorageFn: Storage) => storage = newStorageFn,
   }
 }
 
-const beagleAnalytics = createBeagleAnalytics()
+const beagleStorage = createBeagleStorage()
 
-export default beagleAnalytics
+export default beagleStorage
