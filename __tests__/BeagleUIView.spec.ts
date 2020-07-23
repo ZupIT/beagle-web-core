@@ -32,6 +32,8 @@ describe('BeagleUIView', () => {
   let view: BeagleView
   const middleware = jest.fn(tree => tree)
   globalContextApi.subscribe = jest.fn()
+  const originalConsoleError = console.error
+  console.error = jest.fn()
 
   beforeEach(() => {
     view = createBeagleView({
@@ -39,9 +41,16 @@ describe('BeagleUIView', () => {
       components: {},
       middlewares: [middleware],
     }, '/home')
+    
     nock.cleanAll()
     localStorageMock.clear()
     middleware.mockClear()
+    const consoleError = console.error as jest.Mock
+    consoleError.mockClear()
+  })
+
+  afterAll(() => {
+    console.error = originalConsoleError
   })
 
   it('should get current ui tree', async () => {
@@ -286,5 +295,22 @@ describe('BeagleUIView', () => {
     }, '')
     await view.updateWithFetch({ path })
     expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get", 'headers': { 'beagle-platform': 'WEB', 'beagle-hash': '' } })
+  })
+
+  it('should log errors when no error listener is registered', async () => {
+    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    await view.updateWithFetch({ path })
+    // @ts-ignore
+    expect(console.error).toHaveBeenCalled()
+    expect(nock.isDone()).toBe(true)
+  })
+
+  it('should not log errors when ai least one listener is registered', async () => {
+    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    view.addErrorListener(jest.fn())
+    await view.updateWithFetch({ path })
+    // @ts-ignore
+    expect(console.error).not.toHaveBeenCalled()
+    expect(nock.isDone()).toBe(true)
   })
 })

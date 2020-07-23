@@ -25,7 +25,8 @@ describe('Actions: Navigation', () => {
   const baseUrl = 'http://teste.com'
   const element = { _beagleComponent_: 'button', id: 'button' }
   const externlUrl = 'http://google.com'
-  const originalError = console.error
+  const originalConsoleError = console.error
+  console.error = jest.fn()
   const initialStack = [{ url: '/home' }]
 
   const pushStack = () => {
@@ -60,13 +61,12 @@ describe('Actions: Navigation', () => {
       eventContextHierarchy: [],
       handleAction: jest.fn(),
     }
-    console.error = jest.fn()
     // @ts-ignore
     window = { open: jest.fn((url) => {}), location: { origin: 'origin', href: '' } }
   })
 
-  afterEach(() => {
-    console.error = originalError
+  afterAll(() => {
+    console.error = originalConsoleError
   })
 
   it('should init beagle navigator correctly', () => {
