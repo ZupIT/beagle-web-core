@@ -97,10 +97,6 @@ export function createGlobalContextMock(
     _beagleComponent_: 'testComponent',
     id: 'container',
     value: '@{global}',
-    context: {
-      id: ctxId,
-      value: `value of ${ctxId}`,
-    },
     children: [
       {
         _beagleComponent_: 'button',

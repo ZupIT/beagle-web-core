@@ -18,11 +18,13 @@ import { treeA } from '../mocks'
 import { mockLocalStorage } from '../utils/test-utils'
 import { BeagleExpiredCacheError } from '../../src/errors'
 import { beagleCacheNamespace } from '../../src/utils/cache-metadata'
+import beagleStorage from '../../src/BeagleStorage'
 
 const url = 'http://my-app/my-view'
 
 describe('Utils: tree fetching (cacheCheckingTTL)', () => {
     const localStorageMock = mockLocalStorage()
+    beagleStorage.setStorage(localStorage)
     Date.now = jest.fn(() => 20203030)
     
     afterAll(() => localStorageMock.unmock())

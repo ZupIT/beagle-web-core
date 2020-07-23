@@ -21,9 +21,11 @@ import {
   updateCacheMetadata,
   beagleCacheNamespace
 } from '../../src/utils/cache-metadata'
+import beagleStorage from '../../src/BeagleStorage'
 
 describe.only('cache-metadata', () => {
   const localStorageMock = mockLocalStorage()
+  beagleStorage.setStorage(localStorage)
   const url = 'http://test.com'
 
   afterAll(() => localStorageMock.unmock())
