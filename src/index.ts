@@ -35,6 +35,7 @@ import {
   BeagleMiddleware,
   BeagleView,
   Strategy,
+  ErrorComponentParams,
 } from './types'
 import globalContext from './GlobalContextAPI'
 
@@ -79,4 +80,5 @@ export {
   EventHandler,
   replaceBindings,
   BeagleAnalytics,
+  ErrorComponentParams,
 }

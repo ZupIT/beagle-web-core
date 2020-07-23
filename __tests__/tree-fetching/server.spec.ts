@@ -20,6 +20,8 @@ import { treeA } from '../mocks'
 import { mockLocalStorage } from '../utils/test-utils'
 import { BeagleNetworkError } from '../../src/errors'
 import beagleHttpClient from '../../src/BeagleHttpClient'
+import { treeEWithNull, cleanedTreeE } from '../utils/mock-tree-null'
+import beagleStorage from '../../src/BeagleStorage'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -28,6 +30,7 @@ const url = `${basePath}${path}`
 describe('Utils: tree fetching (server)', () => {
   const localStorageMock = mockLocalStorage()
   beagleHttpClient.setFetchFunction(fetch)
+  beagleStorage.setStorage(localStorage)
 
   afterAll(() => localStorageMock.unmock())
 
@@ -52,7 +55,7 @@ describe('Utils: tree fetching (server)', () => {
 
   it('should load from server with headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).get(path).reply(200, JSON.stringify(treeA))
-    const result = await loadFromServer(url, 'get', {test: 'test'},  true)
+    const result = await loadFromServer(url, 'get', { test: 'test' }, true, true)
     expect(result).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })
@@ -68,7 +71,7 @@ describe('Utils: tree fetching (server)', () => {
   it('should not save cache after loading from server', async () => {
     const treeAString = JSON.stringify(treeA)
     nock(basePath).get(path).reply(200, treeAString)
-    await loadFromServer(url, 'get', {},  false, false)
+    await loadFromServer(url, 'get', {}, false, false)
     expect(localStorage.setItem).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })
@@ -83,6 +86,13 @@ describe('Utils: tree fetching (server)', () => {
       expect(error.response.status).toBe(500)
       expect(await error.response.json()).toEqual({ error: 'unexpected error' })
     }
+    expect(nock.isDone()).toBe(true)
+  })
+
+  it('should remove null values before returning tree', async () => {
+    nock(basePath).get(path).reply(200, JSON.stringify(treeEWithNull))
+    const result = await loadFromServer(url, 'get')
+    expect(result).toEqual(cleanedTreeE)
     expect(nock.isDone()).toBe(true)
   })
 })

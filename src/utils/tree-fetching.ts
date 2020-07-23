@@ -15,8 +15,17 @@
 */
 
 import { BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError } from '../errors'
-import { BeagleUIElement, Strategy, HttpMethod, ComponentName, CacheMetadata } from '../types'
+import {
+  BeagleUIElement,
+  Strategy,
+  HttpMethod,
+  ComponentName,
+  CacheMetadata,
+  ErrorComponentParams,
+} from '../types'
 import beagleHttpClient from '../BeagleHttpClient'
+import beagleStorage from '../BeagleStorage'
+import { removeNullValues } from './tree-manipulation'
 import { getCacheMetadata, updateCacheMetadata } from './cache-metadata'
 import beagleHeaders from './beagle-headers'
 
@@ -38,6 +47,7 @@ interface Params<Schema> {
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
   onChangeTree: (tree: BeagleUIElement<Schema>) => void,
+  retry: () => void,
 }
 
 export const namespace = '@beagle-web/cache'
@@ -55,7 +65,7 @@ const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
 /* The following function is async for future compatibility with environments other than web. React
 native's localStorage, for instance, always returns promises. */
 export async function loadFromCache<Schema>(url: string, method: HttpMethod = 'get') {
-  const fromStorage = await localStorage.getItem(`${namespace}/${url}/${method}`)
+  const fromStorage = await beagleStorage.getStorage().getItem(`${namespace}/${url}/${method}`)
   const uiTree = fromStorage ? JSON.parse(fromStorage) as BeagleUIElement<Schema> : null
   if (!uiTree) throw new BeagleCacheError(url)
   return uiTree
@@ -101,7 +111,7 @@ export async function getUITreeCacheProtocol<Schema>(
   } else {
     uiTree = await response.json() as BeagleUIElement<Schema>
     if (shouldSaveCache) {
-      localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+      beagleStorage.getStorage().setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
     }
   }
   return uiTree
@@ -112,14 +122,14 @@ export async function loadFromServer<Schema>(
   method: HttpMethod = 'get',
   headers?: Record<string, string>,
   shouldSaveCache = true,
-  useBeagleCacheProtocol = true
+  useBeagleCacheProtocol = true,
 ) {
   let response: Response
   const requestTime = Date.now()
   try {
     response = await beagleHttpClient.fetch(
       url,
-      { method, headers: headers }
+      { method, headers }
     )
   } catch (error) {
     throw new BeagleNetworkError(url, error)
@@ -135,9 +145,10 @@ export async function loadFromServer<Schema>(
     uiTree = await response.json() as BeagleUIElement<Schema>
 
     if (shouldSaveCache) {
-      localStorage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
+      beagleStorage.getStorage().setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
     }
   }
+  removeNullValues(uiTree)
   return uiTree
 }
 
@@ -152,6 +163,7 @@ export async function load<Schema>({
   shouldShowLoading = true,
   shouldShowError = true,
   onChangeTree,
+  retry,
 }: Params<Schema>) {
   async function loadNetwork(hasPreviousSuccess = false, useBeagleCacheProtocol = true) {
     if (shouldShowLoading && !hasPreviousSuccess) onChangeTree({ _beagleComponent_: loadingComponent })
@@ -205,8 +217,16 @@ export async function load<Schema>({
     if (fallbackUIElement) return onChangeTree(fallbackUIElement)
     const [hasFallbackStrategySuccess, fallbackStrategyErrors] = await runStrategies(fallbackStrategy, true)
     if (hasFallbackStrategySuccess) return
-    if (shouldShowError) onChangeTree({ _beagleComponent_: errorComponent })
-    throw [...fetchErrors, ...fallbackStrategyErrors]
+    const errors = [...fetchErrors, ...fallbackStrategyErrors]
+    if (shouldShowError) {
+      const errorUITree: BeagleUIElement<Schema> & ErrorComponentParams = {
+        _beagleComponent_: errorComponent,
+        retry,
+        errors: errors.map(e => e.message),
+      }
+      onChangeTree(errorUITree)
+    }
+    throw errors
   }
 
   await start()

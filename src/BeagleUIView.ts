@@ -40,6 +40,7 @@ import beagleStyleClassMiddleware from './middlewares/beagle-style-class'
 import beagleAnalytics from './BeagleAnalytics'
 import createShouldPrefetchMiddleware from './middlewares/beagle-should-prefetch'
 import { addPrefix } from './utils/string'
+import beagleStorage from './BeagleStorage'
 import beagleHeaders from './utils/beagle-headers'
 import globalContextApi from './GlobalContextAPI'
 
@@ -48,6 +49,7 @@ const createBeagleView = <Schema>({
   middlewares = [],
   fetchData,
   analytics,
+  customStorage,
   useBeagleHeaders,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
@@ -58,6 +60,7 @@ const createBeagleView = <Schema>({
   const beagleShouldPrefetchMiddleware = createShouldPrefetchMiddleware(urlFormatter,)
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   beagleHttpClient.setFetchFunction(fetchData || fetch)
+  beagleStorage.setStorage(customStorage || localStorage)
   analytics && beagleAnalytics.setAnalytics(analytics)
 
   function subscribe(listener: Listener<Schema>) {
@@ -203,10 +206,12 @@ const createBeagleView = <Schema>({
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
+        retry: () => updateWithFetch(params, elementId, mode),
       })
     } catch (errors) {
       // removes the loading component when an error component should no be rendered
       if (params.shouldShowLoading && !params.shouldShowError) setTree(originalTree)
+      if (errorListeners.length === 0) console.error(errors)
       errorListeners.forEach(listener => listener(errors))
     }
   }

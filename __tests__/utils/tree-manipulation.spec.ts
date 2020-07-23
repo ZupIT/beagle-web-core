@@ -14,10 +14,11 @@
   * limitations under the License.
 */
 
-import { addChild, clone, insertIntoTree, replaceInTree, checkPrefix } from '../../src/utils/tree-manipulation'
+import { addChild, clone, insertIntoTree, replaceInTree, checkPrefix, removeNullValues } from '../../src/utils/tree-manipulation'
 import { BeagleUIElement } from '../../src/types'
 import { treeA, treeB, configComponentsWrong } from '../mocks'
 import { last, hasDifferentPointers } from './test-utils'
+import { treeAWithNull, cleanedTreeA, cleanedTreeB, treeBWithNull, treeCWithNull, cleanedTreeC, treeDWithNull, cleanedTreeD, treeEWithNull, cleanedTreeE } from './mock-tree-null'
 
 describe('Utils: tree manipulation', () => {
   it('should clone tree', () => {
@@ -72,5 +73,30 @@ describe('Utils: tree manipulation', () => {
     expect(() => checkPrefix(configComponentsWrong)).toThrow(new Error(`Please check your config. The button is not a valid name. Yours components or actions
       should always start with "beagle:" if it\'s overwriting a default component or an action, "custom:"
       if it\'s a custom component or an action`))
+  })
+
+  it('should remove null values', () => {
+    removeNullValues(treeAWithNull)
+    expect(treeAWithNull).toStrictEqual(cleanedTreeA)
+  })
+
+  it('should remove null values from object props', () => {
+    removeNullValues(treeBWithNull)
+    expect(treeBWithNull).toStrictEqual(cleanedTreeB)
+  })
+
+  it('should remove null values from children items', () => {
+    removeNullValues(treeCWithNull)
+    expect(treeCWithNull).toStrictEqual(cleanedTreeC)
+  })
+
+  it('should remove null values from array items', () => {
+    removeNullValues(treeDWithNull)
+    expect(treeDWithNull).toStrictEqual(cleanedTreeD)
+  })
+
+  it('should parse correctly tree with multiple levels', () => {
+    removeNullValues(treeEWithNull)
+    expect(treeEWithNull).toStrictEqual(cleanedTreeE)
   })
 })
