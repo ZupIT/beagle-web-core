@@ -64,6 +64,13 @@ describe('Actions: Navigation', () => {
 
   beforeEach(() => {
     beagleView = createBeagleView({ baseUrl, components: {} }, '/home')
+    /* fixme: the tests in this file execute async operations that will result in errors since
+     * the route they call doesn't exist. These async operations should be awaited before returning.
+     * Since they're not being awaited, the beagle view tries to log to the console after the tests
+     * are done. These operations should, somehow, be awaited before the tests finish. As a fast
+     * fix, the following line prevents the beagle view from logging errors.
+     */
+    beagleView.addErrorListener(() => { /* ignore errors */ })
     params = {
       beagleView,
       element,
@@ -84,7 +91,7 @@ describe('Actions: Navigation', () => {
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
   })
 
-  it('should open exeternal url', () => {
+  it('should open external url', () => {
     NavigationActions['beagle:openExternalURL']({ action: { _beagleAction_: 'beagle:openExternalURL', url: externalUrl }, ...params })
     expect(window.open).toBeCalledWith(externalUrl)
   })
