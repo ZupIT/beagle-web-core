@@ -239,7 +239,7 @@ describe('BeagleUIView', () => {
     }, '')
     await view.updateWithFetch({ path })
  
-    expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { 'method': 'get', 'headers': { 'beagle-platform': 'WEB',  'beagle-hash': '' } })
+    expect(fetchData).toHaveBeenCalledWith(baseUrl + path, { 'method': 'get', 'headers': { 'beagle-platform': 'WEB',  } })
   })
 
   it('should fallback to UIElement when fetch fails', async () => {
@@ -268,7 +268,7 @@ describe('BeagleUIView', () => {
       fetchData
     }, '')
     await view.updateWithFetch({ path })
-    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB', 'beagle-hash': '' } })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB', } })
   })
 
   it('should handle relative path starting with /', async () => {
@@ -281,7 +281,7 @@ describe('BeagleUIView', () => {
       fetchData
     }, '')
     await view.updateWithFetch({ path })
-    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB',  'beagle-hash': '' } })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}${path}`, { "method": "get", 'headers': { 'beagle-platform': 'WEB',  } })
   })
 
   it('should make request for root baseUrl path', async () => {
@@ -294,7 +294,7 @@ describe('BeagleUIView', () => {
       fetchData
     }, '')
     await view.updateWithFetch({ path })
-    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get", 'headers': { 'beagle-platform': 'WEB', 'beagle-hash': '' } })
+    expect(fetchData).toHaveBeenCalledWith(`${baseUrl}/`, { "method": "get", 'headers': { 'beagle-platform': 'WEB', } })
   })
 
   it('should log errors when no error listener is registered', async () => {
