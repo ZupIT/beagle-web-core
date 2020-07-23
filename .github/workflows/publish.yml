@@ -57,6 +57,9 @@ jobs:
 
       # if it's a new version, publish to NPM
 
+      - name: clear cache
+        run: yarn cache clean
+
       - name: install
         if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: yarn
