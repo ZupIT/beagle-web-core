@@ -1,13 +1,15 @@
 import { replaceBindings } from '../../src/bindings'
 import { findById, findByType } from '../../src/utils/tree-reading'
-import { createMockWithSameIdContexts, createSocialMediaData, createSocialMediaMock } from './mocks'
+import { createMockWithSameIdContexts, createSocialMediaData, createSocialMediaMock, treeWithGlobalContext, treeWithValidContext } from './mocks'
+import { getContextHierarchy } from '../../src/context'
+import globalContextApi from '../../src/GlobalContextAPI'
 
 describe('Binding expressions: replacing with calculated contexts', () => {
   it('should use contexts declared in the data structure', () => {
     const socialMediaData = createSocialMediaData()
     const mock = createSocialMediaMock()
     const treeWithValues = replaceBindings(mock)
-  
+
     const profile = findById(treeWithValues, 'profile')
     const friendsTitle = findById(treeWithValues, 'friendsTitle')
     const friendsPanel = findById(treeWithValues, 'friendsPanel')
@@ -15,7 +17,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     const firstPost = findById(treeWithValues, 'firstPost')
     const secondPost = findById(treeWithValues, 'secondPost')
     const thirdPost = findById(treeWithValues, 'thirdPost')
-  
+
     expect(profile.name).toBe(socialMediaData.user.name)
     expect(profile.picture).toBe(socialMediaData.user.picture)
     expect(profile.detailsPath).toBe('/users/007')
@@ -47,4 +49,40 @@ describe('Binding expressions: replacing with calculated contexts', () => {
       expect(postWithWrongContext.author).toBe('@{friends[0].name}')
     },
   )
+
+  it('closest context with invalid name of global should have priority over global context', () => {
+    const originalWarn = console.warn
+    console.warn = jest.fn()
+    globalContextApi.set('Global context value', 'text')
+    globalContextApi.set('Global context object value', 'obj.inner.text')
+    
+    const treeWithValues = replaceBindings(treeWithGlobalContext)
+    let textElement = findByType(treeWithValues, 'beagle:text1')[0]
+    expect(textElement).toBeDefined()
+    expect(textElement.text).toBe('testing value of context with global id')
+    textElement = findByType(treeWithValues, 'beagle:text2')[0]
+    expect(textElement).toBeDefined()
+    expect(textElement.text).toBe('@{global.obj.inner.text}')
+    expect(console.warn).toHaveBeenCalled()
+    console.warn = originalWarn
+  })
 })
+
+describe('Testing context hierarchy', () => {
+  it('should emit a warning if a context with global as id is defined on the tree', () => {
+    const originalWarn = console.warn
+    console.warn = jest.fn()
+    getContextHierarchy(treeWithGlobalContext)
+    expect(console.warn).toHaveBeenCalled()
+    console.warn = originalWarn
+  })
+
+  it('should not emit a warning if valid context id', () => {
+    const originalWarn = console.warn
+    console.warn = jest.fn()
+    getContextHierarchy(treeWithValidContext)
+    expect(console.warn).not.toHaveBeenCalled() 
+    console.warn = originalWarn
+  })
+})
+
