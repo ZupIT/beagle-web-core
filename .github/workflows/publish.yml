@@ -14,33 +14,66 @@
   # limitations under the License.
 #
 
-name: Publishing release
+name: Publishing process
 
 on:
   push:
-    tags:
-    - 'v[0-9]+.[0-9]+.[0-9]+*'
+    branches: [ master ]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
+      # checkout code
+      - uses: actions/checkout@v2
+
+      # get the version in package.json
+
+      - name: get current version
+        run: echo ::set-env name=PACKAGE_VERSION::$(node bin/publish/get-version)
+      
+      # check if the version in package.json is greater than the version in NPM
+  
+      - name: check if this version should be published
+        run: echo ::set-env name=SHOULD_PUBLISH::$(node bin/publish/should-publish)
+
+      # if it's a new version, create a new release
+
+      - name: create release
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: Release v${{ env.PACKAGE_VERSION }}
+          body: |
+            Todo: release notes should go here
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+
+      # if it's a new version, publish to NPM
 
       - name: install
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: yarn
 
       - name: setup node
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: build
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: yarn build
 
       - name: publish to NPM
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: cd dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
