@@ -28,6 +28,11 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: get remote 
+      env:
+        my_env_var: git remote get-url origin
+      run: echo $my_env_var.
+
     - name: clear cache
       run: yarn cache clean
 
@@ -45,6 +50,7 @@ jobs:
 
     - name: Jest Annotations & Coverage
       uses: mattallty/jest-github-action@v1.0.3
+      if: ${{ my_env_var == 'https://github.com/ZupIT/beagle-web-react.git' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
