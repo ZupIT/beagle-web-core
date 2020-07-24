@@ -30,7 +30,7 @@ jobs:
 
     - name: get remote 
       env:
-        MY_VAR: ${{ git remote get-url origin }}
+        MY_VAR: ${{ env.GITHUB_REPOSITORY }}
       run: |
         echo $MY_VAR.
 
