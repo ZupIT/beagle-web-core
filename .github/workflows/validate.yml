@@ -30,7 +30,7 @@ jobs:
 
     - name: get remote 
       env:
-        MY_VAR: git remote get-url origin
+        MY_VAR: ${{ git remote get-url origin }}
       run: |
         echo $MY_VAR.
 
