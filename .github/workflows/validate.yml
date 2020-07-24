@@ -30,30 +30,30 @@ jobs:
 
     - name: get remote 
       env:
-        MY_VAR: ${{ env.GITHUB_REPOSITORY }}
+        MY_VAR: ${{ github.repository_owner }}
       run: |
         echo $MY_VAR.
 
-    - name: clear cache
-      run: yarn cache clean
+    # - name: clear cache
+    #   run: yarn cache clean
 
-    - name: install
-      run: yarn
+    # - name: install
+    #   run: yarn
     
-    - name: lint
-      run: yarn lint
+    # - name: lint
+    #   run: yarn lint
 
-    - name: type-check
-      run: yarn check-types
+    # - name: type-check
+    #   run: yarn check-types
 
-    - name: type-check for tests
-      run: yarn check-test-types
+    # - name: type-check for tests
+    #   run: yarn check-test-types
 
-    - name: Jest Annotations & Coverage
-      uses: mattallty/jest-github-action@v1.0.3
-      # if: $my_env_var === 'https://github.com/ZupIT/beagle-web-react.git'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        test-command: "yarn test --maxWorkers=2"
+    # - name: Jest Annotations & Coverage
+    #   # if: $my_env_var === 'https://github.com/ZupIT/beagle-web-react.git'
+    #   uses: mattallty/jest-github-action@v1.0.3
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     test-command: "yarn test --maxWorkers=2"
 
