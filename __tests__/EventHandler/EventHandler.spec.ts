@@ -13,6 +13,7 @@ import { createContainerWithAction, createModalMock } from './mocks'
 import { createBeagleViewMock } from '../utils/test-utils'
 import defaultActionHandlers from '../../src/actions'
 import { ActionHandlerParams, BeagleAction } from '../../src/actions/types'
+import createBeagleService from '../../src/BeagleService'
 import { IdentifiableBeagleUIElement, BeagleUIElement, BeagleView } from '../../src/types'
 
 interface ActionHandlerExpectation {
@@ -186,12 +187,31 @@ describe('EventHandler', () => {
     alert.mockClear()
   })
 
-  it('should handle custom action', () => {
-    // todo
-  })
+  // fixme: this is testing too many things. This should be moved and test only the BeagleService.
+  it('should handle custom action', async () => {
+    const myActionHandler = jest.fn()
+    const service = createBeagleService({
+      baseUrl: '',
+      components: {},
+      customActions: {
+        'custom:myAction': myActionHandler,
+      }
+    })
 
-  it('should replace default action with custom action and warn about replacement', () => {
-    // todo
+    const beagleView = service.createView('')
+    const action = { _beagleAction_: 'custom:myAction', value: 'test' }
+    const mock = createContainerWithAction('onInit', action)
+    await new Promise((resolve) => {
+      beagleView.subscribe(view =>  {
+        view.onInit()
+        resolve()
+      })
+      beagleView.getRenderer().doFullRender(mock)
+    })
+    
+    expect(myActionHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ action })
+    )
   })
 
   it('should warn if action handler doesn\'t exist', () => {

@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-// import { BeagleUIElement, ComponentTypeMetadata, ChildrenMetadata } from '../types'
+import { BeagleUIElement, ComponentTypeMetadata, ChildrenMetadata } from '../types'
 
 /**
  * Checks if the component (1st parameter) matches the type definition declared in `typeMetadata`
@@ -29,9 +29,12 @@
  * @param childrenMetadata the children metadata of the component
  */
 function check(
-  // component: BeagleUIElement,
-  // typeMetadata: ComponentTypeMetadata,
-  // childrenMetadata?: ChildrenMetadata,
+  // eslint-disable-next-line
+  component: BeagleUIElement,
+  // eslint-disable-next-line
+  typeMetadata: ComponentTypeMetadata,
+  // eslint-disable-next-line
+  childrenMetadata?: ChildrenMetadata,
 ) {
   // todo
 }
