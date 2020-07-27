@@ -95,7 +95,8 @@ function getOperationValue(operation: string, contextHierarchy: DataContext[]) {
   if (!match) {
     throw new BeagleParseError(`invalid operation in expression: ${operation}`)
   }
-  const [_, operationName, paramString] = match
+  const operationName = match[1]
+  const paramString = match[2]
   if (!operations[operationName]) {
     throw new BeagleNotFoundError(`operation with name "${operationName}" doesn't exist.`)
   }

@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { ActionHandler, ConfirmAction, BeagleAction } from './types'
+import { ActionHandler, ConfirmAction } from './types'
 
 const confirm: ActionHandler<ConfirmAction> = ({ action, executeAction }) => {
   const { message, onPressOk, onPressCancel } = action

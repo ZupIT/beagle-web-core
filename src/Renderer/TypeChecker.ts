@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, ComponentTypeMetadata, ChildrenMetadata } from '../types'
+// import { BeagleUIElement, ComponentTypeMetadata, ChildrenMetadata } from '../types'
 
 /**
  * Checks if the component (1st parameter) matches the type definition declared in `typeMetadata`
@@ -29,9 +29,9 @@ import { BeagleUIElement, ComponentTypeMetadata, ChildrenMetadata } from '../typ
  * @param childrenMetadata the children metadata of the component
  */
 function check(
-  component: BeagleUIElement,
-  typeMetadata: ComponentTypeMetadata,
-  childrenMetadata?: ChildrenMetadata,
+  // component: BeagleUIElement,
+  // typeMetadata: ComponentTypeMetadata,
+  // childrenMetadata?: ChildrenMetadata,
 ) {
   // todo
 }

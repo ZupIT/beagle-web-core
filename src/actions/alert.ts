@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { ActionHandler, AlertAction, BeagleAction } from './types'
+import { ActionHandler, AlertAction } from './types'
 
 const alert: ActionHandler<AlertAction> = ({ action, executeAction }) => {
   const { message, onPressOk } = action
