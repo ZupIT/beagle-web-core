@@ -29,6 +29,7 @@ import {
   BeagleMiddleware,
   BeagleView,
   Strategy,
+  ErrorComponentParams,
 } from './types'
 
 export default createBeagleUIService
@@ -48,4 +49,5 @@ export {
   ActionHandler,
   CustomAction,
   BeagleAnalytics,
+  ErrorComponentParams,
 }

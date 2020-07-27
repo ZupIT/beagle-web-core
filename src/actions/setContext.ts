@@ -16,13 +16,20 @@
 
 import set from 'lodash/set'
 import Context from '../Renderer/Context'
+import globalContextApi from '../GlobalContextAPI'
 import { ActionHandler, SetContextAction } from './types'
 
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
   const { value, contextId, path } = action
+
   const uiTree = beagleView.getTree()
   const contextHierarchy = Context.evaluate(uiTree)[element.id]
   const context = Context.find(contextHierarchy, contextId)
+
+  if (context && context.id === 'global') {
+    globalContextApi.set(value,  path)
+    return
+  }
 
   if (!context) {
     const specificContextMessage = (

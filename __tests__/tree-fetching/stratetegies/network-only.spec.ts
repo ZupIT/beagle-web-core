@@ -16,9 +16,10 @@
 import nock from 'nock'
 import { load } from '../../../src/utils/tree-fetching'
 import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../test-utils'
+import { mockLocalStorage } from '../../utils/test-utils'
 import { BeagleNetworkError } from '../../../src/errors'
 import beagleHttpClient from '../../../src/BeagleHttpClient'
+import BeagleStorage from '../../../src/BeagleStorage'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -26,6 +27,7 @@ const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: network only)', () => {
   const localStorageMock = mockLocalStorage()
+  BeagleStorage.setStorage(localStorage)
   beagleHttpClient.setFetchFunction(fetch)
 
   afterAll(() => localStorageMock.unmock())

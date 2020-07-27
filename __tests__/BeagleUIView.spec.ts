@@ -17,13 +17,14 @@
 import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
 import { BeagleView, LifecycleHookMap } from '../src/types'
-import { BeagleCacheError, BeagleNetworkError } from '../src/errors'
+import { BeagleCacheError, BeagleNetworkError, BeagleExpiredCacheError } from '../src/errors'
 import { clone } from '../src/utils/tree-manipulation'
 import UrlBuilder from '../src/UrlBuilder'
 import HttpClient from '../src/BeagleHttpClient'
 import Tree from '../src/utils/Tree'
 import { treeA, treeB } from './mocks'
-import { mockLocalStorage, stripTreeIds } from './test-utils'
+import { mockLocalStorage, stripTreeIds } from './utils/test-utils'
+import globalContextApi from '../src/GlobalContextAPI'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -33,6 +34,9 @@ describe('BeagleUIView', () => {
   const localStorageMock = mockLocalStorage()
   let view: BeagleView
   const middleware = jest.fn(tree => tree)
+  globalContextApi.subscribe = jest.fn()
+  const originalConsoleError = console.error
+  console.error = jest.fn()
   const lifecycles: LifecycleHookMap = {
     beforeStart: { components: {} },
     beforeViewSnapshot: { components: {} },
@@ -46,6 +50,12 @@ describe('BeagleUIView', () => {
     nock.cleanAll()
     localStorageMock.clear()
     middleware.mockClear()
+    const consoleError = console.error as jest.Mock
+    consoleError.mockClear()
+  })
+
+  afterAll(() => {
+    console.error = originalConsoleError
   })
 
   it('should get current ui tree', async () => {
@@ -54,6 +64,7 @@ describe('BeagleUIView', () => {
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 1', id: '1' })
     view.getRenderer().doFullRender({ _beagleComponent_: 'test 2', id: '2'})
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 2', id: '2' })
+    expect(globalContextApi.subscribe).toHaveBeenCalled()
   })
 
   it('should subscribe to view changes', async () => {
@@ -85,7 +96,12 @@ describe('BeagleUIView', () => {
     view.addErrorListener(listener2)
     await view.fetch({ path })
     // @ts-ignore
-    const expectedErrors = [new BeagleNetworkError(url), new BeagleCacheError(url)]
+    const expectedErrors = [
+      new BeagleExpiredCacheError(url),
+      // @ts-ignore
+      new BeagleNetworkError(url),
+      new BeagleCacheError(url),
+    ]
     expect(listener1).toHaveBeenCalledWith(expectedErrors)
     expect(listener2).toHaveBeenCalledWith(expectedErrors)
     expect(nock.isDone()).toBe(true)
@@ -272,6 +288,23 @@ describe('BeagleUIView', () => {
     const path = ''
     nock(baseUrl).get(`/${path}`).reply(200, JSON.stringify(treeB))
     await view.fetch({ path })
+    expect(nock.isDone()).toBe(true)
+  })
+
+  it('should log errors when no error listener is registered', async () => {
+    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    await view.fetch({ path })
+    // @ts-ignore
+    expect(console.error).toHaveBeenCalled()
+    expect(nock.isDone()).toBe(true)
+  })
+
+  it('should not log errors when ai least one listener is registered', async () => {
+    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    view.addErrorListener(jest.fn())
+    await view.fetch({ path })
+    // @ts-ignore
+    expect(console.error).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })
 })

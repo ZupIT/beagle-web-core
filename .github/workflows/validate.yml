@@ -18,7 +18,7 @@ name: Pull request validation
 
 on:
   pull_request:
-    branches: [ development, master ]
+    branches: [ development, master, release/* ]
 
 jobs:
   validation:
@@ -27,6 +27,9 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+
+    - name: clear cache
+      run: yarn cache clean
 
     - name: install
       run: yarn
@@ -40,5 +43,10 @@ jobs:
     - name: type-check for tests
       run: yarn check-test-types
 
-    - name: test
-      run: yarn test
+    - name: Jest Annotations & Coverage
+      uses: mattallty/jest-github-action@v1.0.3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        test-command: "yarn test --maxWorkers=2"
+

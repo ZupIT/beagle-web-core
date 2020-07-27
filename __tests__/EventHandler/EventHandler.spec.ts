@@ -9,9 +9,8 @@ import Expression from '../../src/Renderer/Expression'
 import Action from '../../src/Renderer/Action'
 import Tree from '../../src/utils/tree'
 import { findById } from '../../src/utils/tree-reading'
-import { clone } from '../../src/utils/tree-manipulation'
 import { createContainerWithAction, createModalMock } from './mocks'
-import { createBeagleViewMock } from '../test-utils'
+import { createBeagleViewMock } from '../utils/test-utils'
 import defaultActionHandlers from '../../src/actions'
 import { ActionHandlerParams, BeagleAction } from '../../src/actions/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, BeagleView } from '../../src/types'
@@ -160,11 +159,12 @@ describe('EventHandler', () => {
   
     expect(Expression.resolveForAction).toHaveBeenCalledWith(
       action,
-      [{ id: 'onInit', value: event }],
+      [{ id: 'global', value: null }, { id: 'onInit', value: event }],
     )
 
     Expression.resolveForAction = originalResolve
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
+    
     alert.mockClear()
   })
 

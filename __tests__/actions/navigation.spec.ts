@@ -19,23 +19,29 @@ import createBeagleView from "../../src/BeagleUIView"
 import NavigationActions from '../../src/actions/navigation'
 import UrlBuilder from '../../src/UrlBuilder'
 import BeagleHttpClient from '../../src/BeagleHttpClient'
-import { mockLocalStorage } from '../test-utils'
+import { mockLocalStorage } from '../utils/test-utils'
+import { namespace } from '../../src/utils/tree-fetching'
+import { treeA } from "../mocks"
 
 describe('Actions: Navigation', () => {
-
   let beagleView: BeagleView
   let params
   const baseUrl = 'http://teste.com'
   const element = { _beagleComponent_: 'button', id: 'button' }
   const externalUrl = 'http://google.com'
   const initialStack = [{ url: '/home' }]
-  const localStorageMock = mockLocalStorage()
   const lifecycles: LifecycleHookMap = {
     afterViewSnapshot: { components: {} },
     beforeRender: { components: {} },
     beforeStart: { components: {} },
     beforeViewSnapshot: { components: {} }
   }
+  const url = 'http://my-app/my-view'
+
+  const localStorageMock = mockLocalStorage({
+    [`${namespace}/${url}/get`]: JSON.stringify(treeA),
+    [`${namespace}/${url}/post`]: JSON.stringify(treeA),
+  })
 
   const pushStack = () => {
     NavigationActions['beagle:pushStack']({
@@ -75,6 +81,13 @@ describe('Actions: Navigation', () => {
     localStorageMock.clear()
     UrlBuilder.setBaseUrl(baseUrl)
     beagleView = createBeagleView('/home', {}, lifecycles, {})
+    /* fixme: the tests in this file execute async operations that will result in errors since
+     * the route they call doesn't exist. These async operations should be awaited before returning.
+     * Since they're not being awaited, the beagle view tries to log to the console after the tests
+     * are done. These operations should, somehow, be awaited before the tests finish. As a fast
+     * fix, the following line prevents the beagle view from logging errors.
+     */
+    beagleView.addErrorListener(() => { /* ignore errors */ })
     params = {
       beagleView,
       element,

@@ -16,7 +16,23 @@
 
 import findLast from 'lodash/findLast'
 import last from 'lodash/last'
+import globalContextApi from '../GlobalContextAPI'
 import { IdentifiableBeagleUIElement, DataContext } from '../types'
+
+const RESERVED_WORDS = ['global', 'true', 'false', 'null', 'item']
+
+function checkContextId(component: IdentifiableBeagleUIElement) {
+  if (!component.context) return
+  const contextId = component.context.id
+
+  RESERVED_WORDS.forEach(word => {
+    if (contextId === word) {
+      console.warn(
+        `Beagle: context error. The context id "${word}" is a reserved word and probably won't work as expected. Please, consider renaming your context.`,
+      )
+    }
+  })
+}
 
 /**
  * Parses a tree looking for the context hierarchy of each component. The context hierarchy of a
@@ -34,6 +50,8 @@ function evaluate(viewTree: IdentifiableBeagleUIElement): Record<string, DataCon
     component: IdentifiableBeagleUIElement,
     contextHierarchy: DataContext[],
   ) {
+    checkContextId(component)
+
     const hierarchy = component.context
       ? [...contextHierarchy, component.context]
       : contextHierarchy
@@ -43,7 +61,7 @@ function evaluate(viewTree: IdentifiableBeagleUIElement): Record<string, DataCon
     component.children.forEach(child => evaluateContextHierarchy(child, hierarchy))
   }
 
-  evaluateContextHierarchy(viewTree, [])
+  evaluateContextHierarchy(viewTree, [globalContextApi.getAsDataContext()])
 
   return contextMap
 }

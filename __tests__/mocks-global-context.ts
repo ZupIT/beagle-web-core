@@ -13,17 +13,28 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { BeagleHttpClient } from './types'
 
-function createBeagleHttpClient(): BeagleHttpClient {
-  let fetchFn: typeof fetch
-
-  return {
-    fetch: (...args) => (fetchFn || fetch)(...args),
-    setFetchFunction: (newFetchFn: typeof fetch) => fetchFn = newFetchFn,
-  }
+export const usersObjectCellphone = {
+  users: [
+    {
+      name: "Fulano", cpf: '000.000.000-00',
+      cellphone: [{ ddd: '34', phone: '9999' }, { ddd: '31', phone: '8888' }]
+    },
+    {
+      name: "Maria", cpf: '111.111.111-11',
+      cellphone: [{ ddd: '11', phone: '0000' }, { ddd: '64', phone: '1111' }]
+    },
+    {
+      name: "Jose", cpf: '222.222.222-22',
+      cellphone: [{ ddd: '61', phone: '2222' }]
+    }
+  ]
 }
 
-const beagleHttpClient = createBeagleHttpClient()
-
-export default beagleHttpClient
+export const usersObject = {
+  users: [
+    { name: "Fulano", cpf: '000.000.000-00' },
+    { name: "Maria", cpf: '111.111.111-11' },
+    { name: "Jose", cpf: '222.222.222-22' }
+  ]
+}

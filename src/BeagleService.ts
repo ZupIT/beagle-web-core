@@ -22,6 +22,9 @@ import { loadFromCache, loadFromServer } from './utils/tree-fetching'
 import { checkPrefix } from './utils/tree-manipulation'
 import defaultActionHandlers from './actions'
 import ComponentMetadata, { ExtractedMetadata } from './ComponentMetadata'
+import beagleStorage from './BeagleStorage'
+import beagleHeaders from './utils/beagle-headers'
+import globalContext from './GlobalContextAPI'
 import {
   DefaultSchema,
   BeagleConfig,
@@ -80,6 +83,9 @@ function createBeagleUIService<
     }
   }
 
+  beagleHeaders.setUseBeagleHeaders(config.useBeagleHeaders)
+  if (config.customStorage) beagleStorage.setStorage(config.customStorage)
+
   return {
     loadBeagleUITreeFromServer: loadFromServer,
     loadBeagleUITreeFromCache: loadFromCache,
@@ -90,6 +96,7 @@ function createBeagleUIService<
       metadata.children,
     ),
     getConfig: () => config,
+    globalContext,
   }
 }
 

@@ -1,6 +1,6 @@
 import nock from 'nock'
 import sendRequest from '../../src/actions/sendRequest'
-import { createBeagleViewMock } from '../test-utils'
+import { createBeagleViewMock } from '../utils/test-utils'
 import beagleHttpClient from '../../src/BeagleHttpClient'
 import UrlBuilder from '../../src/UrlBuilder'
 

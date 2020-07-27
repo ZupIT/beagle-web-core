@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import URLBuilder from '../src/URLBuilder'
+import URLBuilder from '../../src/URLBuilder'
 
 describe('URL-Builder', () => {
   describe('Builder tests', () => {
@@ -180,6 +180,16 @@ describe('URL-Builder', () => {
     it('should handle empty path when baseURL is empty', () => {
       const path = ''
       expect(URLBuilder.build(path)).toEqual('')
+    })
+  })
+  describe('check encode URL', () => {
+    const encodedUrl = 'https://www.guiaviagensbrasil.com/imagens/Imagem%20do%20mar%20calma%20e%20belo%20da%20Praia%20da%20Engenhoca-Itacar%C3%A9-Bahia-BA.jpg'
+    const notEncodedUrl = 'https://www.guiaviagensbrasil.com/imagens/Imagem do mar calma e belo da Praia da Engenhoca-Itacaré-Bahia-BA.jpg'
+    it('should not encode URL', () => {
+      expect(URLBuilder.build(encodedUrl)).toEqual(encodedUrl)
+    })
+    it('should encode URL', () => {
+      expect(URLBuilder.build(notEncodedUrl)).toEqual(encodedUrl)
     })
   })
 })

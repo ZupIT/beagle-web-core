@@ -159,3 +159,85 @@ export function createMockWithSameIdContexts(): IdentifiableBeagleUIElement {
     ],
   }
 }
+
+export const treeWithGlobalContext: IdentifiableBeagleUIElement = {
+  "context": {
+    "id": "global",
+    "value": {
+      "text": "testing value of context with global id"
+    }
+  },
+  "_beagleComponent_":"beagle:container",
+  "id": "container1",
+  "children":[
+    {
+      "_beagleComponent_":"beagle:container",
+      "id": "container2",
+      "children":[
+        {
+          "_beagleComponent_":"beagle:text1",
+          "id": "txt1",
+          "text":"@{global.text}"
+        },
+        {
+          "_beagleComponent_":"beagle:text2",
+          "id": "txt2",
+          "text":"@{global.obj.inner.text}"
+        }
+      ]
+    }
+  ]
+}
+
+export const treeWithValidContext: IdentifiableBeagleUIElement = {
+  "context": {
+    "id": "contextId",
+    "value": {
+      "text": "teste"
+    }
+  },
+  "_beagleComponent_":"beagle:container",
+  "id": "1",
+  "children":[
+    {
+      "_beagleComponent_":"beagle:container",
+      "id": "2",
+      "children":[
+        {
+          "id": "3",
+          "_beagleComponent_":"beagle:text",
+          "text":"@{contextId.text}"
+        },
+        {
+          "id": "4",
+          "_beagleComponent_":"beagle:text",
+          "text":"@{global.obj.inner.text}"
+        }
+      ]
+    },
+    {
+      "_beagleComponent_":"beagle:container",
+      "id": "5",
+      "children":[
+        {
+          "_beagleComponent_":"beagle:text",
+          "id": "6",
+          "text":"Hello @{global.user.name}, your current balance is @{global.user.balance}."
+        },
+        {
+          "_beagleComponent_":"beagle:button",
+          "id": "7",
+          "text":"Testing set global context",
+          "onPress":[
+            {
+              "_beagleAction_":"beagle:setContext",
+              "contextId":"global",
+              "path":"user.balance",
+              "value":97.87
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

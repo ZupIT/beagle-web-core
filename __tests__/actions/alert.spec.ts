@@ -1,5 +1,5 @@
 import alert from '../../src/actions/alert'
-import { createBeagleViewMock, mockSystemDialogs } from '../test-utils'
+import { createBeagleViewMock, mockSystemDialogs } from '../utils/test-utils'
 
 describe('Actions: alert', () => {
   it('should show alert message', () => {

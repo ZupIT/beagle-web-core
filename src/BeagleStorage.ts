@@ -13,17 +13,17 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { BeagleHttpClient } from './types'
+import { BeagleStorage } from './types'
 
-function createBeagleHttpClient(): BeagleHttpClient {
-  let fetchFn: typeof fetch
+function createBeagleStorage(): BeagleStorage {
+  let storage: Storage = window.localStorage
 
   return {
-    fetch: (...args) => (fetchFn || fetch)(...args),
-    setFetchFunction: (newFetchFn: typeof fetch) => fetchFn = newFetchFn,
+      getStorage: () => storage,
+      setStorage: (newStorageFn: Storage) => storage = newStorageFn,
   }
 }
 
-const beagleHttpClient = createBeagleHttpClient()
+const beagleStorage = createBeagleStorage()
 
-export default beagleHttpClient
+export default beagleStorage

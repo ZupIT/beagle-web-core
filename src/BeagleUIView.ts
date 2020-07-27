@@ -34,6 +34,7 @@ import createBeagleNavigator from './BeagleNavigator'
 import { addPrefix } from './utils/string'
 import createRenderer from './Renderer'
 import { ActionHandler } from './actions/types'
+import globalContextApi from './GlobalContextAPI'
 
 const createBeagleView = <Schema>(
   initialRoute: string,
@@ -103,6 +104,7 @@ const createBeagleView = <Schema>(
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
+        retry: () => fetch(params, elementId, mode),
       })
     } catch (errors) {
       // removes the loading component when an error component should not be rendered
@@ -140,6 +142,8 @@ const createBeagleView = <Schema>(
     setTree,
     typesMetadata: {},
   })
+
+  globalContextApi.subscribe(() => renderer.doFullRender(getTree()))
 
   return beagleView
 }

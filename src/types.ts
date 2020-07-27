@@ -40,7 +40,9 @@ export type ErrorListener = (errors: Array<BeagleError>) => void
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type Strategy = (
-  'network-with-fallback-to-cache'
+  'beagle-cache-only'
+  | 'beagle-with-fallback-to-cache'
+  | 'network-with-fallback-to-cache'
   | 'cache-with-fallback-to-network'
   | 'cache-only'
   | 'network-only'
@@ -80,9 +82,32 @@ export interface Analytics {
   trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
 }
 
+export interface BeagleDefaultHeaders {
+  'beagle-platform': 'WEB',
+  'beagle-hash'?: string,
+}
+
+export interface BeagleHeaders {
+  setUseBeagleHeaders: (useDefaultBeagleHeaders?: boolean) => void,
+  getBeagleHeaders: (url: string, method: HttpMethod) => Promise<{} | BeagleDefaultHeaders>,
+}
+
+export interface CacheMetadata {
+  'beagleHash': string,
+  'requestTime': number,
+  'ttl': string,
+}
+
+export type ConfigCacheMetadata = Record<string, CacheMetadata>
+
 export interface BeagleHttpClient {
   fetch: typeof fetch,
   setFetchFunction: (fetchFn: typeof fetch) => void,
+}
+
+export interface BeagleStorage {
+  getStorage: () => Storage,
+  setStorage: (newStorageFn: Storage) => void,
 }
 
 export interface BeagleConfig<Schema> {
@@ -100,6 +125,8 @@ export interface BeagleConfig<Schema> {
   },
   customActions?: Record<string, ActionHandler>,
   lifecycles?: Partial<Record<Lifecycle, (viewTree: Record<string, any>) => void>>,
+  customStorage?: Storage,
+  useBeagleHeaders?: boolean,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -129,16 +156,18 @@ export interface IdentifiableBeagleUIElement<Schema = DefaultSchema>
 }
 
 export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConfig<Schema>> {
-  loadBeagleUITreeFromServer: (url: string, method?: HttpMethod) =>
-    Promise<BeagleUIElement<Schema>>,
-  loadBeagleUITreeFromCache: (
+  loadBeagleUITreeFromServer: (
     url: string,
     method?: HttpMethod,
     headers?: Record<string, string>,
-    shouldSaveCache?: boolean,
+  ) => Promise<BeagleUIElement<Schema>>,
+  loadBeagleUITreeFromCache: (
+    url: string,
+    method?: HttpMethod,
   ) => Promise<BeagleUIElement<Schema> | null>,
   createView: (initialRoute: string) => BeagleView<Schema>,
   getConfig: () => ConfigType,
+  globalContext: GlobalContextAPI,
 }
 
 export type Stack = Route[]
@@ -212,4 +241,19 @@ export interface Renderer {
 export interface ComponentMetadata {
   children: ChildrenMetadata,
   lifecycles: Partial<Record<Lifecycle, LifecycleHook>>,
+}
+
+export type GlobalContextListener = () => void
+
+export interface GlobalContextAPI {
+  get: (path?: string) => any,
+  set: (value: any, path?: string) => void,
+  clear: (path?: string) => void,
+  getAsDataContext: () => DataContext,
+  subscribe: (listener: GlobalContextListener) => (() => void),
+}
+
+export interface ErrorComponentParams {
+  retry: () => void,
+  errors: string[],
 }

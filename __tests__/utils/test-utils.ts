@@ -14,7 +14,8 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, BeagleView, Renderer } from '../src/types'
+import BeagleStorage from '../../src/BeagleStorage'
+import { BeagleUIElement, BeagleView, Renderer } from '../../src/types'
 
 export function mockLocalStorage(storage: Record<string, string> = {}) {
   const initialStorage = { ...storage }
@@ -22,11 +23,13 @@ export function mockLocalStorage(storage: Record<string, string> = {}) {
   const original = globalScope.localStorage
 
   const localStorageObject = {
-    getItem: jest.fn(key => Promise.resolve(storage[key] || null)),
+    getItem: jest.fn(key => storage[key] || null),
     setItem: jest.fn((key, value) => storage[key] = value),
   }
   
   globalScope.localStorage = localStorageObject
+  // @ts-ignore
+  BeagleStorage.setStorage(localStorageObject)
 
   return {
     unmock: () => globalScope.localStorage = original,

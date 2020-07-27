@@ -1,5 +1,5 @@
 import confirm from '../../src/actions/confirm'
-import { createBeagleViewMock, mockSystemDialogs } from '../test-utils'
+import { createBeagleViewMock, mockSystemDialogs } from '../utils/test-utils'
 
 describe('Actions: beagle:confirm', () => {
   it('should show confirm message', () => {

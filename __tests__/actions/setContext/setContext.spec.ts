@@ -1,6 +1,7 @@
+import globalContextApi from '../../../src/GlobalContextAPI'
 import setContext from '../../../src/actions/setContext'
 import { findById } from '../../../src/utils/tree-reading'
-import { createBeagleViewMock } from '../../test-utils'
+import { createBeagleViewMock } from '../../utils/test-utils'
 import { IdentifiableBeagleUIElement } from '../../../src/types'
 import {
   createSingleContextMock,
@@ -8,6 +9,7 @@ import {
   createMockWithDistantContext,
   createSameLevelContextMock,
   createMultipleScopesMock,
+  createGlobalContextMock,
 } from './mocks'
 
 describe('Actions: beagle:setContext', () => {
@@ -226,6 +228,7 @@ describe('Actions: beagle:setContext', () => {
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
+        contextId: 'blah',
         value: 'test',
       },
       beagleView,
@@ -324,4 +327,61 @@ describe('Actions: beagle:setContext', () => {
       },
     })
   })
+
+  it('should update global context if it is the only context present', () => {
+    globalContextApi.set = jest.fn()
+    const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        value: 'test',
+      },
+      beagleView,
+      element: mock,
+      executeAction: jest.fn(),
+    }) 
+    expect(globalContextApi.set).toHaveBeenCalled()
+  })
+
+  it('should call set global context when updating a global context', () => {
+    globalContextApi.set = jest.fn()
+    const mock = createGlobalContextMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+  
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'global',
+        value: 'new value',
+      },
+      beagleView,
+      element: findById(mock, 'button'),
+      executeAction: jest.fn(),
+    })
+  
+    expect(globalContextApi.set).toHaveBeenCalledWith('new value', undefined)
+  })
+
+  it('should call set global context when updating a global context and pass path if defined', () => {
+    globalContextApi.set = jest.fn()
+    const mock = createGlobalContextMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+  
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'global',
+        value: 'new value',
+        path: 'testing.path'
+      },
+      beagleView,
+      element: findById(mock, 'button'),
+      executeAction: jest.fn(),
+    })
+  
+    expect(globalContextApi.set).toHaveBeenCalledWith('new value', 'testing.path')
+  })
+
 })
