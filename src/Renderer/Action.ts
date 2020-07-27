@@ -16,6 +16,7 @@
 
 import { IdentifiableBeagleUIElement, DataContext, BeagleView } from '../types'
 import { BeagleAction, ActionHandler } from '../actions/types'
+import { getValueByCaseInsentiveKey } from '../utils/Object'
 import Expression from './Expression'
 
 const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
@@ -63,7 +64,7 @@ function deserializeAction(
     }
 
     actionList.forEach((action) => {
-      const handler = params.actionHandlers[action._beagleAction_]
+      const handler = getValueByCaseInsentiveKey(params.actionHandlers, action._beagleAction_)
 
       if (!handler) {
         console.warn(`Beagle: couldn't find an action handler for "${action._beagleAction_}"`)

@@ -221,22 +221,20 @@ describe('EventHandler', () => {
     expect(typeof modalContent.onInit).toBe('function')
   })
 
-  // todo: re-implement case-insensitivity
-  // it('should handle action with upper letter', () => {
-  //   const beagleView = createBeagleViewMock()
-  //   const eventHandler = createEventHandler({},beagleView)
-  //   const action = { _beagleAction_: 'beagle:aLErt', value: 'test' }
-  //   const mock = createContainerWithAction('onInit', action)
-  //   const treeWithFunction = eventHandler.interpretEventsInTree(mock)
-  //   const alertEvent = defaultActionHandlers['beagle:alert'] as jest.Mock
+  it('should handle action with upper letter', () => {
+    const beagleView = createBeagleViewMock()
+    const action = { _beagleAction_: 'beagle:aLErt', value: 'test' }
+    const mock = createContainerWithAction('onInit', action)
+    interpretEventsInTree(mock, beagleView)
+    const alertEvent = defaultActionHandlers['beagle:alert'] as jest.Mock
 
-  //   treeWithFunction.onInit()
+    mock.onInit()
 
-  //   expectActionHandlerToHaveBeenCalled({
-  //     handler: alertEvent,
-  //     action,
-  //     beagleView,
-  //     element: treeWithFunction,
-  //   })
-  // })
+    expectActionHandlerToHaveBeenCalled({
+      handler: alertEvent,
+      action,
+      beagleView,
+      element: mock,
+    })
+  })
 })
