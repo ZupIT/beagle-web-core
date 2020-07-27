@@ -229,8 +229,6 @@ const createBeagleView = <Schema>({
     return urlFormatter
   }
 
-  globalContextApi.subscribe(() => updateWithTree({ sourceTree: getTree() }))
-
   return {
     subscribe,
     addErrorListener,
