@@ -25,6 +25,8 @@ import ComponentMetadata, { ExtractedMetadata } from './ComponentMetadata'
 import beagleStorage from './BeagleStorage'
 import beagleHeaders from './utils/beagle-headers'
 import globalContext from './GlobalContextAPI'
+import lazyComponentMiddleware from './legacy/lazyComponent'
+import tabViewMiddleware from './legacy/lazyComponent'
 import {
   DefaultSchema,
   BeagleConfig,
@@ -62,6 +64,11 @@ function createBeagleUIService<
   ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
 > (config: ConfigType): BeagleUIService<Schema, ConfigType> {
 
+  // legacy code: remove as soon as legacy middlewares have been transferred somewhere else
+  if (!config.middlewares) config.middlewares = []
+  config.middlewares.push(lazyComponentMiddleware, tabViewMiddleware)
+  // end of legacy code
+
   checkPrefix(config.components)
   config.customActions && checkPrefix(config.customActions)
 
@@ -76,12 +83,18 @@ function createBeagleUIService<
   // compatibility mode for middlewares. Remove on v2.0.0
   if (config.middlewares) {
     config.lifecycles = config.lifecycles || {}
-    const originalBeforeRender = config.lifecycles.beforeRender
-    config.lifecycles.beforeRender = (viewTree) => {
-      if (originalBeforeRender) originalBeforeRender(viewTree)
-      config.middlewares!.forEach(m => m(viewTree as BeagleUIElement<Schema>))
+    const originalBeforeViewSnapshot = config.lifecycles.beforeViewSnapshot
+    config.lifecycles.beforeViewSnapshot = (viewTree) => {
+      let result = originalBeforeViewSnapshot ? originalBeforeViewSnapshot(viewTree) : viewTree
+      if (!result) result = viewTree 
+      config.middlewares!.forEach((middleware) => {
+        result = middleware(viewTree as BeagleUIElement<Schema>)
+      })
+  
+      return result
     }
   }
+  // end of compatibility mode
 
   beagleHeaders.setUseBeagleHeaders(config.useBeagleHeaders)
   if (config.customStorage) beagleStorage.setStorage(config.customStorage)
