@@ -59,7 +59,7 @@ describe('BeagleUIView', () => {
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 1', id: '1' })
     view.updateWithTree({ sourceTree: { _beagleComponent_: 'test 2', id: '2' } })
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 2', id: '2' })
-    expect(globalContextApi.subscribe).toHaveBeenCalled()
+    expect(globalContextApi.subscribe).not.toHaveBeenCalled()
   })
 
   it('should subscribe to view changes', async () => {
