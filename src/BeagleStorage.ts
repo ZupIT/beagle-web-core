@@ -16,10 +16,10 @@
 import { BeagleStorage } from './types'
 
 function createBeagleStorage(): BeagleStorage {
-  let storage: Storage = window.localStorage
+  let storage: Storage
 
   return {
-      getStorage: () => storage,
+      getStorage: () => storage || localStorage,
       setStorage: (newStorageFn: Storage) => storage = newStorageFn,
   }
 }
