@@ -10,8 +10,7 @@
     "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": false
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*",
