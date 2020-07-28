@@ -22,7 +22,7 @@ on:
 
 jobs:
   validation:
-    runs-on: windows
+    runs-on: windows-latest
 
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
