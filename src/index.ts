@@ -30,6 +30,7 @@ import {
   BeagleView,
   Strategy,
   ErrorComponentParams,
+  ComponentWithMetadata,
 } from './types'
 
 export default createBeagleUIService
@@ -50,4 +51,5 @@ export {
   CustomAction,
   BeagleAnalytics,
   ErrorComponentParams,
+  ComponentWithMetadata,
 }

@@ -239,8 +239,12 @@ export interface Renderer {
 }
 
 export interface ComponentMetadata {
-  children: ChildrenMetadata,
-  lifecycles: Partial<Record<Lifecycle, LifecycleHook>>,
+  children?: ChildrenMetadata,
+  lifecycles?: Partial<Record<Lifecycle, LifecycleHook>>,
+}
+
+export interface ComponentWithMetadata {
+  beagleMetadata?: ComponentMetadata,
 }
 
 export type GlobalContextListener = () => void

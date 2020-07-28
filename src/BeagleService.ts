@@ -45,42 +45,21 @@ function getLifecycleHookMap(
       global: globalLifecycleHooks && globalLifecycleHooks.beforeStart,
     },
     beforeViewSnapshot: {
-      components: {},
+      components: componentLifecycleHooks.beforeViewSnapshot,
       global: globalLifecycleHooks && globalLifecycleHooks.beforeViewSnapshot,
     },
     afterViewSnapshot: {
-      components: {},
+      components: componentLifecycleHooks.afterViewSnapshot,
       global: globalLifecycleHooks && globalLifecycleHooks.afterViewSnapshot,
     },
     beforeRender: {
-      components: {},
+      components: componentLifecycleHooks.beforeRender,
       global: globalLifecycleHooks && globalLifecycleHooks.beforeRender,
     },
   }
 }
 
-function createBeagleUIService<
-  Schema = DefaultSchema,
-  ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
-> (config: ConfigType): BeagleUIService<Schema, ConfigType> {
-
-  // legacy code: remove as soon as legacy middlewares have been transferred somewhere else
-  if (!config.middlewares) config.middlewares = []
-  config.middlewares.push(lazyComponentMiddleware, tabViewMiddleware)
-  // end of legacy code
-
-  checkPrefix(config.components)
-  config.customActions && checkPrefix(config.customActions)
-
-  beagleHttpClient.setFetchFunction(config.fetchData || fetch)
-  urlBuilder.setBaseUrl(config.baseUrl || '')  
-  config.analytics && beagleAnalytics.setAnalytics(config.analytics)
-
-  const actionHandlers = { ...defaultActionHandlers, ...config.customActions }
-  const metadata = ComponentMetadata.extract(config.components)
-  const lifecycleHooks = getLifecycleHookMap(config.lifecycles, metadata.lifecycles)
-
-  // compatibility mode for middlewares. Remove on v2.0.0
+function updateMiddlewaresInConfiguration(config: BeagleConfig<any>) {
   if (config.middlewares) {
     config.lifecycles = config.lifecycles || {}
     const originalBeforeViewSnapshot = config.lifecycles.beforeViewSnapshot
@@ -88,17 +67,51 @@ function createBeagleUIService<
       let result = originalBeforeViewSnapshot ? originalBeforeViewSnapshot(viewTree) : viewTree
       if (!result) result = viewTree 
       config.middlewares!.forEach((middleware) => {
-        result = middleware(viewTree as BeagleUIElement<Schema>)
+        result = middleware(viewTree as BeagleUIElement<any>)
       })
   
       return result
     }
   }
-  // end of compatibility mode
+}
 
+function checkConfiguration(config: BeagleConfig<any>) {
+  checkPrefix(config.components)
+  config.customActions && checkPrefix(config.customActions)
+
+  // todo: legacy code, remove as soon as legacy middlewares have been transferred somewhere else
+  if (!config.middlewares) config.middlewares = []
+  config.middlewares.push(lazyComponentMiddleware, tabViewMiddleware)
+  // end of legacy code
+
+  // todo: remove with version 2.0
+  updateMiddlewaresInConfiguration(config)
+}
+
+function initializeServices(config: BeagleConfig<any>) {
+  beagleHttpClient.setFetchFunction(config.fetchData || fetch)
+  urlBuilder.setBaseUrl(config.baseUrl || '')  
+  config.analytics && beagleAnalytics.setAnalytics(config.analytics)
   beagleHeaders.setUseBeagleHeaders(config.useBeagleHeaders)
   if (config.customStorage) beagleStorage.setStorage(config.customStorage)
+}
 
+function processConfiguration(config: BeagleConfig<any>) {
+  const actionHandlers = { ...defaultActionHandlers, ...config.customActions }
+  const metadata = ComponentMetadata.extract(config.components)
+  const lifecycleHooks = getLifecycleHookMap(config.lifecycles, metadata.lifecycles)
+
+  return { actionHandlers, metadata, lifecycleHooks }
+}
+
+function createBeagleUIService<
+  Schema = DefaultSchema,
+  ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
+> (config: ConfigType): BeagleUIService<Schema, ConfigType> {
+  checkConfiguration(config)
+  initializeServices(config)
+  const { actionHandlers, metadata, lifecycleHooks } = processConfiguration(config)
+  
   return {
     loadBeagleUITreeFromServer: loadFromServer,
     loadBeagleUITreeFromCache: loadFromCache,

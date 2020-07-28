@@ -19,8 +19,8 @@ import { createQueryString } from '../../utils/querystring'
 import { BeagleNavigator } from '../../types'
 import { loadFromCache } from '../../utils/tree-fetching'
 import { addPrefix } from '../../utils/string'
-import { getOriginalKeyByCaseInsensitiveKey } from '../../utils/object'
-import urlBuilder from '../../URLBuilder'
+import { getOriginalKeyByCaseInsensitiveKey } from '../../utils/Object'
+import urlBuilder from '../../UrlBuilder'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,

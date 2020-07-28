@@ -34,7 +34,7 @@ function isBeagleAction(data: any) {
   return (
     data
     && typeof data === 'object'
-    && (data._beagleAction_ || (Array.isArray(data) && data[0]._beagleAction_))
+    && (data._beagleAction_ || (Array.isArray(data) && data[0] && data[0]._beagleAction_))
   )
 }
 
@@ -46,7 +46,7 @@ function deserializeAction(
   const actionList = Array.isArray(actionOrActionList) ? actionOrActionList : [actionOrActionList]
 
   return function (event: any) {
-    const hierarchy = event 
+    const hierarchy = event !== undefined
       ? [...params.contextHierarchy, { id: eventName, value: event }]
       : params.contextHierarchy
 

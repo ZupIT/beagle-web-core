@@ -62,7 +62,8 @@ function assignId(component: BeagleUIElement) {
 }
 
 /**
- * Removes every property in `component` that has the value `null`.
+ * Removes every property in `component` that has the value `null`. Ignores properties inside
+ * `children`.
  * 
  * This function alters the parameter `component`.
  * 
@@ -71,12 +72,16 @@ function assignId(component: BeagleUIElement) {
 function eraseNullProperties(component: BeagleUIElement) {
   function eraseNulls(data: any) {
     if (!data || typeof data !== 'object') return
-    if (Array.isArray(data)) data.forEach(eraseNulls)
+
+    if (Array.isArray(data)) {
+      data.forEach(eraseNulls)
+      return
+    }
+
     const keys = Object.keys(data)
     keys.forEach((key) => {
-      if (data === component && key === 'children') return
-      if (component[key] === null) delete component[key]
-      else eraseNulls(component[key])
+      if (data[key] === null) delete data[key]
+      else if (data !== component || key !== 'children') eraseNulls(data[key])
     })
   }
 

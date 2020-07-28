@@ -169,7 +169,8 @@ function orderKeys(keys: string[], orderRule: Record<string, boolean>) {
 
 function formatPositionProperty(position: BeagleStyle['position']) {
   let css: CSS = {}
-  if (!position || typeof position !== 'object') return css
+  if (!position) return css
+  if (typeof position !== 'object') return { position }
 
   let keys = Object.keys(position)
   keys = orderKeys(keys, POSITION_ORDER)
@@ -188,7 +189,8 @@ function formatPositionProperty(position: BeagleStyle['position']) {
 
 function formatFlexAttributes(flex: BeagleStyle['flex']) {
   const css: CSS = {}
-  if (!flex || typeof flex !== 'object') return css
+  if (!flex) return css
+  if (typeof flex !== 'object') return { flex }
 
   const keys = Object.keys(flex)
   keys.forEach((key) => {
@@ -231,7 +233,8 @@ function handleSpecialEdge(
 function formatEdgeAttributes(style: BeagleStyle, edgeType: 'margin' | 'padding') {
   let css: CSS = {}
   const edge = style[edgeType]
-  if (!edge || typeof edge !== 'object') return css
+  if (!edge) return css
+  if (typeof edge !== 'object') return { [edgeType]: edge }
 
   let keys = Object.keys(edge)
   keys = orderKeys(keys, EDGE_ORDER)

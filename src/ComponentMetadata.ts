@@ -25,13 +25,13 @@ function extract(components: BeagleConfig<any>['components']) {
 
   keys.forEach((key) => {
     const component = components[key]
-    const metadata: ComponentMetadata | undefined = component.__beagleMetadata
+    const metadata: ComponentMetadata | undefined = component.beagleMetadata
     if (!metadata) return
     if (metadata.children) extractedMetadata.children[key] = metadata.children
     if (metadata.lifecycles) {
       const lifecycleKeys = Object.keys(metadata.lifecycles) as Lifecycle[]
       lifecycleKeys.forEach(lifecycleKey => {
-        const hook = metadata.lifecycles[lifecycleKey]
+        const hook = metadata.lifecycles![lifecycleKey]
         if (!hook) return
         extractedMetadata.lifecycles[lifecycleKey][key] = hook
       })

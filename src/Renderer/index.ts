@@ -14,9 +14,8 @@
   * limitations under the License.
 */
 
-import Tree from '../utils/tree'
+import Tree from '../utils/Tree'
 import { replaceInTree, insertIntoTree } from '../utils/tree-manipulation'
-import { findById } from '../utils/tree-reading'
 import { ActionHandler } from '../actions/types'
 import {
   BeagleUIElement,
@@ -82,9 +81,9 @@ function createRenderer({
   
   function preProcess(viewTree: BeagleUIElement) {
     Tree.forEach(viewTree, (component) => {
-      Component.eraseNullProperties(component)
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
       Component.assignId(component)
+      Component.eraseNullProperties(component)
       Navigation.preFetchViews(component)
     })
 
@@ -112,15 +111,17 @@ function createRenderer({
   
   function evaluateComponents(viewTree: IdentifiableBeagleUIElement) {
     const contextMap = Context.evaluate(viewTree)
-    Tree.forEach(viewTree, (component) => {
+    return Tree.replaceEach(viewTree, (component) => {
       Action.deserialize({
         component,
         contextHierarchy: contextMap[component.id],
         actionHandlers,
         beagleView,
       })
-      Expression.resolveForComponent(component, contextMap[component.id])
-      Styling.convert(component)
+      const resolved = Expression.resolveForComponent(component, contextMap[component.id])
+      Styling.convert(resolved)
+
+      return resolved
     })
   }
 
@@ -152,17 +153,19 @@ function createRenderer({
     mode: TreeUpdateMode = 'replaceComponent',
   ) {
     takeViewSnapshot(viewTree, anchor, mode)
-    const currentViewTree = beagleView.getTree() as IdentifiableBeagleUIElement
-    /* if we're updating just a portion of the tree, we don't need to reprocess everything, let's
-    process only the desired branch */
-    let branch = findById(currentViewTree, anchor) || currentViewTree
-    branch = runLifecycle(branch, 'afterViewSnapshot')
-    evaluateComponents(branch)
-    branch = runLifecycle(branch, 'beforeRender')
-    checkTypes(branch)
-    // we must render the entire tree to the screen, not just the branch we've been updating
-    if (currentViewTree.id !== branch.id) replaceInTree(currentViewTree, branch, anchor)
-    renderToScreen(currentViewTree)
+    let view = beagleView.getTree() as IdentifiableBeagleUIElement
+
+    /* Next we are going to reprocess the entire tree. We're doing this because we need to guarantee
+    that every action or expression will be correctly parsed. But, considering the occasions we'll
+    be updating just a part of the tree, can't we store the last processed tree and use it instead
+    of processing everything again? Todo: study this performance enhancement. */
+
+    view = runLifecycle(view, 'afterViewSnapshot')
+    view = evaluateComponents(view)
+    view = runLifecycle(view, 'beforeRender')
+    checkTypes(view)
+
+    renderToScreen(view)
   }
   
   /**

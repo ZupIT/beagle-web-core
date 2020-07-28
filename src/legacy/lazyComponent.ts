@@ -38,6 +38,7 @@ const transformLazyComponent = (uiTree: BeagleUIElement<any>) => {
 
 const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
   Component.formatChildrenProperty(uiTree)
+  Component.assignId(uiTree)
   uiTree = transformLazyComponent(uiTree)
   if (uiTree.children) uiTree.children.forEach(beagleLazyComponentMiddleware)
   return uiTree
