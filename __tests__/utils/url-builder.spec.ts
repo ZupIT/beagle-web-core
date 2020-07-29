@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import URLBuilder from '../../src/URLBuilder'
+import URLBuilder from '../../src/UrlBuilder'
 
 describe('URL-Builder', () => {
   describe('Builder tests', () => {
