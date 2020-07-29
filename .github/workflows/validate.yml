@@ -44,9 +44,20 @@ jobs:
       run: yarn check-test-types
 
     - name: Jest Annotations & Coverage
+      if: ${{ github.repository_owner == 'ZupIT'}}
       uses: mattallty/jest-github-action@v1.0.3
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         test-command: "yarn test --maxWorkers=2"
+
+    - name: Jest Coverage
+      if: ${{ github.repository_owner != 'ZupIT'}}
+      uses: mattallty/jest-github-action@v1.0.3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        test-command: "yarn test --maxWorkers=2"
+        coverage-comment: false
+
 
