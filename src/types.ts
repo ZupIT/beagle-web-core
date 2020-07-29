@@ -114,7 +114,7 @@ export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
   /**
-   * @deprecated Since version 1.1. Will be deleted in version 2.0. Use lifecycles instead.
+   * @deprecated Since version 1.2. Will be deleted in version 2.0. Use lifecycles instead.
    */
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
