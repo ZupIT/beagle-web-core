@@ -177,8 +177,8 @@ function createRenderer({
    * https://github.com/ZupIT/beagle-web-core/blob/master/docs/renderization.md
    * 
    * @param viewTree the new tree to render, can be just a new branch to add to the current tree
-   * @param anchor `viewTree` may be just a branch if not the entire view will be modified. In this
-   * case, `anchor` must be specified, it is the id of the component to attach `viewTree` to.
+   * @param anchor when `viewTree` is just a new branch to be added to the tree, `anchor` must be
+   * specified, it is the id of the component to attach `viewTree` to.
    * @param mode when `viewTree` is just a new branch to be added to the tree, the mode must be
    * specified. It can be `append`, `prepend` or `replace`.
    */
