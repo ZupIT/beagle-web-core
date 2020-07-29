@@ -15,14 +15,9 @@
 */
 
 import { ActionHandler, CustomAction } from './actions/types'
-import createEventHandler, { EventHandler } from './EventHandler'
-import { replaceBindings } from './bindings'
-import createBeagleUIView from './BeagleUIView'
 import BeagleContext from './BeagleContext'
 import BeagleAnalytics from './BeagleAnalytics'
-import createXMLConverter from './XMLConverter'
-import { loadFromCache, loadFromServer } from './utils/tree-fetching'
-import { checkPrefix } from './utils/tree-manipulation'
+import createBeagleUIService from './BeagleService'
 import {
   DefaultSchema,
   BeagleConfig,
@@ -30,34 +25,13 @@ import {
   BeagleUIElement,
   IdentifiableBeagleUIElement,
   BeagleUIService,
-  XmlOptions,
   HttpMethod,
   BeagleMiddleware,
   BeagleView,
   Strategy,
   ErrorComponentParams,
+  ComponentWithMetadata,
 } from './types'
-import globalContext from './GlobalContextAPI'
-
-function createBeagleUIService<
-  Schema = DefaultSchema,
-  ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
-> (config: ConfigType): BeagleUIService<Schema, ConfigType> {
-
-  checkPrefix(config.components)
-  config.customActions && checkPrefix(config.customActions)
-
-  const xmlConverter = createXMLConverter(config.components)
-
-  return {
-    loadBeagleUITreeFromServer: loadFromServer,
-    loadBeagleUITreeFromCache: loadFromCache,
-    convertBeagleUiTreeToXml: xmlConverter.convertBeagleUiTreeToXml,
-    createView: (initialRoute: string) => createBeagleUIView<Schema>(config, initialRoute),
-    getConfig: () => config,
-    globalContext: globalContext,
-  }
-}
 
 export default createBeagleUIService
 
@@ -68,7 +42,6 @@ export {
   BeagleUIElement,
   IdentifiableBeagleUIElement,
   BeagleUIService,
-  XmlOptions,
   HttpMethod,
   BeagleMiddleware,
   BeagleView,
@@ -76,9 +49,7 @@ export {
   BeagleContext,
   ActionHandler,
   CustomAction,
-  createEventHandler,
-  EventHandler,
-  replaceBindings,
   BeagleAnalytics,
   ErrorComponentParams,
+  ComponentWithMetadata,
 }

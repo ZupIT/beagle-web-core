@@ -14,7 +14,15 @@
   * limitations under the License.
 */
 
-import { addChild, clone, insertIntoTree, replaceInTree, checkPrefix, removeNullValues } from '../../src/utils/tree-manipulation'
+import {
+  addChild,
+  clone,
+  insertIntoTree,
+  replaceInTree,
+  checkPrefix,
+} from '../../src/utils/tree-manipulation'
+import Component from '../../src/Renderer/Component'
+import Tree from '../../src/utils/Tree'
 import { BeagleUIElement } from '../../src/types'
 import { treeA, treeB, configComponentsWrong } from '../mocks'
 import { last, hasDifferentPointers } from './test-utils'
@@ -75,28 +83,38 @@ describe('Utils: tree manipulation', () => {
       if it\'s a custom component or an action`))
   })
 
+  // fixme: move to Render/Component
   it('should remove null values', () => {
-    removeNullValues(treeAWithNull)
-    expect(treeAWithNull).toStrictEqual(cleanedTreeA)
+    const mock = clone(treeAWithNull)
+    Tree.forEach(mock, Component.eraseNullProperties)
+    expect(mock).toStrictEqual(cleanedTreeA)
   })
 
+  // fixme: move to Render/Component
   it('should remove null values from object props', () => {
-    removeNullValues(treeBWithNull)
-    expect(treeBWithNull).toStrictEqual(cleanedTreeB)
+    const mock = clone(treeBWithNull)
+    Tree.forEach(mock, Component.eraseNullProperties)
+    expect(mock).toStrictEqual(cleanedTreeB)
   })
 
+  // fixme: move to Render/Component
   it('should remove null values from children items', () => {
-    removeNullValues(treeCWithNull)
-    expect(treeCWithNull).toStrictEqual(cleanedTreeC)
+    const mock = clone(treeCWithNull)
+    Tree.forEach(mock, Component.eraseNullProperties)
+    expect(mock).toStrictEqual(cleanedTreeC)
   })
 
+  // fixme: move to Render/Component
   it('should remove null values from array items', () => {
-    removeNullValues(treeDWithNull)
-    expect(treeDWithNull).toStrictEqual(cleanedTreeD)
+    const mock = clone(treeDWithNull)
+    Tree.forEach(mock, Component.eraseNullProperties)
+    expect(mock).toStrictEqual(cleanedTreeD)
   })
 
+  // fixme: move to Render/Component
   it('should parse correctly tree with multiple levels', () => {
-    removeNullValues(treeEWithNull)
-    expect(treeEWithNull).toStrictEqual(cleanedTreeE)
+    const mock = clone(treeEWithNull)
+    Tree.forEach(mock, Component.eraseNullProperties)
+    expect(mock).toStrictEqual(cleanedTreeE)
   })
 })
