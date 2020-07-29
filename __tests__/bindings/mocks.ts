@@ -1,4 +1,4 @@
-import { BeagleUIElement } from '../../src/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement } from '../../src/types'
 
 export function createPerson() {
   return {
@@ -40,10 +40,11 @@ export function createSocialMediaData() {
   }
 }
 
-export function createSocialMediaMock(): BeagleUIElement {
+export function createSocialMediaMock(): IdentifiableBeagleUIElement {
   const data = createSocialMediaData()
   return {
     _beagleComponent_: 'container',
+    id: 'container1',
     context: {
       id: 'user',
       value: data.user,
@@ -58,6 +59,7 @@ export function createSocialMediaMock(): BeagleUIElement {
       },
       {
         _beagleComponent_: 'container',
+        id: 'container2',
         context: {
           id: 'friends',
           value: data.friends,
@@ -75,6 +77,7 @@ export function createSocialMediaMock(): BeagleUIElement {
           },
           {
             _beagleComponent_: 'container',
+            id: 'container3',
             context: {
               id: 'isModalOpen',
               value: false,
@@ -82,6 +85,7 @@ export function createSocialMediaMock(): BeagleUIElement {
             children: [
               {
                 _beagleComponent_: 'button',
+                id: 'btn1',
                 onPress: {
                   _beagleAction_: 'beagle:setContext',
                   value: true,
@@ -98,6 +102,7 @@ export function createSocialMediaMock(): BeagleUIElement {
       },
       {
         _beagleComponent_: 'container',
+        id: 'container4',
         context: {
           id: 'posts',
           value: data.posts,
@@ -133,17 +138,20 @@ export function createSocialMediaMock(): BeagleUIElement {
   }
 }
 
-export function createMockWithSameIdContexts(): BeagleUIElement {
+export function createMockWithSameIdContexts(): IdentifiableBeagleUIElement {
   return {
     _beagleComponent_: 'container',
+    id: 'container1',
     context: { id: 'ctx', value: 'jest-1' },
     children: [
       {
         _beagleComponent_: 'container',
+        id: 'container2',
         context: { id: 'ctx', value: 'jest-2' },
         children: [
           {
             _beagleComponent_: 'text',
+            id: 'text',
             value: '@{ctx}',
           },
         ],
@@ -152,7 +160,7 @@ export function createMockWithSameIdContexts(): BeagleUIElement {
   }
 }
 
-export const treeWithGlobalContext = {
+export const treeWithGlobalContext: IdentifiableBeagleUIElement = {
   "context": {
     "id": "global",
     "value": {
@@ -160,16 +168,20 @@ export const treeWithGlobalContext = {
     }
   },
   "_beagleComponent_":"beagle:container",
+  "id": "container1",
   "children":[
     {
       "_beagleComponent_":"beagle:container",
+      "id": "container2",
       "children":[
         {
           "_beagleComponent_":"beagle:text1",
+          "id": "txt1",
           "text":"@{global.text}"
         },
         {
           "_beagleComponent_":"beagle:text2",
+          "id": "txt2",
           "text":"@{global.obj.inner.text}"
         }
       ]
@@ -177,7 +189,7 @@ export const treeWithGlobalContext = {
   ]
 }
 
-export const treeWithValidContext = {
+export const treeWithValidContext: IdentifiableBeagleUIElement = {
   "context": {
     "id": "contextId",
     "value": {
@@ -185,16 +197,19 @@ export const treeWithValidContext = {
     }
   },
   "_beagleComponent_":"beagle:container",
+  "id": "1",
   "children":[
     {
       "_beagleComponent_":"beagle:container",
+      "id": "2",
       "children":[
         {
-          
+          "id": "3",
           "_beagleComponent_":"beagle:text",
           "text":"@{contextId.text}"
         },
         {
+          "id": "4",
           "_beagleComponent_":"beagle:text",
           "text":"@{global.obj.inner.text}"
         }
@@ -202,13 +217,16 @@ export const treeWithValidContext = {
     },
     {
       "_beagleComponent_":"beagle:container",
+      "id": "5",
       "children":[
         {
           "_beagleComponent_":"beagle:text",
+          "id": "6",
           "text":"Hello @{global.user.name}, your current balance is @{global.user.balance}."
         },
         {
           "_beagleComponent_":"beagle:button",
+          "id": "7",
           "text":"Testing set global context",
           "onPress":[
             {

@@ -14,24 +14,12 @@
   * limitations under the License.
 */
 
+// fixme: this should not be in the core library
+
+import Component from '../Renderer/Component'
 import { BeagleUIElement } from '../types'
 
-const convertChildToChildren = (uiTree: BeagleUIElement<any>) => {
-  if (uiTree.child) {
-    const child = uiTree.child
-    if (typeof child !== 'object') return uiTree
-
-    const childArray = Array.isArray(child) ? child : [child]
-    const children = uiTree.children
-    delete uiTree.children
-
-    uiTree.children = children ? [...children, ...childArray] : childArray
-    delete uiTree.child
-  }
-  return uiTree
-}
-
-const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
+const transformLazyComponent = (uiTree: BeagleUIElement<any>) => {
   const toLowerCaseName = uiTree._beagleComponent_ && uiTree._beagleComponent_.toString().toLowerCase()
   if (toLowerCaseName === 'beagle:lazycomponent' && uiTree.initialState) {
     const initialState = uiTree.initialState
@@ -48,12 +36,12 @@ const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
   return uiTree
 }
 
-const beagleConvertToChildrenMiddleware = (uiTree: BeagleUIElement<any>) => {
-  uiTree = convertChildToChildren(uiTree)
-  uiTree = beagleLazyComponentMiddleware(uiTree)
-
-  if (uiTree.children) uiTree.children.forEach(beagleConvertToChildrenMiddleware)
-
+const beagleLazyComponentMiddleware = (uiTree: BeagleUIElement<any>) => {
+  Component.formatChildrenProperty(uiTree)
+  Component.assignId(uiTree)
+  uiTree = transformLazyComponent(uiTree)
+  if (uiTree.children) uiTree.children.forEach(beagleLazyComponentMiddleware)
   return uiTree
 }
-export default beagleConvertToChildrenMiddleware
+
+export default beagleLazyComponentMiddleware

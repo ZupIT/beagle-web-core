@@ -1,3 +1,4 @@
+import globalContextApi from '../../../src/GlobalContextAPI'
 import setContext from '../../../src/actions/setContext'
 import { findById } from '../../../src/utils/tree-reading'
 import { createBeagleViewMock } from '../../utils/test-utils'
@@ -10,13 +11,12 @@ import {
   createMultipleScopesMock,
   createGlobalContextMock,
 } from './mocks'
-import globalContextApi from '../../../src/GlobalContextAPI'
 
 describe('Actions: beagle:setContext', () => {
   it('should set single context', () => {
     const mock = createSingleContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -24,17 +24,14 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: 'new value',
-        },
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: 'new value',
       },
     })
   })
@@ -42,7 +39,7 @@ describe('Actions: beagle:setContext', () => {
   it('should set the first context in the hierarchy', () => {
     const mock = createDoubleContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -50,30 +47,27 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        children: [
-          {
-            ...mock.children[0],
-            context: {
-              id: 'ctx_b',
-              value: 'new value',
-            },
-          }
-        ],
-      },
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      children: [
+        {
+          ...mock.children[0],
+          context: {
+            id: 'ctx_b',
+            value: 'new value',
+          },
+        }
+      ],
     })
   })
 
   it('should set context by id', () => {
     const mock = createDoubleContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -82,17 +76,14 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: 'new value',
-        },
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: 'new value',
       },
     })
   })
@@ -100,7 +91,7 @@ describe('Actions: beagle:setContext', () => {
   it('should set context three levels above', () => {
     const mock = createMockWithDistantContext()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -108,17 +99,14 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: 'new value',
-        },
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: 'new value',
       },
     })
   })
@@ -126,7 +114,7 @@ describe('Actions: beagle:setContext', () => {
   it('should set same-level context', () => {
     const mock = createSameLevelContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -134,17 +122,14 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: mock,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: 'new value',
-        },
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: 'new value',
       },
     })
   })
@@ -158,7 +143,7 @@ describe('Actions: beagle:setContext', () => {
     }
     const mock = createSameLevelContextMock(contextValue)
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -167,17 +152,14 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: mock,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: { ...contextValue, age: 32 },
-        },
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: { ...contextValue, age: 32 },
       },
     })
   })
@@ -191,7 +173,7 @@ describe('Actions: beagle:setContext', () => {
     }
     const mock = createSameLevelContextMock(contextValue)
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -200,17 +182,14 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: mock,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: { ...contextValue, phones: ['(00) 00000-0000', '(34) 3212-2221'] },
-        },
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: { ...contextValue, phones: ['(00) 00000-0000', '(34) 3212-2221'] },
       },
     })
   })
@@ -219,7 +198,7 @@ describe('Actions: beagle:setContext', () => {
     const contextValue = ['Lorem', 'Ipsum', 'Sin', 'It']
     const mock = createSameLevelContextMock(contextValue)
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -228,16 +207,122 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: mock,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: ['Lorem', 'Ipsum', 'Dolor', 'It'],
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: ['Lorem', 'Ipsum', 'Dolor', 'It'],
+      },
+    })
+  })
+
+  it('should warn and not update view if context doesn\'t exist', () => {
+    const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+    const originalWarn = console.warn
+    console.warn = jest.fn()
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'blah',
+        value: 'test',
+      },
+      beagleView,
+      element: mock,
+      executeAction: jest.fn(),
+    })
+
+    expect(console.warn).toHaveBeenCalled()
+    expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
+    console.warn = originalWarn
+  })
+
+  it('should warn and not update view if context is not part of current hierarchy', () => {
+    const mock = createMultipleScopesMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+    const originalWarn = console.warn
+    console.warn = jest.fn()
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'ctx_a',
+        value: 'test',
+      },
+      beagleView,
+      element: findById(mock, 'btn_b'),
+      executeAction: jest.fn(),
+    })
+
+    expect(console.warn).toHaveBeenCalled()
+    expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
+    console.warn = originalWarn
+  })
+
+  it('should create context structures according to path (object)', () => {
+    const contextValue = { name: 'Jest' }
+    const mock = createSameLevelContextMock(contextValue)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        path: 'lorem.ipsum.sin.it.dolor',
+        value: 'amet',
+      },
+      beagleView,
+      element: mock,
+      executeAction: jest.fn(),
+    })
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: { name: 'Jest', lorem: { ipsum: { sin: { it: { dolor: 'amet' } } } } },
+      },
+    })
+  })
+
+  it('should create context structures according to path (array)', () => {
+    const contextValue = { name: 'Jest' }
+    const mock = createSameLevelContextMock(contextValue)
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        path: 'lorem[1].ipsum.sin[3].it.dolor[0]',
+        value: 'amet',
+      },
+      beagleView,
+      element: mock,
+      executeAction: jest.fn(),
+    })
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx_a',
+        value: {
+          name: 'Jest',
+          lorem: [
+            undefined,
+            {
+              ipsum: {
+                sin: [
+                  undefined,
+                  undefined,
+                  undefined,
+                  { it: { dolor: ['amet'] } },
+                ],
+              },
+            },
+          ],
         },
       },
     })
@@ -255,8 +340,7 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: mock,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     }) 
     expect(globalContextApi.set).toHaveBeenCalled()
   })
@@ -274,8 +358,7 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn(),
     })
   
     expect(globalContextApi.set).toHaveBeenCalledWith('new value', undefined)
@@ -295,104 +378,10 @@ describe('Actions: beagle:setContext', () => {
       },
       beagleView,
       element: findById(mock, 'button'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn()
+      executeAction: jest.fn(),
     })
   
     expect(globalContextApi.set).toHaveBeenCalledWith('new value', 'testing.path')
   })
 
-  it('should warn and not update view if context is not part of current hierarchy', () => {
-    const mock = createMultipleScopesMock()
-    const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const originalWarn = console.warn
-    console.warn = jest.fn()
-
-    setContext({
-      action: {
-        _beagleAction_: 'beagle:setContext',
-        contextId: 'ctx_a',
-        value: 'test',
-      },
-      beagleView,
-      element: findById(mock, 'btn_b'),
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
-    }) 
-
-    expect(console.warn).toHaveBeenCalled()
-    expect(beagleView.updateWithTree).not.toHaveBeenCalled()
-    console.warn = originalWarn
-  })
-
-  it('should create context structures according to path (object)', () => {
-    const contextValue = { name: 'Jest' }
-    const mock = createSameLevelContextMock(contextValue)
-    const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
-    setContext({
-      action: {
-        _beagleAction_: 'beagle:setContext',
-        path: 'lorem.ipsum.sin.it.dolor',
-        value: 'amet',
-      },
-      beagleView,
-      element: mock,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
-    })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: { name: 'Jest', lorem: { ipsum: { sin: { it: { dolor: 'amet' } } } } },
-        },
-      },
-    })
-  })
-
-  it('should create context structures according to path (array)', () => {
-    const contextValue = { name: 'Jest' }
-    const mock = createSameLevelContextMock(contextValue)
-    const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
-    setContext({
-      action: {
-        _beagleAction_: 'beagle:setContext',
-        path: 'lorem[1].ipsum.sin[3].it.dolor[0]',
-        value: 'amet',
-      },
-      beagleView,
-      element: mock,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
-    })
-  
-    expect(beagleView.updateWithTree).toHaveBeenCalledWith({
-      sourceTree: {
-        ...mock,
-        context: {
-          id: 'ctx_a',
-          value: {
-            name: 'Jest',
-            lorem: [
-              undefined,
-              {
-                ipsum: {
-                  sin: [
-                    undefined,
-                    undefined,
-                    undefined,
-                    { it: { dolor: ['amet'] } },
-                  ],
-                },
-              },
-            ],
-          },
-        },
-      },
-    })
-  })
 })

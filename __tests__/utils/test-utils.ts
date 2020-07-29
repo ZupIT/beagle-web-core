@@ -14,7 +14,8 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, BeagleView } from '../../src/types'
+import BeagleStorage from '../../src/BeagleStorage'
+import { BeagleUIElement, BeagleView, Renderer } from '../../src/types'
 
 export function mockLocalStorage(storage: Record<string, string> = {}) {
   const initialStorage = { ...storage }
@@ -22,11 +23,13 @@ export function mockLocalStorage(storage: Record<string, string> = {}) {
   const original = globalScope.localStorage
 
   const localStorageObject = {
-    getItem: jest.fn(key => Promise.resolve(storage[key] || null)),
+    getItem: jest.fn(key => storage[key] || null),
     setItem: jest.fn((key, value) => storage[key] = value),
   }
   
   globalScope.localStorage = localStorageObject
+  // @ts-ignore
+  BeagleStorage.setStorage(localStorageObject)
 
   return {
     unmock: () => globalScope.localStorage = original,
@@ -81,14 +84,22 @@ export function stripTreeIds(tree: BeagleUIElement<any>): BeagleUIElement<any> {
   return newTree
 }
 
+export function createRenderer(): Renderer {
+  return {
+    doFullRender: jest.fn(),
+    doPartialRender: jest.fn(),
+  }
+}
+
 export function createBeagleViewMock(custom: Partial<BeagleView> = {}): BeagleView {
+  const renderer = createRenderer()
+
   return {
     addErrorListener: jest.fn(custom.addErrorListener),
     getTree: jest.fn(custom.getTree),
     subscribe: jest.fn(custom.subscribe),
-    updateWithFetch: jest.fn(custom.updateWithFetch),
-    updateWithTree: jest.fn(custom.updateWithTree),
-    getUrlBuilder: jest.fn(custom.getUrlBuilder || (() => ({ build: jest.fn((url => url)) }))),
+    fetch: jest.fn(custom.fetch),
     getBeagleNavigator: jest.fn(),
+    getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
   }
 }

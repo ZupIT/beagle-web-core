@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-import { IdentifiableBeagleUIElement, BeagleView, DataContext } from '../types'
+import { IdentifiableBeagleUIElement, BeagleView } from '../types'
 import { BeagleNavigationAction } from './navigation/types'
 
 type HTTPMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' |
@@ -81,10 +81,13 @@ export type BeagleAction = BeagleDefaultAction | CustomAction
 
 export interface ActionHandlerParams<Action extends BeagleAction = any> {
   action: Action,
-  eventContextHierarchy: DataContext[],
   element: IdentifiableBeagleUIElement,
   beagleView: BeagleView,
-  handleAction: ActionHandler<BeagleAction>,
+  executeAction: (
+    actionOrActionList: BeagleAction | BeagleAction[],
+    eventName?: string,
+    event?: any,
+  ) => void,
 }
 
 export type ActionHandler<Action extends BeagleAction = any> = (
