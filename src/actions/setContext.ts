@@ -15,7 +15,7 @@
 */
 
 import set from 'lodash/set'
-import { getContextHierarchyByElementId, getContextInHierarchy } from '../context'
+import Context from '../Renderer/Context'
 import globalContextApi from '../GlobalContextAPI'
 import { ActionHandler, SetContextAction } from './types'
 
@@ -23,8 +23,8 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   const { value, contextId, path } = action
 
   const uiTree = beagleView.getTree()
-  const contextHierarchy = getContextHierarchyByElementId(uiTree, element.id) || []
-  const context = getContextInHierarchy(contextHierarchy, contextId)
+  const contextHierarchy = Context.evaluate(uiTree)[element.id]
+  const context = Context.find(contextHierarchy, contextId)
 
   if (context && context.id === 'global') {
     globalContextApi.set(value,  path)
@@ -48,7 +48,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
     set(context.value, path, value)
   }
 
-  beagleView.updateWithTree({ sourceTree: uiTree })
+  beagleView.getRenderer().doPartialRender(uiTree)
 }
 
 export default setContext

@@ -14,8 +14,11 @@
   * limitations under the License.
 */
 
+// fixme: this should not be in the core library
+
 import { BeagleUIElement } from '../types'
-import beagleConvertToChildrenMiddleware from './beagle-convert-to-children'
+import Component from '../Renderer/Component'
+import Tree from '../utils/Tree'
 
 interface TabItem extends BeagleUIElement {
     title?: string,
@@ -24,24 +27,18 @@ interface TabItem extends BeagleUIElement {
 }
 
 const beagleTabViewMiddleware = (uiTree: BeagleUIElement<any>) => {
-    const toLowerCaseName = uiTree._beagleComponent_.toString().toLowerCase()
-    if (toLowerCaseName === 'beagle:tabview' && uiTree.children) {
-        const tabItems = uiTree.children as TabItem[]
-        const parsedItems = tabItems.map((tab: TabItem) => {
-            tab._beagleComponent_ = 'beagle:tabitem'
-            if (tab.child)
-                tab.children = [tab.child]
-            tab.children && tab.children.forEach(beagleConvertToChildrenMiddleware)
+  const toLowerCaseName = uiTree._beagleComponent_.toString().toLowerCase()
+  if (toLowerCaseName === 'beagle:tabview' && uiTree.children) {
+    const tabItems = uiTree.children as TabItem[]
+    tabItems.forEach((tab: TabItem) => {
+      tab._beagleComponent_ = 'beagle:tabitem'
+      Tree.forEach(tab, component => Component.formatChildrenProperty(component))
+    })
+  }
+  
+  if (uiTree.children) uiTree.children.forEach(beagleTabViewMiddleware)
 
-            delete tab.child
-            return tab
-        })
-        uiTree.children = parsedItems
-    }
-    
-    if (uiTree.children) uiTree.children.forEach(beagleTabViewMiddleware)
-
-    return uiTree
+  return uiTree
 }
 
 export default beagleTabViewMiddleware

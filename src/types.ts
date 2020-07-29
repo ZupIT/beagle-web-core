@@ -22,9 +22,9 @@ export type HttpMethod = 'post' | 'get' | 'put' | 'delete' | 'patch'
 
 export type ComponentName<Schema> = keyof Schema | 'custom:error' | 'custom:loading'
 
-export type TreeInsertionMode = 'prepend' | 'append'
+export type TreeInsertionMode = 'prepend' | 'append' | 'replace'
 
-export type TreeUpdateMode = TreeInsertionMode | 'replace'
+export type TreeUpdateMode = TreeInsertionMode | 'replaceComponent'
 
 export type BeagleMiddleware<Schema = DefaultSchema> = (uiTree: BeagleUIElement<Schema>) =>
   BeagleUIElement<Schema>
@@ -51,15 +51,32 @@ export type Strategy = (
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
-export type ClickEvent = {
+export type ExecutionMode = 'development' | 'production'
+
+export type ChildrenMetadataMap = Record<string, ChildrenMetadata>
+
+export type ComponentTypeMetadata = any
+
+export type Lifecycle = 'beforeStart' | 'beforeViewSnapshot' | 'afterViewSnapshot' | 'beforeRender'
+
+export type LifecycleHook = (viewTree: Record<string, any>) => void | Record<string, any>
+
+export type LifecycleHookMap = Record<Lifecycle, {
+  global?: (tree: any) => any,
+  components: Record<string, LifecycleHook>,
+}>
+
+export interface ClickEvent {
   category: string,
   label?: string,
   value?: string,
 }
 
-export type ScreenEvent = { screenName: string }
+export interface ScreenEvent {
+  screenName: string,
+}
 
-export type Analytics = {
+export interface Analytics {
   trackEventOnClick: (clickEvent: ClickEvent) => void,
   trackEventOnScreenAppeared: (screenEvent: ScreenEvent) => void,
   trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
@@ -96,6 +113,9 @@ export interface BeagleStorage {
 export interface BeagleConfig<Schema> {
   baseUrl: string,
   schemaUrl?: string,
+  /**
+   * @deprecated Since version 1.2. Will be deleted in version 2.0. Use lifecycles instead.
+   */
   middlewares?: Array<BeagleMiddleware<Schema>>,
   strategy?: Strategy,
   fetchData?: typeof fetch,
@@ -104,6 +124,7 @@ export interface BeagleConfig<Schema> {
     [K in ComponentName<Schema>]: any
   },
   customActions?: Record<string, ActionHandler>,
+  lifecycles?: Partial<Record<Lifecycle, (viewTree: Record<string, any>) => void>>,
   customStorage?: Storage,
   useBeagleHeaders?: boolean,
 }
@@ -113,7 +134,6 @@ export interface LoadParams<Schema = DefaultSchema> {
   fallback?: BeagleUIElement<Schema>,
   method?: HttpMethod,
   headers?: Record<string, string>,
-  middlewares?: Array<BeagleMiddleware<Schema>>,
   shouldShowLoading?: boolean,
   shouldShowError?: boolean,
   strategy?: Strategy,
@@ -135,13 +155,6 @@ export interface IdentifiableBeagleUIElement<Schema = DefaultSchema>
   children?: Array<IdentifiableBeagleUIElement<Schema>>,
 }
 
-export interface XmlOptions<Schema> {
-  formatTagName: (componentName: ComponentName<Schema>) => string,
-  shouldAddAttribute: (componentName: ComponentName<Schema>, attName: string) => boolean,
-  formatAttributeName: (name: string) => string,
-  formatAttributeValue: (value: any) => string,
-}
-
 export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConfig<Schema>> {
   loadBeagleUITreeFromServer: (
     url: string,
@@ -153,24 +166,8 @@ export interface BeagleUIService<Schema = DefaultSchema, ConfigType = BeagleConf
     method?: HttpMethod,
   ) => Promise<BeagleUIElement<Schema> | null>,
   createView: (initialRoute: string) => BeagleView<Schema>,
-  convertBeagleUiTreeToXml: (
-    uiTree: BeagleUIElement<Schema>,
-    options?: Partial<XmlOptions<Schema>>,
-  ) => string,
   getConfig: () => ConfigType,
   globalContext: GlobalContextAPI,
-}
-
-export interface UpdateWithTreeParams<Schema> {
-  sourceTree: BeagleUIElement<Schema>,
-  middlewares?: Array<BeagleMiddleware<Schema>>,
-  /* default mode is "replace" */
-  mode?: TreeUpdateMode,
-  /* id of element to replace if mode is 'replace' or id of parent if mode is 'append' or 'prepend'.
-  If not specified, the operation will be done in the tree's root node. */
-  elementId?: string,
-  shouldRunMiddlewares?: boolean,
-  shouldRunListeners?: boolean,
 }
 
 export type Stack = Route[]
@@ -193,25 +190,24 @@ export interface URLBuilder {
 export interface BeagleView<Schema = DefaultSchema> {
   subscribe: (listener: Listener<Schema>) => (() => void),
   addErrorListener: (errorListener: ErrorListener) => (() => void),
-  updateWithFetch: (
+  fetch: (
     params: LoadParams<Schema>,
-    /* id of element to replace if mode is 'replace' or id of parent if mode is 'append' or
+    /* id of element to replace if mode is 'replaceComponent' or id of parent if mode is 'append' or
     'prepend'. If not specified, the operation will be done in the tree's root node. */
     elementId?: string,
     /* default mode is "replace" */
     mode?: TreeUpdateMode,
   ) => Promise<void>,
-  updateWithTree: (params: UpdateWithTreeParams<Schema>) => void,
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
-  getUrlBuilder: () => URLBuilder,
+  getRenderer: () => Renderer,
 }
 
 export interface BeagleContext<T = any> {
+  replaceComponent: (params: LoadParams<T>) => Promise<void>,
   replace: (params: LoadParams<T>) => Promise<void>,
   append: (params: LoadParams<T>) => Promise<void>,
   prepend: (params: LoadParams<T>) => Promise<void>,
-  updateWithTree: (params: Omit<UpdateWithTreeParams<T>, 'elementId'>) => void,
   getElementId: () => string,
   getElement: () => IdentifiableBeagleUIElement<T> | null,
   getView: () => BeagleView<T>,
@@ -220,6 +216,35 @@ export interface BeagleContext<T = any> {
 export interface DataContext {
   id: string,
   value?: any,
+}
+
+export interface ChildrenMetadata {
+  property: string,
+  max?: number,
+  min?: number,
+  type?: string[],
+}
+
+export interface Renderer {
+  doPartialRender: (
+    viewTree: IdentifiableBeagleUIElement<any>,
+    anchor?: string,
+    mode?: TreeUpdateMode,
+  ) => void,
+  doFullRender: (
+    viewTree: BeagleUIElement<any>,
+    anchor?: string,
+    mode?: TreeUpdateMode,
+  ) => void,
+}
+
+export interface ComponentMetadata {
+  children?: ChildrenMetadata,
+  lifecycles?: Partial<Record<Lifecycle, LifecycleHook>>,
+}
+
+export interface ComponentWithMetadata {
+  beagleMetadata?: ComponentMetadata,
 }
 
 export type GlobalContextListener = () => void

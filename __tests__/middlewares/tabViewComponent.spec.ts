@@ -21,7 +21,7 @@ import {
   treeH, treeHParsed, tabViewWithCaseInsensitive, 
   parsedTabViewWithCaseInsensitive,
 } from '../mocks'
-import beagleTabViewMiddleware from '../../src/middlewares/tab-view-component'
+import beagleTabViewMiddleware from '../../src/legacy/tabView'
 
 describe('TabViewMiddleware', () => {
 

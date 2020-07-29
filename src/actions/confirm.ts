@@ -14,20 +14,13 @@
   * limitations under the License.
 */
 
-import { ActionHandler, ConfirmAction, BeagleAction } from './types'
+import { ActionHandler, ConfirmAction } from './types'
 
-const confirm: ActionHandler<ConfirmAction> = ({ action, handleAction, ...other }) => {
+const confirm: ActionHandler<ConfirmAction> = ({ action, executeAction }) => {
   const { message, onPressOk, onPressCancel } = action
-  
-  function runAction(actionToRun?: BeagleAction | BeagleAction[]) {
-    if (!actionToRun) return
-    const actions = Array.isArray(actionToRun) ? actionToRun : [actionToRun]
-    actions.forEach(action => handleAction({ action, handleAction, ...other }))
-  }
-  
   const hasConfirmed = window.confirm(message)
-  if (hasConfirmed) runAction(onPressOk)
-  else runAction(onPressCancel)
+  if (hasConfirmed) onPressOk && executeAction(onPressOk)
+  else onPressCancel && executeAction(onPressCancel)
 }
 
 export default confirm

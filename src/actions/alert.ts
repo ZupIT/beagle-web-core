@@ -14,19 +14,12 @@
   * limitations under the License.
 */
 
-import { ActionHandler, AlertAction, BeagleAction } from './types'
+import { ActionHandler, AlertAction } from './types'
 
-const alert: ActionHandler<AlertAction> = ({ action, handleAction, ...other }) => {
+const alert: ActionHandler<AlertAction> = ({ action, executeAction }) => {
   const { message, onPressOk } = action
-
-  function runAction(actionToRun?: BeagleAction | BeagleAction[]) {
-    if (!actionToRun) return
-    const actions = Array.isArray(actionToRun) ? actionToRun : [actionToRun]
-    actions.forEach(action => handleAction({ action, handleAction, ...other }))
-  }
-  
   window.alert(message)
-  if (onPressOk) runAction(onPressOk)
+  if (onPressOk) executeAction(onPressOk)
 }
 
 export default alert

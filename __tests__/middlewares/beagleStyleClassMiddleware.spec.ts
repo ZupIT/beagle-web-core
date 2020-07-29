@@ -13,25 +13,34 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { treeA } from '../mocks'
-import { treeE, treeEParsed } from '../styles-mocks'
-import beagleStyleClassMiddleware from '../../src/middlewares/beagle-style-class'
+
+/**
+ * Fix me: should reflect Renderer/Styling.ts. Maybe it should be decoupled from Tree.ts.
+ */
+
+import { treeE, treeEParsed, treeEWithoutStyleIds } from '../styles-mocks'
+import Tree from '../../src/utils/Tree'
+import Styling from '../../src/Renderer/Styling'
+import { clone } from '../../src/utils/tree-manipulation'
 
 describe('StyleClassMiddleware', () => {
 
-  it('should transform style to kebab-case and add in the styleClass prop', () => {
-    const parsedTree = beagleStyleClassMiddleware(treeE)
-    expect(parsedTree).toEqual(treeEParsed)
+  it('should transform styleId to kebab-case', () => {
+    const mock = clone(treeE)
+    Tree.forEach(mock, Styling.convert)
+    expect(mock).toEqual(treeEParsed)
   })
 
-  it('should keep the tree if no style is present', () => {
-    const parsedTree = beagleStyleClassMiddleware(treeA)
-    expect(parsedTree).toEqual(treeA)
+  it('should keep the tree intact if no styleId is present', () => {
+    const mock = clone(treeEWithoutStyleIds)
+    Tree.forEach(mock, Styling.convert)
+    expect(mock).toEqual(treeEWithoutStyleIds)
   })
 
-  it('should not change style if already in kebab-case and on styleClass prop', () => {
-    const parsedTree = beagleStyleClassMiddleware(treeEParsed)
-    expect(parsedTree).toEqual(treeEParsed)
+  it('should not change styleId if already in kebab-case', () => {
+    const mock = clone(treeEParsed)
+    Tree.forEach(mock, Styling.convert)
+    expect(mock).toEqual(treeEParsed)
   })
 
 })

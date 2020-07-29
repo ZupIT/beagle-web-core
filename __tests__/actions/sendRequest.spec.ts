@@ -1,20 +1,25 @@
 import nock from 'nock'
 import sendRequest from '../../src/actions/sendRequest'
 import { createBeagleViewMock } from '../utils/test-utils'
-import { ActionHandlerParams } from '../../src/actions/types'
 import beagleHttpClient from '../../src/BeagleHttpClient'
+import UrlBuilder from '../../src/UrlBuilder'
 
 const domain = 'http://beagle.test.com'
 const path = '/url-builder'
 const element = { _beagleComponent_: 'container', id: 'container' }
+
+beforeEach(() => {
+  UrlBuilder.setBaseUrl(domain)
+})
 
 describe('Actions: beagle:sendRequest', () => {
   beagleHttpClient.setFetchFunction(fetch)
 
   it('should send request using the UrlBuilder', async () => {
     nock(domain).get(path).reply(200)
-    const urlBuilder = { build: jest.fn(() => `${domain}${path}`) }
-    const beagleView = createBeagleViewMock({ getUrlBuilder: () => urlBuilder })
+    const originalBuild = UrlBuilder.build
+    UrlBuilder.build = jest.fn(() => `${domain}${path}`)
+    const beagleView = createBeagleViewMock()
 
     await sendRequest({
       action: {
@@ -24,13 +29,13 @@ describe('Actions: beagle:sendRequest', () => {
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn()
     })
 
-    expect(urlBuilder.build).toHaveBeenCalledWith('myUrl')
+    expect(UrlBuilder.build).toHaveBeenCalledWith('myUrl')
     expect(nock.isDone()).toBe(true)
     nock.cleanAll()
+    UrlBuilder.build = originalBuild
   })
 
   it('should use get as default method', async () => {
@@ -40,12 +45,11 @@ describe('Actions: beagle:sendRequest', () => {
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn()
     })
 
     expect(nock.isDone()).toBe(true)
@@ -62,134 +66,60 @@ describe('Actions: beagle:sendRequest', () => {
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
         method: 'post',
         headers,
         data,
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction: jest.fn(),
+      executeAction: jest.fn()
     })
 
     expect(nock.isDone()).toBe(true)
     nock.cleanAll()
   })
 
-  it('should run onSuccess with single action', async () => {
+  it('should run onSuccess', async () => {
     const response = { name: 'Sylvanas', lastname: 'Windrunner', city: 'Undercity (Lordaeron)' }
     nock(domain).get(path).reply(200, JSON.stringify(response))
     const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
+    const executeAction = jest.fn()
     const onSuccess = { _beagleAction_: 'beagle:alert', message: 'Success!' }
 
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
         onSuccess,
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction,
+      executeAction,
     })
+
+    const expectedImplicitContext = {
+      id: 'onSuccess',
+      value: {
+        data: response,
+        status: 200,
+        statusText: 'OK',
+      },
+    }
 
     expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onSuccess,
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [
-        {
-          id: 'onSuccess',
-          value: {
-            data: response,
-            status: 200,
-            statusText: 'OK',
-          },
-        },
-      ],
-    })
-
-    nock.cleanAll()
-  })
-
-  it('should run onSuccess with multiple actions', async () => {
-    const response = { name: 'Sylvanas', lastname: 'Windrunner', city: 'Undercity (Lordaeron)' }
-    nock(domain).get(path).reply(200, JSON.stringify(response))
-    const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
-    const onSuccess = [
-      { _beagleAction_: 'beagle:alert', message: 'Success 1!' },
-      { _beagleAction_: 'beagle:alert', message: 'Success 2!' },
-      { _beagleAction_: 'beagle:alert', message: 'Success 3!' }
-    ]
-
-    await sendRequest({
-      action: {
-        _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
-        onSuccess,
-      },
-      beagleView,
-      element,
-      eventContextHierarchy: [],
-      handleAction,
-    })
-
-    expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledTimes(3)
-
-    const expectedContextHierarchy = [
-      {
-        id: 'onSuccess',
-        value: {
-          data: response,
-          status: 200,
-          statusText: 'OK',
-        },
-      },
-    ]
-
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onSuccess[0],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: expectedContextHierarchy,
-    })
-
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onSuccess[1],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: expectedContextHierarchy,
-    })
-
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onSuccess[2],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: expectedContextHierarchy,
-    })
-
+    expect(executeAction).toHaveBeenCalledWith(
+      onSuccess,
+      expectedImplicitContext.id,
+      expectedImplicitContext.value,
+    )
     nock.cleanAll()
   })
 
   it('should run onError and log the error when it occurs before sending the request', async() => {
-    const errorMessage = 'Could not find a UrlBuilder'
-    const beagleView = createBeagleViewMock({
-      getUrlBuilder: () => {
-        throw new Error(errorMessage)
-      },
-    })
-  
-    const handleAction = jest.fn()
+    UrlBuilder.setBaseUrl(undefined)
+    const beagleView = createBeagleViewMock()
+    const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
   
     const originalLogError = console.error
@@ -198,32 +128,29 @@ describe('Actions: beagle:sendRequest', () => {
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
         onError,
       },
-      beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction,
+      executeAction,
+      beagleView,
     })
 
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onError,
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [
-        {
-          id: 'onError',
-          value: {
-            data: undefined,
-            status: undefined,
-            statusText: undefined,
-            message: errorMessage,
-          },
-        },
-      ],
-    })
+    const expectedImplicitContext = {
+      id: 'onError',
+      value: {
+        data: undefined,
+        status: undefined,
+        statusText: undefined,
+        message: 'Only absolute URLs are supported',
+      },
+    }
+
+    expect(executeAction).toHaveBeenCalledWith(
+      onError,
+      expectedImplicitContext.id,
+      expectedImplicitContext.value,
+    )
 
     expect(console.error).toHaveBeenCalled()
     console.error = originalLogError
@@ -233,7 +160,7 @@ describe('Actions: beagle:sendRequest', () => {
     const response = { field: 'name', error: 'name is required' }
     nock(domain).get(path).reply(500, JSON.stringify(response))
     const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
+    const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
 
     const originalLogError = console.error
@@ -242,104 +169,31 @@ describe('Actions: beagle:sendRequest', () => {
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
         onError,
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction,
+      executeAction,
     })
+
+    const expectedImplicitContext = {
+      id: 'onError',
+      value: {
+        data: response,
+        status: 500,
+        statusText: 'Internal Server Error',
+        message: 'Internal Server Error',
+      },
+    }
 
     expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onError,
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [
-        {
-          id: 'onError',
-          value: {
-            data: response,
-            status: 500,
-            statusText: 'Internal Server Error',
-            message: 'Internal Server Error',
-          },
-        },
-      ],
-    })
-
+    expect(executeAction).toHaveBeenCalledWith(
+      onError,
+      expectedImplicitContext.id,
+      expectedImplicitContext.value,
+    )
     expect(console.error).toHaveBeenCalled()
-    console.error = originalLogError
-    nock.cleanAll()
-  })
-
-  it('should run multiple onError callbacks', async () => {
-    const response = { field: 'name', error: 'name is required' }
-    nock(domain).get(path).reply(500, JSON.stringify(response))
-    const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
-    const onError = [
-      { _beagleAction_: 'beagle:alert', message: 'Error 1!' },
-      { _beagleAction_: 'beagle:alert', message: 'Error 2!' },
-      { _beagleAction_: 'beagle:alert', message: 'Error 3!' },
-    ]
-
-    const originalLogError = console.error
-    console.error = jest.fn()
-
-    await sendRequest({
-      action: {
-        _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
-        onError,
-      },
-      beagleView,
-      element,
-      eventContextHierarchy: [],
-      handleAction,
-    })
-
-    expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledTimes(3)
-
-    const expectedContextHierarchy = [
-      {
-        id: 'onError',
-        value: {
-          data: response,
-          status: 500,
-          statusText: 'Internal Server Error',
-          message: 'Internal Server Error',
-        },
-      },
-    ]
-    
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onError[0],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: expectedContextHierarchy,
-    })
-
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onError[1],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: expectedContextHierarchy,
-    })
-    
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onError[2],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: expectedContextHierarchy,
-    })
-
     console.error = originalLogError
     nock.cleanAll()
   })
@@ -348,76 +202,64 @@ describe('Actions: beagle:sendRequest', () => {
     const response = '{ field: \'name\', error: \'name is required\' }'
     nock(domain).get(path).reply(200, response)
     const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
+    const executeAction = jest.fn()
     const onSuccess = { _beagleAction_: 'beagle:alert', message: 'Success!' }
 
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
         onSuccess,
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction,
+      executeAction,
     })
+
+    const expectedImplicitContext = {
+      id: 'onSuccess',
+      value: {
+        data: response,
+        status: 200,
+        statusText: 'OK',
+      },
+    }
 
     expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onSuccess,
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [
-        {
-          id: 'onSuccess',
-          value: {
-            data: response,
-            status: 200,
-            statusText: 'OK',
-          },
-        },
-      ],
-    })
-
+    expect(executeAction).toHaveBeenCalledWith(
+      onSuccess,
+      expectedImplicitContext.id,
+      expectedImplicitContext.value,
+    )
     nock.cleanAll()
   })
 
   it('should run onFinish after successful request', async () => {
     nock(domain).get(path).reply(200)
     const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
+    const executeAction = jest.fn()
     const onFinish = { _beagleAction_: 'beagle:alert', message: 'Finish!' }
 
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
         onFinish,
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction,
+      executeAction,
     })
 
     expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onFinish,
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [],
-    })
-
+    expect(executeAction).toHaveBeenCalledWith(onFinish)
     nock.cleanAll()
   })
 
   it('should run onFinish after request with error', async () => {
     nock(domain).get(path).reply(500)
     const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
+    const executeAction = jest.fn()
     const onFinish = { _beagleAction_: 'beagle:alert', message: 'Finish!' }
 
     const originalLogError = console.error
@@ -431,72 +273,12 @@ describe('Actions: beagle:sendRequest', () => {
       },
       beagleView,
       element,
-      eventContextHierarchy: [],
-      handleAction,
+      executeAction,
     })
 
     expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onFinish,
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [],
-    })
-
+    expect(executeAction).toHaveBeenCalledWith(onFinish)
     nock.cleanAll()
     console.error = originalLogError
-  })
-
-  it('should onFinish with multiple actions', async () => {
-    nock(domain).get(path).reply(200)
-    const beagleView = createBeagleViewMock()
-    const handleAction = jest.fn()
-    const onFinish = [
-      { _beagleAction_: 'beagle:alert', message: 'Finish 1!' },
-      { _beagleAction_: 'beagle:alert', message: 'Finish 2!' },
-      { _beagleAction_: 'beagle:alert', message: 'Finish 3!' },
-    ]
-
-    await sendRequest({
-      action: {
-        _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
-        onFinish,
-      },
-      beagleView,
-      element,
-      eventContextHierarchy: [],
-      handleAction,
-    })
-
-    expect(nock.isDone()).toBe(true)
-    expect(handleAction).toHaveBeenCalledTimes(3)
-
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onFinish[0],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [],
-    })
-
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onFinish[1],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [],
-    })
-
-    expect(handleAction).toHaveBeenCalledWith<[ActionHandlerParams]>({
-      action: onFinish[2],
-      beagleView,
-      element,
-      handleAction,
-      eventContextHierarchy: [],
-    })
-
-    nock.cleanAll()
   })
 })

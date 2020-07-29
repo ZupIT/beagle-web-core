@@ -22,7 +22,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       # checkout code
@@ -56,6 +56,9 @@ jobs:
           prerelease: false
 
       # if it's a new version, publish to NPM
+
+      - name: clear cache
+        run: yarn cache clean
 
       - name: install
         if: ${{ env.SHOULD_PUBLISH == 'true' }}

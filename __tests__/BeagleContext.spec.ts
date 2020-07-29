@@ -17,35 +17,37 @@
 import nock from 'nock'
 import createBeagleView from '../src/BeagleUIView'
 import BeagleContext, { views } from '../src/BeagleContext'
-import { BeagleView, Analytics } from '../src/types'
 import { clone } from '../src/utils/tree-manipulation'
 import { treeA, treeB, treeC, treeD } from './mocks'
 import { mockLocalStorage } from './utils/test-utils'
+import UrlBuilder from '../src/UrlBuilder'
+import { LifecycleHookMap } from '../src/types'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
 
 describe('BeagleContext', () => {
   const localStorageMock = mockLocalStorage()
-  let view: BeagleView
   const viewId = 'beagleId'
-  const middleware = jest.fn(tree => tree)
-  const analytics: Analytics = {
-    trackEventOnClick: jest.fn(),
-    trackEventOnScreenAppeared: jest.fn(),
-    trackEventOnScreenDisappeared: jest.fn()
+  const lifecycles: LifecycleHookMap = {
+    beforeStart: { components: {} },
+    beforeViewSnapshot: { components: {} },
+    afterViewSnapshot: { components: {} },
+    beforeRender: { components: {} },
   }
 
+  UrlBuilder.setBaseUrl(baseUrl)
+
   beforeEach(() => {
-    view = createBeagleView({ baseUrl, components: {}, middlewares: [middleware], analytics }, '/home')
-    view.updateWithTree({ sourceTree: treeA })
-    middleware.mockClear()
+    BeagleContext.unregisterView(viewId)
+    const view = createBeagleView('/home', {}, lifecycles, {})
+    view.getRenderer().doFullRender(treeA)
+    BeagleContext.registerView(viewId, view)
     nock.cleanAll()
     localStorageMock.clear()
   })
 
   it('should register a view', () => {
-    BeagleContext.registerView(viewId, view)
     expect(views[viewId]).toBeDefined()
   })
 
@@ -58,7 +60,6 @@ describe('BeagleContext', () => {
     expect(context.append).toBeDefined()
     expect(context.prepend).toBeDefined()
     expect(context.replace).toBeDefined()
-    expect(context.updateWithTree).toBeDefined()
   })
 
   it('should get view, element and elementId from context', () => {
@@ -77,20 +78,12 @@ describe('BeagleContext', () => {
     expect(elementId).toBe('A.1')
   })
 
-  it('should updateWithTree from context', async () => {
-    const context = BeagleContext.getContext(viewId, 'A.0')
-    await context.updateWithTree({ sourceTree: treeB })
-    const expectedTree = clone(treeA)
-    expectedTree.children[0] = treeB
-    expect(context.getView().getTree()).toStrictEqual(expectedTree)
-  })
-
-  it('should replace from context', async () => {
+  it('should replace current view from context', async () => {
     const context = BeagleContext.getContext(viewId, 'A.1')
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeC))
     const currentTree = context.getView().getTree()
     
-    await context.replace({ path })
+    await context.replaceComponent({ path })
     const replacedTree = clone(currentTree)
     replacedTree.children[1] = treeC
     expect(context.getView().getTree()).toStrictEqual(replacedTree)
@@ -131,12 +124,11 @@ describe('BeagleContext', () => {
 
   it('should replace even if root element', async () => {
     const context = BeagleContext.getContext(viewId, 'A')
-    context.updateWithTree({sourceTree: treeA})
+    context.getView().getRenderer().doFullRender(treeA)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeC))
   
-    await context.replace({ path })
-    const replacedTree = clone(treeC)
-    expect(context.getView().getTree()).toStrictEqual(replacedTree)
+    await context.replaceComponent({ path })
+    expect(context.getView().getTree()).toStrictEqual(treeC)
     expect(nock.isDone()).toBe(true)
   })
 
