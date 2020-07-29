@@ -22,7 +22,7 @@ on:
 
 jobs:
   publish:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       # checkout code
