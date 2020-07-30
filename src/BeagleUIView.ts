@@ -47,6 +47,10 @@ const createBeagleView = <Schema>(
   const errorListeners: Array<ErrorListener> = []
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   let renderer: Renderer = {} as Renderer
+  const subscriptions: Array<() => void> = []
+  
+  const globalContextSubscription = globalContextApi.subscribe(() => renderer.doFullRender(getTree()))
+  subscriptions.push(globalContextSubscription)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -76,6 +80,10 @@ const createBeagleView = <Schema>(
 
   function runErrorListeners(errors: any) {
     errorListeners.forEach(l => l(errors))
+  }
+
+  function destroy() {
+    subscriptions.forEach(subscription => subscription())
   }
 
   async function fetch(
@@ -130,6 +138,7 @@ const createBeagleView = <Schema>(
     getRenderer: () => renderer,
     getTree,
     getBeagleNavigator,
+    destroy,
   }
 
   renderer = createRenderer({
@@ -142,8 +151,6 @@ const createBeagleView = <Schema>(
     setTree,
     typesMetadata: {},
   })
-
-  globalContextApi.subscribe(() => renderer.doFullRender(getTree()))
 
   return beagleView
 }

@@ -201,6 +201,7 @@ export interface BeagleView<Schema = DefaultSchema> {
   getTree: () => IdentifiableBeagleUIElement<Schema>,
   getBeagleNavigator: () => BeagleNavigator,
   getRenderer: () => Renderer,
+  destroy: () => void,
 }
 
 export interface BeagleContext<T = any> {

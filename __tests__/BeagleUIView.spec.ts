@@ -34,7 +34,8 @@ describe('BeagleUIView', () => {
   const localStorageMock = mockLocalStorage()
   let view: BeagleView
   const middleware = jest.fn(tree => tree)
-  globalContextApi.subscribe = jest.fn()
+  const unsubscribe = jest.fn()
+  globalContextApi.subscribe = jest.fn(() => unsubscribe )
   const originalConsoleError = console.error
   console.error = jest.fn()
   const lifecycles: LifecycleHookMap = {
@@ -64,7 +65,7 @@ describe('BeagleUIView', () => {
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 1', id: '1' })
     view.getRenderer().doFullRender({ _beagleComponent_: 'test 2', id: '2'})
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 2', id: '2' })
-    expect(globalContextApi.subscribe).not.toHaveBeenCalled()
+    expect(globalContextApi.subscribe).toHaveBeenCalled()
   })
 
   it('should subscribe to view changes', async () => {
@@ -306,5 +307,10 @@ describe('BeagleUIView', () => {
     // @ts-ignore
     expect(console.error).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
+  })
+
+  it('should call global context unsubscribe when calling destroy', () => {
+    view.destroy()
+    expect(unsubscribe).toHaveBeenCalled()
   })
 })
