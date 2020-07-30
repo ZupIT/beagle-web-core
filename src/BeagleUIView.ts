@@ -48,9 +48,6 @@ const createBeagleView = <Schema>(
   const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
   let renderer: Renderer = {} as Renderer
   const subscriptions: Array<() => void> = []
-  
-  const globalContextSubscription = globalContextApi.subscribe(() => renderer.doFullRender(getTree()))
-  subscriptions.push(globalContextSubscription)
 
   function subscribe(listener: Listener<Schema>) {
     listeners.push(listener)
@@ -130,6 +127,9 @@ const createBeagleView = <Schema>(
   function getBeagleNavigator() {
     return beagleNavigator
   }
+
+  const globalContextSubscription = globalContextApi.subscribe(() => renderer.doFullRender(getTree()))
+  subscriptions.push(globalContextSubscription)
 
   const beagleView: BeagleView<Schema> = {
     subscribe,
