@@ -35,7 +35,7 @@ describe('BeagleUIView', () => {
   let view: BeagleView
   const middleware = jest.fn(tree => tree)
   const unsubscribe = jest.fn()
-  globalContextApi.subscribe = jest.fn(() => unsubscribe )
+  globalContextApi.subscribe = jest.fn(() => unsubscribe)
   const originalConsoleError = console.error
   console.error = jest.fn()
   const lifecycles: LifecycleHookMap = {

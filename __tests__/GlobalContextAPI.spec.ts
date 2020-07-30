@@ -21,11 +21,11 @@ const baseUrl = 'http://teste.com'
 
 describe.only('globalContextApi', () => {
   let listener
+  listener = jest.fn()
+  globalContextApi.subscribe(listener)
   
   beforeEach(() => {
     jest.clearAllMocks();
-    listener = jest.fn()
-    globalContextApi.subscribe(listener)
   });
 
   it('should initialize context with \'global\' as id and return it with getAsDataContext', async () => {
@@ -313,4 +313,21 @@ describe.only('globalContextApi', () => {
     console.warn = originalWarn
   })
 
+  it('usubscribe should remove listener', () => {
+    const listener1 = jest.fn(() => unsubscribe1)
+    const listener2 = jest.fn(() => unsubscribe2)
+    const unsubscribe1 = globalContextApi.subscribe(listener1)
+    const unsubscribe2 = globalContextApi.subscribe(listener2)
+
+    const value = {
+      testing: {
+        path: 'testingValue'
+      }
+    }
+    globalContextApi.set(value)
+    unsubscribe1()
+    globalContextApi.set(value)
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(2)
+  })
 })
