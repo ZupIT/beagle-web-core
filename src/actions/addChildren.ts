@@ -32,7 +32,7 @@ const addChildren: ActionHandler<AddChildrenAction> = ({ action, beagleView }) =
   if (mode === 'prepend') component.children = [...value, ...currentChildren]
   if (mode === 'replace') component.children = value
 
-  beagleView.updateWithTree({ sourceTree: uiTree })
+  beagleView.getRenderer().doFullRender(component, component.id)
 }
 
 export default addChildren

@@ -19,7 +19,7 @@ function createBeagleStorage(): BeagleStorage {
   let storage: Storage
 
   return {
-      getStorage: () => storage,
+      getStorage: () => storage || localStorage,
       setStorage: (newStorageFn: Storage) => storage = newStorageFn,
   }
 }

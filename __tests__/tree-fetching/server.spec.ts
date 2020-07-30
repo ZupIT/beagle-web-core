@@ -88,11 +88,4 @@ describe('Utils: tree fetching (server)', () => {
     }
     expect(nock.isDone()).toBe(true)
   })
-
-  it('should remove null values before returning tree', async () => {
-    nock(basePath).get(path).reply(200, JSON.stringify(treeEWithNull))
-    const result = await loadFromServer(url, 'get')
-    expect(result).toEqual(cleanedTreeE)
-    expect(nock.isDone()).toBe(true)
-  })
 })
