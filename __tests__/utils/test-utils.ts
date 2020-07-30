@@ -101,5 +101,6 @@ export function createBeagleViewMock(custom: Partial<BeagleView> = {}): BeagleVi
     fetch: jest.fn(custom.fetch),
     getBeagleNavigator: jest.fn(),
     getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
+    destroy: jest.fn(),
   }
 }
