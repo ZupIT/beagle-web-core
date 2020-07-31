@@ -20,7 +20,7 @@ import {
   Lifecycle,
   LifecycleHook,
   ChildrenMetadata,
-} from './types'
+} from '../types'
 
 export interface ExtractedMetadata {
   children: Record<string, ChildrenMetadata>,

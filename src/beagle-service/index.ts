@@ -14,12 +14,9 @@
   * limitations under the License.
 */
 
-import createBeagleUIView from './BeagleUIView'
-import beagleHttpClient from './BeagleHttpClient'
-import beagleAnalytics from './BeagleAnalytics'
-import urlBuilder from './UrlBuilder'
-import { loadFromCache, loadFromServer } from './utils/tree-fetching'
-import { checkPrefix } from './utils/tree-manipulation'
+import mapKeys from 'lodash/mapKeys'
+import createView from '../view'
+import { checkPrefix } from '../utils/tree-manipulation'
 import defaultActionHandlers from './actions'
 import ComponentMetadata, { ExtractedMetadata } from './ComponentMetadata'
 import beagleStorage from './BeagleStorage'
@@ -33,7 +30,24 @@ import {
   BeagleUIElement,
   BeagleUIService,
   LifecycleHookMap,
-} from './types'
+} from '../types'
+
+import RemoteCacheService from '../network/remote-cache'
+import URLService from '../network/url'
+import ViewClientService from '../network/view-client'
+import BeagleView from '../view'
+import GlobalContextService from './global-context'
+import TreeContentService from './tree-content'
+
+function checkPrefix(items: Record<string, any>) {
+  mapKeys(items, (value, key: string) => {
+    if (!key.startsWith('custom:') && !key.startsWith('beagle:')) {
+      throw new Error(`Please check your config. The ${key} is not a valid name. Yours components or actions
+      should always start with "beagle:" if it\'s overwriting a default component or an action, "custom:"
+      if it\'s a custom component or an action`)
+    }
+  })
+}
 
 function getLifecycleHookMap(
   globalLifecycleHooks: BeagleConfig<any>['lifecycles'],
@@ -88,20 +102,24 @@ function checkConfiguration(config: BeagleConfig<any>) {
   updateMiddlewaresInConfiguration(config)
 }
 
-function initializeServices(config: BeagleConfig<any>) {
-  beagleHttpClient.setFetchFunction(config.fetchData || fetch)
-  urlBuilder.setBaseUrl(config.baseUrl || '')  
-  config.analytics && beagleAnalytics.setAnalytics(config.analytics)
-  beagleHeaders.setUseBeagleHeaders(config.useBeagleHeaders)
-  if (config.customStorage) beagleStorage.setStorage(config.customStorage)
+function createServices(config: BeagleConfig<any>) {
+  const storage = config.customStorage || localStorage
+  const httpClient = { fetch: config.fetchData || fetch }
+  const url = URLService.create(config.baseUrl)
+  const analytics = config.analytics
+  const remoteCache = RemoteCacheService.create(storage, config.useBeagleHeaders)
+  const globalContext = GlobalContextService.create()
+  const treeContent = TreeContentService.create()
+
+  return { storage, httpClient, url, analytics, remoteCache, globalContext, treeContent }
 }
 
 function processConfiguration(config: BeagleConfig<any>) {
   const actionHandlers = { ...defaultActionHandlers, ...config.customActions }
-  const metadata = ComponentMetadata.extract(config.components)
-  const lifecycleHooks = getLifecycleHookMap(config.lifecycles, metadata.lifecycles)
+  const componentMetadata = ComponentMetadata.extract(config.components)
+  const lifecycleHooks = getLifecycleHookMap(config.lifecycles, componentMetadata.lifecycles)
 
-  return { actionHandlers, metadata, lifecycleHooks }
+  return { actionHandlers, componentMetadata, lifecycleHooks }
 }
 
 function createBeagleUIService<
@@ -109,20 +127,14 @@ function createBeagleUIService<
   ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
 > (config: ConfigType): BeagleUIService<Schema, ConfigType> {
   checkConfiguration(config)
-  initializeServices(config)
-  const { actionHandlers, metadata, lifecycleHooks } = processConfiguration(config)
+  const services = createServices(config)
+  const processedConfig = processConfiguration(config)
   
-  return {
-    loadBeagleUITreeFromServer: loadFromServer,
-    loadBeagleUITreeFromCache: loadFromCache,
-    createView: (initialRoute: string) => createBeagleUIView<Schema>(
-      initialRoute,
-      actionHandlers,
-      lifecycleHooks,
-      metadata.children,
-    ),
+  const beagle = {
+    ...services,
+    ...processedConfig,
+    createView: (initialRoute: string) => BeagleView.create<Schema>(initialRoute, beagle),
     getConfig: () => config,
-    globalContext,
   }
 }
 

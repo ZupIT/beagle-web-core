@@ -14,34 +14,22 @@
   * limitations under the License.
 */
 
-import { clone } from './utils/tree-manipulation'
-import { load as loadUITree } from './utils/tree-fetching'
-import {
-  BeagleUIElement,
-  IdentifiableBeagleUIElement,
-  Listener,
-  ErrorListener,
-  BeagleView,
-  TreeUpdateMode,
-  LoadParams,
-  BeagleNavigator,
-  Renderer,
-  LifecycleHookMap,
-  ChildrenMetadataMap,
-} from './types'
-import urlBuilder from './UrlBuilder'
-import createBeagleNavigator from './BeagleNavigator'
-import { addPrefix } from './utils/string'
-import createRenderer from './Renderer'
-import { ActionHandler } from './actions/types'
-import globalContextApi from './GlobalContextAPI'
+import Tree from '../beagle-tree'
+import { addPrefix } from '../utils/string'
+import createRenderer from '../render'
+import { BeagleViewParams } from './types'
+import BeagleNavigator from './Navigator'
 
-const createBeagleView = <Schema>(
-  initialRoute: string,
-  actionHandlers: Record<string, ActionHandler>,
-  lifecycleHooks: LifecycleHookMap,
-  childrenMetadata: ChildrenMetadataMap,
-): BeagleView<Schema> => {
+const createBeagleView = ({
+  actionHandlers,
+  childrenMetadata,
+  globalContext,
+  initialRoute,
+  lifecycleHooks,
+  treeContentService,
+  urlService,
+  viewClient,
+}: BeagleViewParams) => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
   const errorListeners: Array<ErrorListener> = []
@@ -116,14 +104,14 @@ const createBeagleView = <Schema>(
 
   function getTree() {
     // to avoid errors, we should never give access to our own tree to third parties
-    return clone(currentUITree)
+    return Tree.clone(currentUITree)
   }
 
   function getBeagleNavigator() {
     return beagleNavigator
   }
 
-  const beagleView: BeagleView<Schema> = {
+  const beagleView = {
     subscribe,
     addErrorListener,
     fetch,
@@ -148,4 +136,8 @@ const createBeagleView = <Schema>(
   return beagleView
 }
 
-export default createBeagleView
+export default {
+  create: createBeagleView,
+}
+
+export type BeagleView = ReturnType<typeof createBeagleView>

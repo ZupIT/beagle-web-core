@@ -13,17 +13,11 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { BeagleStorage } from './types'
 
-function createBeagleStorage(): BeagleStorage {
-  let storage: Storage
-
-  return {
-      getStorage: () => storage || localStorage,
-      setStorage: (newStorageFn: Storage) => storage = newStorageFn,
-  }
+export function createQueryString(data: Record<string, string>) {
+  if (!data || !Object.keys(data).length) return ''
+  const keys = Object.keys(data)
+  const params = keys.map((key: string) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
+  
+  return `?${params.join('&')}`
 }
-
-const beagleStorage = createBeagleStorage()
-
-export default beagleStorage

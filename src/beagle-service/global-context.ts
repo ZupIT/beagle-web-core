@@ -18,14 +18,11 @@ import setLodash from 'lodash/set'
 import getLodash from 'lodash/get'
 import unset from 'lodash/unset'
 import has from 'lodash/has'
+import cloneDeep from 'lodash/cloneDeep'
 
-import { GlobalContextAPI, DataContext, GlobalContextListener } from './types'
+import { DataContext, GlobalContextListener } from './types'
 
-export function cloneObject(object: any) {
-  return object && JSON.parse(JSON.stringify(object))
-}
-
-function globalContextService(): GlobalContextAPI {
+function createGlobalContextService() {
   const listeners: Array<GlobalContextListener> = []
   const globalContext: DataContext = {
     id: 'global',
@@ -46,12 +43,12 @@ function globalContextService(): GlobalContextAPI {
   }
 
   function getAsDataContext() {
-    return cloneObject(globalContext)
+    return cloneDeep(globalContext)
   }
 
   function get(path?: string) {
     if (!path)
-      return cloneObject(globalContext.value)
+      return cloneDeep(globalContext.value)
 
     return getLodash(globalContext.value, path)
   }
@@ -90,6 +87,8 @@ function globalContextService(): GlobalContextAPI {
   }
 }
 
-const globalContextApi = globalContextService()
+export default {
+  create: createGlobalContextService,
+}
 
-export default globalContextApi
+export type GlobalContextService = ReturnType<typeof createGlobalContextService>

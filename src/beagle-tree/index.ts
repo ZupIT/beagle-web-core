@@ -13,17 +13,28 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { BeagleHttpClient } from './types'
 
-function createBeagleHttpClient(): BeagleHttpClient {
-  let fetchFn: typeof fetch
+import * as iteration from './iteration'
+import * as manipulation from './manipulation'
+import * as reading from './reading'
+import {
+  BeagleUIElement,
+  ComponentName,
+  DataContext,
+  DefaultSchema,
+  IdentifiableBeagleUIElement,
+} from './types'
 
-  return {
-    fetch: (...args) => (fetchFn || fetch)(...args),
-    setFetchFunction: (newFetchFn: typeof fetch) => fetchFn = newFetchFn,
-  }
+export default {
+  ...iteration,
+  ...manipulation,
+  ...reading,
 }
 
-const beagleHttpClient = createBeagleHttpClient()
-
-export default beagleHttpClient
+export { 
+  BeagleUIElement,
+  ComponentName,
+  DataContext,
+  DefaultSchema,
+  IdentifiableBeagleUIElement,
+}

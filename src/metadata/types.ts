@@ -14,11 +14,22 @@
   * limitations under the License.
 */
 
+import { Lifecycle, LifecycleHook } from '../service/types'
 
-export function createQueryString(data: Record<string, string>) {
-  if (!data || !Object.keys(data).length) return ''
-  const keys = Object.keys(data)
-  const params = keys.map((key: string) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
-  
-  return `?${params.join('&')}`
+export interface ChildrenMetadata {
+  property: string,
+  max?: number,
+  min?: number,
+  type?: string[],
+}
+
+export type ChildrenMetadataMap = Record<string, ChildrenMetadata>
+
+export interface ComponentMetadata {
+  children?: ChildrenMetadata,
+  lifecycles?: Partial<Record<Lifecycle, LifecycleHook>>,
+}
+
+export interface ComponentWithMetadata {
+  beagleMetadata?: ComponentMetadata,
 }

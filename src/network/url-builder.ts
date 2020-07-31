@@ -14,17 +14,14 @@
   * limitations under the License.
 */
 
-import { removeSuffix } from './utils/string'
+import { removeSuffix } from '../utils/string'
 
-function createURLBuilder() {
-  let baseUrl = ''
-
+function createURLBuilder(baseUrl = '') {
   function shouldEncodeUrl(baseUrl: string): boolean {
     return decodeURI(baseUrl) === baseUrl
   }
 
   return {
-    setBaseUrl: (url: string) => baseUrl = (url || ''),
     build: (path: string) => {
       // According to the convention the relative path should start with '/'
       const relativePathRegex = /^\/+(\b|$)/
@@ -35,6 +32,8 @@ function createURLBuilder() {
   }
 }
 
-const urlBuilder = createURLBuilder()
+export default {
+  create: createURLBuilder,
+}
 
-export default urlBuilder
+export type URLBuilder = ReturnType<typeof createURLBuilder>

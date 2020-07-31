@@ -13,17 +13,17 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
 */
-import { Analytics } from './types'
 
-function createBeagleAnalytics() {
-  let analytics: Analytics
+import array from './array'
+import logic from './logic'
+import number from './number'
+import other from './other'
+import string from './string'
 
-  return {
-    setAnalytics: (newAnalytics: Analytics) => analytics = newAnalytics,
-    getAnalytics: () => analytics,
-  }
+export default {
+  ...array,
+  ...logic,
+  ...number,
+  ...other,
+  ...string,
 }
-
-const beagleAnalytics = createBeagleAnalytics()
-
-export default beagleAnalytics
