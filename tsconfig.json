@@ -10,12 +10,25 @@
     "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "src",
+    "paths": {
+      "@action/*": ["action/*"],
+      "@beagle-tree/*": ["beagle-tree/*"],
+      "@beagle-view/*": ["beagle-view/*"],
+      "@error/*": ["error/*"],
+      "@legacy/*": ["legacy/*"],
+      "@metadata/*": ["metadata/*"],
+      "@operation/*": ["operation/*"],
+      "@service/*": ["service/*"],
+      "@utils/*": ["utils/*"]
+    },
   },
   "include": [
     "src/**/*",
+    "__tests__/**/*"
   ],
   "exclude": [
-    "node_modules",
+    "node_modules"
   ]
 }

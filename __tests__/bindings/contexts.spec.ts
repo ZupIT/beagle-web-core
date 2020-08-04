@@ -1,14 +1,28 @@
+/*
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
  * FIXME: This test refers to the old structure. It should be reorganized so that both
  * bindings/contexts.spec.ts and bindings/expressions.spec.ts explicitly test the functions of
  * Render/Context.ts and Render/Expression.ts.
  */
 
-import Context from '../../src/Renderer/Context'
-import Expression from '../../src/Renderer/Expression'
-import Tree from '../../src/utils/Tree'
-import { findById, findByType } from '../../src/utils/tree-reading'
-import { clone } from '../../src/utils/tree-manipulation'
+import Context from 'beagle-view/render/context'
+import Expression from 'beagle-view/render/expression'
+import Tree from 'beagle-tree'
 import {
   createMockWithSameIdContexts,
   createSocialMediaData,
@@ -16,7 +30,6 @@ import {
   treeWithGlobalContext,
   treeWithValidContext,
 } from './mocks'
-import globalContextApi from '../../src/GlobalContextAPI'
 
 describe('Binding expressions: replacing with calculated contexts', () => {
   it('should use contexts declared in the data structure', () => {

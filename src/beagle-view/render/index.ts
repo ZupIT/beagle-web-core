@@ -1,43 +1,35 @@
 /*
-  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *  http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-*/
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import Tree from '../utils/Tree'
-import { replaceInTree, insertIntoTree } from '../utils/tree-manipulation'
-import { ActionHandler } from '../actions/types'
-import {
-  BeagleUIElement,
-  IdentifiableBeagleUIElement,
-  ExecutionMode,
-  ChildrenMetadataMap,
-  BeagleView,
-  ComponentTypeMetadata,
-  TreeUpdateMode,
-  Lifecycle,
-  LifecycleHookMap,
-} from '../types'
-import Component from './Component'
-import Navigation from './Navigation'
-import Expression from './Expression'
-import Action from './Action'
-import Context from './Context'
-import Styling from './Styling'
-import TypeChecker from './TypeChecker'
+import Tree from 'beagle-tree'
+import { ActionHandler } from 'action/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
+import { ExecutionMode, Lifecycle, LifecycleHookMap } from 'service/beagle-service/types'
+import { BeagleView } from 'beagle-view'
+import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
+import Component from './component'
+import Navigation from './navigation'
+import Expression from './expression'
+import Action from './action'
+import Context from './context'
+import Styling from './styling'
+import TypeChecker from './type-checker'
 
 interface Params {
-  beagleView: BeagleView<any>,
+  beagleView: BeagleView,
   setTree: (tree: any) => void,
   typesMetadata: Record<string, ComponentTypeMetadata>,
   renderToScreen: (tree: any) => void,
@@ -57,6 +49,8 @@ function createRenderer({
   executionMode,
   actionHandlers,
 }: Params) {
+  const { urlBuilder, viewClient } = beagleView.getBeagleService()
+
   function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree
     const hook = lifecycleHooks[lifecycle].global
@@ -84,7 +78,7 @@ function createRenderer({
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
       Component.assignId(component)
       Component.eraseNullProperties(component)
-      Navigation.preFetchViews(component)
+      Navigation.preFetchViews(component, urlBuilder, viewClient)
     })
 
     return viewTree as IdentifiableBeagleUIElement
@@ -101,9 +95,9 @@ function createRenderer({
 
     if (mode === 'replaceComponent') {
       if (anchor === currentTree.id) currentTree = viewTree
-      else replaceInTree(currentTree, viewTree, anchor)
+      else Tree.replaceInTree(currentTree, viewTree, anchor)
     } else {
-      insertIntoTree(currentTree, viewTree, anchor, mode)
+      Tree.insertIntoTree(currentTree, viewTree, anchor, mode)
     }
   
     setTree(currentTree)
@@ -199,4 +193,8 @@ function createRenderer({
   }
 }
 
-export default createRenderer
+export default {
+  create: createRenderer,
+}
+
+export type Renderer = ReturnType<typeof createRenderer>

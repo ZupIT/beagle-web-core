@@ -1,20 +1,36 @@
+/*
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
  * FIXME: should be refactored according to Renderer/Action. Should decouple 'Context.ts' and
  * 'Tree.ts' from this.
  */
 
 import { unmockDefaultActions } from './mockDefaultActions'
-import Context from '../../src/Renderer/Context'
-import Expression from '../../src/Renderer/Expression'
-import Action from '../../src/Renderer/Action'
-import Tree from '../../src/utils/Tree'
-import { findById } from '../../src/utils/tree-reading'
+import Context from 'beagle-view/render/context'
+import Expression from 'beagle-view/render/expression'
+import Action from 'beagle-view/render/action'
+import Tree from 'beagle-tree'
 import { createContainerWithAction, createModalMock } from './mocks'
 import { createBeagleViewMock } from '../utils/test-utils'
-import defaultActionHandlers from '../../src/actions'
-import { ActionHandlerParams, BeagleAction } from '../../src/actions/types'
-import createBeagleService from '../../src/BeagleService'
-import { IdentifiableBeagleUIElement, BeagleUIElement, BeagleView } from '../../src/types'
+import defaultActionHandlers from 'action'
+import { ActionHandlerParams, BeagleAction } from 'action/types'
+import BeagleService from 'service/beagle-service'
+import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
+import { BeagleView } from 'beagle-view'
 
 interface ActionHandlerExpectation {
   handler: jest.Mock,

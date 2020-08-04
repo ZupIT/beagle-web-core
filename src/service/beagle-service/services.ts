@@ -1,0 +1,47 @@
+/*
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
+import URLBuilder from 'service/network/url-builder'
+import ViewClient from 'service/network/view-client'
+import GlobalContext from 'service/global-context'
+import TreeContentMapper from 'service/tree-content'
+import { BeagleConfig } from './types'
+
+export function createServices(config: BeagleConfig<any>) {
+  const storage = config.customStorage || localStorage
+  const httpClient = { fetch: config.fetchData || fetch }
+  const urlBuilder = URLBuilder.create(config.baseUrl)
+  const analytics = config.analytics
+  const remoteCache = RemoteCache.create(storage)
+  const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
+  const viewClient = ViewClient.create(storage, defaultHeaders, remoteCache, httpClient)
+  const globalContext = GlobalContext.create()
+  const treeContentMapper = TreeContentMapper.create()
+
+  return {
+    storage,
+    httpClient,
+    urlBuilder,
+    analytics,
+    remoteCache,
+    viewClient,
+    defaultHeaders,
+    globalContext,
+    treeContentMapper,
+  }
+}

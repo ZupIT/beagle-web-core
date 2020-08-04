@@ -14,29 +14,23 @@
   * limitations under the License.
 */
 
-import Tree from '../beagle-tree'
-import { addPrefix } from '../utils/string'
-import createRenderer from '../render'
-import { BeagleViewParams } from './types'
+import Tree from 'beagle-tree'
+import String from 'utils/string'
+import { LoadParams } from 'service/network/types'
+import { BeagleService } from 'service/beagle-service/types'
+import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
+import Renderer, { Renderer as RendererType } from './render'
 import BeagleNavigator from './Navigator'
+import { Listener, ErrorListener } from './types'
 
-const createBeagleView = ({
-  actionHandlers,
-  childrenMetadata,
-  globalContext,
-  initialRoute,
-  lifecycleHooks,
-  treeContentService,
-  urlService,
-  viewClient,
-}: BeagleViewParams) => {
-  let currentUITree: IdentifiableBeagleUIElement<Schema>
-  const listeners: Array<Listener<Schema>> = []
+function createBeagleView(initialRoute: string, beagleService: BeagleService) {
+  let currentUITree: IdentifiableBeagleUIElement
+  const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
-  const beagleNavigator: BeagleNavigator = createBeagleNavigator({ url: initialRoute })
-  let renderer: Renderer = {} as Renderer
+  const beagleNavigator = BeagleNavigator.create({ url: initialRoute })
+  let renderer = {} as RendererType
 
-  function subscribe(listener: Listener<Schema>) {
+  function subscribe(listener: Listener) {
     listeners.push(listener)
 
     return () => {
@@ -54,11 +48,11 @@ const createBeagleView = ({
     }
   }
 
-  function setTree(newUITree: IdentifiableBeagleUIElement<Schema>) {
+  function setTree(newUITree: IdentifiableBeagleUIElement) {
     currentUITree = newUITree
   }
 
-  function runListeners(viewTree: IdentifiableBeagleUIElement<Schema>) {
+  function runListeners(viewTree: IdentifiableBeagleUIElement) {
     listeners.forEach(l => l(viewTree))
   }
 
@@ -67,22 +61,22 @@ const createBeagleView = ({
   }
 
   async function fetch(
-    params: LoadParams<Schema>,
+    params: LoadParams,
     elementId?: string,
     mode: TreeUpdateMode = 'replaceComponent',
   ) {
-    const path = addPrefix(params.path, '/')
-    const url = urlBuilder.build(path)
+    const path = String.addPrefix(params.path, '/')
+    const url = beagleService.urlBuilder.build(path)
     const originalTree = currentUITree
     const fallbackUIElement = params.fallback
 
-    function onChangeTree(loadedTree: BeagleUIElement<Schema>) {
+    function onChangeTree(loadedTree: BeagleUIElement) {
       setTree(originalTree) // changes should be made based on the original tree
       renderer.doFullRender(loadedTree, elementId, mode)
     }
 
     try {
-      await loadUITree({
+      await beagleService.viewClient.load({
         url,
         fallbackUIElement,
         onChangeTree,
@@ -118,20 +112,21 @@ const createBeagleView = ({
     getRenderer: () => renderer,
     getTree,
     getBeagleNavigator,
+    getBeagleService: () => beagleService,
   }
 
-  renderer = createRenderer({
+  renderer = Renderer.create({
     beagleView,
-    actionHandlers,
-    childrenMetadata,
+    actionHandlers: beagleService.actionHandlers,
+    childrenMetadata: beagleService.childrenMetadata,
     executionMode: 'development',
-    lifecycleHooks,
+    lifecycleHooks: beagleService.lifecycleHooks,
     renderToScreen: runListeners,
     setTree,
     typesMetadata: {},
   })
 
-  globalContextApi.subscribe(() => renderer.doFullRender(getTree()))
+  beagleService.globalContext.subscribe(() => renderer.doFullRender(getTree()))
 
   return beagleView
 }

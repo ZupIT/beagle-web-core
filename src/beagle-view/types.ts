@@ -14,25 +14,9 @@
   * limitations under the License.
 */
 
-import { URLService } from '../network/url'
-import { ViewClientService } from '../network/view-client'
-import { GlobalContextService } from '../service/global-context'
-import { TreeContentService } from '../service/tree-content'
-import { ActionHandler } from '../actions/types'
-import { LifecycleHookMap } from '../service/types'
-import { ChildrenMetadataMap } from '../metadata/types'
+import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import BeagleError from 'error/BeagleError'
 
-export interface BeagleViewParams {
-  initialRoute: string,
+export type Listener = (tree: IdentifiableBeagleUIElement) => void
 
-  // from config
-  actionHandlers: Record<string, ActionHandler>,
-  lifecycleHooks: LifecycleHookMap,
-  childrenMetadata: ChildrenMetadataMap,
-
-  // services
-  globalContext: GlobalContextService,
-  urlService: URLService,
-  viewClient: ViewClientService,
-  treeContentService: TreeContentService,
-}
+export type ErrorListener = (errors: Array<BeagleError>) => void

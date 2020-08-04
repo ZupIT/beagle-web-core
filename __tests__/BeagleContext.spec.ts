@@ -1,27 +1,26 @@
 /*
-  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *  http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-*/
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import nock from 'nock'
-import createBeagleView from '../src/BeagleUIView'
-import BeagleContext, { views } from '../src/BeagleContext'
-import { clone } from '../src/utils/tree-manipulation'
+import BeagleView from 'beagle-view'
+import TreeContentMapper from 'service/tree-content'
+import Tree from 'beagle-tree'
+import { LifecycleHookMap } from 'service/beagle-service/types'
 import { treeA, treeB, treeC, treeD } from './mocks'
 import { mockLocalStorage } from './utils/test-utils'
-import UrlBuilder from '../src/UrlBuilder'
-import { LifecycleHookMap } from '../src/types'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
