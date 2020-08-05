@@ -15,68 +15,77 @@
  */
 
 import nock from 'nock'
-import ViewClient, { namespace } from 'service/network/view-client'
+import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
-import { beagleCacheNamespace } from 'service/network/remote-cache'
+import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
+import { Strategy } from 'service/network/types'
 import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../utils/test-utils'
+import { createLocalStorageMock } from '../../utils/test-utils'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
 const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: beagle-cache-only)', () => {
-  const localStorageMock = mockLocalStorage()
-  beagleStorage.setStorage(localStorage)
-  beagleHttpClient.setFetchFunction(fetch)
+  const strategy: Strategy = 'beagle-cache-only'
+  const httpClient = { fetch }
   const cacheKey = `${beagleCacheNamespace}/${url}/get`
   const treeKey = `${namespace}/${url}/get`
+  const retry = jest.fn()
+  let storage: Storage
+  let viewClient: ViewClientType
 
   Date.now = jest.fn(() => 20203030)
 
-  afterAll(() => localStorageMock.unmock())
-
   beforeEach(() => {
     nock.cleanAll()
-    localStorageMock.clear()
+    storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
-  it('should render view, save cache, save beagle-hash and not call loadCache when no metadata defined', async () => {
-    const metadata = {
-      beagleHash: 'testing',
-      requestTime: 20203030,
-      ttl: '5'
-    }
-    
-    nock(basePath).get(path).reply(200, JSON.stringify(treeA), { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
-    const onChangeTree = jest.fn()
+  it(
+    'should render view, save cache, save beagle-hash and not call loadCache when no metadata defined',
+    async () => {
+      const metadata = {
+        beagleHash: 'testing',
+        requestTime: 20203030,
+        ttl: '5'
+      }
+      
+      const headers = { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' }
+      nock(basePath).get(path).reply(200, JSON.stringify(treeA), headers)
+      
+      const onChangeTree = jest.fn()
+      await viewClient.load({ url, onChangeTree, strategy, retry })
 
-    await load({ url, onChangeTree, strategy: 'beagle-cache-only' })
-
-    expect(onChangeTree).toHaveBeenCalledWith(treeA)
-    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
-    expect(localStorage.getItem).not.toHaveBeenCalledWith(treeKey)
-    expect(localStorage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadata))
-    expect(localStorage.setItem).toHaveBeenCalledWith(treeKey, JSON.stringify(treeA))
-    expect(nock.isDone()).toBe(true)
-  })
+      expect(onChangeTree).toHaveBeenCalledWith(treeA)
+      expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
+      expect(storage.getItem).not.toHaveBeenCalledWith(treeKey)
+      expect(storage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadata))
+      expect(storage.setItem).toHaveBeenCalledWith(treeKey, JSON.stringify(treeA))
+      expect(nock.isDone()).toBe(true)
+    },
+  )
 
   it('should get view from cache when receiving status 304 and render view', async () => {
-    localStorage.setItem(treeKey, JSON.stringify(treeA))
+    storage.setItem(treeKey, JSON.stringify(treeA))
     const metadata = {
       beagleHash: 'testing',
       requestTime: 20203030,
       ttl: '5'
     }
     
-    nock(basePath).get(path).reply(304, null,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
+    nock(basePath).get(path).reply(304, undefined, { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'beagle-cache-only' })
-    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
-    expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
-    expect(localStorage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadata))
+    await viewClient.load({ url, onChangeTree, strategy, retry })
+    expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(storage.getItem).toHaveBeenCalledWith(treeKey)
+    expect(storage.setItem).toHaveBeenCalledWith(cacheKey, JSON.stringify(metadata))
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })
@@ -89,26 +98,28 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
       ttl: '5'
     }
     
-    nock(basePath).get(path).reply(304, null,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
+    nock(basePath).get(path).reply(304, undefined,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
-    await expect(load({ url, onChangeTree, strategy: 'beagle-cache-only' })).rejects.toEqual([
+    const loadParams = { url, onChangeTree, strategy, retry }
+    await expect(viewClient.load(loadParams)).rejects.toEqual([
       new BeagleExpiredCacheError(url),
       new BeagleCacheError(url)
     ])
-    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
-    expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
+    expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(storage.getItem).toHaveBeenCalledWith(treeKey)
     expect(nock.isDone()).toBe(true)
   })
 
   it('should not fallback to cache and throw errors', async () => {
-    localStorage.setItem(treeKey, JSON.stringify(treeA))
+    storage.setItem(treeKey, JSON.stringify(treeA))
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'beagle-cache-only' })).rejects.toEqual([
+    const loadParams = { url, onChangeTree: jest.fn(), strategy, retry }
+    await expect(viewClient.load(loadParams)).rejects.toEqual([
       new BeagleExpiredCacheError(url),
       new BeagleNetworkError(url, {} as Response)
     ])
-    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
-    expect(localStorage.getItem).not.toHaveBeenCalledWith(treeKey)
+    expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(storage.getItem).not.toHaveBeenCalledWith(treeKey)
     expect(nock.isDone()).toBe(true)
   })
 
@@ -119,14 +130,14 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
       ttl: '5'
     }
 
-    localStorage.setItem(cacheKey, JSON.stringify(metadata))
-    localStorage.setItem(treeKey, JSON.stringify(treeA))
+    storage.setItem(cacheKey, JSON.stringify(metadata))
+    storage.setItem(treeKey, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
 
-    const test = await load({ url, onChangeTree, strategy: 'beagle-cache-only' })
+    const test = await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
-    expect(localStorage.getItem).toHaveBeenCalledWith(cacheKey)
-    expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
+    expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
+    expect(storage.getItem).toHaveBeenCalledWith(treeKey)
   })
  
 })

@@ -25,8 +25,8 @@ describe('Actions: addChildren', () => {
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
     const expected = Tree.clone(mock)
-    const content = Tree.findById(expected, 'content')
-    content.children.push(newContent)
+    const content = Tree.findById(expected, 'content')!
+    content.children!.push(newContent)
   
     addChildren({
       action: {
@@ -35,7 +35,7 @@ describe('Actions: addChildren', () => {
         value: [newContent],
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -46,9 +46,9 @@ describe('Actions: addChildren', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
-    const expected = clone(mock)
-    const content = findById(expected, 'content')
-    content.children.push(newContent)
+    const expected = Tree.clone(mock)
+    const content = Tree.findById(expected, 'content')!
+    content.children!.push(newContent)
   
     addChildren({
       action: {
@@ -58,7 +58,7 @@ describe('Actions: addChildren', () => {
         value: [newContent],
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -69,9 +69,9 @@ describe('Actions: addChildren', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
-    const expected = clone(mock)
-    const content = findById(expected, 'content')
-    content.children.unshift(newContent)
+    const expected = Tree.clone(mock)
+    const content = Tree.findById(expected, 'content')!
+    content.children!.unshift(newContent)
   
     addChildren({
       action: {
@@ -81,7 +81,7 @@ describe('Actions: addChildren', () => {
         value: [newContent],
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -92,8 +92,8 @@ describe('Actions: addChildren', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
-    const expected = clone(mock)
-    const content = findById(expected, 'content')
+    const expected = Tree.clone(mock)
+    const content = Tree.findById(expected, 'content')!
     content.children = [newContent]
   
     addChildren({
@@ -104,7 +104,7 @@ describe('Actions: addChildren', () => {
         value: [newContent],
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -125,7 +125,7 @@ describe('Actions: addChildren', () => {
         value: [newContent],
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 

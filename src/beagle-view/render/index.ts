@@ -49,7 +49,7 @@ function createRenderer({
   executionMode,
   actionHandlers,
 }: Params) {
-  const { urlBuilder, viewClient } = beagleView.getBeagleService()
+  const { urlBuilder, viewClient, globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree
@@ -104,7 +104,7 @@ function createRenderer({
   }
   
   function evaluateComponents(viewTree: IdentifiableBeagleUIElement) {
-    const contextMap = Context.evaluate(viewTree)
+    const contextMap = Context.evaluate(viewTree, [globalContext.getAsDataContext()])
     return Tree.replaceEach(viewTree, (component) => {
       Action.deserialize({
         component,

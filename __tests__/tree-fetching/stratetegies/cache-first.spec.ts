@@ -15,32 +15,38 @@
  */
 
 import nock from 'nock'
-import ViewClient, { namespace } from 'service/network/view-client'
+import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
+import { Strategy } from 'service/network/types'
 import { treeA, treeB } from '../../mocks'
-import { mockLocalStorage } from '../../utils/test-utils'
+import { createLocalStorageMock } from '../../utils/test-utils'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
 const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: cache-first)', () => {
-  const localStorageMock = mockLocalStorage()
-  beagleStorage.setStorage(localStorage)
-  beagleHttpClient.setFetchFunction(fetch)
-
-  afterAll(() => localStorageMock.unmock())
+  const strategy: Strategy = 'cache-first'
+  const httpClient = { fetch }
+  const retry = jest.fn()
+  let storage: Storage
+  let viewClient: ViewClientType
 
   beforeEach(() => {
-    localStorageMock.clear()
+    storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
   it('should render cached view and, when ready, render view from network', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeB))
+    storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeB))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'cache-first' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree.mock.calls).toEqual([[treeB], [treeA]])
     expect(nock.isDone()).toBe(true)
   })
@@ -48,16 +54,16 @@ describe('Utils: tree fetching (load: cache-first)', () => {
   it('should render loading and view from network when cache is not available', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'cache-first' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree.mock.calls).toEqual([[{_beagleComponent_: 'custom:loading' }], [treeA]])
     expect(nock.isDone()).toBe(true)
   })
 
   it('should ignore network error', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeB))
+    storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeB))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'cache-first' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree.mock.calls).toEqual([[treeB]])
     expect(nock.isDone()).toBe(true)
   })
@@ -65,7 +71,7 @@ describe('Utils: tree fetching (load: cache-first)', () => {
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
-    await expect(load({ url, onChangeTree, strategy: 'cache-first' })).rejects.toEqual([
+    await expect(viewClient.load({ url, onChangeTree, strategy, retry })).rejects.toEqual([
       new BeagleCacheError(url),
       // @ts-ignore
       new BeagleNetworkError(url),

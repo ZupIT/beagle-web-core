@@ -24,13 +24,13 @@ import Context from 'beagle-view/render/context'
 import Expression from 'beagle-view/render/expression'
 import Action from 'beagle-view/render/action'
 import Tree from 'beagle-tree'
-import { createContainerWithAction, createModalMock } from './mocks'
-import { createBeagleViewMock } from '../utils/test-utils'
 import defaultActionHandlers from 'action'
 import { ActionHandlerParams, BeagleAction } from 'action/types'
 import BeagleService from 'service/beagle-service'
 import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view'
+import { createContainerWithAction, createModalMock } from './mocks'
+import { createBeagleViewMock, mockLocalStorage } from '../utils/test-utils'
 
 interface ActionHandlerExpectation {
   handler: jest.Mock,
@@ -176,7 +176,7 @@ describe('EventHandler', () => {
   
     expect(Expression.resolveForAction).toHaveBeenCalledWith(
       action,
-      [{ id: 'global', value: null }, { id: 'onInit', value: event }],
+      [{ id: 'onInit', value: event }],
     )
 
     Expression.resolveForAction = originalResolve
@@ -205,8 +205,9 @@ describe('EventHandler', () => {
 
   // fixme: this is testing too many things. This should be moved and test only the BeagleService.
   it('should handle custom action', async () => {
+    const localStorageMock = mockLocalStorage()
     const myActionHandler = jest.fn()
-    const service = createBeagleService({
+    const service = BeagleService.create({
       baseUrl: '',
       components: {},
       customActions: {
@@ -228,6 +229,8 @@ describe('EventHandler', () => {
     expect(myActionHandler).toHaveBeenCalledWith(
       expect.objectContaining({ action })
     )
+
+    localStorageMock.unmock()
   })
 
   it('should warn if action handler doesn\'t exist', () => {
@@ -248,9 +251,9 @@ describe('EventHandler', () => {
     const modalMock = createModalMock()
     interpretEventsInTree(modalMock, beagleView)
 
-    const btnOpenModal = findById(modalMock, 'btn-open-modal')
-    const modal = findById(modalMock, 'modal')
-    const modalContent = findById(modalMock, 'modal-content')
+    const btnOpenModal = Tree.findById(modalMock, 'btn-open-modal')!
+    const modal = Tree.findById(modalMock, 'modal')!
+    const modalContent = Tree.findById(modalMock, 'modal-content')!
 
     expect(typeof btnOpenModal.onPress).toBe('function')
     expect(typeof modal.onClose).toBe('function')

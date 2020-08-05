@@ -42,13 +42,13 @@ describe('Binding expressions: replacing with calculated contexts', () => {
       component => Expression.resolveForComponent(component, contexts[component.id]),
     )
   
-    const profile = findById(treeWithValues, 'profile')
-    const friendsTitle = findById(treeWithValues, 'friendsTitle')
-    const friendsPanel = findById(treeWithValues, 'friendsPanel')
-    const friendModal = findById(treeWithValues, 'friendDetailsModal')
-    const firstPost = findById(treeWithValues, 'firstPost')
-    const secondPost = findById(treeWithValues, 'secondPost')
-    const thirdPost = findById(treeWithValues, 'thirdPost')
+    const profile = Tree.findById(treeWithValues, 'profile')!
+    const friendsTitle = Tree.findById(treeWithValues, 'friendsTitle')!
+    const friendsPanel = Tree.findById(treeWithValues, 'friendsPanel')!
+    const friendModal = Tree.findById(treeWithValues, 'friendDetailsModal')!
+    const firstPost = Tree.findById(treeWithValues, 'firstPost')!
+    const secondPost = Tree.findById(treeWithValues, 'secondPost')!
+    const thirdPost = Tree.findById(treeWithValues, 'thirdPost')!
   
     expect(profile.name).toBe(socialMediaData.user.name)
     expect(profile.picture).toBe(socialMediaData.user.picture)
@@ -73,7 +73,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
       component => Expression.resolveForComponent(component, contexts[component.id]),
     )
 
-    const text = findByType(treeWithValues, 'text')[0]
+    const text = Tree.findByType(treeWithValues, 'text')[0]
     expect(text).toBeDefined()
     expect(text.value).toBe('jest-2')
   })
@@ -89,28 +89,38 @@ describe('Binding expressions: replacing with calculated contexts', () => {
         component => Expression.resolveForComponent(component, contexts[component.id]),
       )
       
-      const postWithWrongContext = findById(treeWithValues, 'postWithWrongContext')
+      const postWithWrongContext = Tree.findById(treeWithValues, 'postWithWrongContext')!
       expect(postWithWrongContext.author).toBe('@{friends[0].name}')
     },
   )
 
   it('closest context with invalid name of global should have priority over global context', () => {
     const originalWarn = console.warn
+    const global = {
+      id: 'global',
+      value: {
+        text: 'Global context value',
+        obj: {
+          inner: {
+            text: 'Global context object value',
+          }
+        }
+      },
+    }
+  
     console.warn = jest.fn()
-    globalContextApi.set('Global context value', 'text')
-    globalContextApi.set('Global context object value', 'obj.inner.text')
 
-    const mock = clone(treeWithGlobalContext)
-    const contexts = Context.evaluate(mock)
+    const mock = Tree.clone(treeWithGlobalContext)
+    const contexts = Context.evaluate(mock, [global])
     const treeWithValues = Tree.replaceEach(
       mock,
       component => Expression.resolveForComponent(component, contexts[component.id]),
     )
 
-    let textElement = findByType(treeWithValues, 'beagle:text1')[0]
+    let textElement = Tree.findByType(treeWithValues, 'beagle:text1')[0]
     expect(textElement).toBeDefined()
     expect(textElement.text).toBe('testing value of context with global id')
-    textElement = findByType(treeWithValues, 'beagle:text2')[0]
+    textElement = Tree.findByType(treeWithValues, 'beagle:text2')[0]
     expect(textElement).toBeDefined()
     expect(textElement.text).toBe('@{global.obj.inner.text}')
     expect(console.warn).toHaveBeenCalled()

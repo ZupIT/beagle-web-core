@@ -15,35 +15,35 @@
  */
 
 import nock from 'nock'
-import ViewClient from 'service/network/view-client'
+import ViewClient, { ViewClient as ViewClientType } from 'service/network/view-client'
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
+import { Strategy } from 'service/network/types'
 import { treeA } from '../mocks'
-import { mockLocalStorage } from '../utils/test-utils'
+import { createLocalStorageMock } from '../utils/test-utils'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
 const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: general)', () => {
-  const localStorageMock = mockLocalStorage()
-  beagleHttpClient.setFetchFunction(fetch)
-  beagleStorage.setStorage(localStorage)
-
-  afterAll(() => localStorageMock.unmock())
-
+  const strategy: Strategy = 'network-with-fallback-to-cache'
+  const httpClient = { fetch }
+  const retry = jest.fn()
+  let viewClient: ViewClientType
+  
   beforeEach(() => {
     nock.cleanAll()
-    localStorageMock.clear()
+    const storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
   it('should render loading before resulting view', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    const promise = load({
-      url,
-      strategy: 'network-with-fallback-to-cache',
-      onChangeTree,
-      retry: jest.fn(),
-    })
+    const promise = viewClient.load({ url, strategy, onChangeTree, retry })
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:loading' })
     onChangeTree.mockClear()
     await promise
@@ -55,12 +55,7 @@ describe('Utils: tree fetching (load: general)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
     const retry = jest.fn()
-    const promise = load({
-      url,
-      strategy: 'network-with-fallback-to-cache',
-      onChangeTree,
-      retry,
-    })
+    const promise = viewClient.load({ url, strategy, onChangeTree, retry })
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom:loading' })
     onChangeTree.mockClear()
     try {
@@ -77,12 +72,12 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should not render loading', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    const promise = load({
+    const promise = viewClient.load({
       url,
-      strategy: 'network-with-fallback-to-cache',
+      strategy,
       onChangeTree,
+      retry,
       shouldShowLoading: false,
-      retry: jest.fn(),
     })
     expect(onChangeTree).not.toHaveBeenCalled()
     await promise
@@ -94,12 +89,13 @@ describe('Utils: tree fetching (load: general)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
     try {
-      await load({
+      await viewClient.load({
         url,
-        strategy: 'network-with-fallback-to-cache',
-        onChangeTree, shouldShowLoading: false,
+        strategy,
+        onChangeTree,
+        shouldShowLoading: false,
         shouldShowError: false,
-        retry: jest.fn(),
+        retry,
       })
     } catch { }
     expect(onChangeTree).not.toHaveBeenCalledWith()
@@ -109,11 +105,12 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should render custom loading component', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    const promise = load({
-      url,strategy: 'network-with-fallback-to-cache', 
+    const promise = viewClient.load({
+      url,
+      strategy, 
       onChangeTree,
       loadingComponent: 'custom-loading',
-      retry: jest.fn(),
+      retry,
     })
     expect(onChangeTree).toHaveBeenCalledWith({ _beagleComponent_: 'custom-loading' })
     await promise
@@ -125,9 +122,9 @@ describe('Utils: tree fetching (load: general)', () => {
     const onChangeTree = jest.fn()
     const retry = jest.fn()
     try {
-      await load({
+      await viewClient.load({
         url,
-        strategy: 'network-with-fallback-to-cache',
+        strategy,
         onChangeTree,
         errorComponent: 'custom-error',
         retry,
@@ -144,12 +141,12 @@ describe('Utils: tree fetching (load: general)', () => {
   it('should use post and send headers', async () => {
     nock(basePath, { reqheaders: { test: 'test' } }).post(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({
+    await viewClient.load({
       url, method: 'post',
       headers: { test: 'test' },
-      strategy: 'network-with-fallback-to-cache',
+      strategy,
       onChangeTree,
-      retry: jest.fn(),
+      retry,
     })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)

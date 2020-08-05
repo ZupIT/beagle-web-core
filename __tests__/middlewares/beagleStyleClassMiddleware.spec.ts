@@ -25,19 +25,19 @@ import Styling from 'beagle-view/render/styling'
 describe('StyleClassMiddleware', () => {
 
   it('should transform styleId to kebab-case', () => {
-    const mock = clone(treeE)
+    const mock = Tree.clone(treeE)
     Tree.forEach(mock, Styling.convert)
     expect(mock).toEqual(treeEParsed)
   })
 
   it('should keep the tree intact if no styleId is present', () => {
-    const mock = clone(treeEWithoutStyleIds)
+    const mock = Tree.clone(treeEWithoutStyleIds)
     Tree.forEach(mock, Styling.convert)
     expect(mock).toEqual(treeEWithoutStyleIds)
   })
 
   it('should not change styleId if already in kebab-case', () => {
-    const mock = clone(treeEParsed)
+    const mock = Tree.clone(treeEParsed)
     Tree.forEach(mock, Styling.convert)
     expect(mock).toEqual(treeEParsed)
   })

@@ -27,7 +27,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
   executeAction,
   beagleView,
 }) => {
-  const { url, method, data, headers, onSuccess, onError, onFinish } = action
+  const { url, method = 'get', data, headers, onSuccess, onError, onFinish } = action
   const { httpClient, urlBuilder } = beagleView.getBeagleService()
 
   const contextResponse: Partial<ParsedResponse> = {}

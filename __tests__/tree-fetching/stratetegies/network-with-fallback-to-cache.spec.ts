@@ -15,49 +15,56 @@
  */
 
 import nock from 'nock'
-import ViewClient, { namespace } from 'service/network/view-client'
+import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
+import { Strategy } from 'service/network/types'
 import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../utils/test-utils'
+import { createLocalStorageMock } from '../../utils/test-utils'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
 const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: network-with-fallback-to-cache)', () => {
-  const localStorageMock = mockLocalStorage()
-  beagleHttpClient.setFetchFunction(fetch)
-  beagleStorage.setStorage(localStorage)
-
-  afterAll(() => localStorageMock.unmock())
+  const strategy: Strategy = 'network-with-fallback-to-cache'
+  const httpClient = { fetch }
+  const retry = jest.fn()
+  let storage: Storage
+  let viewClient: ViewClientType
 
   beforeEach(() => {
     nock.cleanAll()
-    localStorageMock.clear()
+    storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
   it('should render view and save cache', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'network-with-fallback-to-cache' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
-    expect(localStorage.setItem).toHaveBeenCalled()
+    expect(storage.setItem).toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })
 
   it('should fallback to cache', async () => {
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
+    storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'network-with-fallback-to-cache' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
     expect(nock.isDone()).toBe(true)
   })
 
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'network-with-fallback-to-cache' })).rejects.toEqual([
+    const params = { url, onChangeTree: jest.fn(), strategy, retry }
+    await expect(viewClient.load(params)).rejects.toEqual([
       // @ts-ignore
       new BeagleNetworkError(url),
       new BeagleCacheError(url),

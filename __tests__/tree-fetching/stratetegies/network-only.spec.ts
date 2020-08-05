@@ -15,39 +15,46 @@
  */
 
 import nock from 'nock'
-import ViewClient from 'service/network/view-client'
+import ViewClient, { ViewClient as ViewClientType } from 'service/network/view-client'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
+import { Strategy } from 'service/network/types'
 import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../utils/test-utils'
+import { createLocalStorageMock } from '../../utils/test-utils'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
 const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: network only)', () => {
-  const localStorageMock = mockLocalStorage()
-  BeagleStorage.setStorage(localStorage)
-  beagleHttpClient.setFetchFunction(fetch)
-
-  afterAll(() => localStorageMock.unmock())
+  const strategy: Strategy = 'network-only'
+  const httpClient = { fetch }
+  const retry = jest.fn()
+  let storage: Storage
+  let viewClient: ViewClientType
 
   beforeEach(() => {
     nock.cleanAll()
-    localStorageMock.clear()
+    storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
   it('should render view and not save cache', async () => {
     nock(basePath).get(path).reply(200, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'network-only' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
-    expect(localStorage.setItem).not.toHaveBeenCalled()
+    expect(storage.setItem).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })
 
   it('should throw error', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'network-only' })).rejects.toEqual([
+    const params = { url, onChangeTree: jest.fn(), strategy, retry }
+    await expect(viewClient.load(params)).rejects.toEqual([
       // @ts-ignore
       new BeagleNetworkError(url),
     ])

@@ -19,22 +19,29 @@
  * better not to couple this with the utils "Tree".
  */
 
+import nock from 'nock'
 import Navigation from 'beagle-view/render/navigation'
 import { BeagleUIElement } from 'beagle-tree/types'
 import { namespace } from 'service/network/view-client'
 import Tree from 'beagle-tree'
-import nock from 'nock'
-import { mockLocalStorage } from '../utils/test-utils'
+import ViewClient, { ViewClient as ViewClientType } from 'service/network/view-client'
+import {
+  createLocalStorageMock,
+  createDefaultHeadersMock,
+  createRemoteCacheMock,
+} from '../utils/test-utils'
 import { treeA } from '../mocks'
 
 describe('ShouldPrefetch Middleware', () => {
   const baseUrl = 'http://teste.com'
   const path = '/mypath'
   const url = `${baseUrl}${path}`
-  beagleHttpClient.setFetchFunction(fetch)
-
-  const localStorageMock = mockLocalStorage()
-  beagleStorage.setStorage(localStorage)
+  const urlBuilder = { build: (value: string) => `${baseUrl}${value}` }
+  const defaultHeadersService = createDefaultHeadersMock()
+  const remoteCache = createRemoteCacheMock()
+  const httpClient = { fetch }
+  let storage: Storage
+  let viewClient: ViewClientType
 
   const createUiTree = (shouldPrefetch: boolean): BeagleUIElement => ({
     _beagleComponent_: 'container',
@@ -51,22 +58,20 @@ describe('ShouldPrefetch Middleware', () => {
 
   beforeEach(() => {
     nock.cleanAll()
-    localStorageMock.clear()
+    storage = createLocalStorageMock()
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
-  beforeAll(() => {
-    UrlBuilder.setBaseUrl(baseUrl)
-  })
-
-  afterAll(() => localStorageMock.unmock())
-
-  it('should load uiTree and store it in cache when shouldprefetch flag is true', async () => {
+  it('should load uiTree and store it in cache when shouldPrefetch flag is true', async () => {
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
     const uiTree = createUiTree(true)
-    const newUiTree = clone(uiTree)
-    Tree.forEach(newUiTree, Navigation.preFetchViews)
+    const newUiTree = Tree.clone(uiTree)
+    Tree.forEach(
+      newUiTree,
+      component => Navigation.preFetchViews(component, urlBuilder, viewClient),
+    )
     await new Promise(res => setTimeout(async () => {
-      const cachedTree = await localStorage.getItem(`${namespace}/${url}/get`)
+      const cachedTree = storage.getItem(`${namespace}/${url}/get`)
       expect(cachedTree).toStrictEqual(JSON.stringify(treeA))
       expect(newUiTree).toEqual(uiTree)
       expect(nock.isDone()).toBe(true)
@@ -75,12 +80,15 @@ describe('ShouldPrefetch Middleware', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should not load uiTree and store it in cache when shouldprefetch flag is false', async () => {
+  it('should not load uiTree and store it in cache when shouldPrefetch flag is false', async () => {
     const uiTree = createUiTree(false)
-    const newUiTree = clone(uiTree)
-    Tree.forEach(newUiTree, Navigation.preFetchViews)
+    const newUiTree = Tree.clone(uiTree)
+    Tree.forEach(
+      newUiTree,
+      component => Navigation.preFetchViews(component, urlBuilder, viewClient),
+    )
     await new Promise(res => setTimeout(async () => {
-      const cachedTree = await localStorage.getItem(`${namespace}/${url}/get`)
+      const cachedTree = storage.getItem(`${namespace}/${url}/get`)
       expect(cachedTree).toBeNull()
       expect(newUiTree).toEqual(uiTree)
       expect(nock.isDone()).toBe(true)

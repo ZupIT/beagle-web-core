@@ -14,74 +14,81 @@
  * limitations under the License.
  */
 
-import { namespace } from 'service/network/view-client'
+import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
+import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
+import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../mocks'
-import { mockLocalStorage } from '../utils/test-utils'
-import BeagleCacheError from 'service/network/error/BeagleCacheError'
-import { beagleCacheNamespace } from 'service/network/remote-cache'
+import { createLocalStorageMock } from '../utils/test-utils'
 
 const url = 'http://my-app/my-view'
 
 describe('Utils: tree fetching (cacheCheckingTTL)', () => {
-    const localStorageMock = mockLocalStorage()
-    beagleStorage.setStorage(localStorage)
-    Date.now = jest.fn(() => 20203030)
-    
-    afterAll(() => localStorageMock.unmock())
+  const httpClient = { fetch }
+  let storage: Storage
+  let viewClient: ViewClientType
+  Date.now = jest.fn(() => 20203030)
 
-    beforeEach(() => {
-        localStorageMock.clear()
-    })
+  beforeEach(() => {
+    storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
+  })
 
-    it('should load from cache when valid ttl', async () => {
-        const metadata = {
-            beagleHash: 'testing',
-            requestTime: 20202020,
-            ttl: '5'
-        }
-        const treeKey = `${namespace}/${url}/get`
-        const cacheKey = `${beagleCacheNamespace}/${url}/get`
+  it('should load from cache when valid ttl', async () => {
+    const metadata = {
+      beagleHash: 'testing',
+      requestTime: 20202020,
+      ttl: '5'
+    }
+    const treeKey = `${namespace}/${url}/get`
+    const cacheKey = `${beagleCacheNamespace}/${url}/get`
 
-        localStorage.setItem(cacheKey, JSON.stringify(metadata))
-        localStorage.setItem(treeKey, JSON.stringify(treeA))
-    
-        const result = await loadFromCacheCheckingTTL(url)
-        expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
-        expect(result).toEqual(treeA)
-    })
+    storage.setItem(cacheKey, JSON.stringify(metadata))
+    storage.setItem(treeKey, JSON.stringify(treeA))
 
-    it('should load from cache when valid ttl and method different from default', async () => {
-        const metadata = {
-            beagleHash: 'testing',
-            requestTime: 20202020,
-            ttl: '5'
-        }
-        const treeKey = `${namespace}/${url}/post`
-        const cacheKey = `${beagleCacheNamespace}/${url}/post`
+    const result = await viewClient.loadFromCacheCheckingTTL(url)
+    expect(storage.getItem).toHaveBeenCalledWith(treeKey)
+    expect(result).toEqual(treeA)
+  })
 
-        localStorage.setItem(cacheKey, JSON.stringify(metadata))
-        localStorage.setItem(treeKey, JSON.stringify(treeA))
-        
-        const result = await loadFromCacheCheckingTTL(url, 'post')
-        expect(localStorage.getItem).toHaveBeenCalledWith(treeKey)
-        expect(result).toEqual(treeA)
-    })
-    
-    it('should throw an error when no metadata available', async () => {
-        await expect(loadFromCacheCheckingTTL(url)).rejects.toEqual(new BeagleExpiredCacheError(url))
-        expect(localStorage.getItem).toHaveBeenCalledTimes(1)
-    })
+  it('should load from cache when valid ttl and method different from default', async () => {
+      const metadata = {
+          beagleHash: 'testing',
+          requestTime: 20202020,
+          ttl: '5'
+      }
+      const treeKey = `${namespace}/${url}/post`
+      const cacheKey = `${beagleCacheNamespace}/${url}/post`
 
-    it('should throw an error when invalid ttl and not load from cache ', async () => {
-        const metadata = {
-            beagleHash: 'testing',
-            requestTime: 20101010,
-            ttl: '5'
-        }
-       
-        localStorage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
-    
-        await expect(loadFromCacheCheckingTTL(url)).rejects.toEqual(new BeagleExpiredCacheError(url))
-        expect(localStorage.getItem).toHaveBeenCalledTimes(1)
-    })
+      storage.setItem(cacheKey, JSON.stringify(metadata))
+      storage.setItem(treeKey, JSON.stringify(treeA))
+      
+      const result = await viewClient.loadFromCacheCheckingTTL(url, 'post')
+      expect(storage.getItem).toHaveBeenCalledWith(treeKey)
+      expect(result).toEqual(treeA)
+  })
+
+  it('should throw an error when no metadata available', async () => {
+      await expect(viewClient.loadFromCacheCheckingTTL(url)).rejects.toEqual(
+        new BeagleExpiredCacheError(url)
+      )
+      expect(storage.getItem).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw an error when invalid ttl and not load from cache ', async () => {
+      const metadata = {
+          beagleHash: 'testing',
+          requestTime: 20101010,
+          ttl: '5'
+      }
+      
+      storage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
+
+      await expect(viewClient.loadFromCacheCheckingTTL(url)).rejects.toEqual(
+        new BeagleExpiredCacheError(url)
+      )
+      expect(storage.getItem).toHaveBeenCalledTimes(1)
+  })
 })

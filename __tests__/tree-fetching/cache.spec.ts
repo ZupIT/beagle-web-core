@@ -14,39 +14,44 @@
  * limitations under the License.
  */
 
-import ViewClient, { namespace } from 'service/network/view-client'
+import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../mocks'
-import { mockLocalStorage } from '../utils/test-utils'
+import { createLocalStorageMock } from '../utils/test-utils'
 
 const url = 'http://my-app/my-view'
 
 describe('Utils: tree fetching (cache)', () => {
-  const localStorageMock = mockLocalStorage({
+  const httpClient = { fetch }
+  let storage: Storage
+  let viewClient: ViewClientType
+  const initialStorageValues = {
     [`${namespace}/${url}/get`]: JSON.stringify(treeA),
     [`${namespace}/${url}/post`]: JSON.stringify(treeA),
-  })
-  beagleStorage.setStorage(localStorage)
-
-  afterAll(() => localStorageMock.unmock())
+  }
 
   beforeEach(() => {
-    localStorageMock.clear()
+    storage = createLocalStorageMock(initialStorageValues)
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
   it('should load from cache (get)', async () => {
-    const result = await loadFromCache(url)
-    expect(localStorage.getItem).toHaveBeenCalledWith(`${namespace}/${url}/get`)
+    const result = await viewClient.loadFromCache(url)
+    expect(storage.getItem).toHaveBeenCalledWith(`${namespace}/${url}/get`)
     expect(result).toEqual(treeA)
   })
 
   it('should load from cache (post)', async () => {
-    const result = await loadFromCache(url, 'post')
-    expect(localStorage.getItem).toHaveBeenCalledWith(`${namespace}/${url}/post`)
+    const result = await viewClient.loadFromCache(url, 'post')
+    expect(storage.getItem).toHaveBeenCalledWith(`${namespace}/${url}/post`)
     expect(result).toEqual(treeA)
   })
 
   it('should throw error when cache is not available', async () => {
-    await expect(loadFromCache('blah')).rejects.toEqual(new BeagleCacheError('blah'))
+    await expect(viewClient.loadFromCache('blah')).rejects.toEqual(new BeagleCacheError('blah'))
   })
 })

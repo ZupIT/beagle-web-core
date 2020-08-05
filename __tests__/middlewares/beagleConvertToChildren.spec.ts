@@ -25,19 +25,19 @@ import {  treeWithChild, treeWithChildAndChildren, treeTestChild } from '../mock
 
 describe('ChildToChildren Middleware', () => {
   it('should transform child attributes to children attributes', () => {
-    const mock = clone(treeWithChild)
+    const mock = Tree.clone(treeWithChild)
     Tree.forEach(mock, component => Component.formatChildrenProperty(component))
     expect(mock).toEqual(treeTestChild)
   })
 
   it('should return same tree when no child is found', () => {
-    const mock = clone(treeTestChild)
+    const mock = Tree.clone(treeTestChild)
     Tree.forEach(mock, component => Component.formatChildrenProperty(component))
     expect(mock).toEqual(treeTestChild)
   })
 
   it('should return only one children attribute when both child and children are found', () => {
-    const mock = clone(treeWithChildAndChildren)
+    const mock = Tree.clone(treeWithChildAndChildren)
     Tree.forEach(mock, component => Component.formatChildrenProperty(component))
     expect(mock).toEqual(treeTestChild)
   })

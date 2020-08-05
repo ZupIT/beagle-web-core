@@ -14,34 +14,42 @@
  * limitations under the License.
  */
 
-import ViewClient, { namespace } from 'service/network/view-client'
+import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
+import { Strategy } from 'service/network/types'
 import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../utils/test-utils'
+import { createLocalStorageMock } from '../../utils/test-utils'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
 const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: cache-only)', () => {
-  const localStorageMock = mockLocalStorage()
-  beagleStorage.setStorage(localStorage)
-
-  afterAll(() => localStorageMock.unmock())
+  const strategy: Strategy = 'cache-only'
+  const httpClient = { fetch }
+  const retry = jest.fn()
+  let storage: Storage
+  let viewClient: ViewClientType
 
   beforeEach(() => {
-    localStorageMock.clear()
+    storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
   it('should render cached view', async () => {
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
+    storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'cache-only' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
   })
 
   it('should throw error', async () => {
-    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'cache-only' })).rejects.toEqual([
+    const params = { url, onChangeTree: jest.fn(), strategy, retry }
+    await expect(viewClient.load(params)).rejects.toEqual([
       new BeagleCacheError(url),
     ])
   })

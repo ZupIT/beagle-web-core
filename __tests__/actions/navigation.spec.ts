@@ -17,13 +17,13 @@
 import { LifecycleHookMap } from "service/beagle-service/types"
 import BeagleView, { BeagleView as BeagleViewType } from "beagle-view"
 import NavigationActions from 'action/navigation'
-import { mockLocalStorage } from '../utils/test-utils'
+import { mockLocalStorage, createBeagleServiceMock } from '../utils/test-utils'
 import { namespace } from 'service/network/view-client'
 import { treeA } from "../mocks"
 
 describe('Actions: Navigation', () => {
   let beagleView: BeagleViewType
-  let params
+  let params: any
   const baseUrl = 'http://teste.com'
   const element = { _beagleComponent_: 'button', id: 'button' }
   const externalUrl = 'http://google.com'
@@ -77,8 +77,8 @@ describe('Actions: Navigation', () => {
   beforeEach(() => {
     (console.error as jest.Mock).mockClear()
     localStorageMock.clear()
-    UrlBuilder.setBaseUrl(baseUrl)
-    beagleView = createBeagleView('/home', {}, lifecycles, {})
+    const beagleService = createBeagleServiceMock()
+    beagleView = BeagleView.create('/home', beagleService)
     /* fixme: the tests in this file execute async operations that will result in errors since
      * the route they call doesn't exist. These async operations should be awaited before returning.
      * Since they're not being awaited, the beagle view tries to log to the console after the tests
@@ -98,7 +98,6 @@ describe('Actions: Navigation', () => {
   })
 
   afterAll(() => {
-    BeagleHttpClient.setFetchFunction(undefined)
     window = originalWindow
     localStorageMock.unmock()
     console.error = originalConsoleError
