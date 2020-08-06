@@ -17,7 +17,9 @@
 import set from 'lodash/set'
 import Context from '../Renderer/Context'
 import globalContextApi from '../GlobalContextAPI'
+import beagleLogger from '../BeagleLogger'
 import { ActionHandler, SetContextAction } from './types'
+
 
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
   const { value, contextId, path } = action
@@ -27,7 +29,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   const context = Context.find(contextHierarchy, contextId)
 
   if (context && context.id === 'global') {
-    globalContextApi.set(value,  path)
+    globalContextApi.set(value, path)
     return
   }
 
@@ -38,7 +40,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
     const anyContextMessage = (
       `Could not find any context for element of type "${element._beagleComponent_}" and id "${element.id}"`
     )
-    console.warn(contextId ? specificContextMessage : anyContextMessage)
+    beagleLogger.log(contextId ? specificContextMessage : anyContextMessage, 'warn')
     return
   }
 

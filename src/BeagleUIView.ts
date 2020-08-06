@@ -35,6 +35,7 @@ import { addPrefix } from './utils/string'
 import createRenderer from './Renderer'
 import { ActionHandler } from './actions/types'
 import globalContextApi from './GlobalContextAPI'
+import beagleLogger from './BeagleLogger'
 
 const createBeagleView = <Schema>(
   initialRoute: string,
@@ -109,7 +110,7 @@ const createBeagleView = <Schema>(
     } catch (errors) {
       // removes the loading component when an error component should not be rendered
       if (params.shouldShowLoading && !params.shouldShowError) setTree(originalTree)
-      if (errorListeners.length === 0) console.error(errors)
+      if (errorListeners.length === 0) beagleLogger.log(errors, 'error')
       runErrorListeners(errors)
     }
   }

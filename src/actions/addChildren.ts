@@ -15,6 +15,7 @@
 */
 
 import { findById } from '../utils/tree-reading'
+import beagleLogger from '../BeagleLogger'
 import { ActionHandler, AddChildrenAction } from './types'
 
 const addChildren: ActionHandler<AddChildrenAction> = ({ action, beagleView }) => {
@@ -23,7 +24,7 @@ const addChildren: ActionHandler<AddChildrenAction> = ({ action, beagleView }) =
   const component = findById(uiTree, componentId)
 
   if (!component) {
-    console.warn(`No component with id ${componentId} has been found in the tree`)
+    beagleLogger.log(`No component with id ${componentId} has been found in the tree`, 'warn')
     return
   }
 

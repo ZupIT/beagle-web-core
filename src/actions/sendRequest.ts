@@ -16,7 +16,9 @@
 
 import httpClient from '../BeagleHttpClient'
 import urlBuilder from '../UrlBuilder'
+import beagleLogger from '../BeagleLogger'
 import { ActionHandler, SendRequestAction } from './types'
+
 
 interface ParsedResponse {
   data: any,
@@ -49,11 +51,11 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     } catch {
       contextResponse.data = resultText
     }
-    
+
     if (!response.ok) throw new Error(contextResponse.statusText)
     onSuccess && executeAction(onSuccess, 'onSuccess', contextResponse)
   } catch (error) {
-    console.error(error)
+    beagleLogger.log(error, 'error')
     const event = {
       ...contextResponse,
       message: error.message || 'Unexpected error',

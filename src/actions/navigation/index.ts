@@ -21,6 +21,7 @@ import { loadFromCache } from '../../utils/tree-fetching'
 import { addPrefix } from '../../utils/string'
 import { getOriginalKeyByCaseInsensitiveKey } from '../../utils/Object'
 import urlBuilder from '../../UrlBuilder'
+import beagleLogger from '../../BeagleLogger'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -29,6 +30,7 @@ import {
   LocalView,
   RemoteView,
 } from './types'
+
 
 let NavigationActions: Record<string, ActionHandler> = {}
 
@@ -54,7 +56,7 @@ interface Action {
 
 const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ action, beagleView }) => {
   try {
-    
+
     const actionNameLowercase = action._beagleAction_.toLowerCase()
     const actionName = getOriginalKeyByCaseInsensitiveKey(NavigationActions, actionNameLowercase)
     const functionName = actionName.replace(/^beagle:/, '') as keyof BeagleNavigator
@@ -70,13 +72,13 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
         const cachedTree = await loadFromCache(baseUrl, 'get')
         return beagleView.getRenderer().doFullRender(cachedTree)
       } catch (error) {
-        console.error(error)
+        beagleLogger.log(error, 'error')
       }
     }
-    
+
     return beagleView.fetch({ path: url, fallback })
   } catch (error) {
-    console.error(error)
+    beagleLogger.log(error, 'error')
   }
 }
 

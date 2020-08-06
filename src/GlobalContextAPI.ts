@@ -20,6 +20,7 @@ import unset from 'lodash/unset'
 import has from 'lodash/has'
 
 import { GlobalContextAPI, DataContext, GlobalContextListener } from './types'
+import beagleLogger from './BeagleLogger'
 
 export function cloneObject(object: any) {
   return object && JSON.parse(JSON.stringify(object))
@@ -76,7 +77,7 @@ function globalContextService(): GlobalContextAPI {
         unset(globalContext.value, path)
         callUpdateListeners()
       }
-      else console.warn(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
+      else beagleLogger.log(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`, 'warn')
     }
   }
 

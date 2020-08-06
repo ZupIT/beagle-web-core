@@ -20,7 +20,9 @@ import { BeagleAction } from '../actions/types'
 import { DataContext, BeagleUIElement } from '../types'
 import operations from '../operations'
 import Automaton from '../utils/Automaton'
+import beagleLogger from '../BeagleLogger'
 import Context from './Context'
+
 
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
@@ -43,7 +45,7 @@ function getContextBindingValue(
 
   const context = Context.find(contextHierarchy, contextId)
   if (!context) return
-  
+
   return contextPath ? get(context.value, contextPath) : context.value
 }
 
@@ -140,7 +142,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
       const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy)
       return bindingValue === undefined ? str : bindingValue
     } catch (error) {
-      console.warn(error)
+      beagleLogger.log(error, 'error')
       return str
     }
   }
@@ -153,7 +155,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
     try {
       bindingValue = evaluateExpression(path, contextHierarchy)
     } catch (error) {
-      console.warn(error)
+      beagleLogger.log(error, 'error')
     }
     const asString = typeof bindingValue === 'object' ? JSON.stringify(bindingValue) : bindingValue
     return bindingValue === undefined ? bindingStr : `${scapedSlashes}${asString}`
@@ -201,7 +203,6 @@ export function resolve<T extends any>(
         : { ...result, [key]: resolve(value, contextHierarchy, shouldIgnore) }
     }, {}) as T
   }
-
   return data
 }
 

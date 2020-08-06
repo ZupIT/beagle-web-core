@@ -17,6 +17,7 @@
 import { ActionHandler, CustomAction } from './actions/types'
 import BeagleContext from './BeagleContext'
 import BeagleAnalytics from './BeagleAnalytics'
+import BeagleLogger from './BeagleLogger'
 import createBeagleUIService from './BeagleService'
 import {
   DefaultSchema,
@@ -31,6 +32,7 @@ import {
   Strategy,
   ErrorComponentParams,
   ComponentWithMetadata,
+  BeagleLogConfig,
 } from './types'
 
 export default createBeagleUIService
@@ -52,4 +54,6 @@ export {
   BeagleAnalytics,
   ErrorComponentParams,
   ComponentWithMetadata,
+  BeagleLogger,
+  BeagleLogConfig,
 }

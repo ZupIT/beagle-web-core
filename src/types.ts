@@ -66,6 +66,14 @@ export type LifecycleHookMap = Record<Lifecycle, {
   components: Record<string, LifecycleHook>,
 }>
 
+export type LogType =
+    'error' |
+    'info' |
+    'warn' |
+    'success' |
+    'lifecycle' |
+    'expression'
+
 export interface ClickEvent {
   category: string,
   label?: string,
@@ -127,6 +135,7 @@ export interface BeagleConfig<Schema> {
   lifecycles?: Partial<Record<Lifecycle, (viewTree: Record<string, any>) => void>>,
   customStorage?: Storage,
   useBeagleHeaders?: boolean,
+  log?: BeagleLogConfig,
 }
 
 export interface LoadParams<Schema = DefaultSchema> {
@@ -260,4 +269,9 @@ export interface GlobalContextAPI {
 export interface ErrorComponentParams {
   retry: () => void,
   errors: string[],
+}
+
+export interface BeagleLogConfig {
+  mode: ExecutionMode,
+  debug?: Array<LogType>,
 }

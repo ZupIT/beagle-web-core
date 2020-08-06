@@ -18,6 +18,7 @@ import findLast from 'lodash/findLast'
 import last from 'lodash/last'
 import globalContextApi from '../GlobalContextAPI'
 import { IdentifiableBeagleUIElement, DataContext } from '../types'
+import beagleLogger from '../BeagleLogger'
 
 const RESERVED_WORDS = ['global', 'true', 'false', 'null', 'item']
 
@@ -27,8 +28,9 @@ function checkContextId(component: IdentifiableBeagleUIElement) {
 
   RESERVED_WORDS.forEach(word => {
     if (contextId === word) {
-      console.warn(
+      beagleLogger.log(
         `Beagle: context error. The context id "${word}" is a reserved word and probably won't work as expected. Please, consider renaming your context.`,
+        'warn'
       )
     }
   })
