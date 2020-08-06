@@ -54,6 +54,7 @@ function createTreeContentMapper() {
     getContext,
     registerView,
     unregisterView,
+    isRegistered: (viewId: string) => !!views[viewId],
   }
 }
 

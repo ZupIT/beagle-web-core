@@ -315,9 +315,12 @@ export const treeDWithNull: BeagleUIElement = {
     "style": null,
     "accessibility": null
   },
+  // @ts-ignore
   "style": null,
+  // @ts-ignore
   "screenAnalyticsEvent": null,
-  "context": null
+  // @ts-ignore
+  "context": null,
 }
 
 export const cleanedTreeD: BeagleUIElement = {
@@ -535,9 +538,11 @@ export const treeEWithNull: BeagleUIElement = {
     "style": null,
     "accessibility": null
   },
+  // @ts-ignore
   "style": null,
   "screenAnalyticsEvent": null,
-  "context": null
+  // @ts-ignore
+  "context": null,
 }
 
 export const cleanedTreeE: BeagleUIElement = {

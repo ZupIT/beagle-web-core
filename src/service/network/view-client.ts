@@ -29,7 +29,7 @@ interface StrategyArrays {
   fallback: Array<StrategyType>,
 }
 
-interface Params {
+export interface ViewClientLoadParams {
   url: string,
   fallbackUIElement?: BeagleUIElement,
   method?: HttpMethod,
@@ -165,7 +165,7 @@ function createViewClient(
     shouldShowError = true,
     onChangeTree,
     retry,
-  }: Params) {
+  }: ViewClientLoadParams) {
     async function loadNetwork(hasPreviousSuccess = false, useBeagleCacheProtocol = true) {
       if (shouldShowLoading && !hasPreviousSuccess) {
         onChangeTree({ _beagleComponent_: loadingComponent })

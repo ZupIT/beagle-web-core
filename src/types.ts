@@ -15,3 +15,18 @@
  */
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+
+// todo: legacy code, remove with v2.0
+import { ClickEvent as CE, ScreenEvent as SE } from 'service/beagle-service/types'
+
+/**
+ * @deprecated Since version 1.2. Will be removed in version 2.0. Import it from the root instead
+ * (`import { ClickEvent } from '@zup-it/beagle-web'`).
+ */
+export type ClickEvent = CE
+
+/**
+ * @deprecated Since version 1.2. Will be removed in version 2.0. Import it from the root instead
+ * (`import { ScreenEvent } from '@zup-it/beagle-web'`).
+ */
+export type ScreenEvent = SE

@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
+import BeagleService from 'service/beagle-service'
 import { Analytics } from 'service/beagle-service/types'
-import beagleAnalytics from '../src/BeagleAnalytics'
+import { mockLocalStorage } from './utils/test-utils'
 
+// todo: move to the beagle service test suit
 describe('BeagleAnalytics', () => {
+  const lsMock = mockLocalStorage()
+
+  afterAll(lsMock.unmock)
+
   it('should get custom analytics service', async () => {
     const analytics: Analytics = {
         trackEventOnClick: jest.fn(),
@@ -25,8 +31,12 @@ describe('BeagleAnalytics', () => {
         trackEventOnScreenDisappeared: jest.fn()
     }
 
-    beagleAnalytics.setAnalytics(analytics)
+    const beagleService = BeagleService.create({
+      baseUrl: '',
+      components: {},
+      analytics,
+    })
 
-    expect(beagleAnalytics.getAnalytics()).toEqual(analytics)    
+    expect(beagleService.analytics).toEqual(analytics)    
   })
 })

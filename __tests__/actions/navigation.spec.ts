@@ -14,32 +14,19 @@
  * limitations under the License.
  */
 
-import { LifecycleHookMap } from "service/beagle-service/types"
 import BeagleView, { BeagleView as BeagleViewType } from "beagle-view"
 import NavigationActions from 'action/navigation'
-import { mockLocalStorage, createBeagleServiceMock } from '../utils/test-utils'
+import { createBeagleServiceMock } from '../utils/test-utils'
 import { namespace } from 'service/network/view-client'
 import { treeA } from "../mocks"
 
 describe('Actions: Navigation', () => {
   let beagleView: BeagleViewType
   let params: any
-  const baseUrl = 'http://teste.com'
   const element = { _beagleComponent_: 'button', id: 'button' }
   const externalUrl = 'http://google.com'
   const initialStack = [{ url: '/home' }]
-  const lifecycles: LifecycleHookMap = {
-    afterViewSnapshot: { components: {} },
-    beforeRender: { components: {} },
-    beforeStart: { components: {} },
-    beforeViewSnapshot: { components: {} }
-  }
   const url = 'http://my-app/my-view'
-
-  const localStorageMock = mockLocalStorage({
-    [`${namespace}/${url}/get`]: JSON.stringify(treeA),
-    [`${namespace}/${url}/post`]: JSON.stringify(treeA),
-  })
 
   const pushStack = () => {
     NavigationActions['beagle:pushStack']({
@@ -65,9 +52,6 @@ describe('Actions: Navigation', () => {
     })
   }
 
-  const httpResponse = { status: 200, ok: true, json: () => ({}) }
-  // @ts-ignore
-  BeagleHttpClient.setFetchFunction(jest.fn(() => httpResponse))
   const originalWindow = window
   // @ts-ignore
   window = { open: jest.fn(() => {}), location: { origin: 'origin', href: '' } }
@@ -76,8 +60,9 @@ describe('Actions: Navigation', () => {
 
   beforeEach(() => {
     (console.error as jest.Mock).mockClear()
-    localStorageMock.clear()
     const beagleService = createBeagleServiceMock()
+    beagleService.storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
+    beagleService.storage.setItem(`${namespace}/${url}/post`, JSON.stringify(treeA))
     beagleView = BeagleView.create('/home', beagleService)
     /* fixme: the tests in this file execute async operations that will result in errors since
      * the route they call doesn't exist. These async operations should be awaited before returning.
@@ -99,7 +84,6 @@ describe('Actions: Navigation', () => {
 
   afterAll(() => {
     window = originalWindow
-    localStorageMock.unmock()
     console.error = originalConsoleError
   })
 

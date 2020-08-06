@@ -19,99 +19,99 @@ import StringUtils from 'utils/string'
 describe('Utils String', () => {
 
   it('should remove prefix if found', () => {
-    expect(removePrefix('/test', '/')).toEqual('test')
+    expect(StringUtils.removePrefix('/test', '/')).toEqual('test')
   })
 
   it('should remove prefix only on the beginning', () => {
-    expect(removePrefix('/te/st/', '/')).toEqual('te/st/')
+    expect(StringUtils.removePrefix('/te/st/', '/')).toEqual('te/st/')
   })
 
   it('should keep word as is if prefix not found found', () => {
-    expect(removePrefix('test', '/')).toEqual('test')
+    expect(StringUtils.removePrefix('test', '/')).toEqual('test')
   })
 
   it('should remove prefix if letter', () => {
-    expect(removePrefix('Atest', 'A')).toEqual('test')
+    expect(StringUtils.removePrefix('Atest', 'A')).toEqual('test')
   })
 
   it('should remove prefix if special character', () => {
-    expect(removePrefix('#test', '#')).toEqual('test')
+    expect(StringUtils.removePrefix('#test', '#')).toEqual('test')
   })
 
   it('should remove prefix if prefix has many characteres', () => {
-    expect(removePrefix('#AAAtest', '#AAA')).toEqual('test')
+    expect(StringUtils.removePrefix('#AAAtest', '#AAA')).toEqual('test')
   })
 
   it('should remove suffix if found', () => {
-    expect(removeSuffix('test/', '/')).toEqual('test')
+    expect(StringUtils.removeSuffix('test/', '/')).toEqual('test')
   })
 
   it('should remove suffix only on the end of the word', () => {
-    expect(removeSuffix('/te/st/', '/')).toEqual('/te/st')
+    expect(StringUtils.removeSuffix('/te/st/', '/')).toEqual('/te/st')
   })
 
   it('should keep word as is if suffix not found found', () => {
-    expect(removeSuffix('test', '/')).toEqual('test')
+    expect(StringUtils.removeSuffix('test', '/')).toEqual('test')
   })
 
   it('should remove suffix if letter', () => {
-    expect(removeSuffix('testI', 'I')).toEqual('test')
+    expect(StringUtils.removeSuffix('testI', 'I')).toEqual('test')
   })
 
   it('should remove suffix if special character', () => {
-    expect(removeSuffix('test#', '#')).toEqual('test')
+    expect(StringUtils.removeSuffix('test#', '#')).toEqual('test')
   })
 
   it('should remove suffix if prefix has many characteres', () => {
-    expect(removeSuffix('testING#', 'ING#')).toEqual('test')
+    expect(StringUtils.removeSuffix('testING#', 'ING#')).toEqual('test')
   })
 
   it('capitalizeFirstLetter should handle empty string', () => {
-    expect(capitalizeFirstLetter('')).toEqual('')
+    expect(StringUtils.capitalizeFirstLetter('')).toEqual('')
   })
 
   it('capitalizeFirstLetter should handle empty string', () => {
-    expect(capitalizeFirstLetter('')).toEqual('')
+    expect(StringUtils.capitalizeFirstLetter('')).toEqual('')
   })
 
   it('capitalizeFirstLetter should handle string with only one letter', () => {
-    expect(capitalizeFirstLetter('a')).toEqual('A')
+    expect(StringUtils.capitalizeFirstLetter('a')).toEqual('A')
   })
 
   it('capitalizeFirstLetter should upperCase only first letter', () => {
-    expect(capitalizeFirstLetter('testing')).toEqual('Testing')
+    expect(StringUtils.capitalizeFirstLetter('testing')).toEqual('Testing')
   })
 
   it('capitalizeFirstLetter should upperCase only first letter of the first word', () => {
-    expect(capitalizeFirstLetter('testing test')).toEqual('Testing test')
+    expect(StringUtils.capitalizeFirstLetter('testing test')).toEqual('Testing test')
   })
 
   it('capitalizeFirstLetter should not change uppercase word', () => {
-    expect(capitalizeFirstLetter('TESTING')).toEqual('TESTING')
+    expect(StringUtils.capitalizeFirstLetter('TESTING')).toEqual('TESTING')
   })
 
   it('capitalizeFirstLetter should change upperCase only first letter', () => {
-    expect(capitalizeFirstLetter('tEsTiNg tEsT')).toEqual('TEsTiNg tEsT')
+    expect(StringUtils.capitalizeFirstLetter('tEsTiNg tEsT')).toEqual('TEsTiNg tEsT')
   })
 
   it('should add the prefix if string does not have it', () => {
-    expect(addPrefix('test', '/')).toEqual('/test')
+    expect(StringUtils.addPrefix('test', '/')).toEqual('/test')
   })
 
   it('should not add the prefix if string already has it', () => {
-    expect(addPrefix('/test', '/')).toEqual('/test')
+    expect(StringUtils.addPrefix('/test', '/')).toEqual('/test')
   })
 
   it('should handle empty string', () => {
-    expect(addPrefix('', '/')).toEqual('/')
+    expect(StringUtils.addPrefix('', '/')).toEqual('/')
   })
   
   it('should not change string if it already has prefix', () => {
-    expect(addPrefix('/t/e/s/t', '/')).toEqual('/t/e/s/t')
+    expect(StringUtils.addPrefix('/t/e/s/t', '/')).toEqual('/t/e/s/t')
   })
 
   it('should add prefix and not change inner string', () => {
-    expect(addPrefix('t/e/s/t/', '/')).toEqual('/t/e/s/t/')
+    expect(StringUtils.addPrefix('t/e/s/t/', '/')).toEqual('/t/e/s/t/')
   })
 
 })

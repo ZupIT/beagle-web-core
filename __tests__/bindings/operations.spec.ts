@@ -19,6 +19,7 @@ import Operation from 'operation'
 describe('Operations', () => {
   beforeAll(() => {
     const keys = Object.keys(Operation)
+    // @ts-ignore
     keys.forEach(key => Operation[key] = jest.fn(Operation[key]))
   })
 
@@ -201,6 +202,7 @@ describe('Operations', () => {
 
   it('should have tested every operation', () => {
     const keys = Object.keys(Operation)
+    // @ts-ignore
     keys.forEach(key => expect(Operation[key]).toHaveBeenCalled())
   })
 })

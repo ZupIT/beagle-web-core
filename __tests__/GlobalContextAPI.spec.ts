@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-import GlobalContext, { GlobalContext as GlobalContextType } from "service/global-context"
-import { hasDifferentPointers } from "./utils/test-utils"
+import GlobalContext from "service/global-context"
 import { usersObjectCellphone, usersObject } from "./mocks-global-context"
 
 const baseUrl = 'http://teste.com'
 
-describe.only('globalContextApi', () => {
-  let listener
+/* fixme: all tests here are dependent from one another. This is bad, tests should be atomic, fix
+asap. */
+describe.only('globalContext', () => {
+  const listener = jest.fn()
+  const globalContext = GlobalContext.create()
+  globalContext.subscribe(listener)
   
   beforeEach(() => {
-    jest.clearAllMocks();
-    listener = jest.fn()
-    globalContextApi.subscribe(listener)
-  });
+    listener.mockClear()
+  })
 
   it('should initialize context with \'global\' as id and return it with getAsDataContext', async () => {
     const initialContext = { id: 'global', value: null }
-    const getAllResult = globalContextApi.getAsDataContext()
+    const getAllResult = globalContext.getAsDataContext()
     expect(getAllResult).toEqual(initialContext)
   })
 
@@ -40,7 +41,7 @@ describe.only('globalContextApi', () => {
   it('set with path should alter the object creating the hierarch path and trigger listeners', () => {
     const path = 'testing.path'
 
-    globalContextApi.set('testingValue', path)
+    globalContext.set('testingValue', path)
     const obj = {
       id: 'global',
       value: {
@@ -50,12 +51,12 @@ describe.only('globalContextApi', () => {
       }
     }
     expect(listener).toHaveBeenCalled()
-    expect(globalContextApi.getAsDataContext()).toEqual(obj)
+    expect(globalContext.getAsDataContext()).toEqual(obj)
   })
 
   it('get with path should return only corresponding value', () => {
     const path = 'testing.path'
-    expect(globalContextApi.get(path)).toEqual('testingValue')
+    expect(globalContext.get(path)).toEqual('testingValue')
   })
 
   it('get without path should return the entire value object', () => {
@@ -64,37 +65,37 @@ describe.only('globalContextApi', () => {
         path: 'testingValue'
       }
     }
-    expect(globalContextApi.get()).toEqual(value)
+    expect(globalContext.get()).toEqual(value)
   })
 
   it('get with invalid path should return undefined', () => {
     const path = 'invalid.path'
-    expect(globalContextApi.get(path)).toEqual(undefined)
+    expect(globalContext.get(path)).toEqual(undefined)
   })
 
   it('set without path should override entire context and trigger listeners', () => {
     const text = 'new Value without path'
-    globalContextApi.set(text)
+    globalContext.set(text)
     const obj = {
       id: 'global',
       value: text
     }
     
     expect(listener).toHaveBeenCalled()
-    expect(globalContextApi.getAsDataContext()).toEqual(obj)
+    expect(globalContext.getAsDataContext()).toEqual(obj)
   })
 
   it('clear without path should clean value prop and trigger listeners', () => {
-    globalContextApi.clear()
+    globalContext.clear()
     const cleanedContext = { id: 'global', value: null }
     expect(listener).toHaveBeenCalled()
-    expect(globalContextApi.getAsDataContext()).toEqual(cleanedContext)
+    expect(globalContext.getAsDataContext()).toEqual(cleanedContext)
   })
 
   it('clear with path should clean value prop and trigger listeners', () => {
     // Set to prepare for clear testing
     const path = 'testing.clear.path'
-    globalContextApi.set('testingValue', path)
+    globalContext.set('testingValue', path)
     const obj = {
       id: 'global',
       value: {
@@ -105,7 +106,7 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    expect(globalContextApi.getAsDataContext()).toEqual(obj)
+    expect(globalContext.getAsDataContext()).toEqual(obj)
 
     const newObj = {
       id: 'global',
@@ -115,17 +116,17 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    globalContextApi.clear(path)
+    globalContext.clear(path)
     
     expect(listener).toHaveBeenCalledTimes(2)
-    expect(globalContextApi.getAsDataContext()).toEqual(newObj)
+    expect(globalContext.getAsDataContext()).toEqual(newObj)
   })
 
   it('clear with path should delete subtree only preserving siblings', () => {
     // Set to prepare for clear testing
     const path = 'testing.clear.path'
-    globalContextApi.set('testingValue', path)
-    globalContextApi.set('testingOtherValue', 'testing.otherPath')
+    globalContext.set('testingValue', path)
+    globalContext.set('testingOtherValue', 'testing.otherPath')
     const obj = {
       id: 'global',
       value: {
@@ -137,7 +138,7 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    expect(globalContextApi.getAsDataContext()).toEqual(obj)
+    expect(globalContext.getAsDataContext()).toEqual(obj)
 
     const newObj = {
       id: 'global',
@@ -147,15 +148,15 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    globalContextApi.clear('testing.clear')
+    globalContext.clear('testing.clear')
     expect(listener).toHaveBeenCalledTimes(3)
-    expect(globalContextApi.getAsDataContext()).toEqual(newObj)
+    expect(globalContext.getAsDataContext()).toEqual(newObj)
   })
 
   it('should set object in context when receiving one', () => {
-    globalContextApi.clear()
+    globalContext.clear()
 
-    globalContextApi.set({
+    globalContext.set({
       name: 'Fulano da Silva',
       cpf: '000.000.000-00',
       balance: 58.9
@@ -170,106 +171,106 @@ describe.only('globalContextApi', () => {
         }
       }
     }
-    expect(globalContextApi.getAsDataContext()).toEqual(obj)
-    expect(globalContextApi.get()).toEqual(obj.value)
+    expect(globalContext.getAsDataContext()).toEqual(obj)
+    expect(globalContext.get()).toEqual(obj.value)
   })
 
   // Testing global context with array
 
   it('set should insert array elements correctly', () => {
-    globalContextApi.clear()
-    globalContextApi.set({
+    globalContext.clear()
+    globalContext.set({
       name: 'Fulano',
       cpf: '000.000.000-00'
     }, 'users[0]')
 
-    globalContextApi.set({
+    globalContext.set({
       name: 'Maria',
       cpf: '111.111.111-11'
     }, 'users[1]')
 
-    globalContextApi.set({
+    globalContext.set({
       name: 'Jose',
       cpf: '222.222.222-22'
     }, 'users[2]')
 
-    expect(globalContextApi.get()).toStrictEqual(usersObject)
+    expect(globalContext.get()).toStrictEqual(usersObject)
   })
 
   it('clear array position should set the position to null', () => {
-    globalContextApi.clear('users[1]')
+    globalContext.clear('users[1]')
     const value = {
       users: [
         { name: "Fulano", cpf: '000.000.000-00' },
-        null,
+        undefined,
         { name: "Jose", cpf: '222.222.222-22' }
       ]
     }
-    expect(globalContextApi.get()).toStrictEqual(value)
+    expect(globalContext.get()).toStrictEqual(value)
   })
 
   it('clear property inside array position should remove the key', () => {
-    globalContextApi.clear('users[0].name')
+    globalContext.clear('users[0].name')
     const value = {
       users: [
         { cpf: '000.000.000-00' },
-        null,
+        undefined,
         { name: "Jose", cpf: '222.222.222-22' }
       ]
     }
-    expect(globalContextApi.get()).toStrictEqual(value)
+    expect(globalContext.get()).toStrictEqual(value)
   })
 
   it('set should insert multiple levels of array elements correctly', () => {
-    globalContextApi.clear()
-    globalContextApi.set({
+    globalContext.clear()
+    globalContext.set({
       name: 'Fulano',
       cpf: '000.000.000-00'
     }, 'users[0]')
 
-    globalContextApi.set({
+    globalContext.set({
       phone: '9999',
       ddd: '34'
     }, 'users[0].cellphone[0]')
 
-    globalContextApi.set({
+    globalContext.set({
       phone: '8888',
       ddd: '31'
     }, 'users[0].cellphone[1]')
 
-    globalContextApi.set({
+    globalContext.set({
       name: 'Maria',
       cpf: '111.111.111-11'
     }, 'users[1]')
 
-    globalContextApi.set({
+    globalContext.set({
       phone: '0000',
       ddd: '11'
     }, 'users[1].cellphone[0]')
 
-    globalContextApi.set({
+    globalContext.set({
       phone: '1111',
       ddd: '64'
     }, 'users[1].cellphone[1]')
 
-    globalContextApi.set({
+    globalContext.set({
       name: 'Jose',
       cpf: '222.222.222-22'
     }, 'users[2]')
 
-    globalContextApi.set({
+    globalContext.set({
       phone: '2222',
       ddd: '61'
     }, 'users[2].cellphone[0]')
 
-    expect(globalContextApi.get()).toStrictEqual(usersObjectCellphone)
+    expect(globalContext.get()).toStrictEqual(usersObjectCellphone)
   })
 
   it('clear should handle object key, array positions and entire object', () => {
-    globalContextApi.clear('users[0].cellphone[1].phone')
-    globalContextApi.clear('users[1].cpf')
-    globalContextApi.clear('users[1].cellphone[0]')
-    globalContextApi.clear('users[2].cellphone')
+    globalContext.clear('users[0].cellphone[1].phone')
+    globalContext.clear('users[1].cpf')
+    globalContext.clear('users[1].cellphone[0]')
+    globalContext.clear('users[2].cellphone')
     const value = {
       users: [
         {
@@ -278,38 +279,32 @@ describe.only('globalContextApi', () => {
         },
         {
           name: "Maria",
-          cellphone: [null, { ddd: '64', phone: '1111' }]
+          cellphone: [undefined, { ddd: '64', phone: '1111' }]
         },
         {
           name: "Jose", cpf: '222.222.222-22'
         }
       ]
     }
-    expect(globalContextApi.get()).toStrictEqual(value)
+    expect(globalContext.get()).toStrictEqual(value)
   })
 
   //Testing helper functions
 
-  it('should clone object', () => {
-    const cloned = cloneObject(usersObjectCellphone)
-    expect(cloned).toEqual(usersObjectCellphone)
-    expect(hasDifferentPointers(cloned, usersObjectCellphone)).toBe(true)
-  })
-
   it('should warn if context has value but path not found', () => {
     const originalWarn = console.warn
     console.warn = jest.fn()
-    globalContextApi.clear('testing.clear.path')
+    globalContext.clear('testing.clear.path')
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
   })
 
   it('should warn if empty context trying to clear some specific path', () => {
-    globalContextApi.clear()
+    globalContext.clear()
     const originalWarn = console.warn
     console.warn = jest.fn()
 
-    globalContextApi.clear('testing.clear.path')
+    globalContext.clear('testing.clear.path')
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
   })

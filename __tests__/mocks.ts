@@ -902,7 +902,10 @@ export const parsedlazyComponentWithCaseInsensitive: IdentifiableBeagleUIElement
   }],
 }
 
-export const configComponentsWrong: BeagleConfig<DefaultSchema>['components'] = {
-  'beagle:button': 'Teste',
-  'button': 'Teste'
+export const configComponentsWrong: BeagleConfig<DefaultSchema> = {
+  baseUrl: '',
+  components: {
+    'beagle:button': 'Teste',
+    'button': 'Teste'
+  },
 }

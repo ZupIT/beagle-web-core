@@ -78,7 +78,7 @@ export interface BeagleConfig<Schema> {
   useBeagleHeaders?: boolean,
 }
 
-interface BeagleServiceBase {
+export type BeagleService = Readonly<{
   createView: (initialRoute: string) => BeagleView,
   getConfig: () => BeagleConfig<any>,
   // processed configuration
@@ -95,6 +95,4 @@ interface BeagleServiceBase {
   defaultHeaders: DefaultHeaders,
   globalContext: GlobalContext,
   treeContentMapper: TreeContentMapper,
-}
-
-export type BeagleService = Readonly<BeagleServiceBase>
+}>

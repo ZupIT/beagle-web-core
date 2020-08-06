@@ -12,9 +12,9 @@
   ],
   "private": false,
   "scripts": {
-    "build": "tsc --declaration && node bin/copy-files",
-    "check-types": "tsc --noEmit",
-    "check-test-types": "tsc __tests__/**/*.ts --noEmit --allowSyntheticDefaultImports",
+    "build": "tsc --project tsconfig.prod.json --declaration && node bin/copy-files",
+    "check-types": "tsc --project tsconfig.prod.json --noEmit",
+    "check-test-types": "tsc --project tsconfig.spec.json --noEmit --allowSyntheticDefaultImports",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
     "watch": "yarn nodemon --watch 'src/**/*.ts' -e ts --exec yarn build"

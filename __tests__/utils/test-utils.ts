@@ -47,7 +47,7 @@ export function mockLocalStorage(storage: Record<string, string> = {}) {
 
   return {
     unmock: () => globalScope.localStorage = original,
-    clear: () => globalScope.localStorage = createLocalStorageMock({ ...storage }),
+    clear: globalScope.localStorage.clear,
   }
 }
 
@@ -189,6 +189,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
       getContext: jest.fn(),
       registerView: jest.fn(),
       unregisterView: jest.fn(),
+      isRegistered: jest.fn(),
     },
     urlBuilder: custom.urlBuilder || {
       build: jest.fn(url => url),

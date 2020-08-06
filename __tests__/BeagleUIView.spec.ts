@@ -15,8 +15,8 @@
  */
 
 import nock from 'nock'
-import BeagleView, { BeagleView as BeagleViewType } from 'beagle-view'
-import { LifecycleHookMap } from 'service/beagle-service/types'
+import { BeagleView as BeagleViewType } from 'beagle-view'
+import BeagleService from 'service/beagle-service'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
@@ -30,30 +30,32 @@ const url = `${baseUrl}${path}`
 
 describe('BeagleUIView', () => {
   const localStorageMock = mockLocalStorage()
-  let view: BeagleView
+  let view: BeagleViewType
+  const fetchData = jest.fn(fetch)
   const middleware = jest.fn(tree => tree)
-  globalContextApi.subscribe = jest.fn()
+  const { createView, globalContext } = BeagleService.create({
+    baseUrl,
+    components: {},
+    lifecycles: { beforeRender: middleware },
+    fetchData,
+  })
+  globalContext.subscribe = jest.fn()
   const originalConsoleError = console.error
   console.error = jest.fn()
-  const lifecycles: LifecycleHookMap = {
-    beforeStart: { components: {} },
-    beforeViewSnapshot: { components: {} },
-    afterViewSnapshot: { components: {} },
-    beforeRender: { components: {}, global: middleware },
-  }
-  UrlBuilder.setBaseUrl(baseUrl)
 
   beforeEach(() => {
-    view = createBeagleView('/home', {}, lifecycles, {})
     nock.cleanAll()
+    view = createView('/home')
     localStorageMock.clear()
     middleware.mockClear()
     const consoleError = console.error as jest.Mock
     consoleError.mockClear()
+    fetchData.mockClear()
   })
 
   afterAll(() => {
     console.error = originalConsoleError
+    localStorageMock.unmock()
   })
 
   it('should get current ui tree', async () => {
@@ -62,7 +64,7 @@ describe('BeagleUIView', () => {
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 1', id: '1' })
     view.getRenderer().doFullRender({ _beagleComponent_: 'test 2', id: '2'})
     expect(view.getTree()).toEqual({ _beagleComponent_: 'test 2', id: '2' })
-    expect(globalContextApi.subscribe).toHaveBeenCalled()
+    expect(globalContext.subscribe).toHaveBeenCalled()
   })
 
   it('should subscribe to view changes', async () => {
@@ -147,6 +149,8 @@ describe('BeagleUIView', () => {
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     await view.fetch({ path })
     expect(view.getTree()).toEqual(treeB)
+    expect(nock.isDone()).toBe(true)
+    nock.cleanAll()
   })
 
   it('should replace part of the tree with loading and network response', async () => {
@@ -154,25 +158,26 @@ describe('BeagleUIView', () => {
     view.subscribe(mockFunc)
 
     // we don't want to test the styling
-    const treeAWithoutStyles = clone(treeA)
+    const treeAWithoutStyles = Tree.clone(treeA)
     Tree.forEach(treeAWithoutStyles, component => delete component.style)
   
     view.getRenderer().doFullRender(treeAWithoutStyles)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     const promise = view.fetch({ path }, 'A.1')
-    const expectedLoading = clone(treeAWithoutStyles)
+    const expectedLoading = Tree.clone(treeAWithoutStyles)
     
     await promise
 
-    expectedLoading.children[1] = { _beagleComponent_: 'custom:loading', id: 'loading' }
+    expectedLoading.children![1] = { _beagleComponent_: 'custom:loading', id: 'loading' }
     expect(mockFunc.mock.calls[0][0]).toEqual(treeAWithoutStyles)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
   
-    const expectedResult = clone(treeAWithoutStyles)
-    expectedResult.children[1] = treeB
+    const expectedResult = Tree.clone(treeAWithoutStyles)
+    expectedResult.children![1] = treeB
 
     expect(mockFunc.mock.calls[2][0]).toEqual(expectedResult)
     expect(view.getTree()).toEqual(expectedResult)
+    expect(nock.isDone()).toBe(true)
   })
 
   it('should append loading and network response to specific part of the tree', async () => {
@@ -180,7 +185,7 @@ describe('BeagleUIView', () => {
     view.subscribe(mockFunc)
 
     // we don't want to test the styling
-    const treeAWithoutStyles = clone(treeA)
+    const treeAWithoutStyles = Tree.clone(treeA)
     Tree.forEach(treeAWithoutStyles, component => delete component.style)
   
     view.getRenderer().doFullRender(treeAWithoutStyles)
@@ -189,16 +194,20 @@ describe('BeagleUIView', () => {
 
     await promise
 
-    const expectedLoading = clone(treeAWithoutStyles)
-    expectedLoading.children[1].children.push({ _beagleComponent_: 'custom:loading', id: 'loading' })
+    const expectedLoading = Tree.clone(treeAWithoutStyles)
+    expectedLoading.children![1].children!.push({
+      _beagleComponent_: 'custom:loading',
+      id: 'loading',
+    })
     expect(mockFunc.mock.calls[0][0]).toEqual(treeAWithoutStyles)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
 
 
-    const expectedResult = clone(treeAWithoutStyles)
-    expectedResult.children[1].children.push(treeB)
+    const expectedResult = Tree.clone(treeAWithoutStyles)
+    expectedResult.children![1].children!.push(treeB)
     expect(mockFunc.mock.calls[2][0]).toEqual(expectedResult)
     expect(view.getTree()).toEqual(expectedResult)
+    expect(nock.isDone()).toBe(true)
   })
 
   it('should prepend network response to specific part of the tree', async () => {
@@ -206,7 +215,7 @@ describe('BeagleUIView', () => {
     view.subscribe(mockFunc)
     
     // we don't want to test the styling
-    const treeAWithoutStyles = clone(treeA)
+    const treeAWithoutStyles = Tree.clone(treeA)
     Tree.forEach(treeAWithoutStyles, component => delete component.style)
   
     view.getRenderer().doFullRender(treeAWithoutStyles)
@@ -215,16 +224,17 @@ describe('BeagleUIView', () => {
 
     await promise
 
-    const expectedLoading = clone(treeAWithoutStyles)
-    expectedLoading.children[1].children.unshift({ _beagleComponent_: 'custom:loading', id: 'loading' })
+    const expectedLoading = Tree.clone(treeAWithoutStyles)
+    expectedLoading.children![1].children!.unshift({ _beagleComponent_: 'custom:loading', id: 'loading' })
     expect(mockFunc.mock.calls[0][0]).toEqual(treeAWithoutStyles)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
 
 
-    const expectedResult = clone(treeAWithoutStyles)
-    expectedResult.children[1].children.unshift(treeB)
+    const expectedResult = Tree.clone(treeAWithoutStyles)
+    expectedResult.children![1].children!.unshift(treeB)
     expect(mockFunc.mock.calls[2][0]).toEqual(expectedResult)
     expect(view.getTree()).toEqual(expectedResult)
+    expect(nock.isDone()).toBe(true)
   })
 
   it('should encapsulate ui tree: getTree', () => {
@@ -243,8 +253,6 @@ describe('BeagleUIView', () => {
 
   it('should use custom HttpClient to fetch', async () => {
     const path = '/example'
-    const fetchData = jest.fn(fetch)
-    HttpClient.setFetchFunction(fetchData)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
 
     await view.fetch({ path })
@@ -253,8 +261,6 @@ describe('BeagleUIView', () => {
       baseUrl + path,
       { 'method': 'get', 'headers': { 'beagle-platform': 'WEB'} },
     )
-
-    HttpClient.setFetchFunction(undefined)
   })
 
   it('should fallback to UIElement when fetch fails', async () => {
@@ -262,6 +268,7 @@ describe('BeagleUIView', () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await view.fetch({ path, fallback: fallbackTree })
     expect(view.getTree()).toEqual(fallbackTree)
+    expect(nock.isDone()).toBe(true)
   })
 
   it('should not fallback to UIElement when fetch succeed', async () => {
@@ -269,6 +276,7 @@ describe('BeagleUIView', () => {
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
     await view.fetch({ path, fallback: fallbackTree })
     expect(view.getTree()).toEqual(treeA)
+    expect(nock.isDone()).toBe(true)
   })
 
   it('should handle path as relative without starting with /', async () => {
@@ -292,7 +300,6 @@ describe('BeagleUIView', () => {
   it('should log errors when no error listener is registered', async () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await view.fetch({ path })
-    // @ts-ignore
     expect(console.error).toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })

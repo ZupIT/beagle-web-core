@@ -29,7 +29,7 @@ describe('Utils: tree reading', () => {
     expect(findByAttribute(treeA, 'styleId', 'style-testing-1').length).toBe(2)
     expect(findByAttribute(treeA, 'styleId', 'style-testing-2').length).toBe(1)
     expect(findByAttribute(treeA, 'styleId', 'style-testing-3').length).toBe(1)
-    expect(findByAttribute(treeA, 'styleId')[0]).toBe(treeA.children[0])
+    expect(findByAttribute(treeA, 'styleId')[0]).toBe(treeA.children![0])
   })
 
   it('should not find by attribute', () => {
@@ -48,8 +48,8 @@ describe('Utils: tree reading', () => {
 
   it('should find by id', () => {
     expect(findById(treeA, 'A')).toBe(treeA)
-    expect(findById(treeA, 'A.1')).toBe(treeA.children[1])
-    expect(findById(treeA, 'A.1.1.3')).toBe(treeA.children[1].children[1].children[3])
+    expect(findById(treeA, 'A.1')).toBe(treeA.children![1])
+    expect(findById(treeA, 'A.1.1.3')).toBe(treeA.children![1].children![1].children![3])
   })
 
   it('should not find by id', () => {
@@ -59,8 +59,8 @@ describe('Utils: tree reading', () => {
   it('should find parent by child id', () => {
     expect(findParentByChildId(treeA, 'A.0')).toBe(treeA)
     expect(findParentByChildId(treeA, 'A.2')).toBe(treeA)
-    expect(findParentByChildId(treeA, 'A.1.0')).toBe(treeA.children[1])
-    expect(findParentByChildId(treeA, 'A.1.1.2')).toBe(treeA.children[1].children[1])
+    expect(findParentByChildId(treeA, 'A.1.0')).toBe(treeA.children![1])
+    expect(findParentByChildId(treeA, 'A.1.1.2')).toBe(treeA.children![1].children![1])
   })
 
   it('should not find parent by child id', () => {

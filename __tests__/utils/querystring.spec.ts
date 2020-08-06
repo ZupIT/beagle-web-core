@@ -19,20 +19,20 @@ import UrlUtils from 'utils/url'
 describe('Utils Query String', () => {
 
   it('should create a querystring', () => {
-    const qs = createQueryString({ param1: 'param1', param2: 'param2' })
+    const qs = UrlUtils.createQueryString({ param1: 'param1', param2: 'param2' })
     expect(qs).toEqual('?param1=param1&param2=param2')
   })
 
   it('should return empty string for empty object', () => {
-    const qs1 = createQueryString({})
+    const qs1 = UrlUtils.createQueryString({})
     expect(qs1).toEqual('')
     // @ts-ignore
-    const qs2 = createQueryString()
+    const qs2 = UrlUtils.createQueryString()
     expect(qs2).toEqual('')
   })
 
   it('should encode uri correctly', () => {
-    const qs = createQueryString({ param: '/param' })
+    const qs = UrlUtils.createQueryString({ param: '/param' })
     expect(qs).toEqual('?param=%2Fparam')
   })
 })

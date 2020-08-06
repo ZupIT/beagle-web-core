@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-import { mockLocalStorage } from './test-utils'
+import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { beagleCacheNamespace } from 'service/network/remote-cache'
+import { createLocalStorageMock } from './test-utils'
 
 describe.only('beagle-headers', () => {
-  const localStorageMock = mockLocalStorage()
-  beagleStorage.setStorage(localStorage)
   const url = 'http://test.com'
 
-  afterAll(() => localStorageMock.unmock())
-  
-  beforeEach(() => {
-    localStorageMock.clear()
-  })
+  function createDefaultHeadersService(
+    useBeagleHeaders: boolean,
+    initialStorage?: Record<string, string>,
+  ) {
+    const storage = createLocalStorageMock(initialStorage)
+    const remoteCache = RemoteCache.create(storage)
+    return DefaultHeaders.create(remoteCache, useBeagleHeaders)
+  }
 
   it('should return default headers by default even if no beagle-hash defined', async () => {
-    beagleHeaders.setUseBeagleHeaders()
-    const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
+    const beagleHeaders = createDefaultHeadersService(true)
+    const headers = await beagleHeaders.get(url, 'get')
     expect(headers).toEqual({ 'beagle-platform': 'WEB', })
   })
 
   it('should not return default headers when useBeagleHeaders is set to false', async () => {
-    beagleHeaders.setUseBeagleHeaders(false)
-    const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
+    const beagleHeaders = createDefaultHeadersService(false)
+    const headers = await beagleHeaders.get(url, 'get')
     expect(headers).toEqual({})
   })
 
@@ -45,12 +47,12 @@ describe.only('beagle-headers', () => {
     const metadata = {
       beagleHash: 'testing',
       requestTime: 20202020,
-      ttl: '5'
+      ttl: '5',
     }
-    
-    beagleStorage.getStorage().setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
-    beagleHeaders.setUseBeagleHeaders(true)
-    const headers = await beagleHeaders.getBeagleHeaders(url, 'get')
+    const initialStorage = { [`${beagleCacheNamespace}/${url}/get`]: JSON.stringify(metadata) }
+    const beagleHeaders = createDefaultHeadersService(true, initialStorage)
+
+    const headers = await beagleHeaders.get(url, 'get')
     expect(headers).toEqual({ 'beagle-platform': 'WEB', 'beagle-hash': 'testing' })
   })
 })

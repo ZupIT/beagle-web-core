@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import BeagleNavigator, { BeagleNavigator as BeagleNavigatorType } from 'beagle-view/navigator'
+import BeagleNavigator from 'beagle-view/navigator'
 
 describe('BeagleNavigator', () => {
   const initialRoute = { url: 'home' }
   const initialStack = [initialRoute]
-  const navigator: BeagleNavigator = createBeagleNavigator(initialRoute)
+  const navigator = BeagleNavigator.create(initialRoute)
 
   it('should get initial beagle navigator', () => {
     expect(navigator.get()).toEqual([initialStack])
