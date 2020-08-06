@@ -26,9 +26,9 @@ describe('BeagleAnalytics', () => {
 
   it('should get custom analytics service', async () => {
     const analytics: Analytics = {
-        trackEventOnClick: jest.fn(),
-        trackEventOnScreenAppeared: jest.fn(),
-        trackEventOnScreenDisappeared: jest.fn()
+      trackEventOnClick: jest.fn(),
+      trackEventOnScreenAppeared: jest.fn(),
+      trackEventOnScreenDisappeared: jest.fn()
     }
 
     const beagleService = BeagleService.create({
