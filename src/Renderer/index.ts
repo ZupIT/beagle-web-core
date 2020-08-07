@@ -28,6 +28,7 @@ import {
   Lifecycle,
   LifecycleHookMap,
 } from '../types'
+import beagleLogger from '../BeagleLogger'
 import Component from './Component'
 import Navigation from './Navigation'
 import Expression from './Expression'
@@ -35,6 +36,7 @@ import Action from './Action'
 import Context from './Context'
 import Styling from './Styling'
 import TypeChecker from './TypeChecker'
+
 
 interface Params {
   beagleView: BeagleView<any>,
@@ -66,6 +68,7 @@ function createRenderer({
   }
 
   function runComponentLifecycleHook(component: any, lifecycle: Lifecycle) {
+    beagleLogger.log(`${lifecycle} - Component: ${JSON.stringify(component)}`, 'lifecycle')
     const hook = lifecycleHooks[lifecycle].components[component._beagleComponent_]
     if (!hook) return component
     const newComponent = hook(component)
@@ -73,12 +76,14 @@ function createRenderer({
   }
 
   function runLifecycle<T extends BeagleUIElement>(viewTree: T, lifecycle: Lifecycle) {
+
     viewTree = runGlobalLifecycleHook(viewTree, lifecycle)
     return Tree.replaceEach(viewTree, component => (
       runComponentLifecycleHook(component, lifecycle)
     ))
+
   }
-  
+
   function preProcess(viewTree: BeagleUIElement) {
     Tree.forEach(viewTree, (component) => {
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
@@ -89,7 +94,7 @@ function createRenderer({
 
     return viewTree as IdentifiableBeagleUIElement
   }
-  
+
   function takeViewSnapshot(
     viewTree: IdentifiableBeagleUIElement,
     anchor: string,
@@ -105,10 +110,10 @@ function createRenderer({
     } else {
       insertIntoTree(currentTree, viewTree, anchor, mode)
     }
-  
+
     setTree(currentTree)
   }
-  
+
   function evaluateComponents(viewTree: IdentifiableBeagleUIElement) {
     const contextMap = Context.evaluate(viewTree)
     return Tree.replaceEach(viewTree, (component) => {
@@ -167,7 +172,7 @@ function createRenderer({
 
     renderToScreen(view)
   }
-  
+
   /**
    * Does a full render to the BeagleView. A full render means that every renderization step will
    * be executed for the tree passed as parameter. If `viewTree` has been rendered at least once,

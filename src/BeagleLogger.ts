@@ -12,18 +12,21 @@ function createBeagleLogger() {
     let beagleLogConfig: BeagleLogConfig
 
     function printLog<T>(message: T, type: LogType): void {
-        if (beagleLogConfig.mode === 'development' && beagleLogConfig.debug?.includes(type)) {
+        if (beagleLogConfig.mode === 'development' && beagleLogConfig.debug && beagleLogConfig.debug.includes(type)) {
+            const parsedMessage = typeof(message) === 'object' ? JSON.stringify(message) : message
             if (type === 'error' || type === 'warn') {
-                console[type](`Beagle (${type.toLowerCase()}) : ${message}`)
+                console[type](`Beagle (${type.toLowerCase()}) : ${parsedMessage}`)
                 return
             }
-            console.log(`%c Beagle (${type.toLowerCase()}) : ${message}`, `color: ${logColors[type]}`)
+            console.group(`%c Beagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
+            console.log(parsedMessage)
+            console.groupEnd()
         }
     }
 
     return {
         setConfig: (logConfig: BeagleLogConfig) => beagleLogConfig = logConfig,
-        addType: (type: LogType) => (beagleLogConfig.debug?.push(type)),
+        addType: (type: LogType) => (beagleLogConfig.debug ? beagleLogConfig.debug.push(type) : null),
         log: printLog,
     }
 }

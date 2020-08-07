@@ -90,7 +90,6 @@ function checkConfiguration(config: BeagleConfig<any>) {
 }
 
 function initializeLogger(config: BeagleConfig<any>) {
-  console.log('ABCDEFGHIJ')
   if (config.log && !config.log.debug) {
     config.log = { ...config.log, debug: ['error', 'warn'] }
   }
