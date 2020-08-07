@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-export type HttpMethod = (
-  'post' | 'get' | 'put' | 'delete' | 'patch' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-)
-
-export interface HttpClient {
-  fetch: typeof fetch,
+export interface URLBuilder {
+  build: (path: string) => string,
 }

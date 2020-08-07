@@ -15,7 +15,7 @@
  */
 
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
-import { BeagleView } from 'beagle-view'
+import { BeagleView } from 'beagle-view/types'
 import { HttpMethod } from 'service/network/types'
 import { BeagleNavigationAction } from './navigation/types'
 

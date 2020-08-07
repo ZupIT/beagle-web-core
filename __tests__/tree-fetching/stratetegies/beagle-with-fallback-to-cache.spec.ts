@@ -15,7 +15,8 @@
  */
 
 import nock from 'nock'
-import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
+import ViewClient, { namespace } from 'service/network/view-client'
+import { ViewClient as ViewClientType } from 'service/network/view-client/types'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'

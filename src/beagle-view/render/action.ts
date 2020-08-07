@@ -17,7 +17,7 @@
 import { IdentifiableBeagleUIElement, DataContext } from 'beagle-tree/types'
 import { BeagleAction, ActionHandler } from 'action/types'
 import ObjectUtils from 'utils/Object'
-import { BeagleView } from 'beagle-view'
+import { BeagleView } from 'beagle-view/types'
 import Expression from './Expression'
 
 const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']

@@ -18,8 +18,9 @@ import Tree from 'beagle-tree'
 import { ActionHandler } from 'action/types'
 import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import { ExecutionMode, Lifecycle, LifecycleHookMap } from 'service/beagle-service/types'
-import { BeagleView } from 'beagle-view'
+import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
+import { Renderer } from '../types'
 import Component from './component'
 import Navigation from './navigation'
 import Expression from './expression'
@@ -48,7 +49,7 @@ function createRenderer({
   childrenMetadata,
   executionMode,
   actionHandlers,
-}: Params) {
+}: Params): Renderer {
   const { urlBuilder, viewClient, globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
@@ -196,5 +197,3 @@ function createRenderer({
 export default {
   create: createRenderer,
 }
-
-export type Renderer = ReturnType<typeof createRenderer>

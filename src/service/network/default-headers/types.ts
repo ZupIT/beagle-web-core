@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-export type HttpMethod = (
-  'post' | 'get' | 'put' | 'delete' | 'patch' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-)
+import { HttpMethod } from 'service/network/types'
 
-export interface HttpClient {
-  fetch: typeof fetch,
+export interface BeagleDefaultHeaders {
+  'beagle-platform': 'WEB',
+  'beagle-hash'?: string,
+}
+
+export interface DefaultHeaders {
+  get: (url: string, method: HttpMethod) => Promise<BeagleDefaultHeaders | {}>,
 }

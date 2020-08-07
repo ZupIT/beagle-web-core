@@ -14,34 +14,14 @@
  * limitations under the License.
  */
 
+import BeagleCacheError from 'service/network/error/BeagleCacheError'
+import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
+import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
 import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
-import BeagleCacheError from './error/BeagleCacheError'
-import BeagleNetworkError from './error/BeagleNetworkError'
-import BeagleExpiredCacheError from './error/BeagleExpiredCacheError'
-import { RemoteCache } from './remote-cache'
-import { DefaultHeaders } from './default-headers'
-import { HttpClient, HttpMethod, Strategy, CacheMetadata } from './types'
-
-type StrategyType = 'network' | 'cache' | 'cache-ttl' | 'network-beagle'
-
-interface StrategyArrays {
-  fetch: Array<StrategyType>,
-  fallback: Array<StrategyType>,
-}
-
-export interface ViewClientLoadParams {
-  url: string,
-  fallbackUIElement?: BeagleUIElement,
-  method?: HttpMethod,
-  headers?: Record<string, string>,
-  strategy?: Strategy,
-  loadingComponent?: string,
-  errorComponent?: string,
-  shouldShowLoading?: boolean,
-  shouldShowError?: boolean,
-  onChangeTree: (tree: BeagleUIElement) => void,
-  retry: () => void,
-}
+import { HttpClient, HttpMethod } from 'service/network/types'
+import { RemoteCache, CacheMetadata } from 'service/network/remote-cache/types'
+import { DefaultHeaders } from 'service/network/default-headers/types'
+import { ViewClient, Strategy, StrategyType, StrategyArrays, ViewClientLoadParams } from './types'
 
 export const namespace = '@beagle-web/cache'
 
@@ -60,7 +40,7 @@ function createViewClient(
   defaultHeadersService: DefaultHeaders,
   remoteCache: RemoteCache,
   httpClient: HttpClient,
-) {
+): ViewClient {
   /* The following function is async for future compatibility with environments other than web. React
   native's localStorage, for instance, always returns promises. */
   async function loadFromCache(url: string, method: HttpMethod = 'get') {
@@ -253,5 +233,3 @@ function createViewClient(
 export default {
   create: createViewClient,
 }
-
-export type ViewClient = ReturnType<typeof createViewClient>

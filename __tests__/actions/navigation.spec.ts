@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import BeagleView, { BeagleView as BeagleViewType } from "beagle-view"
+import BeagleView from 'beagle-view'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import NavigationActions from 'action/navigation'
 import { createBeagleServiceMock } from '../utils/test-utils'
 import { namespace } from 'service/network/view-client'

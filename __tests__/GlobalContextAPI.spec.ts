@@ -17,8 +17,6 @@
 import GlobalContext from "service/global-context"
 import { usersObjectCellphone, usersObject } from "./mocks-global-context"
 
-const baseUrl = 'http://teste.com'
-
 /* fixme: all tests here are dependent from one another. This is bad, tests should be atomic, fix
 asap. */
 describe.only('globalContext', () => {

@@ -15,10 +15,11 @@
  */
 
 import { Route, RemoteView } from 'action/navigation/types'
+import { BeagleNavigator } from './types'
 
 export type Stack = Route[]
 
-const createBeagleNavigator = (initialRoute: Route) => {
+const createBeagleNavigator = (initialRoute: Route): BeagleNavigator => {
   let initialStack = [initialRoute]
   let navigation: Stack[] = [initialStack]
 
@@ -110,5 +111,3 @@ const createBeagleNavigator = (initialRoute: Route) => {
 export default {
   create: createBeagleNavigator,
 }
-
-export type BeagleNavigator = ReturnType<typeof createBeagleNavigator>

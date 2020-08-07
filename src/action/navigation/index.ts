@@ -15,7 +15,7 @@
  */
 
 import { ActionHandler } from 'action/types'
-import { BeagleNavigator } from 'beagle-view/navigator'
+import { BeagleNavigator } from 'beagle-view/types'
 import UrlUtils from 'utils/url'
 import StringUtils from 'utils/string'
 import ObjectUtils from 'utils/Object'

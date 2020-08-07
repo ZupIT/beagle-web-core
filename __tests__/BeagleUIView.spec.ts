@@ -15,7 +15,7 @@
  */
 
 import nock from 'nock'
-import { BeagleView as BeagleViewType } from 'beagle-view'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import BeagleService from 'service/beagle-service'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'

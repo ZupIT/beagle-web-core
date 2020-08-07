@@ -15,7 +15,8 @@
  */
 
 import nock from 'nock'
-import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
+import ViewClient, { namespace } from 'service/network/view-client'
+import { ViewClient as ViewClientType } from 'service/network/view-client/types'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'

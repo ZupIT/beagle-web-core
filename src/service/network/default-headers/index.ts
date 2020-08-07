@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { RemoteCache } from './remote-cache'
-import { HttpMethod, BeagleDefaultHeaders } from './types'
+import { HttpMethod } from 'service/network/types'
+import { RemoteCache } from 'service/network/remote-cache/types'
+import { BeagleDefaultHeaders, DefaultHeaders } from './types'
 
 const defaultHeaders: BeagleDefaultHeaders = { 'beagle-platform': 'WEB' }
 
-function createDefaultHeaders(remoteCache: RemoteCache, useDefaultHeaders = true) {
+function createDefaultHeaders(remoteCache: RemoteCache, useDefaultHeaders = true): DefaultHeaders {
   async function get(url: string, method: HttpMethod) {
     if (!useDefaultHeaders) return {}
     else {
@@ -40,5 +41,3 @@ function createDefaultHeaders(remoteCache: RemoteCache, useDefaultHeaders = true
 export default {
   create: createDefaultHeaders,
 }
-
-export type DefaultHeaders = ReturnType<typeof createDefaultHeaders>

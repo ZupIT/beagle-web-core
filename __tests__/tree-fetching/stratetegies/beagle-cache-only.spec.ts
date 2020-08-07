@@ -15,13 +15,13 @@
  */
 
 import nock from 'nock'
-import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
+import ViewClient, { namespace } from 'service/network/view-client'
+import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
 import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
-import { Strategy } from 'service/network/types'
 import { treeA } from '../../mocks'
 import { createLocalStorageMock } from '../../utils/test-utils'
 

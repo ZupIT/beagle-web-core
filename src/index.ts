@@ -37,24 +37,14 @@ export { BeagleError, BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheEr
 
 // service types
 
-import { BeagleView } from 'beagle-view'
-import { GlobalContext } from 'service/global-context'
-import { ViewContentManagerMap, ViewContentManager } from 'service/view-content-manager'
-import { DefaultHeaders } from 'service/network/default-headers'
-import { RemoteCache } from 'service/network/remote-cache'
-import { URLBuilder } from 'service/network/url-builder'
-import { ViewClient } from 'service/network/view-client'
-
-export {
-  BeagleView,
-  GlobalContext,
-  ViewContentManagerMap,
-  ViewContentManager,
-  DefaultHeaders,
-  RemoteCache,
-  URLBuilder,
-  ViewClient,
-}
+export * from 'service/global-context/types'
+export * from 'service/view-content-manager/types'
+export * from 'service/beagle-service/types'
+export * from 'service/network/types'
+export * from 'service/network/default-headers/types'
+export * from 'service/network/remote-cache/types'
+export * from 'service/network/url-builder/types'
+export { Strategy, ViewClient } from 'service/network/view-client/types'
 
 // general types
 
@@ -63,8 +53,6 @@ export * from 'action/navigation/types'
 export * from 'beagle-tree/types'
 export * from 'beagle-view/types'
 export * from 'metadata/types'
-export * from 'service/beagle-service/types'
-export * from 'service/network/types'
 
 // beagle service: default exportation
 

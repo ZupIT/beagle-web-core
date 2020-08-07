@@ -15,10 +15,10 @@
  */
 
 import nock from 'nock'
-import ViewClient, { ViewClient as ViewClientType } from 'service/network/view-client'
+import ViewClient, { namespace } from 'service/network/view-client'
+import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
-import { Strategy } from 'service/network/types'
 import { treeA } from '../mocks'
 import { createLocalStorageMock } from '../utils/test-utils'
 

@@ -16,10 +16,8 @@
 
 import nock from 'nock'
 import { createLocalStorageMock } from './test-utils'
-import RemoteCache, {
-  beagleCacheNamespace,
-  RemoteCache as RemoteCacheType,
-} from 'service/network/remote-cache'
+import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
+import { RemoteCache as RemoteCacheType } from 'service/network/remote-cache/types'
 
 describe.only('cache-metadata', () => {
   const url = 'http://test.com'

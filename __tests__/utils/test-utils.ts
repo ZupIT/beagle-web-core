@@ -15,14 +15,14 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
-import { BeagleView } from 'beagle-view'
-import { Renderer } from 'beagle-view/render'
+import { BeagleView } from 'beagle-view/types'
+import { Renderer } from 'beagle-view/types'
 import { BeagleService } from 'service/beagle-service/types'
-import { GlobalContext } from 'service/global-context'
-import { DefaultHeaders } from 'service/network/default-headers'
-import { RemoteCache } from 'service/network/remote-cache'
-import { URLBuilder } from 'service/network/url-builder'
-import { ViewClient } from 'service/network/view-client'
+import { GlobalContext } from 'service/global-context/types'
+import { DefaultHeaders } from 'service/network/default-headers/types'
+import { RemoteCache } from 'service/network/remote-cache/types'
+import { URLBuilder } from 'service/network/url-builder/types'
+import { ViewClient } from 'service/network/view-client/types'
 import { HttpClient } from 'service/network/types'
 
 export function createLocalStorageMock(storage: Record<string, string> = {}): Storage {

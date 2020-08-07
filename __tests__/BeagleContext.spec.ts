@@ -16,7 +16,7 @@
 
 import nock from 'nock'
 import BeagleService from 'service/beagle-service'
-import { BeagleView } from 'beagle-view'
+import { BeagleView } from 'beagle-view/types'
 import Tree from 'beagle-tree'
 import { treeA, treeC, treeD } from './mocks'
 import { mockLocalStorage } from './utils/test-utils'

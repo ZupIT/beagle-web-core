@@ -15,14 +15,15 @@
  */
 
 import StringUtils from 'utils/string'
+import { URLBuilder } from './types'
 
-function createURLBuilder(baseUrl = '') {
+function createURLBuilder(baseUrl = ''): URLBuilder {
   function shouldEncodeUrl(baseUrl: string): boolean {
     return decodeURI(baseUrl) === baseUrl
   }
 
   return {
-    build: (path: string) => {
+    build: (path) => {
       // According to the convention the relative path should start with '/'
       const relativePathRegex = /^\/+(\b|$)/
       const base = StringUtils.removeSuffix(baseUrl, '/')
@@ -35,5 +36,3 @@ function createURLBuilder(baseUrl = '') {
 export default {
   create: createURLBuilder,
 }
-
-export type URLBuilder = ReturnType<typeof createURLBuilder>

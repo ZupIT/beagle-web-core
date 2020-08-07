@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import ViewClient, { namespace, ViewClient as ViewClientType } from 'service/network/view-client'
+import ViewClient, { namespace } from 'service/network/view-client'
+import { ViewClient as ViewClientType } from 'service/network/view-client/types'
 import BeagleCacheError from 'service/network/error/BeagleCacheError'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'

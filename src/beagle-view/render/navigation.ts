@@ -17,8 +17,8 @@
 import { BeagleUIElement } from 'beagle-tree/types'
 import NavigationActions from 'action/navigation'
 import StringUtils from 'utils/string'
-import { URLBuilder } from 'service/network/url-builder'
-import { ViewClient } from 'service/network/view-client'
+import { URLBuilder } from 'service/network/url-builder/types'
+import { ViewClient } from 'service/network/view-client/types'
 
 function preFetchViews(component: BeagleUIElement, urlBuilder: URLBuilder, viewClient: ViewClient) {
   const keys = Object.keys(component)

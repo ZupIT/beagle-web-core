@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 
 export function createPerson() {
   return {

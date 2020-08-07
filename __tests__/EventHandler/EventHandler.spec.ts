@@ -28,7 +28,7 @@ import defaultActionHandlers from 'action'
 import { ActionHandlerParams, BeagleAction } from 'action/types'
 import BeagleService from 'service/beagle-service'
 import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
-import { BeagleView } from 'beagle-view'
+import { BeagleView } from 'beagle-view/types'
 import { createContainerWithAction, createModalMock } from './mocks'
 import { createBeagleViewMock, mockLocalStorage } from '../utils/test-utils'
 

@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-export type HttpMethod = (
-  'post' | 'get' | 'put' | 'delete' | 'patch' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-)
+import { DataContext } from 'beagle-tree/types'
 
-export interface HttpClient {
-  fetch: typeof fetch,
+export type GlobalContextListener = () => void
+
+export interface GlobalContext {
+  get: (path?: string) => any,
+  set: (value: any, path?: string) => void,
+  clear: (path?: string | undefined) => void,
+  getAsDataContext: () => DataContext,
+  subscribe: (listener: GlobalContextListener) => (() => void),
 }

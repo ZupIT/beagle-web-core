@@ -14,16 +14,15 @@
   * limitations under the License.
 */
 
-import { Strategy } from 'service/network/types'
 import { BeagleUIElement, ComponentName, DefaultSchema } from 'beagle-tree/types'
 import { ActionHandler } from 'action/types'
-import { BeagleView } from 'beagle-view'
-import { RemoteCache } from 'service/network/remote-cache'
-import { DefaultHeaders } from 'service/network/default-headers'
-import { URLBuilder } from 'service/network/url-builder'
-import { ViewClient } from 'service/network/view-client'
-import { GlobalContext } from 'service/global-context'
-import { ViewContentManagerMap } from 'service/view-content-manager'
+import { BeagleView } from 'beagle-view/types'
+import { RemoteCache } from 'service/network/remote-cache/types'
+import { DefaultHeaders } from 'service/network/default-headers/types'
+import { URLBuilder } from 'service/network/url-builder/types'
+import { ViewClient, Strategy } from 'service/network/view-client/types'
+import { GlobalContext } from 'service/global-context/types'
+import { ViewContentManagerMap } from 'service/view-content-manager/types'
 import { ChildrenMetadataMap } from 'metadata/types'
 import { HttpClient } from 'service/network/types'
 

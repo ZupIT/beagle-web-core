@@ -24,7 +24,8 @@ import Navigation from 'beagle-view/render/navigation'
 import { BeagleUIElement } from 'beagle-tree/types'
 import { namespace } from 'service/network/view-client'
 import Tree from 'beagle-tree'
-import ViewClient, { ViewClient as ViewClientType } from 'service/network/view-client'
+import ViewClient from 'service/network/view-client'
+import { ViewClient as ViewClientType } from 'service/network/view-client/types'
 import {
   createLocalStorageMock,
   createDefaultHeadersMock,

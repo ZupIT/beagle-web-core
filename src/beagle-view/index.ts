@@ -16,14 +16,13 @@
 
 import Tree from 'beagle-tree'
 import String from 'utils/string'
-import { LoadParams } from 'service/network/types'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
-import Renderer, { Renderer as RendererType } from './render'
+import Renderer from './render'
 import BeagleNavigator from './Navigator'
-import { Listener, ErrorListener } from './types'
+import { BeagleView, Listener, ErrorListener, LoadParams, Renderer as RendererType } from './types'
 
-function createBeagleView(initialRoute: string, beagleService: BeagleService) {
+function createBeagleView(initialRoute: string, beagleService: BeagleService): BeagleView {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
@@ -105,7 +104,7 @@ function createBeagleView(initialRoute: string, beagleService: BeagleService) {
     return beagleNavigator
   }
 
-  const beagleView = {
+  const beagleView: BeagleView = {
     subscribe,
     addErrorListener,
     fetch,
@@ -134,5 +133,3 @@ function createBeagleView(initialRoute: string, beagleService: BeagleService) {
 export default {
   create: createBeagleView,
 }
-
-export type BeagleView = ReturnType<typeof createBeagleView>

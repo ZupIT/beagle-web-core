@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-export type HttpMethod = (
-  'post' | 'get' | 'put' | 'delete' | 'patch' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-)
+import { HttpMethod } from 'service/network/types'
 
-export interface HttpClient {
-  fetch: typeof fetch,
+export interface CacheMetadata {
+  'beagleHash': string,
+  'requestTime': number,
+  'ttl': string,
+}
+
+export interface RemoteCache {
+  updateMetadata: (metadata: CacheMetadata, url: string, method: HttpMethod) => void,
+  getHash: (url: string, method: HttpMethod) => Promise<string>,
+  getMetadata: (url: string, method: HttpMethod) => Promise<CacheMetadata | null>,
 }

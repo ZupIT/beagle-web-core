@@ -19,11 +19,10 @@ import getLodash from 'lodash/get'
 import unset from 'lodash/unset'
 import has from 'lodash/has'
 import cloneDeep from 'lodash/cloneDeep'
-import { DataContext } from '../beagle-tree/types'
+import { DataContext } from 'beagle-tree/types'
+import { GlobalContext, GlobalContextListener } from './types'
 
-export type GlobalContextListener = () => void
-
-function createGlobalContext() {
+function createGlobalContext(): GlobalContext {
   const listeners: Array<GlobalContextListener> = []
   const globalContext: DataContext = {
     id: 'global',
@@ -90,5 +89,3 @@ function createGlobalContext() {
 export default {
   create: createGlobalContext,
 }
-
-export type GlobalContext = ReturnType<typeof createGlobalContext>

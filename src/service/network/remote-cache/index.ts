@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { HttpMethod, CacheMetadata } from './types'
+import { HttpMethod } from 'service/network/types'
+import { RemoteCache, CacheMetadata } from './types'
 
 export const beagleCacheNamespace = '@beagle-web/beagle-cache'
 
-function createRemoteCache(storage: Storage) {
+function createRemoteCache(storage: Storage): RemoteCache {
   async function getMetadata(url: string, method: HttpMethod) {
     const cacheMetadataFromStorage = (
       await storage.getItem(`${beagleCacheNamespace}/${url}/${method}`)  
@@ -45,5 +46,3 @@ function createRemoteCache(storage: Storage) {
 export default {
   create: createRemoteCache,
 }
-
-export type RemoteCache = ReturnType<typeof createRemoteCache>

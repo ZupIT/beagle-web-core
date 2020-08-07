@@ -15,20 +15,20 @@
  */
 
 import Tree from 'beagle-tree'
-import { BeagleView } from 'beagle-view'
-import { LoadParams } from 'service/network/types'
+import { BeagleView, LoadParams } from 'beagle-view/types'
+import { ViewContentManager, ViewContentManagerMap } from './types'
 
-function createViewContentManagerMap() {
+function createViewContentManagerMap(): ViewContentManagerMap {
   const views: Record<string, BeagleView> = {}
 
-  function create(view: BeagleView, elementId: string) {
+  function create(view: BeagleView, elementId: string): ViewContentManager {
     return {
       replaceComponent: (params: LoadParams) => view.fetch(params, elementId, 'replaceComponent'),
       replace: (params: LoadParams) => view.fetch(params, elementId, 'replace'),
       append: (params: LoadParams) => view.fetch(params, elementId, 'append'),
       prepend: (params: LoadParams) => view.fetch(params, elementId, 'prepend'),
       getElementId: () => elementId,
-      getElement: () => Tree.findById(view.getTree(), elementId),
+      getElement: () => Tree.findById(view.getTree(), elementId)!,
       getView: () => view,
     }
   }
@@ -63,6 +63,3 @@ function createViewContentManagerMap() {
 export default {
   create: createViewContentManagerMap,
 }
-
-export type ViewContentManagerMap = ReturnType<typeof createViewContentManagerMap>
-export type ViewContentManager = ReturnType<ViewContentManagerMap['get']>
