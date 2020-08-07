@@ -1,24 +1,14 @@
 import { BeagleLogConfig, LogType } from './types'
 
-
-const logColors = {
-    info: '#FF5733',
-    success: '#71882A',
-    lifecycle: '#BF80FD',
-    expression: '#1532C1',
-    error: '#AF0F0F',
-    warn: '#DBCA1C',
-}
-
-type i = 'error' | 'warn' | 'log'
+type consoleType = 'error' | 'warn' | 'log'
 
 interface LogInterface {
-    error: i,
-    warn: i,
-    info: i,
-    success: i,
-    lifecycle: i,
-    expression: i,
+    error: consoleType,
+    warn: consoleType,
+    info: consoleType,
+    success: consoleType,
+    lifecycle: consoleType,
+    expression: consoleType,
 }
 
 const log: LogInterface = {
@@ -28,6 +18,15 @@ const log: LogInterface = {
     success: 'log',
     lifecycle: 'log',
     expression: 'log',
+}
+
+const logColors = {
+    info: '#FF5733',
+    success: '#71882A',
+    lifecycle: '#BF80FD',
+    expression: '#1532C1',
+    error: '#AF0F0F',
+    warn: '#DBCA1C',
 }
 
 function createBeagleLogger() {
@@ -43,7 +42,7 @@ function createBeagleLogger() {
 
     return {
         setConfig: (logConfig: BeagleLogConfig) => beagleLogConfig = logConfig,
-        addType: (type: LogType) => (beagleLogConfig.debug ? beagleLogConfig.debug.push(type) : null),
+        addType: (type: LogType) => (beagleLogConfig.debug && !beagleLogConfig.debug.includes(type) ? beagleLogConfig.debug.push(type) : null),
         log: printLog,
     }
 }
