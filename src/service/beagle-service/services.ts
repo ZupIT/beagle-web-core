@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { HttpClient } from 'service/network/types'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import URLBuilder from 'service/network/url-builder'
@@ -23,8 +24,10 @@ import ViewContentManagerMap from 'service/view-content-manager'
 import { BeagleConfig } from './types'
 
 export function createServices(config: BeagleConfig<any>) {
+  const httpClient: HttpClient = {
+    fetch: (...args) => (config.fetchData ? config.fetchData(...args) : fetch(...args)),
+  }
   const storage = config.customStorage || localStorage
-  const httpClient = { fetch: config.fetchData || fetch }
   const urlBuilder = URLBuilder.create(config.baseUrl)
   const analytics = config.analytics
   const remoteCache = RemoteCache.create(storage)
