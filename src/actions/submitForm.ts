@@ -14,8 +14,8 @@
   * limitations under the License.
 */
 
-import { ActionHandler, SubmitFormAction } from './types'
 import beagleLogger from '../BeagleLogger'
+import { ActionHandler, SubmitFormAction } from './types'
 
 const submitForm: ActionHandler<SubmitFormAction> = ({ element }) => {
   const domNode = document.querySelector(`[data-beagle-id="${element.id}"]`)
