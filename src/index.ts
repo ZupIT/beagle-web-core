@@ -39,7 +39,7 @@ export { BeagleError, BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheEr
 
 import { BeagleView } from 'beagle-view'
 import { GlobalContext } from 'service/global-context'
-import { TreeContentMapper, BeagleTreeContent } from 'service/tree-content'
+import { ViewContentManagerMap, ViewContentManager } from 'service/view-content-manager'
 import { DefaultHeaders } from 'service/network/default-headers'
 import { RemoteCache } from 'service/network/remote-cache'
 import { URLBuilder } from 'service/network/url-builder'
@@ -48,8 +48,8 @@ import { ViewClient } from 'service/network/view-client'
 export {
   BeagleView,
   GlobalContext,
-  TreeContentMapper,
-  BeagleTreeContent,
+  ViewContentManagerMap,
+  ViewContentManager,
   DefaultHeaders,
   RemoteCache,
   URLBuilder,

@@ -185,10 +185,10 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     },
     remoteCache: custom.remoteCache || createRemoteCacheMock(),
     storage: custom.storage || createLocalStorageMock(),
-    treeContentMapper:  custom.treeContentMapper || {
-      getContext: jest.fn(),
-      registerView: jest.fn(),
-      unregisterView: jest.fn(),
+    viewContentManagerMap:  custom.viewContentManagerMap || {
+      get: jest.fn(),
+      register: jest.fn(),
+      unregister: jest.fn(),
       isRegistered: jest.fn(),
     },
     urlBuilder: custom.urlBuilder || {

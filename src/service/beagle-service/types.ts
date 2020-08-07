@@ -23,7 +23,7 @@ import { DefaultHeaders } from 'service/network/default-headers'
 import { URLBuilder } from 'service/network/url-builder'
 import { ViewClient } from 'service/network/view-client'
 import { GlobalContext } from 'service/global-context'
-import { TreeContentMapper } from 'service/tree-content'
+import { ViewContentManagerMap } from 'service/view-content-manager'
 import { ChildrenMetadataMap } from 'metadata/types'
 import { HttpClient } from 'service/network/types'
 
@@ -94,5 +94,5 @@ export type BeagleService = Readonly<{
   viewClient: ViewClient,
   defaultHeaders: DefaultHeaders,
   globalContext: GlobalContext,
-  treeContentMapper: TreeContentMapper,
+  viewContentManagerMap: ViewContentManagerMap,
 }>

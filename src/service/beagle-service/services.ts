@@ -19,7 +19,7 @@ import DefaultHeaders from 'service/network/default-headers'
 import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
 import GlobalContext from 'service/global-context'
-import TreeContentMapper from 'service/tree-content'
+import ViewContentManagerMap from 'service/view-content-manager'
 import { BeagleConfig } from './types'
 
 export function createServices(config: BeagleConfig<any>) {
@@ -31,7 +31,7 @@ export function createServices(config: BeagleConfig<any>) {
   const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
   const viewClient = ViewClient.create(storage, defaultHeaders, remoteCache, httpClient)
   const globalContext = GlobalContext.create()
-  const treeContentMapper = TreeContentMapper.create()
+  const viewContentManagerMap = ViewContentManagerMap.create()
 
   return {
     storage,
@@ -42,6 +42,6 @@ export function createServices(config: BeagleConfig<any>) {
     viewClient,
     defaultHeaders,
     globalContext,
-    treeContentMapper,
+    viewContentManagerMap,
   }
 }

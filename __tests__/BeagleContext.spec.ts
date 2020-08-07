@@ -29,17 +29,17 @@ describe('BeagleContext', () => {
   const viewId = 'beagleId'
   /* fixme: this is a terrible sign, if this test suit needs the entire beagle service to pass, its
   tests are clearly not unitary. */
-  const { treeContentMapper, createView } = BeagleService.create({
+  const { viewContentManagerMap, createView } = BeagleService.create({
     baseUrl,
     components: {},
   })
   let view: BeagleView
 
   beforeEach(() => {
-    treeContentMapper.unregisterView(viewId)
+    viewContentManagerMap.unregister(viewId)
     view = createView('/home')
     view.getRenderer().doFullRender(treeA)
-    treeContentMapper.registerView(viewId, view)
+    viewContentManagerMap.register(viewId, view)
     nock.cleanAll()
     localStorageMock.clear()
   })
@@ -49,11 +49,11 @@ describe('BeagleContext', () => {
   })
 
   it('should register a view', () => {
-    expect(treeContentMapper.isRegistered(viewId)).toBe(true)
+    expect(viewContentManagerMap.isRegistered(viewId)).toBe(true)
   })
 
   it('should create a context for a view', async () => {
-    const context = treeContentMapper.getContext(viewId, 'A.1')
+    const context = viewContentManagerMap.get(viewId, 'A.1')
 
     expect(context.getView).toBeDefined()
     expect(context.getElement).toBeDefined()
@@ -64,7 +64,7 @@ describe('BeagleContext', () => {
   })
 
   it('should get view, element and elementId from context', () => {
-    const context = treeContentMapper.getContext(viewId, 'A.1')
+    const context = viewContentManagerMap.get(viewId, 'A.1')
 
     expect(context.getView).toBeDefined()
     const getView = context.getView()
@@ -80,7 +80,7 @@ describe('BeagleContext', () => {
   })
 
   it('should replace current view from context', async () => {
-    const context = treeContentMapper.getContext(viewId, 'A.1')
+    const context = viewContentManagerMap.get(viewId, 'A.1')
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeC))
     const currentTree = context.getView().getTree()
     
@@ -92,7 +92,7 @@ describe('BeagleContext', () => {
   })
 
   it('should append from context', async () => {
-    const context = treeContentMapper.getContext(viewId, 'A')
+    const context = viewContentManagerMap.get(viewId, 'A')
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeD))
     const currentTree = context.getView().getTree()
     
@@ -104,7 +104,7 @@ describe('BeagleContext', () => {
   })
 
   it('should prepend from context', async () => {
-    const context = treeContentMapper.getContext(viewId, 'A')
+    const context = viewContentManagerMap.get(viewId, 'A')
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeD))
     const currentTree = context.getView().getTree()
     
@@ -117,14 +117,14 @@ describe('BeagleContext', () => {
 
   it('should throw an error trying to create a context for an unregistered view', () => {
     try {
-      treeContentMapper.getContext('viewNotRegistered', '1')
+      viewContentManagerMap.get('viewNotRegistered', '1')
     } catch {
-      expect(treeContentMapper.getContext).toThrowError()
+      expect(viewContentManagerMap.get).toThrowError()
     }
   })
 
   it('should replace even if root element', async () => {
-    const context = treeContentMapper.getContext(viewId, 'A')
+    const context = viewContentManagerMap.get(viewId, 'A')
     context.getView().getRenderer().doFullRender(treeA)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeC))
   
@@ -134,8 +134,8 @@ describe('BeagleContext', () => {
   })
 
   it('should unregister a view', () => {
-    treeContentMapper.unregisterView('beagleId')
-    expect(treeContentMapper.isRegistered('beagleId')).toBe(false)
+    viewContentManagerMap.unregister('beagleId')
+    expect(viewContentManagerMap.isRegistered('beagleId')).toBe(false)
   })
 
 })

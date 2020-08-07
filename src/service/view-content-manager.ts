@@ -18,10 +18,10 @@ import Tree from 'beagle-tree'
 import { BeagleView } from 'beagle-view'
 import { LoadParams } from 'service/network/types'
 
-function createTreeContentMapper() {
+function createViewContentManagerMap() {
   const views: Record<string, BeagleView> = {}
 
-  function createContext(view: BeagleView, elementId: string) {
+  function create(view: BeagleView, elementId: string) {
     return {
       replaceComponent: (params: LoadParams) => view.fetch(params, elementId, 'replaceComponent'),
       replace: (params: LoadParams) => view.fetch(params, elementId, 'replace'),
@@ -33,34 +33,36 @@ function createTreeContentMapper() {
     }
   }
   
-  function getContext(viewId: string, elementId: string) {
-    if (!viewId || !elementId) throw Error('Beagle: getContext couldn\'t find viewId or elementId')
+  function get(viewId: string, elementId: string) {
+    if (!viewId || !elementId) {
+      throw Error('Beagle: ViewContentManagerMap couldn\'t find viewId or elementId')
+    }
   
     const view = views[viewId]
-    if (!view) throw Error(`Beagle: getContext couldn\'t find view with id ${viewId}`)
+    if (!view) throw Error(`Beagle: ViewContentManagerMap couldn\'t find view with id ${viewId}`)
   
-    return createContext(view, elementId)
+    return create(view, elementId)
   }
   
-  function registerView(viewId: string, view: BeagleView) {
+  function register(viewId: string, view: BeagleView) {
     views[viewId] = view
   }
   
-  function unregisterView(viewId: string) {
+  function unregister(viewId: string) {
     delete views[viewId]
   }
   
   return {
-    getContext,
-    registerView,
-    unregisterView,
+    get,
+    register,
+    unregister,
     isRegistered: (viewId: string) => !!views[viewId],
   }
 }
 
 export default {
-  create: createTreeContentMapper,
+  create: createViewContentManagerMap,
 }
 
-export type TreeContentMapper = ReturnType<typeof createTreeContentMapper>
-export type BeagleTreeContent = ReturnType<typeof createTreeContentMapper>['getContext']
+export type ViewContentManagerMap = ReturnType<typeof createViewContentManagerMap>
+export type ViewContentManager = ReturnType<ViewContentManagerMap['get']>

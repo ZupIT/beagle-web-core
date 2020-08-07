@@ -13,16 +13,16 @@
     "esModuleInterop": true,
     "baseUrl": "src",
     "paths": {
-      "@action/*": ["action/*"],
-      "@beagle-tree/*": ["beagle-tree/*"],
-      "@beagle-view/*": ["beagle-view/*"],
-      "@error/*": ["error/*"],
-      "@legacy/*": ["legacy/*"],
-      "@metadata/*": ["metadata/*"],
-      "@operation/*": ["operation/*"],
-      "@service/*": ["service/*"],
-      "@utils/*": ["utils/*"]
-    },
+      "action/*": ["action/*"],
+      "beagle-tree/*": ["beagle-tree/*"],
+      "beagle-view/*": ["beagle-view/*"],
+      "error/*": ["error/*"],
+      "legacy/*": ["legacy/*"],
+      "metadata/*": ["metadata/*"],
+      "operation/*": ["operation/*"],
+      "service/*": ["service/*"],
+      "utils/*": ["utils/*"]
+    }
   },
   "include": [
     "src/**/*",
