@@ -55,7 +55,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     if (!response.ok) throw new Error(contextResponse.statusText)
     onSuccess && executeAction(onSuccess, 'onSuccess', contextResponse)
   } catch (error) {
-    beagleLogger.log(error, 'error')
+    beagleLogger.log('error', error)
     const event = {
       ...contextResponse,
       message: error.message || 'Unexpected error',

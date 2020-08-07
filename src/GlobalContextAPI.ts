@@ -77,7 +77,7 @@ function globalContextService(): GlobalContextAPI {
         unset(globalContext.value, path)
         callUpdateListeners()
       }
-      else beagleLogger.log(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`, 'warn')
+      else beagleLogger.log('warn', `Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
     }
   }
 

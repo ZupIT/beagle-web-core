@@ -40,7 +40,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
     const anyContextMessage = (
       `Could not find any context for element of type "${element._beagleComponent_}" and id "${element.id}"`
     )
-    beagleLogger.log(contextId ? specificContextMessage : anyContextMessage, 'warn')
+    beagleLogger.log('warn', contextId ? specificContextMessage : anyContextMessage)
     return
   }
 

@@ -20,13 +20,13 @@ import { ActionHandler, SubmitFormAction } from './types'
 const submitForm: ActionHandler<SubmitFormAction> = ({ element }) => {
   const domNode = document.querySelector(`[data-beagle-id="${element.id}"]`)
   if (!domNode) {
-    beagleLogger.log('Could not submit the form because the element who triggered the action is not in the dom anymore.', 'error')
+    beagleLogger.log('error', 'Could not submit the form because the element who triggered the action is not in the dom anymore.')
     return
   }
 
   const form = domNode.closest('form')
   if (!form) {
-    beagleLogger.log('Could not submit because the element who triggered the action "submitForm" is not inside any form.', 'error')
+    beagleLogger.log('error', 'Could not submit because the element who triggered the action "submitForm" is not inside any form.')
     return
   }
 

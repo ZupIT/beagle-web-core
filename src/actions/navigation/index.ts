@@ -72,13 +72,13 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({ actio
         const cachedTree = await loadFromCache(baseUrl, 'get')
         return beagleView.getRenderer().doFullRender(cachedTree)
       } catch (error) {
-        beagleLogger.log(error, 'error')
+        beagleLogger.log('error', error)
       }
     }
 
     return beagleView.fetch({ path: url, fallback })
   } catch (error) {
-    beagleLogger.log(error, 'error')
+    beagleLogger.log('error', error)
   }
 }
 

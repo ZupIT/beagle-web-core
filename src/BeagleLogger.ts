@@ -6,20 +6,37 @@ const logColors = {
     success: '#71882A',
     lifecycle: '#BF80FD',
     expression: '#1532C1',
+    error: '#AF0F0F',
+    warn: '#DBCA1C',
+}
+
+type i = 'error' | 'warn' | 'log'
+
+interface LogInterface {
+    error: i,
+    warn: i,
+    info: i,
+    success: i,
+    lifecycle: i,
+    expression: i,
+}
+
+const log: LogInterface = {
+    error: 'error',
+    warn: 'warn',
+    info: 'log',
+    success: 'log',
+    lifecycle: 'log',
+    expression: 'log',
 }
 
 function createBeagleLogger() {
     let beagleLogConfig: BeagleLogConfig
 
-    function printLog<T>(message: T, type: LogType): void {
+    function printLog<T>(type: LogType, ...logItens: T[]): void {
         if (beagleLogConfig.mode === 'development' && beagleLogConfig.debug && beagleLogConfig.debug.includes(type)) {
-            const parsedMessage = typeof(message) === 'object' ? JSON.stringify(message) : message
-            if (type === 'error' || type === 'warn') {
-                console[type](`Beagle (${type.toLowerCase()}) : ${parsedMessage}`)
-                return
-            }
-            console.group(`%c Beagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
-            console.log(parsedMessage)
+            console.groupCollapsed(`%c Beagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
+            logItens.forEach(i => console[log[type]](i))
             console.groupEnd()
         }
     }

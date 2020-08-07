@@ -68,7 +68,7 @@ function createRenderer({
   }
 
   function runComponentLifecycleHook(component: any, lifecycle: Lifecycle) {
-    beagleLogger.log(`${lifecycle} - Component: ${JSON.stringify(component)}`, 'lifecycle')
+    beagleLogger.log('lifecycle', lifecycle, component)
     const hook = lifecycleHooks[lifecycle].components[component._beagleComponent_]
     if (!hook) return component
     const newComponent = hook(component)

@@ -68,7 +68,7 @@ function deserializeAction(
       const handler = getValueByCaseInsentiveKey(params.actionHandlers, action._beagleAction_)
 
       if (!handler) {
-        beagleLogger.log(`Beagle: couldn't find an action handler for "${action._beagleAction_}"`, 'warn')
+        beagleLogger.log('warn', `Beagle: couldn't find an action handler for "${action._beagleAction_}"`)
         return
       }
 

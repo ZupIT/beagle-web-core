@@ -140,9 +140,10 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
   if (fullMatch) {
     try {
       const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy)
+      //
       return bindingValue === undefined ? str : bindingValue
     } catch (error) {
-      beagleLogger.log(error, 'error')
+      beagleLogger.log('error', error,)
       return str
     }
   }
@@ -154,8 +155,9 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
     let bindingValue: string | undefined
     try {
       bindingValue = evaluateExpression(path, contextHierarchy)
+      beagleLogger.log('expression', bindingValue)
     } catch (error) {
-      beagleLogger.log(error, 'error')
+      beagleLogger.log('error', error)
     }
     const asString = typeof bindingValue === 'object' ? JSON.stringify(bindingValue) : bindingValue
     return bindingValue === undefined ? bindingStr : `${scapedSlashes}${asString}`
@@ -188,6 +190,7 @@ export function resolve<T extends any>(
   contextHierarchy: DataContext[],
   shouldIgnore?: (value: any, key: string) => boolean,
 ): T {
+  beagleLogger.log('expression', contextHierarchy)
   if (typeof data === 'string') return resolveExpressionsInString(data, contextHierarchy)
 
   if (Array.isArray(data)) {

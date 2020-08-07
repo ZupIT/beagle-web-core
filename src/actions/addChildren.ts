@@ -24,7 +24,7 @@ const addChildren: ActionHandler<AddChildrenAction> = ({ action, beagleView }) =
   const component = findById(uiTree, componentId)
 
   if (!component) {
-    beagleLogger.log(`No component with id ${componentId} has been found in the tree`, 'warn')
+    beagleLogger.log('warn', `No component with id ${componentId} has been found in the tree`)
     return
   }
 

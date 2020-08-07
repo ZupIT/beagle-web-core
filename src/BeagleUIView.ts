@@ -110,7 +110,7 @@ const createBeagleView = <Schema>(
     } catch (errors) {
       // removes the loading component when an error component should not be rendered
       if (params.shouldShowLoading && !params.shouldShowError) setTree(originalTree)
-      if (errorListeners.length === 0) beagleLogger.log(errors, 'error')
+      if (errorListeners.length === 0) beagleLogger.log('error', errors)
       runErrorListeners(errors)
     }
   }

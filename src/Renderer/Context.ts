@@ -29,8 +29,8 @@ function checkContextId(component: IdentifiableBeagleUIElement) {
   RESERVED_WORDS.forEach(word => {
     if (contextId === word) {
       beagleLogger.log(
-        `Beagle: context error. The context id "${word}" is a reserved word and probably won't work as expected. Please, consider renaming your context.`,
-        'warn'
+        'warn',
+        `Beagle: context error. The context id "${word}" is a reserved word and probably won't work as expected. Please, consider renaming your context.`
       )
     }
   })
