@@ -16,7 +16,7 @@
 
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
-import BeagleCacheError from 'service/network/error/BeagleCacheError'
+import BeagleCacheError from 'error/BeagleCacheError'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../../mocks'

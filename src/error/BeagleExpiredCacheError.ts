@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import BeagleError from 'error/BeagleError'
+import BeagleError from './BeagleError'
 
 export default class BeagleExpiredCacheError extends BeagleError {
   constructor(path: string) {

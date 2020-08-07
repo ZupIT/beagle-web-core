@@ -19,7 +19,7 @@ import String from 'utils/string'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import Renderer from './render'
-import BeagleNavigator from './Navigator'
+import BeagleNavigator from './navigator'
 import { BeagleView, Listener, ErrorListener, LoadParams, Renderer as RendererType } from './types'
 
 function createBeagleView(initialRoute: string, beagleService: BeagleService): BeagleView {

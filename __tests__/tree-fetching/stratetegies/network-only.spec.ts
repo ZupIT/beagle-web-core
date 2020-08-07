@@ -17,7 +17,7 @@
 import nock from 'nock'
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
-import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
+import BeagleNetworkError from 'error/BeagleNetworkError'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../../mocks'

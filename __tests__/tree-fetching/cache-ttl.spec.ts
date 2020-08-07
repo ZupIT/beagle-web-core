@@ -16,7 +16,7 @@
 
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType } from 'service/network/view-client/types'
-import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
+import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../mocks'

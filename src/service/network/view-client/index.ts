@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import BeagleCacheError from 'service/network/error/BeagleCacheError'
-import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
-import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
+import BeagleCacheError from 'error/BeagleCacheError'
+import BeagleNetworkError from 'error/BeagleNetworkError'
+import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
 import { HttpClient, HttpMethod } from 'service/network/types'
 import { RemoteCache, CacheMetadata } from 'service/network/remote-cache/types'

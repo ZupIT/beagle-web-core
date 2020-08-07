@@ -29,9 +29,9 @@ export { ObjectUtils, StringUtils, UrlUtils, Automaton }
 
 // errors
 import BeagleError from 'error/BeagleError'
-import BeagleNetworkError from 'service/network/error/BeagleNetworkError'
-import BeagleCacheError from 'service/network/error/BeagleCacheError'
-import BeagleExpiredCacheError from 'service/network/error/BeagleExpiredCacheError'
+import BeagleNetworkError from 'error/BeagleNetworkError'
+import BeagleCacheError from 'error/BeagleCacheError'
+import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 
 export { BeagleError, BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError }
 

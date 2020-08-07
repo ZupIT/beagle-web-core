@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-import BeagleError from 'error/BeagleError'
+import BeagleError from './BeagleError'
 
-export default class BeagleCacheError extends BeagleError {
-  constructor(path: string) {
-    super(`cache for ${path} has not been found.`)
+export default class BeagleNetworkError extends BeagleError {
+  public response: Response
+
+  constructor(path: string, response: Response) {
+    super(`network error while trying to access ${path}.`)
+    this.response = response
   }
 }
