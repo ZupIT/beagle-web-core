@@ -25,6 +25,7 @@ import Tree from '../src/utils/Tree'
 import { treeA, treeB } from './mocks'
 import { mockLocalStorage, stripTreeIds } from './utils/test-utils'
 import globalContextApi from '../src/GlobalContextAPI'
+import { BeagleLogger } from '../src'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -35,8 +36,8 @@ describe('BeagleUIView', () => {
   let view: BeagleView
   const middleware = jest.fn(tree => tree)
   globalContextApi.subscribe = jest.fn()
-  const originalConsoleError = console.error
-  console.error = jest.fn()
+  const originalConsoleError = BeagleLogger.log
+  BeagleLogger.log = jest.fn()
   const lifecycles: LifecycleHookMap = {
     beforeStart: { components: {} },
     beforeViewSnapshot: { components: {} },
@@ -50,12 +51,13 @@ describe('BeagleUIView', () => {
     nock.cleanAll()
     localStorageMock.clear()
     middleware.mockClear()
-    const consoleError = console.error as jest.Mock
+    const consoleError = BeagleLogger.log as jest.Mock
     consoleError.mockClear()
+    BeagleLogger.setConfig({mode:'development'})
   })
 
   afterAll(() => {
-    console.error = originalConsoleError
+    BeagleLogger.log = originalConsoleError
   })
 
   it('should get current ui tree', async () => {
@@ -108,8 +110,8 @@ describe('BeagleUIView', () => {
   })
 
   it('should unsubscribe from errors', async () => {
-    const originalConsoleError = console.error
-    console.error = jest.fn()
+    const originalConsoleError = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
 
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const listener = jest.fn()
@@ -123,7 +125,7 @@ describe('BeagleUIView', () => {
     expect(listener).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
 
-    console.error = originalConsoleError
+    BeagleLogger.log = originalConsoleError
   })
 
   it('should run middlewares', async () => {
@@ -295,7 +297,7 @@ describe('BeagleUIView', () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await view.fetch({ path })
     // @ts-ignore
-    expect(console.error).toHaveBeenCalled()
+    expect(BeagleLogger.log).toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })
 
@@ -304,7 +306,7 @@ describe('BeagleUIView', () => {
     view.addErrorListener(jest.fn())
     await view.fetch({ path })
     // @ts-ignore
-    expect(console.error).not.toHaveBeenCalled()
+    expect(BeagleLogger.log).not.toHaveBeenCalledWith('error')
     expect(nock.isDone()).toBe(true)
   })
 })

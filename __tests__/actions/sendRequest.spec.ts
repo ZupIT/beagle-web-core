@@ -3,6 +3,7 @@ import sendRequest from '../../src/actions/sendRequest'
 import { createBeagleViewMock } from '../utils/test-utils'
 import beagleHttpClient from '../../src/BeagleHttpClient'
 import UrlBuilder from '../../src/UrlBuilder'
+import { BeagleLogger } from '../../src'
 
 const domain = 'http://beagle.test.com'
 const path = '/url-builder'
@@ -10,6 +11,7 @@ const element = { _beagleComponent_: 'container', id: 'container' }
 
 beforeEach(() => {
   UrlBuilder.setBaseUrl(domain)
+  BeagleLogger.setConfig({mode:'development'})
 })
 
 describe('Actions: beagle:sendRequest', () => {
@@ -122,8 +124,8 @@ describe('Actions: beagle:sendRequest', () => {
     const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
   
-    const originalLogError = console.error
-    console.error = jest.fn()
+    const originalLogError = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
 
     await sendRequest({
       action: {
@@ -152,8 +154,8 @@ describe('Actions: beagle:sendRequest', () => {
       expectedImplicitContext.value,
     )
 
-    expect(console.error).toHaveBeenCalled()
-    console.error = originalLogError
+    expect(BeagleLogger.log).toHaveBeenCalled()
+    BeagleLogger.log = originalLogError
   })
 
   it('should run onError and log the error when response has error status', async () => {
@@ -163,8 +165,8 @@ describe('Actions: beagle:sendRequest', () => {
     const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
 
-    const originalLogError = console.error
-    console.error = jest.fn()
+    const originalLogError = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
 
     await sendRequest({
       action: {
@@ -193,8 +195,8 @@ describe('Actions: beagle:sendRequest', () => {
       expectedImplicitContext.id,
       expectedImplicitContext.value,
     )
-    expect(console.error).toHaveBeenCalled()
-    console.error = originalLogError
+    expect(BeagleLogger.log).toHaveBeenCalled()
+    BeagleLogger.log = originalLogError
     nock.cleanAll()
   })
 
@@ -262,8 +264,8 @@ describe('Actions: beagle:sendRequest', () => {
     const executeAction = jest.fn()
     const onFinish = { _beagleAction_: 'beagle:alert', message: 'Finish!' }
 
-    const originalLogError = console.error
-    console.error = jest.fn()
+    const originalLogError = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
 
     await sendRequest({
       action: {
@@ -279,6 +281,6 @@ describe('Actions: beagle:sendRequest', () => {
     expect(nock.isDone()).toBe(true)
     expect(executeAction).toHaveBeenCalledWith(onFinish)
     nock.cleanAll()
-    console.error = originalLogError
+    BeagleLogger.log = originalLogError
   })
 })

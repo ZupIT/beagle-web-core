@@ -11,8 +11,11 @@ import {
   createMultipleScopesMock,
   createGlobalContextMock,
 } from './mocks'
+import { BeagleLogger } from '../../../src'
 
 describe('Actions: beagle:setContext', () => {
+  beforeAll(() => BeagleLogger.setConfig({ mode: 'development', debug: ['error', 'warn'] }))
+
   it('should set single context', () => {
     const mock = createSingleContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
@@ -222,8 +225,8 @@ describe('Actions: beagle:setContext', () => {
   it('should warn and not update view if context doesn\'t exist', () => {
     const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
 
     setContext({
       action: {
@@ -236,16 +239,16 @@ describe('Actions: beagle:setContext', () => {
       executeAction: jest.fn(),
     })
 
-    expect(console.warn).toHaveBeenCalled()
+    expect(BeagleLogger.log).toHaveBeenCalled()
     expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
-    console.warn = originalWarn
+    BeagleLogger.log = originalWarn
   })
 
   it('should warn and not update view if context is not part of current hierarchy', () => {
     const mock = createMultipleScopesMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
 
     setContext({
       action: {
@@ -258,9 +261,9 @@ describe('Actions: beagle:setContext', () => {
       executeAction: jest.fn(),
     })
 
-    expect(console.warn).toHaveBeenCalled()
+    expect(BeagleLogger.log).toHaveBeenCalled()
     expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
-    console.warn = originalWarn
+    BeagleLogger.log = originalWarn
   })
 
   it('should create context structures according to path (object)', () => {
@@ -341,7 +344,7 @@ describe('Actions: beagle:setContext', () => {
       beagleView,
       element: mock,
       executeAction: jest.fn(),
-    }) 
+    })
     expect(globalContextApi.set).toHaveBeenCalled()
   })
 
@@ -349,7 +352,7 @@ describe('Actions: beagle:setContext', () => {
     globalContextApi.set = jest.fn()
     const mock = createGlobalContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -360,7 +363,7 @@ describe('Actions: beagle:setContext', () => {
       element: findById(mock, 'button'),
       executeAction: jest.fn(),
     })
-  
+
     expect(globalContextApi.set).toHaveBeenCalledWith('new value', undefined)
   })
 
@@ -368,7 +371,7 @@ describe('Actions: beagle:setContext', () => {
     globalContextApi.set = jest.fn()
     const mock = createGlobalContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -380,7 +383,7 @@ describe('Actions: beagle:setContext', () => {
       element: findById(mock, 'button'),
       executeAction: jest.fn(),
     })
-  
+
     expect(globalContextApi.set).toHaveBeenCalledWith('new value', 'testing.path')
   })
 

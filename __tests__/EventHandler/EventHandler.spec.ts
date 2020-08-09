@@ -15,6 +15,7 @@ import defaultActionHandlers from '../../src/actions'
 import { ActionHandlerParams, BeagleAction } from '../../src/actions/types'
 import createBeagleService from '../../src/BeagleService'
 import { IdentifiableBeagleUIElement, BeagleUIElement, BeagleView } from '../../src/types'
+import { BeagleLogger } from '../../src'
 
 interface ActionHandlerExpectation {
   handler: jest.Mock,
@@ -54,6 +55,8 @@ function interpretEventsInTree(tree: IdentifiableBeagleUIElement, beagleView: Be
 }
 
 describe('EventHandler', () => {
+  beforeEach(() => BeagleLogger.setConfig({ mode: 'development' }))
+
   afterAll(unmockDefaultActions)
 
   it('should deserialize BeagleAction into function', () => {
@@ -104,9 +107,9 @@ describe('EventHandler', () => {
     ]
     const mock = createContainerWithAction('onInit', actions)
     interpretEventsInTree(mock, beagleView)
-  
+
     mock.onInit()
-  
+
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expectActionHandlerToHaveBeenCalled({
       handler: alert,
@@ -147,7 +150,7 @@ describe('EventHandler', () => {
   it('should create implicit context when function is called passing a parameter', () => {
     const originalResolve = Expression.resolveForAction
     Expression.resolveForAction = jest.fn()
-    
+
     const beagleView = createBeagleViewMock()
     const action = {
       _beagleAction_: 'beagle:alert',
@@ -157,7 +160,7 @@ describe('EventHandler', () => {
     interpretEventsInTree(mock, beagleView)
     const event = { name: 'Beagle', lastName: 'Mockerson' }
     mock.onInit(event)
-  
+
     expect(Expression.resolveForAction).toHaveBeenCalledWith(
       action,
       [{ id: 'global', value: null }, { id: 'onInit', value: event }],
@@ -165,7 +168,7 @@ describe('EventHandler', () => {
 
     Expression.resolveForAction = originalResolve
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
-    
+
     alert.mockClear()
   })
 
@@ -175,7 +178,7 @@ describe('EventHandler', () => {
     const mock = createContainerWithAction('onInit', action)
     mock.context = { id: 'test', value: 'Hello World!' }
     interpretEventsInTree(mock, beagleView)
-    
+
     mock.onInit()
 
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
@@ -202,13 +205,13 @@ describe('EventHandler', () => {
     const action = { _beagleAction_: 'custom:myAction', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     await new Promise((resolve) => {
-      beagleView.subscribe(view =>  {
+      beagleView.subscribe(view => {
         view.onInit()
         resolve()
       })
       beagleView.getRenderer().doFullRender(mock)
     })
-    
+
     expect(myActionHandler).toHaveBeenCalledWith(
       expect.objectContaining({ action })
     )
@@ -219,12 +222,12 @@ describe('EventHandler', () => {
     const action = { _beagleAction_: 'blah', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     interpretEventsInTree(mock, beagleView)
-  
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
     mock.onInit()
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(BeagleLogger.log).toHaveBeenCalledWith('warn', jasmine.any(String))
+    BeagleLogger.log = originalWarn
   })
 
   it('should deserialize all actions in ui tree', () => {

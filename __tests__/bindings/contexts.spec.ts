@@ -17,8 +17,15 @@ import {
   treeWithValidContext,
 } from './mocks'
 import globalContextApi from '../../src/GlobalContextAPI'
+import beagleLogger from '../../src/BeagleLogger'
+import { BeagleLogger } from '../../src'
 
 describe('Binding expressions: replacing with calculated contexts', () => {
+
+  beforeEach(()=>{
+    beagleLogger.setConfig({mode:'development'})
+  })
+
   it('should use contexts declared in the data structure', () => {
     const socialMediaData = createSocialMediaData()
     const mock = createSocialMediaMock()
@@ -82,8 +89,8 @@ describe('Binding expressions: replacing with calculated contexts', () => {
   )
 
   it('closest context with invalid name of global should have priority over global context', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
     globalContextApi.set('Global context value', 'text')
     globalContextApi.set('Global context object value', 'obj.inner.text')
 
@@ -100,25 +107,25 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     textElement = findByType(treeWithValues, 'beagle:text2')[0]
     expect(textElement).toBeDefined()
     expect(textElement.text).toBe('@{global.obj.inner.text}')
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(BeagleLogger.log).toHaveBeenCalled()
+    BeagleLogger.log = originalWarn
   })
 })
 
 describe('Testing context hierarchy', () => {
   it('should emit a warning if a context with global as id is defined on the tree', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
     Context.evaluate(treeWithGlobalContext)
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(BeagleLogger.log).toHaveBeenCalledWith('warn', jasmine.any(String))
+    BeagleLogger.log = originalWarn
   })
 
   it('should not emit a warning if valid context id', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
     Context.evaluate(treeWithValidContext)
-    expect(console.warn).not.toHaveBeenCalled() 
-    console.warn = originalWarn
+    expect(BeagleLogger.log).not.toHaveBeenCalledWith('warn', jasmine.any(String)) 
+    BeagleLogger.log = originalWarn
   })
 })

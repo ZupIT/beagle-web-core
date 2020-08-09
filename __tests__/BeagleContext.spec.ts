@@ -22,6 +22,7 @@ import { treeA, treeB, treeC, treeD } from './mocks'
 import { mockLocalStorage } from './utils/test-utils'
 import UrlBuilder from '../src/UrlBuilder'
 import { LifecycleHookMap } from '../src/types'
+import { BeagleLogger } from '../src'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -35,7 +36,7 @@ describe('BeagleContext', () => {
     afterViewSnapshot: { components: {} },
     beforeRender: { components: {} },
   }
-
+  BeagleLogger.setConfig({mode:'development'})
   UrlBuilder.setBaseUrl(baseUrl)
 
   beforeEach(() => {

@@ -16,6 +16,7 @@
 import globalContextApi, { cloneObject } from "../src/GlobalContextAPI"
 import { hasDifferentPointers } from "./utils/test-utils"
 import { usersObjectCellphone, usersObject } from "./mocks-global-context"
+import { BeagleLogger } from "../src"
 
 const baseUrl = 'http://teste.com'
 
@@ -26,6 +27,7 @@ describe.only('globalContextApi', () => {
     jest.clearAllMocks();
     listener = jest.fn()
     globalContextApi.subscribe(listener)
+    BeagleLogger.setConfig({mode:'development'})
   });
 
   it('should initialize context with \'global\' as id and return it with getAsDataContext', async () => {
@@ -296,21 +298,21 @@ describe.only('globalContextApi', () => {
   })
 
   it('should warn if context has value but path not found', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
     globalContextApi.clear('testing.clear.path')
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(BeagleLogger.log).toHaveBeenCalledWith('warn', jasmine.any(String))
+    BeagleLogger.log = originalWarn
   })
 
   it('should warn if empty context trying to clear some specific path', () => {
     globalContextApi.clear()
-    const originalWarn = console.warn
-    console.warn = jest.fn()
+    const originalWarn = BeagleLogger.log
+    BeagleLogger.log = jest.fn()
 
     globalContextApi.clear('testing.clear.path')
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(BeagleLogger.log).toHaveBeenCalledWith('warn', jasmine.any(String))
+    BeagleLogger.log = originalWarn
   })
 
 })
