@@ -78,7 +78,7 @@ export interface BeagleConfig<Schema> {
 }
 
 export type BeagleService = Readonly<{
-  createView: (initialRoute: string) => BeagleView,
+  createView: () => BeagleView,
   getConfig: () => BeagleConfig<any>,
   // processed configuration
   actionHandlers: Record<string, ActionHandler>,
