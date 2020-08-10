@@ -1,3 +1,8 @@
+# The rendering process (lifecycles)
+Every Beagle Web library has a very well defined process of how it fetches, process and renders a
+view. There's an order that must always be respected and hook points where the developer can execute
+some code of his own (lifecycles).
+
 # List of contents
 
 - [TL;DR;](#tldr)
