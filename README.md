@@ -22,8 +22,10 @@ currently used to develop Beagle for Angular, Beagle for React and Beagle for Re
 here is the core part of all these libraries. If you're looking to develop a project in any of these
 frameworks, you should be looking in the following places instead:
 
-- Beagle Angular: [npm](https://www.npmjs.com/package/@zup-it/beagle-angular), [git](https://github.com/ZupIT/beagle-web-angular)
-- Beagle React: [npm](https://www.npmjs.com/package/@zup-it/beagle-react), [git](https://github.com/ZupIT/beagle-web-react)
+- Beagle Angular: [npm](https://www.npmjs.com/package/@zup-it/beagle-angular),
+[git](https://github.com/ZupIT/beagle-web-angular)
+- Beagle React: [npm](https://www.npmjs.com/package/@zup-it/beagle-react),
+[git](https://github.com/ZupIT/beagle-web-react)
 - Beagle React Native: npm, [git](https://github.com/ZupIT/beagle-web-react)
 
 This library is for you if you are going to develop your project in pure javascript or in a
@@ -174,4 +176,6 @@ as soon as we create it, we have access to all of the following:
 [Read more](docs/services)
 
 ## Notes to contributors
-If you intend to contribute to this project, you should know more about the code specifically. Here we talk about how the code is organized, the tools we use and some coding conventions we adopted. [Read more](docs/contributor)
+If you intend to contribute to this project, you should know more about the code specifically. Here
+we talk about how the code is organized, the tools we use and some coding conventions we adopted.
+[Read more](docs/contributor)
