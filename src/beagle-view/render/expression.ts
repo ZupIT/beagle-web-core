@@ -19,9 +19,9 @@ import { BeagleAction } from 'action/types'
 import { DataContext, BeagleUIElement } from 'beagle-tree/types'
 import Operation from 'operation'
 import Automaton from 'utils/automaton'
+import BeagleNotFoundError from 'error/BeagleNotFoundError'
+import BeagleParseError from 'error/BeagleParseError'
 import Context from './context'
-import BeagleNotFoundError from './error/BeagleNotFoundError'
-import BeagleParseError from './error/BeagleParseError'
 
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
