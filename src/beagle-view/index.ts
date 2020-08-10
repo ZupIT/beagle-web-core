@@ -16,17 +16,19 @@
 
 import Tree from 'beagle-tree'
 import String from 'utils/string'
+import BeagleError from 'error/BeagleError'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import Renderer from './render'
 import BeagleNavigator from './navigator'
+import { BeagleNavigator as BeagleNavigatorType } from './types'
 import { BeagleView, Listener, ErrorListener, LoadParams, Renderer as RendererType } from './types'
 
-function createBeagleView(initialRoute: string, beagleService: BeagleService): BeagleView {
+function createBeagleView(beagleService: BeagleService): BeagleView {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
-  const beagleNavigator = BeagleNavigator.create({ url: initialRoute })
+  let navigator: BeagleNavigatorType | undefined
   let renderer = {} as RendererType
 
   function subscribe(listener: Listener) {
@@ -68,6 +70,7 @@ function createBeagleView(initialRoute: string, beagleService: BeagleService): B
     const url = beagleService.urlBuilder.build(path)
     const originalTree = currentUITree
     const fallbackUIElement = params.fallback
+    navigator = navigator || BeagleNavigator.create({ url: path })
 
     function onChangeTree(loadedTree: BeagleUIElement) {
       setTree(originalTree) // changes should be made based on the original tree
@@ -101,7 +104,10 @@ function createBeagleView(initialRoute: string, beagleService: BeagleService): B
   }
 
   function getBeagleNavigator() {
-    return beagleNavigator
+    if (!navigator) {
+      throw new BeagleError('You need to fetch at least one view before using the navigator.')
+    }
+    return navigator
   }
 
   const beagleView: BeagleView = {

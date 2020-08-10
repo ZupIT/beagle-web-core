@@ -33,7 +33,7 @@ function createBeagleUIService<
     ...services,
     ...processedConfig,
     getConfig: () => config,
-    createView: (initialRoute: string) => BeagleView.create(initialRoute, beagleService),
+    createView: () => BeagleView.create(beagleService),
   }
   
   return beagleService

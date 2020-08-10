@@ -59,12 +59,13 @@ describe('Actions: Navigation', () => {
   const originalConsoleError = console.error
   console.error = jest.fn()
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (console.error as jest.Mock).mockClear()
     const beagleService = createBeagleServiceMock()
     beagleService.storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     beagleService.storage.setItem(`${namespace}/${url}/post`, JSON.stringify(treeA))
-    beagleView = BeagleView.create('/home', beagleService)
+    beagleView = BeagleView.create(beagleService)
+    await beagleView.fetch({ path: '/home' })
     /* fixme: the tests in this file execute async operations that will result in errors since
      * the route they call doesn't exist. These async operations should be awaited before returning.
      * Since they're not being awaited, the beagle view tries to log to the console after the tests
@@ -106,6 +107,7 @@ describe('Actions: Navigation', () => {
   })
 
   it('should pushStack on beagle navigator', () => {
+    console.log(beagleView.getBeagleNavigator().get())
     pushStack()
     const newStack = [{ url: '/profile' }]
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, newStack])
