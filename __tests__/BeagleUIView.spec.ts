@@ -45,7 +45,7 @@ describe('BeagleUIView', () => {
 
   beforeEach(() => {
     nock.cleanAll()
-    view = createView('/home')
+    view = createView()
     localStorageMock.clear()
     middleware.mockClear()
     const consoleError = console.error as jest.Mock

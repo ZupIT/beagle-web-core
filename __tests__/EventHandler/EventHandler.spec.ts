@@ -215,7 +215,7 @@ describe('EventHandler', () => {
       }
     })
 
-    const beagleView = service.createView('')
+    const beagleView = service.createView()
     const action = { _beagleAction_: 'custom:myAction', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     await new Promise((resolve) => {

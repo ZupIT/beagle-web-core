@@ -37,7 +37,7 @@ describe('BeagleContext', () => {
 
   beforeEach(() => {
     viewContentManagerMap.unregister(viewId)
-    view = createView('/home')
+    view = createView()
     view.getRenderer().doFullRender(treeA)
     viewContentManagerMap.register(viewId, view)
     nock.cleanAll()

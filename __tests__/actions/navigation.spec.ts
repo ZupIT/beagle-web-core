@@ -107,7 +107,6 @@ describe('Actions: Navigation', () => {
   })
 
   it('should pushStack on beagle navigator', () => {
-    console.log(beagleView.getBeagleNavigator().get())
     pushStack()
     const newStack = [{ url: '/profile' }]
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, newStack])
