@@ -19,12 +19,7 @@ import { BeagleLogConfig, LogType } from './types'
 type consoleType = 'error' | 'warn' | 'log'
 
 interface LogInterface {
-    error: consoleType,
-    warn: consoleType,
-    info: consoleType,
-    success: consoleType,
-    lifecycle: consoleType,
-    expression: consoleType,
+    [x: string]: consoleType,
 }
 
 const log: LogInterface = {
@@ -47,7 +42,6 @@ const logColors = {
 
 function createBeagleLogger() {
     let beagleLogConfig: BeagleLogConfig
-
     function printLog<T>(type: LogType, ...logItens: T[]): void {
         if (beagleLogConfig.mode === 'development' && beagleLogConfig.debug && beagleLogConfig.debug.includes(type)) {
             console.groupCollapsed(`%c Beagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
