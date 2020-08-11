@@ -1,49 +1,55 @@
 /*
-  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *  http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-*/
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import { load } from '../../../src/utils/tree-fetching'
+import ViewClient, { namespace } from 'service/network/view-client'
+import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
+import BeagleCacheError from 'error/BeagleCacheError'
+import RemoteCache from 'service/network/remote-cache'
+import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../../mocks'
-import { mockLocalStorage } from '../../utils/test-utils'
-import { namespace } from '../../../src/utils/tree-fetching'
-import { BeagleCacheError } from '../../../src/errors'
-import beagleStorage from '../../../src/BeagleStorage'
+import { createLocalStorageMock } from '../../utils/test-utils'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
 const url = `${basePath}${path}`
 
 describe('Utils: tree fetching (load: cache-only)', () => {
-  const localStorageMock = mockLocalStorage()
-  beagleStorage.setStorage(localStorage)
-
-  afterAll(() => localStorageMock.unmock())
+  const strategy: Strategy = 'cache-only'
+  const httpClient = { fetch }
+  const retry = jest.fn()
+  let storage: Storage
+  let viewClient: ViewClientType
 
   beforeEach(() => {
-    localStorageMock.clear()
+    storage = createLocalStorageMock()
+    const remoteCache = RemoteCache.create(storage)
+    const defaultHeadersService = DefaultHeaders.create(remoteCache)
+    viewClient = ViewClient.create(storage, defaultHeadersService, remoteCache, httpClient)
   })
 
   it('should render cached view', async () => {
-    localStorage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
+    storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     const onChangeTree = jest.fn()
-    await load({ url, onChangeTree, strategy: 'cache-only' })
+    await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
   })
 
   it('should throw error', async () => {
-    await expect(load({ url, onChangeTree: jest.fn(), strategy: 'cache-only' })).rejects.toEqual([
+    const params = { url, onChangeTree: jest.fn(), strategy, retry }
+    await expect(viewClient.load(params)).rejects.toEqual([
       new BeagleCacheError(url),
     ])
   })

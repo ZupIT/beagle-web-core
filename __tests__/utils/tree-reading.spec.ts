@@ -1,18 +1,18 @@
 /*
-  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *  http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-*/
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import {
   findByAttribute,
@@ -20,7 +20,7 @@ import {
   findByType,
   findParentByChildId,
   indexOf,
-} from '../../src/utils/tree-reading'
+} from 'beagle-tree/reading'
 import { treeA } from '../mocks'
 
 describe('Utils: tree reading', () => {
@@ -29,7 +29,7 @@ describe('Utils: tree reading', () => {
     expect(findByAttribute(treeA, 'styleId', 'style-testing-1').length).toBe(2)
     expect(findByAttribute(treeA, 'styleId', 'style-testing-2').length).toBe(1)
     expect(findByAttribute(treeA, 'styleId', 'style-testing-3').length).toBe(1)
-    expect(findByAttribute(treeA, 'styleId')[0]).toBe(treeA.children[0])
+    expect(findByAttribute(treeA, 'styleId')[0]).toBe(treeA.children![0])
   })
 
   it('should not find by attribute', () => {
@@ -48,8 +48,8 @@ describe('Utils: tree reading', () => {
 
   it('should find by id', () => {
     expect(findById(treeA, 'A')).toBe(treeA)
-    expect(findById(treeA, 'A.1')).toBe(treeA.children[1])
-    expect(findById(treeA, 'A.1.1.3')).toBe(treeA.children[1].children[1].children[3])
+    expect(findById(treeA, 'A.1')).toBe(treeA.children![1])
+    expect(findById(treeA, 'A.1.1.3')).toBe(treeA.children![1].children![1].children![3])
   })
 
   it('should not find by id', () => {
@@ -59,8 +59,8 @@ describe('Utils: tree reading', () => {
   it('should find parent by child id', () => {
     expect(findParentByChildId(treeA, 'A.0')).toBe(treeA)
     expect(findParentByChildId(treeA, 'A.2')).toBe(treeA)
-    expect(findParentByChildId(treeA, 'A.1.0')).toBe(treeA.children[1])
-    expect(findParentByChildId(treeA, 'A.1.1.2')).toBe(treeA.children[1].children[1])
+    expect(findParentByChildId(treeA, 'A.1.0')).toBe(treeA.children![1])
+    expect(findParentByChildId(treeA, 'A.1.1.2')).toBe(treeA.children![1].children![1])
   })
 
   it('should not find parent by child id', () => {

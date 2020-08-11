@@ -1,47 +1,33 @@
 /*
-  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *  http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-*/
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import { BeagleView, LifecycleHookMap } from "../../src/types"
-import createBeagleView from "../../src/BeagleUIView"
-import NavigationActions from '../../src/actions/navigation'
-import UrlBuilder from '../../src/UrlBuilder'
-import BeagleHttpClient from '../../src/BeagleHttpClient'
-import { mockLocalStorage } from '../utils/test-utils'
-import { namespace } from '../../src/utils/tree-fetching'
+import BeagleView from 'beagle-view'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
+import NavigationActions from 'action/navigation'
+import { createBeagleServiceMock } from '../utils/test-utils'
+import { namespace } from 'service/network/view-client'
 import { treeA } from "../mocks"
 
 describe('Actions: Navigation', () => {
-  let beagleView: BeagleView
-  let params
-  const baseUrl = 'http://teste.com'
+  let beagleView: BeagleViewType
+  let params: any
   const element = { _beagleComponent_: 'button', id: 'button' }
   const externalUrl = 'http://google.com'
   const initialStack = [{ url: '/home' }]
-  const lifecycles: LifecycleHookMap = {
-    afterViewSnapshot: { components: {} },
-    beforeRender: { components: {} },
-    beforeStart: { components: {} },
-    beforeViewSnapshot: { components: {} }
-  }
   const url = 'http://my-app/my-view'
-
-  const localStorageMock = mockLocalStorage({
-    [`${namespace}/${url}/get`]: JSON.stringify(treeA),
-    [`${namespace}/${url}/post`]: JSON.stringify(treeA),
-  })
 
   const pushStack = () => {
     NavigationActions['beagle:pushStack']({
@@ -67,20 +53,19 @@ describe('Actions: Navigation', () => {
     })
   }
 
-  const httpResponse = { status: 200, ok: true, json: () => ({}) }
-  // @ts-ignore
-  BeagleHttpClient.setFetchFunction(jest.fn(() => httpResponse))
   const originalWindow = window
   // @ts-ignore
   window = { open: jest.fn(() => {}), location: { origin: 'origin', href: '' } }
   const originalConsoleError = console.error
   console.error = jest.fn()
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (console.error as jest.Mock).mockClear()
-    localStorageMock.clear()
-    UrlBuilder.setBaseUrl(baseUrl)
-    beagleView = createBeagleView('/home', {}, lifecycles, {})
+    const beagleService = createBeagleServiceMock()
+    beagleService.storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
+    beagleService.storage.setItem(`${namespace}/${url}/post`, JSON.stringify(treeA))
+    beagleView = BeagleView.create(beagleService)
+    await beagleView.fetch({ path: '/home' })
     /* fixme: the tests in this file execute async operations that will result in errors since
      * the route they call doesn't exist. These async operations should be awaited before returning.
      * Since they're not being awaited, the beagle view tries to log to the console after the tests
@@ -100,9 +85,7 @@ describe('Actions: Navigation', () => {
   })
 
   afterAll(() => {
-    BeagleHttpClient.setFetchFunction(undefined)
     window = originalWindow
-    localStorageMock.unmock()
     console.error = originalConsoleError
   })
 
