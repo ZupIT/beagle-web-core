@@ -1,8 +1,23 @@
-import globalContextApi from '../../../src/GlobalContextAPI'
-import setContext from '../../../src/actions/setContext'
-import { findById } from '../../../src/utils/tree-reading'
+/*
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import setContext from 'action/set-context'
+import Tree from 'beagle-tree'
+import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { createBeagleViewMock } from '../../utils/test-utils'
-import { IdentifiableBeagleUIElement } from '../../../src/types'
 import {
   createSingleContextMock,
   createDoubleContextMock,
@@ -23,7 +38,7 @@ describe('Actions: beagle:setContext', () => {
         value: 'new value',
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -46,7 +61,7 @@ describe('Actions: beagle:setContext', () => {
         value: 'new value',
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -54,7 +69,7 @@ describe('Actions: beagle:setContext', () => {
       ...mock,
       children: [
         {
-          ...mock.children[0],
+          ...mock.children![0],
           context: {
             id: 'ctx_b',
             value: 'new value',
@@ -75,7 +90,7 @@ describe('Actions: beagle:setContext', () => {
         value: 'new value',
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -98,7 +113,7 @@ describe('Actions: beagle:setContext', () => {
         value: 'new value',
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
 
@@ -254,7 +269,7 @@ describe('Actions: beagle:setContext', () => {
         value: 'test',
       },
       beagleView,
-      element: findById(mock, 'btn_b'),
+      element: Tree.findById(mock, 'btn_b')!,
       executeAction: jest.fn(),
     })
 
@@ -329,9 +344,9 @@ describe('Actions: beagle:setContext', () => {
   })
 
   it('should update global context if it is the only context present', () => {
-    globalContextApi.set = jest.fn()
     const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
     const beagleView = createBeagleViewMock({ getTree: () => mock })
+    const { globalContext } = beagleView.getBeagleService()
 
     setContext({
       action: {
@@ -342,13 +357,13 @@ describe('Actions: beagle:setContext', () => {
       element: mock,
       executeAction: jest.fn(),
     }) 
-    expect(globalContextApi.set).toHaveBeenCalled()
+    expect(globalContext.set).toHaveBeenCalled()
   })
 
   it('should call set global context when updating a global context', () => {
-    globalContextApi.set = jest.fn()
     const mock = createGlobalContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
+    const { globalContext } = beagleView.getBeagleService()
   
     setContext({
       action: {
@@ -357,17 +372,17 @@ describe('Actions: beagle:setContext', () => {
         value: 'new value',
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
   
-    expect(globalContextApi.set).toHaveBeenCalledWith('new value', undefined)
+    expect(globalContext.set).toHaveBeenCalledWith('new value', undefined)
   })
 
   it('should call set global context when updating a global context and pass path if defined', () => {
-    globalContextApi.set = jest.fn()
     const mock = createGlobalContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
+    const { globalContext } = beagleView.getBeagleService()
   
     setContext({
       action: {
@@ -377,11 +392,11 @@ describe('Actions: beagle:setContext', () => {
         path: 'testing.path'
       },
       beagleView,
-      element: findById(mock, 'button'),
+      element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
   
-    expect(globalContextApi.set).toHaveBeenCalledWith('new value', 'testing.path')
+    expect(globalContext.set).toHaveBeenCalledWith('new value', 'testing.path')
   })
 
 })

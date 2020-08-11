@@ -1,30 +1,45 @@
+/*
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import nock from 'nock'
-import sendRequest from '../../src/actions/sendRequest'
-import { createBeagleViewMock } from '../utils/test-utils'
-import beagleHttpClient from '../../src/BeagleHttpClient'
-import UrlBuilder from '../../src/UrlBuilder'
+import sendRequest from 'action/send-request'
+import { createBeagleServiceMock, createBeagleViewMock } from '../utils/test-utils'
 
 const domain = 'http://beagle.test.com'
 const path = '/url-builder'
 const element = { _beagleComponent_: 'container', id: 'container' }
 
-beforeEach(() => {
-  UrlBuilder.setBaseUrl(domain)
-})
-
 describe('Actions: beagle:sendRequest', () => {
-  beagleHttpClient.setFetchFunction(fetch)
+  const httpClient = { fetch }
+  const urlBuilder = { build: jest.fn((value: string) => `${domain}${value}`) }
+  const beagleService = createBeagleServiceMock({ httpClient, urlBuilder })
+  const beagleView = createBeagleViewMock({ getBeagleService: () => beagleService })
+
+  beforeEach(() => {
+    urlBuilder.build.mockClear()
+    nock.cleanAll()
+  })
 
   it('should send request using the UrlBuilder', async () => {
     nock(domain).get(path).reply(200)
-    const originalBuild = UrlBuilder.build
-    UrlBuilder.build = jest.fn(() => `${domain}${path}`)
-    const beagleView = createBeagleViewMock()
 
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: 'myUrl',
+        url: path,
         method: 'get',
       },
       beagleView,
@@ -32,15 +47,12 @@ describe('Actions: beagle:sendRequest', () => {
       executeAction: jest.fn()
     })
 
-    expect(UrlBuilder.build).toHaveBeenCalledWith('myUrl')
+    expect(urlBuilder.build).toHaveBeenCalledWith(path)
     expect(nock.isDone()).toBe(true)
-    nock.cleanAll()
-    UrlBuilder.build = originalBuild
   })
 
   it('should use get as default method', async () => {
     nock(domain).get(path).reply(200)
-    const beagleView = createBeagleViewMock()
 
     await sendRequest({
       action: {
@@ -53,11 +65,9 @@ describe('Actions: beagle:sendRequest', () => {
     })
 
     expect(nock.isDone()).toBe(true)
-    nock.cleanAll()
   })
 
   it('should send request with correct method, headers and data', async () => {
-    const beagleView = createBeagleViewMock()
     const headers = { myHeader: 'my-header-value' }
     const data = { name: 'Jaina', lastname: 'Proudmoore', city: 'Boralus' }
 
@@ -77,13 +87,11 @@ describe('Actions: beagle:sendRequest', () => {
     })
 
     expect(nock.isDone()).toBe(true)
-    nock.cleanAll()
   })
 
   it('should run onSuccess', async () => {
     const response = { name: 'Sylvanas', lastname: 'Windrunner', city: 'Undercity (Lordaeron)' }
     nock(domain).get(path).reply(200, JSON.stringify(response))
-    const beagleView = createBeagleViewMock()
     const executeAction = jest.fn()
     const onSuccess = { _beagleAction_: 'beagle:alert', message: 'Success!' }
 
@@ -113,12 +121,11 @@ describe('Actions: beagle:sendRequest', () => {
       expectedImplicitContext.id,
       expectedImplicitContext.value,
     )
-    nock.cleanAll()
   })
 
   it('should run onError and log the error when it occurs before sending the request', async() => {
-    UrlBuilder.setBaseUrl(undefined)
-    const beagleView = createBeagleViewMock()
+    const beagleService = createBeagleServiceMock({ httpClient })
+    const beagleView = createBeagleViewMock({ getBeagleService: () => beagleService })
     const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
   
@@ -159,7 +166,6 @@ describe('Actions: beagle:sendRequest', () => {
   it('should run onError and log the error when response has error status', async () => {
     const response = { field: 'name', error: 'name is required' }
     nock(domain).get(path).reply(500, JSON.stringify(response))
-    const beagleView = createBeagleViewMock()
     const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
 
@@ -195,13 +201,11 @@ describe('Actions: beagle:sendRequest', () => {
     )
     expect(console.error).toHaveBeenCalled()
     console.error = originalLogError
-    nock.cleanAll()
   })
 
   it('should use a simple string when response is not a json', async () => {
     const response = '{ field: \'name\', error: \'name is required\' }'
     nock(domain).get(path).reply(200, response)
-    const beagleView = createBeagleViewMock()
     const executeAction = jest.fn()
     const onSuccess = { _beagleAction_: 'beagle:alert', message: 'Success!' }
 
@@ -231,12 +235,10 @@ describe('Actions: beagle:sendRequest', () => {
       expectedImplicitContext.id,
       expectedImplicitContext.value,
     )
-    nock.cleanAll()
   })
 
   it('should run onFinish after successful request', async () => {
     nock(domain).get(path).reply(200)
-    const beagleView = createBeagleViewMock()
     const executeAction = jest.fn()
     const onFinish = { _beagleAction_: 'beagle:alert', message: 'Finish!' }
 
@@ -253,12 +255,10 @@ describe('Actions: beagle:sendRequest', () => {
 
     expect(nock.isDone()).toBe(true)
     expect(executeAction).toHaveBeenCalledWith(onFinish)
-    nock.cleanAll()
   })
 
   it('should run onFinish after request with error', async () => {
     nock(domain).get(path).reply(500)
-    const beagleView = createBeagleViewMock()
     const executeAction = jest.fn()
     const onFinish = { _beagleAction_: 'beagle:alert', message: 'Finish!' }
 
@@ -268,7 +268,7 @@ describe('Actions: beagle:sendRequest', () => {
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
-        url: `${domain}${path}`,
+        url: path,
         onFinish,
       },
       beagleView,
@@ -278,7 +278,6 @@ describe('Actions: beagle:sendRequest', () => {
 
     expect(nock.isDone()).toBe(true)
     expect(executeAction).toHaveBeenCalledWith(onFinish)
-    nock.cleanAll()
     console.error = originalLogError
   })
 })

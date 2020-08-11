@@ -12,9 +12,10 @@
   ],
   "private": false,
   "scripts": {
-    "build": "tsc --declaration && node bin/copy-files",
-    "check-types": "tsc --noEmit",
-    "check-test-types": "tsc __tests__/**/*.ts --noEmit --allowSyntheticDefaultImports",
+    "fix-aliases": "node node_modules/tscpaths/cjs -p tsconfig.prod.json -s ./src -o ./dist",
+    "build": "tsc --project tsconfig.prod.json --declaration && node bin/copy-files && yarn fix-aliases",
+    "check-types": "tsc --project tsconfig.prod.json --noEmit",
+    "check-test-types": "tsc --project tsconfig.spec.json --noEmit --allowSyntheticDefaultImports",
     "test": "jest",
     "lint": "eslint ./src/**/*.ts",
     "watch": "yarn nodemon --watch 'src/**/*.ts' -e ts --exec yarn build"
@@ -57,6 +58,7 @@
     "nodemon": "^2.0.4",
     "source-map-loader": "0.2.4",
     "ts-jest": "25.0.0",
+    "tscpaths": "https://github.com/Tiagoperes/tscpaths.git#498769882091cfe6fd8c4067bb50843dc4ca551e",
     "typescript": "3.7.5",
     "webpack": "4.41.5",
     "webpack-cli": "3.3.10",
