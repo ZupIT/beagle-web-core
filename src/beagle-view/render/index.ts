@@ -104,8 +104,8 @@ function createRenderer({
     setTree(currentTree)
   }
   
-  function evaluateComponents(viewTree: IdentifiableBeagleUIElement) {
-    const contextMap = Context.evaluate(viewTree, [globalContext.getAsDataContext()])
+  function evaluateComponents(viewTree: IdentifiableBeagleUIElement, detachedContexts: DataContext[]) {
+    const contextMap = Context.evaluate(viewTree, [...detachedContexts, globalContext.getAsDataContext()])
     return Tree.replaceEach(viewTree, (component) => {
       Action.deserialize({
         component,
@@ -146,6 +146,7 @@ function createRenderer({
     viewTree: IdentifiableBeagleUIElement<any>,
     anchor = '',
     mode: TreeUpdateMode = 'replaceComponent',
+    detachedContexts: DataContext[] = [],
   ) {
     takeViewSnapshot(viewTree, anchor, mode)
     let view = beagleView.getTree() as IdentifiableBeagleUIElement
@@ -156,7 +157,7 @@ function createRenderer({
     of processing everything again? Todo: study this performance enhancement. */
 
     view = runLifecycle(view, 'afterViewSnapshot')
-    view = evaluateComponents(view)
+    view = evaluateComponents(view, detachedContexts)
     view = runLifecycle(view, 'beforeRender')
     checkTypes(view)
 
@@ -181,11 +182,12 @@ function createRenderer({
     viewTree: BeagleUIElement<any>,
     anchor = '',
     mode: TreeUpdateMode = 'replaceComponent',
+    detachedContexts: DataContext[] = [],
   ) {
     viewTree = runLifecycle(viewTree, 'beforeStart')
     let viewTreeWithIds = preProcess(viewTree)
     viewTreeWithIds = runLifecycle(viewTreeWithIds, 'beforeViewSnapshot')
-    doPartialRender(viewTreeWithIds, anchor, mode)
+    doPartialRender(viewTreeWithIds, anchor, mode, detachedContexts)
   }
 
   return {
