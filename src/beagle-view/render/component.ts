@@ -89,8 +89,18 @@ function eraseNullProperties(component: BeagleUIElement) {
   eraseNulls(component)
 }
 
+
+function isComponentOrComponentList(data: any) {
+  return (
+    data
+    && typeof data === 'object'
+    && (data._beagleComponent_ || (Array.isArray(data) && data[0] && data[0]._beagleComponent_))
+  )
+}
+
 export default {
   formatChildrenProperty,
   assignId,
   eraseNullProperties,
+  isComponentOrComponentList,
 }

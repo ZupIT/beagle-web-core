@@ -22,6 +22,7 @@ import Automaton from 'utils/automaton'
 import BeagleNotFoundError from 'error/BeagleNotFoundError'
 import BeagleParseError from 'error/BeagleParseError'
 import Context from './context'
+import Component from './component'
 
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
@@ -207,14 +208,6 @@ export function resolve<T extends any>(
   return data
 }
 
-function isComponentOrComponentList(data: any) {
-  return (
-    data
-    && typeof data === 'object'
-    && (data._beagleComponent_ || (Array.isArray(data) && data[0] && data[0]._beagleComponent_))
-  )
-}
-
 function isActionOrActionList(data: any) {
   return (
     data
@@ -247,7 +240,7 @@ function resolveForComponent<T extends BeagleUIElement>(
   contextHierarchy: DataContext[],
 ) {
   const shouldIgnore = (value: any, key: string) => (
-    isComponentOrComponentList(value)
+    Component.isComponentOrComponentList(value)
     || isActionOrActionList(value)
     || IGNORE_COMPONENT_KEYS.includes(key)
   )
@@ -276,7 +269,7 @@ function resolveForComponent<T extends BeagleUIElement>(
  */
 function resolveForAction(action: BeagleAction, contextHierarchy: DataContext[]) {
   const shouldIgnore = (value: any) => (
-    isComponentOrComponentList(value)
+    Component.isComponentOrComponentList(value)
     || isActionOrActionList(value)
   )
 
