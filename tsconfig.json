@@ -6,7 +6,7 @@
     "preserveConstEnums": true,
     "removeComments": true,
     "sourceMap": true,
-    "target": "esnext",
+    "target": "es5",
     "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
