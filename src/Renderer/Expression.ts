@@ -30,6 +30,7 @@ function getContextBindingValue(
   path: string,
   contextHierarchy: DataContext[],
 ) {
+  console.log('PATH', path)
   if (!path.match(/^[\w\d_]+(\[\d+\])*(\.([\w\d_]+(\[\d+\])*))*$/)) {
     throw new BeagleParseError(
       `invalid path "${path}". Please, make sure your variable names contain only letters, numbers and the symbol "_". To access substructures use "." and to access array indexes use "[index]".`
@@ -40,11 +41,12 @@ function getContextBindingValue(
   if (!pathMatch || pathMatch.length < 1) return
   const contextId = pathMatch[1]
   const contextPath = pathMatch[2]
-
+ console.log('Match A', contextId)
+ console.log('Match B', contextPath)
   const context = Context.find(contextHierarchy, contextId)
-  if (!context) return
+  if (!context) return null
   
-  return contextPath ? get(context.value, contextPath) : context.value
+  return contextPath ? get(context.value, contextPath, null) : context.value
 }
 
 /**
@@ -123,9 +125,10 @@ function getLiteralValue(literal: string) {
 }
 
 function evaluateExpression(expression: string, contextHierarchy: DataContext[]) {
+  
   const literalValue = getLiteralValue(expression)
   if (literalValue !== undefined) return literalValue
-
+  
   const isOperation = expression.includes('(')
   if (isOperation) return getOperationValue(expression, contextHierarchy)
 
@@ -135,26 +138,34 @@ function evaluateExpression(expression: string, contextHierarchy: DataContext[])
 
 function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]) {
   const fullMatch = str.match(fullExpressionRegex)
+  console.log('A', fullMatch)
   if (fullMatch) {
     try {
+      console.log('B')
       const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy)
       return bindingValue === undefined ? str : bindingValue
     } catch (error) {
+      console.log('C')
       console.warn(error)
       return str
     }
   }
-
+ console.log('D', str)
   return str.replace(expressionRegex, (bindingStr, slashes, path) => {
+   console.log('E')
     const isBindingScaped = slashes.length % 2 === 1
     const scapedSlashes = slashes.replace(/\\\\/g, '\\')
     if (isBindingScaped) return `${scapedSlashes.replace(/\\$/, '')}@{${path}}`
     let bindingValue: string | undefined
     try {
+      console.log('F')
       bindingValue = evaluateExpression(path, contextHierarchy)
     } catch (error) {
+     console.log('G')
       console.warn(error)
     }
+   console.log('H', bindingValue, bindingStr)
+    bindingValue === null ? bindingValue = '' : null
     const asString = typeof bindingValue === 'object' ? JSON.stringify(bindingValue) : bindingValue
     return bindingValue === undefined ? bindingStr : `${scapedSlashes}${asString}`
   })
