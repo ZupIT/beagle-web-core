@@ -204,7 +204,7 @@ const createBeagleView = <Schema>({
         errorComponent: params.errorComponent,
         loadingComponent: params.loadingComponent,
         headers: params.headers,
-        strategy,
+        strategy: params.strategy || strategy,
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
