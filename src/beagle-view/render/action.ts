@@ -19,7 +19,6 @@ import { BeagleAction, ActionHandler } from 'action/types'
 import ObjectUtils from 'utils/object'
 import { BeagleView } from 'beagle-view/types'
 import Expression from './expression'
-import Component from './component'
 
 const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
 
@@ -143,9 +142,8 @@ function findAndDeserializeActions(data: any, propertyName: string, params: Para
 function deserialize(params: Parameters) {
   const keys = Object.keys(params.component)
   keys.forEach((key) => {
-    const value = params.component[key]
     if (IGNORE_COMPONENT_KEYS.includes(key)) return
-    params.component[key] = findAndDeserializeActions(value, key, params)
+    params.component[key] = findAndDeserializeActions(params.component[key], key, params)
   })
 }
 
