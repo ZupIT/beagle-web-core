@@ -75,7 +75,7 @@ function deserializeAction(
         console.warn(`Beagle: couldn't find an action handler for "${action._beagleAction_}"`)
         return
       }
-    
+
       handler({
         action: Expression.resolveForAction(action, hierarchy),
         beagleView: params.beagleView,
@@ -87,6 +87,8 @@ function deserializeAction(
 }
 
 function findAndDeserializeActions(data: any, propertyName: string, params: Parameters): any {
+  if (data && typeof data === 'object' && data._beagleComponent_) return data
+
   if (isBeagleAction(data)) return deserializeAction(data, propertyName, params)
 
   if (Array.isArray(data)) {
@@ -142,7 +144,7 @@ function deserialize(params: Parameters) {
   const keys = Object.keys(params.component)
   keys.forEach((key) => {
     const value = params.component[key]
-    if (Component.isComponentOrComponentList(value) || IGNORE_COMPONENT_KEYS.includes(key)) return
+    if (IGNORE_COMPONENT_KEYS.includes(key)) return
     params.component[key] = findAndDeserializeActions(value, key, params)
   })
 }
