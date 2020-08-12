@@ -30,6 +30,7 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
   const errorListeners: Array<ErrorListener> = []
   let navigator: BeagleNavigatorType | undefined
   let renderer = {} as RendererType
+  let unsubscribeFromGlobalContext = () => {}
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -110,6 +111,10 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     return navigator
   }
 
+  function destroy() {
+    unsubscribeFromGlobalContext()
+  }
+
   const beagleView: BeagleView = {
     subscribe,
     addErrorListener,
@@ -118,6 +123,7 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     getTree,
     getBeagleNavigator,
     getBeagleService: () => beagleService,
+    destroy,
   }
 
   renderer = Renderer.create({
@@ -131,7 +137,9 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     typesMetadata: {},
   })
 
-  beagleService.globalContext.subscribe(() => renderer.doFullRender(getTree()))
+  unsubscribeFromGlobalContext = beagleService.globalContext.subscribe(
+    () => renderer.doFullRender(getTree()),
+  )
 
   return beagleView
 }

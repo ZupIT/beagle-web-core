@@ -65,4 +65,5 @@ export interface BeagleView {
   getTree: () => IdentifiableBeagleUIElement,
   getBeagleNavigator: () => BeagleNavigator,
   getBeagleService: () => BeagleService,
+  destroy: () => void,
 }
