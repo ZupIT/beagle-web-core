@@ -51,6 +51,7 @@ const createBeagleView = <Schema>({
   analytics,
   customStorage,
   useBeagleHeaders,
+  strategy,
 }: BeagleConfig<Schema>, initialRoute: string): BeagleView<Schema> => {
   let currentUITree: IdentifiableBeagleUIElement<Schema>
   const listeners: Array<Listener<Schema>> = []
@@ -203,6 +204,7 @@ const createBeagleView = <Schema>({
         errorComponent: params.errorComponent,
         loadingComponent: params.loadingComponent,
         headers: params.headers,
+        strategy,
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
