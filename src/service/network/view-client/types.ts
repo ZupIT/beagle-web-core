@@ -15,13 +15,33 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
-import { HttpMethod } from 'service/network/types'
+import { HttpMethod, HttpClient } from 'service/network/types'
+import { DefaultHeaders } from 'service/network/default-headers/types'
+import { RemoteCache } from 'service/network/remote-cache/types'
 
 export type StrategyType = 'network' | 'cache' | 'cache-ttl' | 'network-beagle'
+
+export type Strategy = (
+  'beagle-cache-only'
+  | 'beagle-with-fallback-to-cache'
+  | 'network-with-fallback-to-cache'
+  | 'cache-with-fallback-to-network'
+  | 'cache-only'
+  | 'network-only'
+  | 'cache-first'
+)
 
 export interface StrategyArrays {
   fetch: Array<StrategyType>,
   fallback: Array<StrategyType>,
+}
+
+export interface CreateViewClientParams {
+  storage: Storage,
+  defaultHeaders: DefaultHeaders,
+  remoteCache: RemoteCache,
+  httpClient: HttpClient,
+  defaultStrategy: Strategy,
 }
 
 export interface ViewClientLoadParams {
@@ -37,16 +57,6 @@ export interface ViewClientLoadParams {
   onChangeTree: (tree: BeagleUIElement) => void,
   retry: () => void,
 }
-
-export type Strategy = (
-  'beagle-cache-only'
-  | 'beagle-with-fallback-to-cache'
-  | 'network-with-fallback-to-cache'
-  | 'cache-with-fallback-to-network'
-  | 'cache-only'
-  | 'network-only'
-  | 'cache-first'
-)
 
 export interface ViewClient {
   load: (params: ViewClientLoadParams) => Promise<void>,
