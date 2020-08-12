@@ -18,18 +18,14 @@ import BeagleCacheError from 'error/BeagleCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
-import { HttpMethod } from 'service/network/types'
-import { CacheMetadata } from 'service/network/remote-cache/types'
-import {
-  ViewClient,
-  CreateViewClientParams,
-  Strategy,
-  StrategyType,
-  StrategyArrays,
-  ViewClientLoadParams,
-} from './types'
+import { HttpMethod, HttpClient } from 'service/network/types'
+import { RemoteCache, CacheMetadata } from 'service/network/remote-cache/types'
+import { DefaultHeaders } from 'service/network/default-headers/types'
+import { ViewClient, Strategy, StrategyType, StrategyArrays, ViewClientLoadParams } from './types'
 
 export const namespace = '@beagle-web/cache'
+
+const DEFAULT_STRATEGY: Strategy = 'beagle-with-fallback-to-cache'
 
 const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
   'beagle-cache-only': { fetch: ['cache-ttl', 'network-beagle'], fallback: [] },
@@ -41,13 +37,13 @@ const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
   'cache-first': { fetch: ['cache', 'network'], fallback: [] },
 }
 
-function createViewClient({
-  storage,
-  defaultHeaders: defaultHeadersService,
-  remoteCache,
-  httpClient,
-  defaultStrategy,
-}: CreateViewClientParams): ViewClient {
+function createViewClient(
+  storage: Storage,
+  defaultHeadersService: DefaultHeaders,
+  remoteCache: RemoteCache,
+  httpClient: HttpClient,
+  globalStrategy = DEFAULT_STRATEGY,
+): ViewClient {
   /* The following function is async for future compatibility with environments other than web. React
   native's localStorage, for instance, always returns promises. */
   async function loadFromCache(url: string, method: HttpMethod = 'get') {
@@ -145,7 +141,7 @@ function createViewClient({
     fallbackUIElement,
     method = 'get',
     headers,
-    strategy = defaultStrategy,
+    strategy = globalStrategy,
     loadingComponent = 'custom:loading',
     errorComponent = 'custom:error',
     shouldShowLoading = true,

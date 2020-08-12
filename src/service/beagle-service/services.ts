@@ -21,10 +21,7 @@ import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
 import GlobalContext from 'service/global-context'
 import ViewContentManagerMap from 'service/view-content-manager'
-import { Strategy } from 'service/network/view-client/types'
 import { BeagleConfig } from './types'
-
-const DEFAULT_VIEW_CLIENT_STRATEGY: Strategy = 'beagle-with-fallback-to-cache'
 
 export function createServices(config: BeagleConfig<any>) {
   const httpClient: HttpClient = {
@@ -35,13 +32,13 @@ export function createServices(config: BeagleConfig<any>) {
   const analytics = config.analytics
   const remoteCache = RemoteCache.create(storage)
   const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
-  const viewClient = ViewClient.create({
+  const viewClient = ViewClient.create(
     storage,
     defaultHeaders,
     remoteCache,
     httpClient,
-    defaultStrategy: config.strategy || DEFAULT_VIEW_CLIENT_STRATEGY,
-  })
+    config.strategy,
+  )
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
 

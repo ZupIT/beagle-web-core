@@ -15,9 +15,7 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
-import { HttpMethod, HttpClient } from 'service/network/types'
-import { DefaultHeaders } from 'service/network/default-headers/types'
-import { RemoteCache } from 'service/network/remote-cache/types'
+import { HttpMethod } from 'service/network/types'
 
 export type StrategyType = 'network' | 'cache' | 'cache-ttl' | 'network-beagle'
 
@@ -34,14 +32,6 @@ export type Strategy = (
 export interface StrategyArrays {
   fetch: Array<StrategyType>,
   fallback: Array<StrategyType>,
-}
-
-export interface CreateViewClientParams {
-  storage: Storage,
-  defaultHeaders: DefaultHeaders,
-  remoteCache: RemoteCache,
-  httpClient: HttpClient,
-  defaultStrategy: Strategy,
 }
 
 export interface ViewClientLoadParams {
