@@ -14,11 +14,26 @@
  * limitations under the License.
  */
 
-import logger from './src/logger'
-import fetch from 'node-fetch'
+export type LogType = (
+  'error'
+  | 'info'
+  | 'warn'
+  | 'success'
+  | 'lifecycle'
+  | 'expression'
+)
 
-const globalScope = global as any
+export type LogFunction = (type: LogType, ...logItems: any[]) => void
 
-globalScope.fetch = fetch
-globalScope.mocks = { log: jest.fn }
-logger.setCustomLogFunction(globalScope.mock.log)
+export type LogShortcut = (...logItems: any[]) => void
+
+export interface Logger {
+  enable: () => void,
+  disable: () => void,
+  setDebugTypes: (newDebugTypes: LogType[]) => void,
+  setCustomLogFunction: (customLogFunction: LogFunction | null) => void,
+  log: LogFunction,
+  info: LogShortcut,
+  warn: LogShortcut,
+  error: LogShortcut,
+}

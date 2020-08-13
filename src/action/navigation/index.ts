@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from 'logger'
 import { ActionHandler } from 'action/types'
 import { BeagleNavigator } from 'beagle-view/types'
 import UrlUtils from 'utils/url'
@@ -75,13 +76,13 @@ const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({
         const cachedTree = await viewClient.loadFromCache(baseUrl, 'get')
         return beagleView.getRenderer().doFullRender(cachedTree)
       } catch (error) {
-        console.error(error)
+        logger.error(error)
       }
     }
     
     return beagleView.fetch({ path: url, fallback })
   } catch (error) {
-    console.error(error)
+    logger.error(error)
   }
 }
 

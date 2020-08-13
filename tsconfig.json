@@ -18,6 +18,7 @@
       "beagle-view/*": ["beagle-view/*"],
       "error/*": ["error/*"],
       "legacy/*": ["legacy/*"],
+      "logger/*": ["logger/*"],
       "metadata/*": ["metadata/*"],
       "operation/*": ["operation/*"],
       "service/*": ["service/*"],

@@ -15,6 +15,7 @@
  */
 
 import BeagleView from 'beagle-view'
+import logger from 'logger'
 import { DefaultSchema } from 'beagle-tree/types'
 import Configuration from './configuration'
 import { createServices } from './services'
@@ -24,6 +25,7 @@ function createBeagleUIService<
   Schema = DefaultSchema,
   ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
 > (config: ConfigType): BeagleService {
+  if (config.mode === 'production') logger.disable()
   Configuration.update(config)
   Configuration.validate(config)
   const processedConfig = Configuration.process(config)

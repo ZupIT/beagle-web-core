@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from 'logger'
 import set from 'lodash/set'
 import Context from 'beagle-view/render/context'
 import { ActionHandler, SetContextAction } from './types'
@@ -38,7 +39,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
     const anyContextMessage = (
       `Could not find any context for element of type "${element._beagleComponent_}" and id "${element.id}"`
     )
-    console.warn(contextId ? specificContextMessage : anyContextMessage)
+    logger.warn(contextId ? specificContextMessage : anyContextMessage)
     return
   }
 
