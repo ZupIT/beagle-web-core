@@ -32,7 +32,13 @@ export function createServices(config: BeagleConfig<any>) {
   const analytics = config.analytics
   const remoteCache = RemoteCache.create(storage)
   const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
-  const viewClient = ViewClient.create(storage, defaultHeaders, remoteCache, httpClient)
+  const viewClient = ViewClient.create(
+    storage,
+    defaultHeaders,
+    remoteCache,
+    httpClient,
+    config.strategy,
+  )
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
 

@@ -19,6 +19,16 @@ import { HttpMethod } from 'service/network/types'
 
 export type StrategyType = 'network' | 'cache' | 'cache-ttl' | 'network-beagle'
 
+export type Strategy = (
+  'beagle-cache-only'
+  | 'beagle-with-fallback-to-cache'
+  | 'network-with-fallback-to-cache'
+  | 'cache-with-fallback-to-network'
+  | 'cache-only'
+  | 'network-only'
+  | 'cache-first'
+)
+
 export interface StrategyArrays {
   fetch: Array<StrategyType>,
   fallback: Array<StrategyType>,
@@ -37,16 +47,6 @@ export interface ViewClientLoadParams {
   onChangeTree: (tree: BeagleUIElement) => void,
   retry: () => void,
 }
-
-export type Strategy = (
-  'beagle-cache-only'
-  | 'beagle-with-fallback-to-cache'
-  | 'network-with-fallback-to-cache'
-  | 'cache-with-fallback-to-network'
-  | 'cache-only'
-  | 'network-only'
-  | 'cache-first'
-)
 
 export interface ViewClient {
   load: (params: ViewClientLoadParams) => Promise<void>,
