@@ -88,6 +88,7 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
+        strategy: params.strategy,
         retry: () => fetch(params, elementId, mode),
       })
     } catch (errors) {
