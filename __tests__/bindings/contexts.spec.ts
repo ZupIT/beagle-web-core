@@ -122,7 +122,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     expect(textElement.text).toBe('testing value of context with global id')
     textElement = Tree.findByType(treeWithValues, 'beagle:text2')[0]
     expect(textElement).toBeDefined()
-    expect(textElement.text).toBe('@{global.obj.inner.text}')
+    expect(textElement.text).toBe(null)
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
   })
