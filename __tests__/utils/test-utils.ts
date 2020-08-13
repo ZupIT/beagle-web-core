@@ -221,5 +221,6 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
     getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
     // @ts-ignore
     getBeagleService: custom.getBeagleService || jest.fn(() => beagleService),
+    destroy: jest.fn(),
   }
 }

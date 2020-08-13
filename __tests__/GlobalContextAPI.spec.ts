@@ -19,7 +19,7 @@ import { usersObjectCellphone, usersObject } from "./mocks-global-context"
 
 /* fixme: all tests here are dependent from one another. This is bad, tests should be atomic, fix
 asap. */
-describe.only('globalContext', () => {
+describe('globalContext', () => {
   const listener = jest.fn()
   const globalContext = GlobalContext.create()
   globalContext.subscribe(listener)
@@ -305,6 +305,25 @@ describe.only('globalContext', () => {
     globalContext.clear('testing.clear.path')
     expect(console.warn).toHaveBeenCalled()
     console.warn = originalWarn
+  })
+
+  it('unsubscribe should remove listener', () => {
+    const listener1: jest.Mock = jest.fn(() => unsubscribe1)
+    const listener2: jest.Mock = jest.fn(() => unsubscribe2)
+    const unsubscribe1 = globalContext.subscribe(listener1)
+    const unsubscribe2 = globalContext.subscribe(listener2)
+
+    const value = {
+      testing: {
+        path: 'testingValue'
+      }
+    }
+
+    globalContext.set(value)
+    unsubscribe1()
+    globalContext.set(value)
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(2)
   })
 
 })

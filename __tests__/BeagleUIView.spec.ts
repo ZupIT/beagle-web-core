@@ -33,13 +33,14 @@ describe('BeagleUIView', () => {
   let view: BeagleViewType
   const fetchData = jest.fn(fetch)
   const middleware = jest.fn(tree => tree)
+  const unsubscribeFromGlobalContext = jest.fn()
   const { createView, globalContext } = BeagleService.create({
     baseUrl,
     components: {},
     lifecycles: { beforeRender: middleware },
     fetchData,
   })
-  globalContext.subscribe = jest.fn()
+  globalContext.subscribe = jest.fn(() => unsubscribeFromGlobalContext)
   const originalConsoleError = console.error
   console.error = jest.fn()
 
@@ -311,5 +312,10 @@ describe('BeagleUIView', () => {
     // @ts-ignore
     expect(console.error).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
+  })
+
+  it('should call global context unsubscribe when calling destroy', () => {
+    view.destroy()
+    expect(unsubscribeFromGlobalContext).toHaveBeenCalled()
   })
 })
