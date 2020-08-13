@@ -90,7 +90,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
       )
       
       const postWithWrongContext = Tree.findById(treeWithValues, 'postWithWrongContext')!
-      expect(postWithWrongContext.author).toBe('@{friends[0].name}')
+      expect(postWithWrongContext.author).toBe(null)
     },
   )
 
