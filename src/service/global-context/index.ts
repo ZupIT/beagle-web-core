@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from 'logger'
 import setLodash from 'lodash/set'
 import getLodash from 'lodash/get'
 import unset from 'lodash/unset'
@@ -73,7 +74,7 @@ function createGlobalContext(): GlobalContext {
         unset(globalContext.value, path)
         callUpdateListeners()
       }
-      else console.warn(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
+      else logger.warn(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
     }
   }
 

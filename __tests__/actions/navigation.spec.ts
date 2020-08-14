@@ -56,11 +56,9 @@ describe('Actions: Navigation', () => {
   const originalWindow = window
   // @ts-ignore
   window = { open: jest.fn(() => {}), location: { origin: 'origin', href: '' } }
-  const originalConsoleError = console.error
-  console.error = jest.fn()
 
   beforeEach(async () => {
-    (console.error as jest.Mock).mockClear()
+    globalMocks.log.mockClear()
     const beagleService = createBeagleServiceMock()
     beagleService.storage.setItem(`${namespace}/${url}/get`, JSON.stringify(treeA))
     beagleService.storage.setItem(`${namespace}/${url}/post`, JSON.stringify(treeA))
@@ -84,93 +82,88 @@ describe('Actions: Navigation', () => {
     beagleView.getRenderer().doPartialRender = jest.fn()
   })
 
-  afterAll(() => {
-    window = originalWindow
-    console.error = originalConsoleError
-  })
-
   it('should init beagle navigator correctly', () => {
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should open external url', () => {
     NavigationActions['beagle:openExternalURL']({ action: { _beagleAction_: 'beagle:openExternalURL', url: externalUrl }, ...params })
     expect(window.open).toBeCalledWith(externalUrl)
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should open native route', () => {
     NavigationActions['beagle:openNativeRoute']({ action: { _beagleAction_: 'beagle:openNativeRoute', route: 'teste', data: { param: '1' } }, ...params })
     expect(window.location.href).toBe('origin/teste?param=1')
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should pushStack on beagle navigator', () => {
     pushStack()
     const newStack = [{ url: '/profile' }]
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, newStack])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should popStack on beagle navigator', () => {
     pushStack()
     NavigationActions['beagle:popStack']({ action: { _beagleAction_: 'beagle:popStack' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should pushView on beagle navigator', () => {
     pushView()
     const newView = { url: '/profile' }
     expect(beagleView.getBeagleNavigator().get()).toEqual([[{ url: '/home' }, newView]])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should popView on beagle navigator', () => {
     pushView()
     NavigationActions['beagle:popView']({ action: { _beagleAction_: 'beagle:popView' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should popToView on beagle navigator', () => {
     pushView()
     NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: '/home' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should resetStack', () => {
     pushStack()
     NavigationActions['beagle:resetStack']({ action: { _beagleAction_: 'beagle:resetStack', route: { url: '/resetStack' }}, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, [{ url: '/resetStack' }]])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should resetApplication', () => {
     pushView()
     NavigationActions['beagle:resetApplication']({ action: { _beagleAction_: 'beagle:resetApplication', route: { url: '/resetApplication' }}, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([[{ url: '/resetApplication' }]])
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
   it('should do nothing when popView on a single route stack', () => {
     NavigationActions['beagle:popView']({ action: { _beagleAction_: 'beagle:popView' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
-    expect(console.error).toHaveBeenCalled()
+    expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(Error))
   })
 
   it('should do nothing when popStack on a single stack', () => {
     NavigationActions['beagle:popStack']({ action: { _beagleAction_: 'beagle:popStack' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
-    expect(console.error).toHaveBeenCalled()
+    expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(Error))
   })
 
   it('should do nothing when popToView for a not valid view', () => {
     NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: '/non-existent-route' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
-    expect(console.error).toHaveBeenCalled()
+    expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(Error))
   })
 
 })

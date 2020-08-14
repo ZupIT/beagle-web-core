@@ -46,6 +46,7 @@ module.exports = {
       groups: ['builtin', 'external','internal', 'parent', 'sibling', 'index'],
       'newlines-between': 'ignore'
     }],
+    'no-console': ['error'],
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

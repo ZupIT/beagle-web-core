@@ -26,6 +26,7 @@ describe('globalContext', () => {
   
   beforeEach(() => {
     listener.mockClear()
+    globalMocks.log.mockClear()
   })
 
   it('should initialize context with \'global\' as id and return it with getAsDataContext', async () => {
@@ -290,21 +291,15 @@ describe('globalContext', () => {
   //Testing helper functions
 
   it('should warn if context has value but path not found', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
     globalContext.clear('testing.clear.path')
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).toHaveBeenCalled()
+    expect(globalMocks.log.mock.calls[0][0]).toBe('warn')
   })
 
   it('should warn if empty context trying to clear some specific path', () => {
     globalContext.clear()
-    const originalWarn = console.warn
-    console.warn = jest.fn()
-
     globalContext.clear('testing.clear.path')
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })
 
   it('unsubscribe should remove listener', () => {

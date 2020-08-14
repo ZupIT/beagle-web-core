@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-import logger from './src/logger'
-import fetch from 'node-fetch'
-
-const globalScope = global as any
-
-globalScope.fetch = fetch
-globalScope.globalMocks = { log: jest.fn() }
-logger.setCustomLogFunction(globalScope.globalMocks.log)
+namespace globalMocks {
+  const log: jest.Mock
+}

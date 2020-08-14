@@ -31,6 +31,7 @@ describe('Actions: beagle:sendRequest', () => {
   beforeEach(() => {
     urlBuilder.build.mockClear()
     nock.cleanAll()
+    globalMocks.log.mockClear()
   })
 
   it('should send request using the UrlBuilder', async () => {
@@ -128,9 +129,6 @@ describe('Actions: beagle:sendRequest', () => {
     const beagleView = createBeagleViewMock({ getBeagleService: () => beagleService })
     const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
-  
-    const originalLogError = console.error
-    console.error = jest.fn()
 
     await sendRequest({
       action: {
@@ -158,9 +156,6 @@ describe('Actions: beagle:sendRequest', () => {
       expectedImplicitContext.id,
       expectedImplicitContext.value,
     )
-
-    expect(console.error).toHaveBeenCalled()
-    console.error = originalLogError
   })
 
   it('should run onError and log the error when response has error status', async () => {
@@ -168,9 +163,6 @@ describe('Actions: beagle:sendRequest', () => {
     nock(domain).get(path).reply(500, JSON.stringify(response))
     const executeAction = jest.fn()
     const onError = { _beagleAction_: 'beagle:alert', message: 'Error!' }
-
-    const originalLogError = console.error
-    console.error = jest.fn()
 
     await sendRequest({
       action: {
@@ -199,8 +191,7 @@ describe('Actions: beagle:sendRequest', () => {
       expectedImplicitContext.id,
       expectedImplicitContext.value,
     )
-    expect(console.error).toHaveBeenCalled()
-    console.error = originalLogError
+    expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(Error))
   })
 
   it('should use a simple string when response is not a json', async () => {
@@ -262,9 +253,6 @@ describe('Actions: beagle:sendRequest', () => {
     const executeAction = jest.fn()
     const onFinish = { _beagleAction_: 'beagle:alert', message: 'Finish!' }
 
-    const originalLogError = console.error
-    console.error = jest.fn()
-
     await sendRequest({
       action: {
         _beagleAction_: 'beagle:sendRequest',
@@ -278,6 +266,5 @@ describe('Actions: beagle:sendRequest', () => {
 
     expect(nock.isDone()).toBe(true)
     expect(executeAction).toHaveBeenCalledWith(onFinish)
-    console.error = originalLogError
   })
 })
