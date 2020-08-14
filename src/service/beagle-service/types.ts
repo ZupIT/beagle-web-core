@@ -75,7 +75,6 @@ export interface BeagleConfig<Schema> {
   lifecycles?: Partial<Record<Lifecycle, (viewTree: Record<string, any>) => void>>,
   customStorage?: Storage,
   useBeagleHeaders?: boolean,
-  mode?: ExecutionMode,
 }
 
 export type BeagleService = Readonly<{
