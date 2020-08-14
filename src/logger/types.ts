@@ -46,9 +46,10 @@ export interface Logger {
    * - `lifecycle`: information about the lifecycles
    * - `expression`: information about the parsing of expressions
    * 
-   * @param newDebugTypes array of LogType to consider when logging messages.
+   * @param newTypesToLog array of LogType to consider when logging messages. To use the default
+   * `typesToLog`, you can pass null as parameter.
    */
-  setDebugTypes: (newDebugTypes: LogType[]) => void,
+  setTypesToLog: (newTypesToLog: LogType[] | null) => void,
   /**
    * By default, the logger will print messages to the console, if you need another behavior in your
    * application, by using this function, you can replace the default log function for one of your

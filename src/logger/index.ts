@@ -18,7 +18,7 @@
 
 import { LogType, Logger, LogFunction } from './types'
 
-const DEFAULT_DEBUG_TYPES: LogType[] = ['error', 'warn']
+const DEFAULT_TYPES_TO_LOG: LogType[] = ['error', 'warn']
 
 const logFn: Record<LogType, typeof console.log> = {
   error: console.error,
@@ -38,11 +38,11 @@ const logColors = {
 
 function createLogger(): Logger {
   let isEnabled = true
-  let debug = DEFAULT_DEBUG_TYPES
+  let typesToLog = DEFAULT_TYPES_TO_LOG
   let customLogger: LogFunction | null = null
 
   function log(type: LogType, ...logItems: any[]) {
-    if (isEnabled && debug.includes(type)) {
+    if (isEnabled && typesToLog.includes(type)) {
       if (customLogger) return customLogger(type, ...logItems)
       console.group(`%cBeagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
       const logFunction = logFn[type] || console.log
@@ -54,7 +54,7 @@ function createLogger(): Logger {
   return {
     enable: () => isEnabled = true,
     disable: () => isEnabled = false,
-    setDebugTypes: newDebugTypes => debug = newDebugTypes,
+    setTypesToLog: newTypesToLog => typesToLog = newTypesToLog || DEFAULT_TYPES_TO_LOG,
     setCustomLogFunction: customLogFunction => customLogger = customLogFunction,
     info: (...logItems) => log('info', ...logItems),
     warn: (...logItems) => log('warn', ...logItems),
