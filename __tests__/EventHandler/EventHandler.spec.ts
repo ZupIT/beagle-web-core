@@ -29,7 +29,7 @@ import { ActionHandlerParams, BeagleAction } from 'action/types'
 import BeagleService from 'service/beagle-service'
 import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
-import { createContainerWithAction, createModalMock } from './mocks'
+import { createContainerWithAction, createModalMock, listViewWithAction } from './mocks'
 import { createBeagleViewMock, mockLocalStorage } from '../utils/test-utils'
 
 interface ActionHandlerExpectation {
@@ -81,6 +81,14 @@ describe('EventHandler', () => {
     const mock = createContainerWithAction('onInit')
     interpretEventsInTree(mock, beagleView)
     expect(typeof mock.onInit).toBe('function')
+  })
+
+  it('should not deserialize action if received data is a component', () => {
+    const beagleView = createBeagleViewMock()
+    const mock = listViewWithAction
+    interpretEventsInTree(mock, beagleView)
+    expect(typeof mock.template.onInit).not.toBe('function')
+    expect(typeof mock.template.onInit.onSuccess).not.toBe('function')
   })
 
   it('should call new function and trigger action handler (single BeagleAction)', () => {
