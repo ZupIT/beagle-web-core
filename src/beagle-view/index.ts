@@ -96,7 +96,7 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     } catch (errors) {
       // removes the loading component when an error component should not be rendered
       if (params.shouldShowLoading && !params.shouldShowError) setTree(originalTree)
-      if (errorListeners.length === 0) logger.error(errors)
+      if (errorListeners.length === 0) logger.error(...errors)
       runErrorListeners(errors)
     }
   }

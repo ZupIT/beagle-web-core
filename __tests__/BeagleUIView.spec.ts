@@ -292,7 +292,12 @@ describe('BeagleUIView', () => {
   it('should log errors when no error listener is registered', async () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await view.fetch({ path })
-    expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(Array))
+    expect(globalMocks.log).toHaveBeenCalledWith(
+      'error',
+      expect.any(Error),
+      expect.any(Error),
+      expect.any(Error),
+    )
     expect(nock.isDone()).toBe(true)
   })
 

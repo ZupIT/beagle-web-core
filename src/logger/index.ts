@@ -18,20 +18,18 @@
 
 import { LogType, Logger, LogFunction } from './types'
 
-const DEFAULT_DEBUG_TYPES: LogType[] = ['error', 'info', 'warn', 'success']
+const DEFAULT_DEBUG_TYPES: LogType[] = ['error', 'warn']
 
 const logFn: Record<LogType, typeof console.log> = {
   error: console.error,
   warn: console.warn,
   info: console.info,
-  success: console.log,
   lifecycle: console.log,
   expression: console.log,
 }
 
 const logColors = {
   info: '#338dcc',
-  success: '#71882A',
   lifecycle: '#BF80FD',
   expression: '#1532C1',
   error: '#AF0F0F',
@@ -46,7 +44,7 @@ function createLogger(): Logger {
   function log(type: LogType, ...logItems: any[]) {
     if (isEnabled && debug.includes(type)) {
       if (customLogger) return customLogger(type, ...logItems)
-      console.groupCollapsed(`%cBeagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
+      console.group(`%cBeagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
       const logFunction = logFn[type] || console.log
       logItems.forEach(logFunction)
       console.groupEnd()
