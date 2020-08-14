@@ -14,6 +14,7 @@
   * limitations under the License.
 */
 
+import logger from 'logger'
 import Tree from 'beagle-tree'
 import String from 'utils/string'
 import BeagleError from 'error/BeagleError'
@@ -30,6 +31,7 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
   const errorListeners: Array<ErrorListener> = []
   let navigator: BeagleNavigatorType | undefined
   let renderer = {} as RendererType
+  let unsubscribeFromGlobalContext = () => {}
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -88,12 +90,13 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
         method: params.method,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
+        strategy: params.strategy,
         retry: () => fetch(params, elementId, mode),
       })
     } catch (errors) {
       // removes the loading component when an error component should not be rendered
       if (params.shouldShowLoading && !params.shouldShowError) setTree(originalTree)
-      if (errorListeners.length === 0) console.error(errors)
+      if (errorListeners.length === 0) logger.error(...errors)
       runErrorListeners(errors)
     }
   }
@@ -110,6 +113,10 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     return navigator
   }
 
+  function destroy() {
+    unsubscribeFromGlobalContext()
+  }
+
   const beagleView: BeagleView = {
     subscribe,
     addErrorListener,
@@ -118,6 +125,7 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     getTree,
     getBeagleNavigator,
     getBeagleService: () => beagleService,
+    destroy,
   }
 
   renderer = Renderer.create({
@@ -131,7 +139,9 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     typesMetadata: {},
   })
 
-  beagleService.globalContext.subscribe(() => renderer.doFullRender(getTree()))
+  unsubscribeFromGlobalContext = beagleService.globalContext.subscribe(
+    () => renderer.doFullRender(getTree()),
+  )
 
   return beagleView
 }

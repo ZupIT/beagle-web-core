@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from 'logger'
 import { IdentifiableBeagleUIElement, DataContext } from 'beagle-tree/types'
 import { BeagleAction, ActionHandler } from 'action/types'
 import ObjectUtils from 'utils/object'
@@ -71,7 +72,7 @@ function deserializeAction(
       )
 
       if (!handler) {
-        console.warn(`Beagle: couldn't find an action handler for "${action._beagleAction_}"`)
+        logger.warn(`Beagle: couldn't find an action handler for "${action._beagleAction_}"`)
         return
       }
 

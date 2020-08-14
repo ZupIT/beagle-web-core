@@ -25,6 +25,8 @@ import { ViewClient, Strategy, StrategyType, StrategyArrays, ViewClientLoadParam
 
 export const namespace = '@beagle-web/cache'
 
+const DEFAULT_STRATEGY: Strategy = 'beagle-with-fallback-to-cache'
+
 const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
   'beagle-cache-only': { fetch: ['cache-ttl', 'network-beagle'], fallback: [] },
   'beagle-with-fallback-to-cache': { fetch: ['cache-ttl', 'network-beagle'], fallback: ['cache'] },
@@ -40,6 +42,7 @@ function createViewClient(
   defaultHeadersService: DefaultHeaders,
   remoteCache: RemoteCache,
   httpClient: HttpClient,
+  globalStrategy = DEFAULT_STRATEGY,
 ): ViewClient {
   /* The following function is async for future compatibility with environments other than web. React
   native's localStorage, for instance, always returns promises. */
@@ -138,7 +141,7 @@ function createViewClient(
     fallbackUIElement,
     method = 'get',
     headers,
-    strategy = 'beagle-with-fallback-to-cache',
+    strategy = globalStrategy,
     loadingComponent = 'custom:loading',
     errorComponent = 'custom:error',
     shouldShowLoading = true,
