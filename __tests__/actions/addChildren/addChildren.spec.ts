@@ -20,6 +20,10 @@ import { createBeagleViewMock } from '../../utils/test-utils'
 import { createSimpleMock } from './mocks'
 
 describe('Actions: addChildren', () => {
+  beforeEach(() => {
+    globalMocks.log.mockClear()
+  })
+  
   it('should add children', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
@@ -115,8 +119,6 @@ describe('Actions: addChildren', () => {
     const mock = createSimpleMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
-    const originalWarn = console.warn
-    console.warn = jest.fn()
   
     addChildren({
       action: {
@@ -129,8 +131,7 @@ describe('Actions: addChildren', () => {
       executeAction: jest.fn(),
     })
 
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
     expect(beagleView.getRenderer().doFullRender).not.toHaveBeenCalled()
   })
 })

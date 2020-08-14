@@ -28,6 +28,10 @@ import {
 } from './mocks'
 
 describe('Actions: beagle:setContext', () => {
+  beforeEach(() => {
+    globalMocks.log.mockClear()
+  })
+
   it('should set single context', () => {
     const mock = createSingleContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
@@ -237,8 +241,6 @@ describe('Actions: beagle:setContext', () => {
   it('should warn and not update view if context doesn\'t exist', () => {
     const mock: IdentifiableBeagleUIElement = { _beagleComponent_: 'container', id: 'container' }
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const originalWarn = console.warn
-    console.warn = jest.fn()
 
     setContext({
       action: {
@@ -251,16 +253,13 @@ describe('Actions: beagle:setContext', () => {
       executeAction: jest.fn(),
     })
 
-    expect(console.warn).toHaveBeenCalled()
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
     expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
-    console.warn = originalWarn
   })
 
   it('should warn and not update view if context is not part of current hierarchy', () => {
     const mock = createMultipleScopesMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
-    const originalWarn = console.warn
-    console.warn = jest.fn()
 
     setContext({
       action: {
@@ -273,9 +272,8 @@ describe('Actions: beagle:setContext', () => {
       executeAction: jest.fn(),
     })
 
-    expect(console.warn).toHaveBeenCalled()
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
     expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
-    console.warn = originalWarn
   })
 
   it('should create context structures according to path (object)', () => {
