@@ -43,7 +43,7 @@ function getContextBindingValue(
   const contextPath = pathMatch[2]
   const context = Context.find(contextHierarchy, contextId)
   if (!context) return null
-  
+
   return contextPath ? get(context.value, contextPath, null) : context.value
 }
 
@@ -124,10 +124,10 @@ function getLiteralValue(literal: string) {
 }
 
 function evaluateExpression(expression: string, contextHierarchy: DataContext[]) {
-  
+
   const literalValue = getLiteralValue(expression)
   if (literalValue !== undefined) return literalValue
-  
+
   const isOperation = expression.includes('(')
   if (isOperation) return getOperationValue(expression, contextHierarchy)
 
@@ -156,9 +156,8 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
     } catch (error) {
       console.warn(error)
     }
-    bindingValue === null ? bindingValue = '' : null
-    const asString = typeof bindingValue === 'object' ? JSON.stringify(bindingValue) : bindingValue
-    return bindingValue === undefined ? bindingStr : `${scapedSlashes}${asString}`
+    const asString = (bindingValue && typeof bindingValue === 'object') ? JSON.stringify(bindingValue) : bindingValue
+    return (bindingValue === undefined || bindingValue === null) ? '' : `${scapedSlashes}${asString}`
   })
 }
 

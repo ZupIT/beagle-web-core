@@ -36,12 +36,12 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     const socialMediaData = createSocialMediaData()
     const mock = createSocialMediaMock()
     const contexts = Context.evaluate(mock)
-    
+
     const treeWithValues = Tree.replaceEach(
       mock,
       component => Expression.resolveForComponent(component, contexts[component.id]),
     )
-  
+
     const profile = Tree.findById(treeWithValues, 'profile')!
     const friendsTitle = Tree.findById(treeWithValues, 'friendsTitle')!
     const friendsPanel = Tree.findById(treeWithValues, 'friendsPanel')!
@@ -49,7 +49,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     const firstPost = Tree.findById(treeWithValues, 'firstPost')!
     const secondPost = Tree.findById(treeWithValues, 'secondPost')!
     const thirdPost = Tree.findById(treeWithValues, 'thirdPost')!
-  
+
     expect(profile.name).toBe(socialMediaData.user.name)
     expect(profile.picture).toBe(socialMediaData.user.picture)
     expect(profile.detailsPath).toBe('/users/007')
@@ -88,7 +88,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
         mock,
         component => Expression.resolveForComponent(component, contexts[component.id]),
       )
-      
+
       const postWithWrongContext = Tree.findById(treeWithValues, 'postWithWrongContext')!
       expect(postWithWrongContext.author).toBe(null)
     },
@@ -107,7 +107,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
         }
       },
     }
-  
+
     console.warn = jest.fn()
 
     const mock = Tree.clone(treeWithGlobalContext)
@@ -141,7 +141,7 @@ describe('Testing context hierarchy', () => {
     const originalWarn = console.warn
     console.warn = jest.fn()
     Context.evaluate(treeWithValidContext)
-    expect(console.warn).not.toHaveBeenCalled() 
+    expect(console.warn).not.toHaveBeenCalled()
     console.warn = originalWarn
   })
 })
