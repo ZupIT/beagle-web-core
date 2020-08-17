@@ -19,13 +19,14 @@ import { usersObjectCellphone, usersObject } from "./mocks-global-context"
 
 /* fixme: all tests here are dependent from one another. This is bad, tests should be atomic, fix
 asap. */
-describe.only('globalContext', () => {
+describe('globalContext', () => {
   const listener = jest.fn()
   const globalContext = GlobalContext.create()
   globalContext.subscribe(listener)
   
   beforeEach(() => {
     listener.mockClear()
+    globalMocks.log.mockClear()
   })
 
   it('should initialize context with \'global\' as id and return it with getAsDataContext', async () => {
@@ -290,21 +291,34 @@ describe.only('globalContext', () => {
   //Testing helper functions
 
   it('should warn if context has value but path not found', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
     globalContext.clear('testing.clear.path')
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).toHaveBeenCalled()
+    expect(globalMocks.log.mock.calls[0][0]).toBe('warn')
   })
 
   it('should warn if empty context trying to clear some specific path', () => {
     globalContext.clear()
-    const originalWarn = console.warn
-    console.warn = jest.fn()
-
     globalContext.clear('testing.clear.path')
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
+  })
+
+  it('unsubscribe should remove listener', () => {
+    const listener1: jest.Mock = jest.fn(() => unsubscribe1)
+    const listener2: jest.Mock = jest.fn(() => unsubscribe2)
+    const unsubscribe1 = globalContext.subscribe(listener1)
+    const unsubscribe2 = globalContext.subscribe(listener2)
+
+    const value = {
+      testing: {
+        path: 'testingValue'
+      }
+    }
+
+    globalContext.set(value)
+    unsubscribe1()
+    globalContext.set(value)
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(2)
   })
 
 })

@@ -32,6 +32,10 @@ import {
 } from './mocks'
 
 describe('Binding expressions: replacing with calculated contexts', () => {
+  beforeEach(() => {
+    globalMocks.log.mockClear()
+  })
+  
   it('should use contexts declared in the data structure', () => {
     const socialMediaData = createSocialMediaData()
     const mock = createSocialMediaMock()
@@ -95,7 +99,6 @@ describe('Binding expressions: replacing with calculated contexts', () => {
   )
 
   it('closest context with invalid name of global should have priority over global context', () => {
-    const originalWarn = console.warn
     const global = {
       id: 'global',
       value: {
@@ -107,8 +110,6 @@ describe('Binding expressions: replacing with calculated contexts', () => {
         }
       },
     }
-
-    console.warn = jest.fn()
 
     const mock = Tree.clone(treeWithGlobalContext)
     const contexts = Context.evaluate(mock, [global])
@@ -122,26 +123,23 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     expect(textElement.text).toBe('testing value of context with global id')
     textElement = Tree.findByType(treeWithValues, 'beagle:text2')[0]
     expect(textElement).toBeDefined()
-    expect(textElement.text).toBe(null)
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(textElement.text).toBe('@{global.obj.inner.text}')
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })
 })
 
 describe('Testing context hierarchy', () => {
+  beforeEach(() => {
+    globalMocks.log.mockClear()
+  })
+
   it('should emit a warning if a context with global as id is defined on the tree', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
     Context.evaluate(treeWithGlobalContext)
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })
 
   it('should not emit a warning if valid context id', () => {
-    const originalWarn = console.warn
-    console.warn = jest.fn()
     Context.evaluate(treeWithValidContext)
-    expect(console.warn).not.toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 })

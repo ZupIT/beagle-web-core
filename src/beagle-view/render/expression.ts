@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from 'logger'
 import get from 'lodash/get'
 import { BeagleAction } from 'action/types'
 import { DataContext, BeagleUIElement } from 'beagle-tree/types'
@@ -142,7 +143,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
       const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy)
       return bindingValue === undefined ? str : bindingValue
     } catch (error) {
-      console.warn(error)
+      logger.warn(error)
       return str
     }
   }
@@ -154,7 +155,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
     try {
       bindingValue = evaluateExpression(path, contextHierarchy)
     } catch (error) {
-      console.warn(error)
+      logger.warn(error)
     }
     const asString = (bindingValue && typeof bindingValue === 'object') ? JSON.stringify(bindingValue) : bindingValue
     return (bindingValue === undefined || bindingValue === null) ? '' : `${scapedSlashes}${asString}`

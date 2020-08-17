@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from 'logger'
 import findLast from 'lodash/findLast'
 import last from 'lodash/last'
 import { IdentifiableBeagleUIElement, DataContext } from 'beagle-tree/types'
@@ -26,7 +27,7 @@ function checkContextId(component: IdentifiableBeagleUIElement) {
 
   RESERVED_WORDS.forEach(word => {
     if (contextId === word) {
-      console.warn(
+      logger.warn(
         `Beagle: context error. The context id "${word}" is a reserved word and probably won't work as expected. Please, consider renaming your context.`,
       )
     }

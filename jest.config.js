@@ -44,6 +44,7 @@ module.exports = {
     '^beagle-view(.*)$': '<rootDir>/src/beagle-view$1',
     '^error(.*)$': '<rootDir>/src/error$1',
     '^legacy(.*)$': '<rootDir>/src/legacy$1',
+    '^logger(.*)$': '<rootDir>/src/logger$1',
     '^metadata(.*)$': '<rootDir>/src/metadata$1',
     '^operation(.*)$': '<rootDir>/src/operation$1',
     '^service(.*)$': '<rootDir>/src/service$1',

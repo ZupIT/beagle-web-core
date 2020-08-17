@@ -29,7 +29,7 @@ import { ActionHandlerParams, BeagleAction } from 'action/types'
 import BeagleService from 'service/beagle-service'
 import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
-import { createContainerWithAction, createModalMock } from './mocks'
+import { createContainerWithAction, createModalMock, listViewWithAction } from './mocks'
 import { createBeagleViewMock, mockLocalStorage } from '../utils/test-utils'
 
 interface ActionHandlerExpectation {
@@ -70,6 +70,10 @@ function interpretEventsInTree(tree: IdentifiableBeagleUIElement, beagleView: Be
 }
 
 describe('EventHandler', () => {
+  beforeEach(() => {
+    globalMocks.log.mockClear()
+  })
+
   afterAll(unmockDefaultActions)
 
   it('should deserialize BeagleAction into function', () => {
@@ -77,6 +81,14 @@ describe('EventHandler', () => {
     const mock = createContainerWithAction('onInit')
     interpretEventsInTree(mock, beagleView)
     expect(typeof mock.onInit).toBe('function')
+  })
+
+  it('should not deserialize action if received data is a component', () => {
+    const beagleView = createBeagleViewMock()
+    const mock = listViewWithAction
+    interpretEventsInTree(mock, beagleView)
+    expect(typeof mock.template.onInit).not.toBe('function')
+    expect(typeof mock.template.onInit.onSuccess).not.toBe('function')
   })
 
   it('should call new function and trigger action handler (single BeagleAction)', () => {
@@ -239,11 +251,8 @@ describe('EventHandler', () => {
     const mock = createContainerWithAction('onInit', action)
     interpretEventsInTree(mock, beagleView)
   
-    const originalWarn = console.warn
-    console.warn = jest.fn()
     mock.onInit()
-    expect(console.warn).toHaveBeenCalled()
-    console.warn = originalWarn
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })
 
   it('should deserialize all actions in ui tree', () => {

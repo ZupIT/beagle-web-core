@@ -22,6 +22,10 @@ import Expression from 'beagle-view/render/expression'
 import { createPerson } from './mocks'
 
 describe('Binding expressions: replacing with provided contexts', () => {
+  beforeEach(() => {
+    globalMocks.log.mockClear()
+  })
+
   describe('context bindings', () => {
     it('should not alter structure passed as parameter', () => {
       const structure = { age: 20, name: '@{name}' }
@@ -167,12 +171,9 @@ describe('Binding expressions: replacing with provided contexts', () => {
     })
 
     it('should not replace and give a warning if path is invalid', () => {
-      const originalWarning = console.warn
-      console.warn = jest.fn()
       const withValues = Expression.resolve('@{ctx.[.]}', [])
       expect(withValues).toBe('@{ctx.[.]}')
-      expect(console.warn).toHaveBeenCalled()
-      console.warn = originalWarning
+      expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(Error))
     })
 
     it('should replace with empty string if no context is found on string interpolation', () => {
@@ -287,38 +288,23 @@ describe('Binding expressions: replacing with provided contexts', () => {
     })
 
     it('should log warning and do nothing else if operation doesn\'t exist', () => {
-      const originalConsoleWarn = console.warn
-      console.warn = jest.fn()
-
       expect(Expression.resolve('@{blah(42)}', [])).toBe('@{blah(42)}')
-      expect(console.warn).toHaveBeenCalled()
-
-      console.warn = originalConsoleWarn
+      expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(Error))
     })
 
     it('should log warning and do nothing else for malformed parameter list', () => {
-      const originalConsoleWarn = console.warn
-      console.warn = jest.fn()
-
       expect(Expression.resolve('@{sum(2, 4))}', [])).toBe('@{sum(2, 4))}')
       expect(Expression.resolve('@{sum(4(2)}', [])).toBe('@{sum(4(2)}')
       expect(Expression.resolve('@{sum(2))}', [])).toBe('@{sum(2))}')
       expect(Expression.resolve('@{sum(,),)}', [])).toBe('@{sum(,),)}')
-      expect(console.warn).toHaveBeenCalledTimes(4)
-
-      console.warn = originalConsoleWarn
+      expect(globalMocks.log).toHaveBeenCalledTimes(4)
     })
 
     it('should log error and do nothing else for malformed operation name', () => {
-      const originalConsoleWarn = console.warn
-      console.warn = jest.fn()
-
       expect(Expression.resolve('@{2sum(4, 2)}', [])).toBe('@{2sum(4, 2)}')
       expect(Expression.resolve('@{sum-test(4, 2)}', [])).toBe('@{sum-test(4, 2)}')
       expect(Expression.resolve('@{s)um(4, 2)}', [])).toBe('@{s)um(4, 2)}')
-      expect(console.warn).toHaveBeenCalledTimes(3)
-
-      console.warn = originalConsoleWarn
+      expect(globalMocks.log).toHaveBeenCalledTimes(3)
     })
   })
 })

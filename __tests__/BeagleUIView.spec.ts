@@ -33,28 +33,25 @@ describe('BeagleUIView', () => {
   let view: BeagleViewType
   const fetchData = jest.fn(fetch)
   const middleware = jest.fn(tree => tree)
+  const unsubscribeFromGlobalContext = jest.fn()
   const { createView, globalContext } = BeagleService.create({
     baseUrl,
     components: {},
     lifecycles: { beforeRender: middleware },
     fetchData,
   })
-  globalContext.subscribe = jest.fn()
-  const originalConsoleError = console.error
-  console.error = jest.fn()
+  globalContext.subscribe = jest.fn(() => unsubscribeFromGlobalContext)
 
   beforeEach(() => {
     nock.cleanAll()
     view = createView()
     localStorageMock.clear()
     middleware.mockClear()
-    const consoleError = console.error as jest.Mock
-    consoleError.mockClear()
     fetchData.mockClear()
+    globalMocks.log.mockClear()
   })
 
   afterAll(() => {
-    console.error = originalConsoleError
     localStorageMock.unmock()
   })
 
@@ -108,9 +105,6 @@ describe('BeagleUIView', () => {
   })
 
   it('should unsubscribe from errors', async () => {
-    const originalConsoleError = console.error
-    console.error = jest.fn()
-
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const listener = jest.fn()
     const unsubscribe = view.addErrorListener(listener)
@@ -122,8 +116,6 @@ describe('BeagleUIView', () => {
     await view.fetch({ path })
     expect(listener).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
-
-    console.error = originalConsoleError
   })
 
   it('should run middlewares', async () => {
@@ -300,16 +292,26 @@ describe('BeagleUIView', () => {
   it('should log errors when no error listener is registered', async () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await view.fetch({ path })
-    expect(console.error).toHaveBeenCalled()
+    expect(globalMocks.log).toHaveBeenCalledWith(
+      'error',
+      expect.any(Error),
+      expect.any(Error),
+      expect.any(Error),
+    )
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should not log errors when ai least one listener is registered', async () => {
+  it('should not log errors when at least one listener is registered', async () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     view.addErrorListener(jest.fn())
     await view.fetch({ path })
     // @ts-ignore
-    expect(console.error).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
+  })
+
+  it('should call global context unsubscribe when calling destroy', () => {
+    view.destroy()
+    expect(unsubscribeFromGlobalContext).toHaveBeenCalled()
   })
 })

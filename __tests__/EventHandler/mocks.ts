@@ -30,6 +30,27 @@ export function createContainerWithAction(
   }
 }
 
+export const listViewWithAction: IdentifiableBeagleUIElement = {
+  _beagleComponent_: 'beagle:listview',
+  id: 'container',
+  dataSource: [],
+  template: {
+    _beagleComponent_: "beagle:container",
+    onInit: {
+      _beagleAction_: "beagle:sendRequest",
+      url: "@{item.url}",
+      method: 'GET',
+      onSuccess: [
+        {
+          _beagleAction_: "beagle:setContext",
+          contextId: "testingContext",
+          value: "@{onSuccess.data}"
+        }
+      ]
+    },
+  }
+}
+
 export function createModalMock(): IdentifiableBeagleUIElement {
   return {
     _beagleComponent_: 'container',
