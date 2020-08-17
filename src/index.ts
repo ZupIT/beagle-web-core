@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+// logger
+import logger from 'logger'
+
+export { logger }
+
 // beagle utilities
 import Tree from 'beagle-tree'
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from 'logger'
 import { ActionHandler, SendRequestAction } from './types'
 
 interface ParsedResponse {
@@ -53,7 +54,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     if (!response.ok) throw new Error(contextResponse.statusText)
     onSuccess && executeAction(onSuccess, 'onSuccess', contextResponse)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     const event = {
       ...contextResponse,
       message: error.message || 'Unexpected error',
