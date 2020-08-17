@@ -24,11 +24,12 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   const { globalContext } = beagleView.getBeagleService()
 
   const uiTree = beagleView.getTree()
-  const contextHierarchy = Context.evaluate(uiTree, [globalContext.getAsDataContext()])[element.id]
+  const globalContexts = [globalContext.getAsDataContext()]
+  const contextHierarchy = Context.evaluate(uiTree, globalContexts, false)[element.id]
   const context = Context.find(contextHierarchy, contextId)
 
   if (context && context.id === 'global') {
-    globalContext.set(value,  path)
+    globalContext.set(value, path)
     return
   }
 

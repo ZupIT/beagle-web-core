@@ -38,6 +38,23 @@ export function createSingleContextMock(
   }
 }
 
+export function createImplicitContextMock(): IdentifiableBeagleUIElement {
+  return {
+    _beagleComponent_: 'testComponent',
+    id: 'container',
+    _implicitContexts_: [{
+      id: 'ctx',
+      value: `value of implicit`,
+    }],
+  }
+}
+
+export function createExplicitAndImplicitContextMock(): IdentifiableBeagleUIElement {
+  const component = createImplicitContextMock()
+  component.context = { id: 'ctx', value: 'value of explicit' }
+  return component
+}
+
 export function createDoubleContextMock(): IdentifiableBeagleUIElement {
   const mock = createSingleContextMock()
   mock.children = [createSingleContextMock('ctx_b')]

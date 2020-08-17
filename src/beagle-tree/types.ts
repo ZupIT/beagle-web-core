@@ -37,6 +37,7 @@ export interface DataContext {
 export interface BeagleUIElement<Schema = DefaultSchema> {
   _beagleComponent_: ComponentName<Schema>,
   context?: DataContext,
+  _implicitContexts_?: DataContext[],
   children?: Array<BeagleUIElement<Schema>>,
   style?: Style,
   [key: string]: any,
