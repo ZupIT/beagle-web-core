@@ -37,4 +37,5 @@ export default {
     return answer
   },
   includes: (array: any[], element: any) => !!find(array, (item: any) => isEqual(item, element)),
+  union: (...arrays: any[][]) => arrays.reduce((result, current) => [...result, ...current], []),
 }
