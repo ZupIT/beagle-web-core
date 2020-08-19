@@ -158,7 +158,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
       logger.warn(error)
     }
     const asString = (bindingValue && typeof bindingValue === 'object') ? JSON.stringify(bindingValue) : bindingValue
-    return (bindingValue === undefined || bindingValue === null) ? '' : `${scapedSlashes}${asString}`
+    return (bindingValue === undefined || bindingValue === null) ? `${scapedSlashes}` : `${scapedSlashes}${asString}`
   })
 }
 
