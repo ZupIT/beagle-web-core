@@ -25,6 +25,8 @@ import {
   createSameLevelContextMock,
   createMultipleScopesMock,
   createGlobalContextMock,
+  createImplicitContextMock,
+  createExplicitAndImplicitContextMock,
 } from './mocks'
 
 describe('Actions: beagle:setContext', () => {
@@ -397,4 +399,46 @@ describe('Actions: beagle:setContext', () => {
     expect(globalContext.set).toHaveBeenCalledWith('new value', 'testing.path')
   })
 
+  it('should not find implicit context', () => {
+    const mock = createImplicitContextMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'ctx',
+        value: 'test',
+      },
+      beagleView,
+      element: mock,
+      executeAction: jest.fn(),
+    })
+
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
+    expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
+  })
+
+  it('should ignore implicit context and modify explicit context with the same id', () => {
+    const mock = createExplicitAndImplicitContextMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'ctx',
+        value: 'value',
+      },
+      beagleView,
+      element: mock,
+      executeAction: jest.fn(),
+    })
+
+    expect(beagleView.getRenderer().doPartialRender).toHaveBeenCalledWith({
+      ...mock,
+      context: {
+        id: 'ctx',
+        value: 'value',
+      },
+    })
+  })
 })
