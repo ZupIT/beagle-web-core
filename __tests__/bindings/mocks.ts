@@ -257,3 +257,19 @@ export const treeWithValidContext: IdentifiableBeagleUIElement = {
     }
   ]
 }
+
+export const componentWithOnlyImplicitContexts = {
+  "_beagleComponent_":"beagle:container",
+  "id": "myContainer",
+  "_implicitContexts_": [
+    { id: 'implicit1', value: 'hello' },
+    { id: 'implicit2', value: 'world' },
+  ],
+}
+
+export const componentWithExplicitAndImplicitContexts = {
+  "_beagleComponent_":"beagle:container",
+  "id": "myContainer",
+  "context": { id: 'explicit', value: 'hello' },
+  "_implicitContexts_": [{ id: 'implicit', value: 'world' }],
+}

@@ -29,6 +29,8 @@ import {
   createSocialMediaMock,
   treeWithGlobalContext,
   treeWithValidContext,
+  componentWithOnlyImplicitContexts,
+  componentWithExplicitAndImplicitContexts,
 } from './mocks'
 
 describe('Binding expressions: replacing with calculated contexts', () => {
@@ -125,6 +127,29 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     expect(textElement).toBeDefined()
     expect(textElement.text).toBe('@{global.obj.inner.text}')
     expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
+  })
+
+  it('should create implicit contexts', () => {
+    const contextMap = Context.evaluate(componentWithOnlyImplicitContexts)
+    expect(contextMap.myContainer).toEqual([
+      { id: 'implicit1', value: 'hello' },
+      { id: 'implicit2', value: 'world' },
+    ])
+  })
+
+  it('should create both implicit and explicit contexts', () => {
+    const contextMap = Context.evaluate(componentWithExplicitAndImplicitContexts)
+    expect(contextMap.myContainer).toEqual([
+      { id: 'explicit', value: 'hello' },
+      { id: 'implicit', value: 'world' },
+    ])
+  })
+
+  it('should not create implicit contexts', () => {
+    const contextMap = Context.evaluate(componentWithExplicitAndImplicitContexts, [], false)
+    expect(contextMap.myContainer).toEqual([
+      { id: 'explicit', value: 'hello' },
+    ])
   })
 })
 
