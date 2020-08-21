@@ -42,11 +42,10 @@ function getContextBindingValue(
   if (!pathMatch || pathMatch.length < 1) return
   const contextId = pathMatch[1]
   const contextPath = pathMatch[2]
-
   const context = Context.find(contextHierarchy, contextId)
-  if (!context) return
-  
-  return contextPath ? get(context.value, contextPath) : context.value
+  if (!context) return null
+
+  return contextPath ? get(context.value, contextPath, null) : context.value
 }
 
 /**
@@ -126,6 +125,7 @@ function getLiteralValue(literal: string) {
 }
 
 function evaluateExpression(expression: string, contextHierarchy: DataContext[]) {
+
   const literalValue = getLiteralValue(expression)
   if (literalValue !== undefined) return literalValue
 
@@ -147,7 +147,6 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
       return str
     }
   }
-
   return str.replace(expressionRegex, (bindingStr, slashes, path) => {
     const isBindingScaped = slashes.length % 2 === 1
     const scapedSlashes = slashes.replace(/\\\\/g, '\\')
@@ -158,8 +157,8 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
     } catch (error) {
       logger.warn(error)
     }
-    const asString = typeof bindingValue === 'object' ? JSON.stringify(bindingValue) : bindingValue
-    return bindingValue === undefined ? bindingStr : `${scapedSlashes}${asString}`
+    const asString = (bindingValue && typeof bindingValue === 'object') ? JSON.stringify(bindingValue) : bindingValue
+    return (bindingValue === undefined || bindingValue === null) ? scapedSlashes : `${scapedSlashes}${asString}`
   })
 }
 

@@ -42,12 +42,12 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     const socialMediaData = createSocialMediaData()
     const mock = createSocialMediaMock()
     const contexts = Context.evaluate(mock)
-    
+
     const treeWithValues = Tree.replaceEach(
       mock,
       component => Expression.resolveForComponent(component, contexts[component.id]),
     )
-  
+
     const profile = Tree.findById(treeWithValues, 'profile')!
     const friendsTitle = Tree.findById(treeWithValues, 'friendsTitle')!
     const friendsPanel = Tree.findById(treeWithValues, 'friendsPanel')!
@@ -55,7 +55,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     const firstPost = Tree.findById(treeWithValues, 'firstPost')!
     const secondPost = Tree.findById(treeWithValues, 'secondPost')!
     const thirdPost = Tree.findById(treeWithValues, 'thirdPost')!
-  
+
     expect(profile.name).toBe(socialMediaData.user.name)
     expect(profile.picture).toBe(socialMediaData.user.picture)
     expect(profile.detailsPath).toBe('/users/007')
@@ -94,9 +94,9 @@ describe('Binding expressions: replacing with calculated contexts', () => {
         mock,
         component => Expression.resolveForComponent(component, contexts[component.id]),
       )
-      
+
       const postWithWrongContext = Tree.findById(treeWithValues, 'postWithWrongContext')!
-      expect(postWithWrongContext.author).toBe('@{friends[0].name}')
+      expect(postWithWrongContext.author).toBe(null)
     },
   )
 
@@ -125,7 +125,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     expect(textElement.text).toBe('testing value of context with global id')
     textElement = Tree.findByType(treeWithValues, 'beagle:text2')[0]
     expect(textElement).toBeDefined()
-    expect(textElement.text).toBe('@{global.obj.inner.text}')
+    expect(textElement.text).toBe(null)
     expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })
 
