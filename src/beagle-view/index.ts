@@ -1,18 +1,18 @@
 /*
-  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *  http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-*/
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import logger from 'logger'
 import Tree from 'beagle-tree'
@@ -23,7 +23,14 @@ import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'be
 import Renderer from './render'
 import BeagleNavigator from './navigator'
 import { BeagleNavigator as BeagleNavigatorType } from './types'
-import { BeagleView, Listener, ErrorListener, LoadParams, Renderer as RendererType } from './types'
+import {
+  BeagleView,
+  Listener,
+  ErrorListener,
+  LoadParams,
+  Renderer as RendererType,
+  UpdateWithTreeParams,
+} from './types'
 
 function createBeagleView(beagleService: BeagleService): BeagleView {
   let currentUITree: IdentifiableBeagleUIElement
@@ -117,6 +124,49 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     unsubscribeFromGlobalContext()
   }
 
+  // todo: legacy code. Remove this function with v2.0.
+  function updateWithFetch(
+    params: LoadParams,
+    elementId?: string,
+    mode: 'replace' | 'append' | 'prepend' = 'replace',
+  ) {
+    const newMode = mode === 'replace' ? 'replaceComponent' : mode
+    return fetch(params, elementId, newMode)
+  }
+
+  // todo: legacy code. Remove this function with v2.0.
+  function updateWithTree({
+    sourceTree,
+    middlewares = [],
+    mode = 'replace',
+    shouldRunListeners = true,
+    shouldRunMiddlewares = true,
+    elementId,
+  }: UpdateWithTreeParams<any>) {
+    const warnings = [
+      '"updateWithTree" has been deprecated and now exists only as a compatibility mode. This will be fully removed in v2.0. Please, consider updating your code.',
+    ]
+    const errors = []
+
+    if (middlewares.length) {
+      errors.push('The option "middlewares" in "updateWithTree" is no longer supported. Please contact the Beagle WEB team for further guidance.')
+    }
+
+    if (!shouldRunListeners) {
+      errors.push('The option "shouldRunListeners" in "updateWithTree" is no longer supported. Please contact the Beagle WEB team for further guidance.')
+    }
+
+    const newMode = mode === 'replace' ? 'replaceComponent' : mode
+    if (shouldRunMiddlewares) renderer.doFullRender(sourceTree, elementId, newMode)
+    else {
+      warnings.push('The option "shouldRunMiddlewares" in "updateWithTree" is no longer fully supported and might not have the desired effect. If the behavior you\'re getting differs from what you expected, please contact the Beagle WEB team.')
+      renderer.doPartialRender(sourceTree as IdentifiableBeagleUIElement, elementId, newMode)
+    }
+
+    logger.warn(...warnings)
+    if (errors.length) logger.error(...errors)
+  }
+
   const beagleView: BeagleView = {
     subscribe,
     addErrorListener,
@@ -126,6 +176,9 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     getBeagleNavigator,
     getBeagleService: () => beagleService,
     destroy,
+    // todo: legacy code. Remove the following 2 properties with v2.0.
+    updateWithFetch,
+    updateWithTree,
   }
 
   renderer = Renderer.create({
