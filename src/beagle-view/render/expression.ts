@@ -194,7 +194,7 @@ export function resolve<T extends any>(
     return data.map((item: any) => resolve(item, contextHierarchy, shouldIgnore)) as T
   }
 
-  if (typeof data === 'object') {
+  if (data && typeof data === 'object') {
     const map = data as Record<string, any>
     return Object.keys(map).reduce((result, key) => {
       const value = map[key]
