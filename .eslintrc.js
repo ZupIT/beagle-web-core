@@ -14,7 +14,7 @@
   * limitations under the License.
 */
 
-const singleLineString = `^\\s*[^\\s]*'([^']|(\\\\'))*',?;?$`
+const singleLineString = `^\\s*[^']*'([^']|(\\\\'))*'\\)*,?;?$`
 const doubleQuoted = singleLineString.replace(/'/g, '"')
 const template = singleLineString.replace(/'/g, '`')
 

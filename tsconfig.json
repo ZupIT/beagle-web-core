@@ -4,7 +4,6 @@
     "module": "commonjs",
     "outDir": "./dist/",
     "preserveConstEnums": true,
-    "removeComments": true,
     "sourceMap": true,
     "target": "esnext",
     "moduleResolution": "node",
