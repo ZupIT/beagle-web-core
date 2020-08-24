@@ -165,7 +165,7 @@ export function replaceBindings(
 
   if (data instanceof Array) return data.map(item => replaceBindings(item, contextHierarchy))
 
-  if (typeof data === 'object') {
+  if (data && typeof data === 'object') {
     const hierarchy = getContextHierarchy(data, contextHierarchy)
     const ignore = ['id', ' _beagleComponent_', 'context']
 
