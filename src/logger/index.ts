@@ -31,8 +31,8 @@ const logFn: Record<LogType, typeof console.log> = {
 const logColors = {
   info: '#338dcc',
   lifecycle: '#BF80FD',
-  expression: '#1532C1',
-  error: '#AF0F0F',
+  expression: '#476bfc',
+  error: '#fc4747',
   warn: '#DBCA1C',
 }
 
@@ -46,7 +46,7 @@ function createLogger(): Logger {
       if (customLogger) return customLogger(type, ...logItems)
       console.group(`%cBeagle (${type.toLowerCase()})`, `color: ${logColors[type]}`)
       const logFunction = logFn[type] || console.log
-      logItems.forEach(logFunction)
+      logItems.forEach(item => logFunction(item))
       console.groupEnd()
     }
   }

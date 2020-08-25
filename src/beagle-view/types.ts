@@ -17,7 +17,7 @@
 import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import BeagleError from 'error/BeagleError'
 import { Route } from 'action/navigation/types'
-import { BeagleService } from 'service/beagle-service/types'
+import { BeagleService, BeagleMiddleware } from 'service/beagle-service/types'
 import { HttpMethod } from 'service/network/types'
 import { Strategy } from 'service/network/view-client/types'
 
@@ -45,7 +45,8 @@ export interface BeagleNavigator {
   get: () => Route[][],
 }
 
-export interface LoadParams {
+// todo: legacy code. Remove <T = any> with v2.0.
+export interface LoadParams<T = any> {
   path: string,
   fallback?: BeagleUIElement,
   method?: HttpMethod,
@@ -57,7 +58,18 @@ export interface LoadParams {
   errorComponent?: string,
 }
 
-export interface BeagleView {
+// todo: legacy code. Remove this entire type with v2.0.
+export interface UpdateWithTreeParams<Schema> {
+  sourceTree: BeagleUIElement<Schema>,
+  middlewares?: Array<BeagleMiddleware<Schema>>,
+  mode?: 'replace' | 'append' | 'prepend',
+  elementId?: string,
+  shouldRunMiddlewares?: boolean,
+  shouldRunListeners?: boolean,
+}
+
+// todo: legacy code. Remove <T = any> with v2.0.
+export interface BeagleView<T = any> {
   subscribe: (listener: Listener) => (() => void),
   addErrorListener: (listener: ErrorListener) => (() => void),
   fetch: (params: LoadParams, elementId?: string, mode?: TreeUpdateMode) => Promise<void>,
@@ -66,4 +78,17 @@ export interface BeagleView {
   getBeagleNavigator: () => BeagleNavigator,
   getBeagleService: () => BeagleService,
   destroy: () => void,
+  /**
+   * @deprecated since v1.2. Will de deleted in v2.0. Use `BeagleView.fetch` instead.
+   */
+  updateWithFetch: (
+    params: LoadParams,
+    elementId?: string,
+    mode?: 'append' | 'prepend' | 'replace',
+  ) => Promise<void>,
+  /**
+   * @deprecated since v1.2. Will be deleted in v2.0. Use `BeagleView.getRenderer().doFullRender`
+   * or `BeagleView.getRenderer().doPartialRender` instead.
+   */
+  updateWithTree: (params: UpdateWithTreeParams<T>) => void,
 }

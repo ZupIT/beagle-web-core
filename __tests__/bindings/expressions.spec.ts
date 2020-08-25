@@ -34,91 +34,91 @@ describe('Binding expressions: replacing with provided contexts', () => {
       Expression.resolve(structure, contextHierarchy)
       expect(structure).toEqual(original)
     })
-  
+
     it('should replace by context (string)', () => {
       const contextHierarchy = [{ id: 'ctx', value: 'Hello World!' }]
       const withValues = Expression.resolve('@{ctx}', contextHierarchy)
       expect(withValues).toBe('Hello World!')
     })
-  
+
     it('should replace by context (number)', () => {
       const contextHierarchy = [{ id: 'ctx', value: 584 }]
       const withValues = Expression.resolve('@{ctx}', contextHierarchy)
       expect(withValues).toBe(584)
     })
-  
+
     it('should replace by context (boolean)', () => {
       const contextHierarchy = [{ id: 'ctx', value: true }]
       const withValues = Expression.resolve('@{ctx}', contextHierarchy)
       expect(withValues).toBe(true)
     })
-  
+
     it('should replace by context (array)', () => {
       const contextHierarchy = [{ id: 'ctx', value: [1, 2, 3] }]
       const withValues = Expression.resolve('@{ctx}', contextHierarchy)
       expect(withValues).toEqual([1, 2, 3])
     })
-  
+
     it('should replace by context (object)', () => {
       const contextHierarchy = [{ id: 'ctx', value: createPerson() }]
       const withValues = Expression.resolve('@{ctx}', contextHierarchy)
       expect(withValues).toEqual(contextHierarchy[0].value)
     })
-  
+
     it('should replace binding in the middle of a text (string)', () => {
       const contextHierarchy = [{ id: 'ctx', value: 'Hello World' }]
       const withValues = Expression.resolve('Mid text expression: @{ctx}.', contextHierarchy)
       expect(withValues).toBe('Mid text expression: Hello World.')
     })
-  
+
     it('should replace binding in the middle of a text (number)', () => {
       const contextHierarchy = [{ id: 'ctx', value: 584 }]
       const withValues = Expression.resolve('Mid text expression: @{ctx}.', contextHierarchy)
       expect(withValues).toBe('Mid text expression: 584.')
     })
-  
+
     it('should replace binding in the middle of a text (boolean)', () => {
-      const contextHierarchy =  [{ id: 'ctx', value: true }]
+      const contextHierarchy = [{ id: 'ctx', value: true }]
       const withValues = Expression.resolve('Mid text expression: @{ctx}.', contextHierarchy)
       expect(withValues).toBe('Mid text expression: true.')
     })
-  
+
     it('should replace binding in the middle of a text (array)', () => {
       const contextHierarchy = [{ id: 'ctx', value: [1, 2, 3] }]
       const withValues = Expression.resolve('Mid text expression: @{ctx}.', contextHierarchy)
       expect(withValues).toBe('Mid text expression: [1,2,3].')
     })
-  
+
     it('should replace binding in the middle of a text (object)', () => {
       const contextHierarchy = [{ id: 'ctx', value: createPerson() }]
       const withValues = Expression.resolve('Mid text expression: @{ctx}.', contextHierarchy)
       expect(withValues).toBe(`Mid text expression: ${JSON.stringify(contextHierarchy[0].value)}.`)
     })
-  
+
     it('should replace with value in context (object key)', () => {
       const contextHierarchy = [{ id: 'ctx', value: createPerson() }]
       const withValues = Expression.resolve('@{ctx.name.first}', contextHierarchy)
       expect(withValues).toBe(contextHierarchy[0].value.name.first)
     })
-  
+
     it('should replace with value in context (array item)', () => {
       const contextHierarchy = [{ id: 'ctx', value: createPerson() }]
       const withValues = Expression.resolve('@{ctx.phones[0]}', contextHierarchy)
       expect(withValues).toBe(contextHierarchy[0].value.phones[0])
     })
-  
+
     it('should replace with value in context (object key of an array item)', () => {
       const contextHierarchy = [{ id: 'ctx', value: createPerson() }]
       const withValues = Expression.resolve('@{ctx.documents[1].name}', contextHierarchy)
       expect(withValues).toBe(contextHierarchy[0].value.documents[1].name)
     })
-  
+
     it('should replace with value in context (item in array of array)', () => {
       const contextHierarchy = [{ id: 'ctx', value: [['Jest']] }]
       const withValues = Expression.resolve('@{ctx[0][0]}', contextHierarchy)
       expect(withValues).toBe('Jest')
     })
-  
+
     it('should replace using values from multiple contexts', () => {
       const contextHierarchy = [
         {
@@ -134,17 +134,17 @@ describe('Binding expressions: replacing with provided contexts', () => {
           value: ['(34) 5599-5555', '(34) 90000-8787'],
         },
       ]
-    
+
       const withValues = Expression.resolve(
         '@{user.name} is @{user.age} years old. His current plan is @{plan.name} and it costs $@{plan.value}. Please, call @{phones[0]} to talk to him.',
         contextHierarchy,
       )
-  
+
       expect(withValues).toBe(
         'John is 30 years old. His current plan is Premium and it costs $99.59. Please, call (34) 5599-5555 to talk to him.',
       )
     })
-  
+
     it('should replace bindings expressions in object', () => {
       const context = { id: 'ctx', value: { firstName: 'Jest', lastName: 'de Oliveira', age: 25 } }
       const person = {
@@ -159,7 +159,7 @@ describe('Binding expressions: replacing with provided contexts', () => {
         sex: 'm',
       })
     })
-  
+
     it('should replace bindings expressions in array', () => {
       const context = {
         id: 'ctx',
@@ -169,33 +169,38 @@ describe('Binding expressions: replacing with provided contexts', () => {
       const withValues = Expression.resolve(phones, [context])
       expect(withValues).toEqual(['(34) 7788-9944', '(34) 8456-8585', '(34) 91234-5678'])
     })
-  
+
     it('should not replace and give a warning if path is invalid', () => {
       const withValues = Expression.resolve('@{ctx.[.]}', [])
       expect(withValues).toBe('@{ctx.[.]}')
       expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(Error))
     })
-  
-    it('should not replace if no context is found', () => {
+
+    it('should replace with empty string if no context is found on string interpolation', () => {
+      const withValues = Expression.resolve('Test @{ctx} string interpolation', [{ id: 'ctx2', value: 'jest' }])
+      expect(withValues).toEqual('Test  string interpolation')
+    })
+
+    it('should replace with null if no context is found', () => {
       const withValues = Expression.resolve('@{ctx}', [{ id: 'ctx2', value: 'jest' }])
-      expect(withValues).toEqual('@{ctx}')
+      expect(withValues).toEqual(null)
     })
-  
-    it('should not replace if path doesn\'t exist in the referred context', () => {
+
+    it('should replace with null if path doesn\'t exist in the referred context', () => {
       const withValues = Expression.resolve('@{ctx.name}', [{ id: 'ctx', value: { age: 30 } }])
-      expect(withValues).toEqual('@{ctx.name}')
+      expect(withValues).toEqual(null)
     })
-  
+
     it('should scape expression', () => {
       const withValues = Expression.resolve('\\@{myContext}', [{ id: 'myContext', value: 'jest' }])
       expect(withValues).toBe('@{myContext}')
     })
-  
+
     it('should not scape expression when slash is also scaped', () => {
       const withValues = Expression.resolve('\\\\@{myContext}', [{ id: 'myContext', value: 'jest' }])
       expect(withValues).toBe('\\jest')
     })
-  
+
     it(
       'should scape expression when a scaped slash is present, but another slash is also present',
       () => {
@@ -229,11 +234,11 @@ describe('Binding expressions: replacing with provided contexts', () => {
     })
 
     it('should treat malformed number as context id', () => {
-      expect(Expression.resolve('@{5o1}', [{ id: '5o1', value: 'test'}])).toBe('test')
+      expect(Expression.resolve('@{5o1}', [{ id: '5o1', value: 'test' }])).toBe('test')
     })
 
-    it('should do nothing with malformed number and invalid context id', () => {
-      expect(Expression.resolve('@{58.72.98}', [{ id: '58.72.98', value: 'test'}])).toBe('@{58.72.98}')
+    it('should return null for malformed number and invalid context id', () => {
+      expect(Expression.resolve('@{58.72.98}', [{ id: '58.72.98', value: 'test' }])).toBe(null)
     })
   })
 
