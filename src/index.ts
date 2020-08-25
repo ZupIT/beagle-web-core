@@ -49,8 +49,6 @@ function createBeagleUIService<
 
   const xmlConverter = createXMLConverter(config.components)
 
-  console.log('Running patch 1.1.3.rc1')
-
   return {
     loadBeagleUITreeFromServer: loadFromServer,
     loadBeagleUITreeFromCache: loadFromCache,
