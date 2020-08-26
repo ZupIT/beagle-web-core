@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "baseUrl": "src",
+    "experimentalDecorators": true,
     "paths": {
       "action/*": ["action/*"],
       "beagle-tree/*": ["beagle-tree/*"],
