@@ -23,7 +23,7 @@ import {
   lazyComponentWithCaseInsensitive,
   parsedlazyComponentWithCaseInsensitive,
 } from '../mocks'
-import beagleLazyComponentMiddleware from '../../src/legacy/lazy-component'
+import beagleLazyComponentMiddleware from '../../../src/legacy/lazy-component'
 
 describe('LazyComponentMiddleware', () => {
   it('should transform lazycomponent attribute', () => {
