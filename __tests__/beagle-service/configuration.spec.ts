@@ -73,7 +73,12 @@ describe('Beagle Service', () => {
 
     const { lifecycleHooks } = Configuration.process({
       baseUrl: '',
-      components: { Container, Button, Text, Image },
+      components: {
+        'beagle:container': Container,
+        'beagle:button': Button,
+        'beagle:text': Text,
+        'beagle:image': Image,
+      },
     })
 
     expect(lifecycleHooks.beforeStart.global).toBeUndefined()
@@ -81,24 +86,44 @@ describe('Beagle Service', () => {
     expect(lifecycleHooks.afterViewSnapshot.global).toBeUndefined()
     expect(lifecycleHooks.beforeRender.global).toBeUndefined()
 
-    expect(lifecycleHooks.beforeStart.components.Container).toBe(containerBeforeStart)
-    expect(lifecycleHooks.beforeViewSnapshot.components.Container).toBeUndefined()
-    expect(lifecycleHooks.afterViewSnapshot.components.Container).toBeUndefined()
-    expect(lifecycleHooks.beforeRender.components.Container).toBe(containerBeforeRender)
+    expect(lifecycleHooks.beforeStart.components['beagle:container']).toBe(containerBeforeStart)
+    expect(lifecycleHooks.beforeViewSnapshot.components['beagle:container']).toBeUndefined()
+    expect(lifecycleHooks.afterViewSnapshot.components['beagle:container']).toBeUndefined()
+    expect(lifecycleHooks.beforeRender.components['beagle:container']).toBe(containerBeforeRender)
 
-    expect(lifecycleHooks.beforeStart.components.Button).toBeUndefined()
-    expect(lifecycleHooks.beforeViewSnapshot.components.Button).toBeUndefined()
-    expect(lifecycleHooks.afterViewSnapshot.components.Button).toBe(buttonAfterViewSnapshot)
-    expect(lifecycleHooks.beforeRender.components.Button).toBeUndefined()
+    expect(lifecycleHooks.beforeStart.components['beagle:button']).toBeUndefined()
+    expect(lifecycleHooks.beforeViewSnapshot.components['beagle:button']).toBeUndefined()
+    expect(lifecycleHooks.afterViewSnapshot.components['beagle:button']).toBe(buttonAfterViewSnapshot)
+    expect(lifecycleHooks.beforeRender.components['beagle:button']).toBeUndefined()
 
-    expect(lifecycleHooks.beforeStart.components.Text).toBe(textBeforeStart)
-    expect(lifecycleHooks.beforeViewSnapshot.components.Text).toBe(textBeforeViewSnapshot)
-    expect(lifecycleHooks.afterViewSnapshot.components.Text).toBe(textAfterViewSnapshot)
-    expect(lifecycleHooks.beforeRender.components.Text).toBe(textBeforeRender)
+    expect(lifecycleHooks.beforeStart.components['beagle:text']).toBe(textBeforeStart)
+    expect(lifecycleHooks.beforeViewSnapshot.components['beagle:text']).toBe(textBeforeViewSnapshot)
+    expect(lifecycleHooks.afterViewSnapshot.components['beagle:text']).toBe(textAfterViewSnapshot)
+    expect(lifecycleHooks.beforeRender.components['beagle:text']).toBe(textBeforeRender)
 
-    expect(lifecycleHooks.beforeStart.components.Image).toBeUndefined()
-    expect(lifecycleHooks.beforeViewSnapshot.components.Image).toBeUndefined()
-    expect(lifecycleHooks.afterViewSnapshot.components.Image).toBeUndefined()
-    expect(lifecycleHooks.beforeRender.components.Image).toBeUndefined()
+    expect(lifecycleHooks.beforeStart.components['beagle:image']).toBeUndefined()
+    expect(lifecycleHooks.beforeViewSnapshot.components['beagle:image']).toBeUndefined()
+    expect(lifecycleHooks.afterViewSnapshot.components['beagle:image']).toBeUndefined()
+    expect(lifecycleHooks.beforeRender.components['beagle:image']).toBeUndefined()
+  })
+
+  it('should create lifecycle hooks considering case insensitivity for components', () => {
+    const Container = () => null
+    const containerBeforeStart = jest.fn()
+
+    Container.beagleMetadata = {
+      lifecycles: {
+        beforeStart: containerBeforeStart,
+      },
+    }
+
+    const { lifecycleHooks } = Configuration.process({
+      baseUrl: '',
+      components: {
+        'bEAgle:coNTAiner': Container,
+      },
+    })
+
+    expect(lifecycleHooks.beforeStart.components['beagle:container']).toBe(containerBeforeStart)
   })
 })

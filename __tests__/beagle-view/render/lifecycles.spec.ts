@@ -18,7 +18,7 @@ import Renderer from 'beagle-view/render'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import Tree from 'beagle-tree'
 import { LifecycleHookMap } from 'service/beagle-service/types'
-import { createBeagleViewMock } from '../../../utils/test-utils'
+import { createBeagleViewMock } from '../../old-structure/utils/test-utils'
 import {
   createLifecycleMap,
   createLifecycleMapWithModificationsToTree,
