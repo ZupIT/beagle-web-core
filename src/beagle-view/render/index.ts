@@ -61,7 +61,7 @@ function createRenderer({
   }
 
   function runComponentLifecycleHook(component: any, lifecycle: Lifecycle) {
-    const hook = lifecycleHooks[lifecycle].components[component._beagleComponent_]
+    const hook = lifecycleHooks[lifecycle].components[component._beagleComponent_.toLowerCase()]
     if (!hook) return component
     const newComponent = hook(component)
     return newComponent || component

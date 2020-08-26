@@ -39,7 +39,7 @@ function extract(components: BeagleConfig<any>['components']) {
       lifecycleKeys.forEach(lifecycleKey => {
         const hook = metadata.lifecycles![lifecycleKey]
         if (!hook) return
-        extractedMetadata.lifecycles[lifecycleKey][key] = hook
+        extractedMetadata.lifecycles[lifecycleKey][key.toLowerCase()] = hook
       })
     }
   })
