@@ -16,9 +16,65 @@
 
 import Configuration from 'service/beagle-service/configuration'
 import ComponentMetadata from 'metadata/parser'
+import { BeagleConfig } from 'service/beagle-service/types'
 import { mockMetadataParsing } from './configuration.mock'
 
 describe('Beagle Service: configuration', () => {
+  describe('Beagle Service: configuration: update legacy', () => {
+    it('should interpret middlewares as the global lifecycle hook for beforeViewSnapshot', () => {
+      const middleware1 = jest.fn(t => ({ ...t, m1: true }))
+      const middleware2 = jest.fn(t => ({ ...t, m2: true }))
+      const config: BeagleConfig<any> = {
+        baseUrl: '',
+        components: {},
+        middlewares: [middleware1, middleware2],
+      }
+
+      Configuration.update(config)
+
+      expect(config.lifecycles!.beforeViewSnapshot).toBeDefined()
+      const tree = { _beagleComponent_ : 'beagle:container' }
+      const returnValue = config.lifecycles!.beforeViewSnapshot!(tree)
+      expect(middleware1).toHaveBeenCalledWith(tree)
+      expect(middleware2).toHaveBeenCalledWith({ ...tree, m1: true })
+      // remove this id as soon as the lazyComponent middleware is removed
+      expect(returnValue).toEqual({ ...tree, id: '_beagle_1', m1: true, m2: true })
+    })
+
+    function shouldExecuteBothLifecycleAndMiddlewares(isLifecyclePure: boolean) {
+      const beforeViewSnapshot = jest.fn(t => {
+        if (isLifecyclePure) return { ...t, bfs: true }
+        t.bfs = true
+      })
+      const middleware1 = jest.fn(t => ({ ...t, m1: true }))
+      const middleware2 = jest.fn(t => ({ ...t, m2: true }))
+      const config: BeagleConfig<any> = {
+        baseUrl: '',
+        components: {},
+        middlewares: [middleware1, middleware2],
+        lifecycles: { beforeViewSnapshot },
+      }
+
+      Configuration.update(config)
+
+      const tree = { _beagleComponent_ : 'beagle:container' }
+      const returnValue = config.lifecycles!.beforeViewSnapshot!(tree)
+      expect(beforeViewSnapshot).toHaveBeenCalledWith(tree)
+      expect(middleware1).toHaveBeenCalledWith({ ...tree, bfs: true })
+      expect(middleware2).toHaveBeenCalledWith({ ...tree, bfs: true, m1: true })
+      // remove this id as soon as the lazyComponent middleware is removed
+      expect(returnValue).toEqual({ ...tree, id: expect.any(String), bfs: true, m1: true, m2: true })
+    }
+
+    it('should execute both middlewares and the global beforeViewSnapshot (pure)', () => {
+      shouldExecuteBothLifecycleAndMiddlewares(true)
+    })
+
+    it('should execute both middlewares and the global beforeViewSnapshot (impure)', () => {
+      shouldExecuteBothLifecycleAndMiddlewares(false)
+    })
+  })
+
   describe('Beagle Service: configuration: component metadata', () => {
     it('should create global lifecycles', () => {
       const beforeStart = jest.fn()

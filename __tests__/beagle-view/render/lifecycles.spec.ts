@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import Renderer from 'beagle-view/render'
-import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import Tree from 'beagle-tree'
-import { LifecycleHookMap } from 'service/beagle-service/types'
-import { createBeagleViewMock } from '../../old-structure/utils/test-utils'
+import { createRenderer } from './utils'
 import {
   createLifecycleMap,
   createLifecycleMapWithModificationsToTree,
@@ -27,30 +24,11 @@ import {
   createExpectationsForExecutionOrderTests,
 } from './lifecycles.mock'
 
-function createRenderer(lifecycleHooks: LifecycleHookMap) {
-  let currentTree: IdentifiableBeagleUIElement
-  const beagleView = createBeagleViewMock({ getTree: () => currentTree })
-  const setTree = jest.fn(t => currentTree = t)
-  const renderToScreen = jest.fn()
-
-  const renderer = Renderer.create({
-    beagleView,
-    setTree,
-    lifecycleHooks,
-    actionHandlers: {},
-    childrenMetadata: {},
-    executionMode: 'development',
-    renderToScreen,
-    typesMetadata: {},
-  })
-
-  return { renderer, setTree, renderToScreen }
-}
 
 describe('Renderer: lifecycles', () => {
   it('should run global lifecycles', () => {
     const lifecycleHooks = createLifecycleMap(true, false)
-    const { renderer } = createRenderer(lifecycleHooks)
+    const renderer = createRenderer({ lifecycleHooks })
     const mock = createTreeWithContainerTextAndImage()
     renderer.doFullRender(mock)
     expect(lifecycleHooks.beforeStart.global).toHaveBeenCalledWith(mock)
@@ -61,7 +39,7 @@ describe('Renderer: lifecycles', () => {
 
   it('should run components lifecycles', () => {
     const lifecycleHooks = createLifecycleMap(false, true)
-    const { renderer } = createRenderer(lifecycleHooks)
+    const renderer = createRenderer({ lifecycleHooks })
     const mock = createTreeWithContainerTextAndImage()
     renderer.doFullRender(mock)
     
@@ -82,7 +60,7 @@ describe('Renderer: lifecycles', () => {
 
   it('should not run lifecycle for component that doesn\'t appear in the tree', () => {
     const lifecycleHooks = createLifecycleMap(false, true)
-    const { renderer } = createRenderer(lifecycleHooks)
+    const renderer = createRenderer({ lifecycleHooks })
     const mock = createTreeWithContainerAndText()
     renderer.doFullRender(mock)
 
@@ -92,7 +70,8 @@ describe('Renderer: lifecycles', () => {
   it('should work even if lifecycles don\'t have return values', () => {
     const expectations = createExpectationsForExecutionOrderTests()
     const lifecycleHooks = createLifecycleMapWithModificationsToTree(false)
-    const { renderer, renderToScreen } = createRenderer(lifecycleHooks)
+    const renderToScreen = jest.fn()
+    const renderer = createRenderer({ lifecycleHooks, renderToScreen })
     const mock = createTreeWithContainerTextAndImage()
     renderer.doFullRender(mock)
 
@@ -101,7 +80,7 @@ describe('Renderer: lifecycles', () => {
 
   it('should run only afterViewSnapshot and beforeRender on a partial render', () => {
     const lifecycleHooks = createLifecycleMap(true, true)
-    const { renderer } = createRenderer(lifecycleHooks)
+    const renderer = createRenderer({ lifecycleHooks })
     const mock = createTreeWithContainerTextAndImage()
     const text = Tree.findById(mock, 'text')
     renderer.doPartialRender(mock)
@@ -122,7 +101,7 @@ describe('Renderer: lifecycles', () => {
   it('should be case insensitive', () => {
     // this test considers the lifecycle hook map to be all lowercase
     const lifecycleHooks = createLifecycleMap(true, true)
-    const { renderer } = createRenderer(lifecycleHooks)
+    const renderer = createRenderer({ lifecycleHooks })
     const mock = createTreeWithContainerTextAndImage()
     mock._beagleComponent_ = 'bEaGle:CONTAiNER'
     renderer.doFullRender(mock)
@@ -133,7 +112,9 @@ describe('Renderer: lifecycles', () => {
   describe('Renderer: lifecycles: order of execution', () => {
     const expectations = createExpectationsForExecutionOrderTests()
     const lifecycleHooks = createLifecycleMapWithModificationsToTree(true)
-    const { renderer, setTree, renderToScreen } = createRenderer(lifecycleHooks)
+    const setTree = jest.fn()
+    const renderToScreen = jest.fn()
+    const renderer = createRenderer({ lifecycleHooks, setTree, renderToScreen })
     const mock = createTreeWithContainerTextAndImage()
     renderer.doFullRender(mock)
 
