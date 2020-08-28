@@ -21,8 +21,9 @@ export { logger }
 
 // beagle utilities
 import Tree from 'beagle-tree'
+import Component from 'beagle-view/render/component'
 
-export { Tree }
+export { Tree, Component }
 
 // general utilities
 import ObjectUtils from 'utils/object'
