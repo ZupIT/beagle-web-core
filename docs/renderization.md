@@ -18,8 +18,12 @@ some code of his own (lifecycles).
         * [AfterViewSnapshot](#AfterViewSnapshot)
         * [BeforeRender](#BeforeRender)
 - [The Renderer API](#The-Renderer-API)
-    * [Accessing the API](#Accessing-The-Renderer-API)
-    * [Using the API](#Using-The-Renderer-API)
+    * [Accessing the Renderer](#Accessing-The-Renderer)
+    * [Using the Renderer](#Using-The-Renderer)
+- [The ViewContentManager API](#The-ViewContentManager-API)
+    * [Accessing the ViewContentManager](#Accessing-The-Renderer-API)
+    * [Using the ViewContentManager](#Using-The-Renderer-API)
+- [Updating the view with the result of a request](#Updating-the-view-with-the-result-of-a-request)
 
 # TL;DR;
 
@@ -95,6 +99,16 @@ BeforeStart((textComponentPayload) => {
 The return value of a lifecycle hook can be either nothing (undefined) or a tree. If it is a tree,
 the rendering process will discard the previous tree and start working on the tree returned by the
 hook.
+
+To take control over the rendering process, besides the lifecycles, Beagle also offers the
+[Renderer API](#The-Renderer-API), which can be accessed through `BeagleView.getRenderer()`. The
+BeagleView can be accessed via the `BeagleRemoteView` component through the attributes
+`onCreateBeagleView`, in Angular, and `viewRef`, in React.
+
+Another way to get access to the `BeagleView` is through the
+[ViewContentManager API](#The-ViewContentManager-API), which can be found under
+`this.viewContentManager` in an Angular component that extends `BeagleComponent`; or under
+`props.viewContentManager` in a React component that implements the `BeagleComponent` interface.
 
 # Process and lifecycles
 
@@ -618,7 +632,7 @@ first executes all steps of the renderization (1 to 8 in [this list](#Process-to
 The second executes only the view snapshot and the steps after it
 (9 to 18 in [this list](#Process-to-render-a-view)).
 
-## Accessing the Renderer API
+## Accessing the Renderer
 
 Each Beagle View has its renderer, to get access to it, you must call `beagleView.getRenderer()`.
 
@@ -676,11 +690,83 @@ export class Home {
 
 These are just examples of how to get the renderer and do not represent real-life scenarios.
 
-## The ViewContentManager
+When inside a component rendered by Beagle, you can use the
+[ViewContentManager](#The-ViewContentManager-API) to get the BeagleView and obtain access to the
+renderer.
 
-We gave the example of the list view component that must use the Renderer API, but, how do we
-access the API from the rendered component itself. In both beagle-angular and beagle-react this
-can be done via the `ViewContentManager`.
+## Using the Renderer
+
+The renderer has only two functions: `doFullRender` and `doPartialRender`. The first renders the
+tree passed as parameter by running all rendering steps over it. The second does the same, but it
+only runs the view snapshot and the steps after that. The tree received by `doFullRender` is of type
+`BeagleUIElement`, i.e. it might or not have ids. The tree received by `doPartialRender` is of type
+`IdentifiableBeagleUIElement`, i.e. it must have ids for every node. You can never pass a tree
+to `doPartialRender` with missing ids.
+
+Full renders must be done every time new nodes are created. Partial renders should be used to
+modify existent nodes.
+
+Besides the type of the tree, there is no difference to the way we call `doFullRender` and
+`doPartialRender`. They both accept the following parameters:
+
+1. The first parameter is the tree.
+2. The second parameter is optional and it is the anchor. If the anchor is not specified, the tree
+passed in the first parameter will replace the entire currently rendered tree. If the anchor is
+specified, the tree passed as parameter will be attached to the currently rendered tree at the
+same position as the node with the id referenced by `anchor`. How the attachment is done is defined
+by the third parameter.
+3. The third parameter is optional and it is the mode. If the mode is not defined, it is treated
+as `replaceComponent`. There are four different modes:
+  - `replaceComponent`: replaces the node with the same id as the parameter `anchor` (or the root if
+  no anchor is specified) with the tree passed in the first parameter.
+  - `replace`: replaces the children of the node with the same id as the parameter `anchor` (or the
+  root if no anchor is specified) with the tree passed in the first parameter.
+  - `prepend`: pre-pends the tree passed in the first parameter to the children of the node with the
+  same id as the parameter `anchor` (or the root if no anchor is specified).
+  - `append`: appends the tree passed in the first parameter to the children of the node with the
+  same id as the parameter `anchor` (or the root if no anchor is specified).
+
+**Examples:**
+```typescript
+/* example 1: renders a container with an empty list */
+beagleView.getRenderer().doFullRender({
+  _beagleComponent_: 'beagle:container',
+  children: [
+    _beagleComponent_: 'custom:list',
+    id: 'list',
+  ],
+})
+
+/* example 2: adds a property to the root of the currently rendered tree */
+const current = beagleView.getTree()
+current.newProperty = 'new'
+beagleView.getRenderer().doPartialRender(current)
+
+/* example 3: adds an element to the "custom:list" inside the container */
+const item = {
+  _beagleComponent_: 'beagle:container',
+  children: [
+    { _beagleComponent_: 'beagle:text', text: 'Client name: Jasnah Kholin' },
+    { _beagleComponent_: 'beagle:text', text: 'Client age: 30' }
+  ]
+}
+// we should always do full renders when creating new nodes
+beagleView.getRenderer().doFullRender(item, 'list', { mode: 'append' })
+```
+
+# The ViewContentManager API
+
+We said before the list view component is a good example of a component that needs to use the
+Renderer API, but how do we access the renderer from the component itself? In both beagle-angular
+and beagle-react this can be done via the `ViewContentManager`.
+
+The ViewContentManager provides a way to access the Beagle View and the node in the current Beagle
+Tree that gave origin to the component being rendered. With the Beagle View and the id of the
+node, we can access the renderer and call re-renders for this specific component.
+
+## Accessing the ViewContentManager
+
+### React
 
 The `ViewContentManager` can be accessed inside a React component if this component implements
 the BeagleComponent interface. See the example below:
@@ -714,16 +800,47 @@ const ListView: FC<ListViewInterface> = (props) => {
 Above, we tell Beagle to re-render the component with a new set of children based on the data source
 and the template. The re-render happens every time the data source or the template changes.
 
+### Angular
+
 In Angular, we can get the ViewContentManager in a similar way. If you need access to the
 ViewContentManager, the component class must extend `BeagleComponent`, then, you just need to
 reference `this.viewContentManager`.
 
 ```typescript
+import { Component, Input } from '@angular/core'
+import { BeagleComponent } from '@zup-it/beagle-angular'
 
+@Component({
+  // ...
+})
+export class ListView extends BeagleComponent {
+  // ...
+
+  renderDataSource() {
+    /* Checks if the viewContentManager is available. If the components has not been created by
+    Beagle, it won't be. */
+    if (!this.viewContentManager) return
+    const children = this.createChildrenFromTemplate(this.dataSource, this.template)
+    const element = this.viewContentManager.getElement()
+    element.children = children
+    this.viewContentManager.getBeagleView().getRenderer().doFullRenderer(element, element.id)
+  }
+}
 ```
+
+The method `renderDataSource` should be called every time the data source or the template changes.
+
+## Using the ViewContentManager
 
 The ViewContentManager have the following properties/functions:
 
+- `getElement()`: returns the node in the Beagle Tree responsible for the renderization of the
+component. 
+- `getElementId()`: shortcut to `getElement().id`
+- `getBeagleView()`: returns the BeagleView responsible for the view containing the component.
 
+# Updating the view with the result of a request
 
-## Using the Renderer API
+In case you need to update the current view with a tree that comes from the backend, you should
+not use the renderer directly, instead, you should use the method `fetch` of the `BeagleView`.
+It will internally use all the cache mechanisms of Beagle and also do the rendering part.
