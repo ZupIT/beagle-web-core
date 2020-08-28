@@ -455,10 +455,11 @@ import Tree from '@zup-it/beagle-web'
 
 function findContextById(tree, id) {
   const it = Tree.iterator(tree)
-  
-  while (!it.done) {
-    const component = it.next()
+  let next = it.next()
+  while (!next.done) {
+    const component = next.value
     if (component.context && component.context.id === id) return component.context
+    next = it.next()
   }
 }
 
