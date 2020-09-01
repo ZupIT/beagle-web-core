@@ -28,7 +28,8 @@ module.exports = {
   },
   globals: {
     'ts-jest': {
-      diagnostics: false
+      diagnostics: false,
+      tsConfig: 'tsconfig.spec.json',
     },
     window: true
   },
