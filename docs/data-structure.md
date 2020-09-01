@@ -81,7 +81,7 @@ opportunity to change it before it gets processed by Beagle.
 We recommend that the backend always return a JSON representing a tree of components, as it is
 expected by Beagle, but if, for some reason, it is not possible, Beagle Web makes it possible to
 pre-process the response and build the tree in the front-end before Beagle actually works upon it
-(see [lifecycles](/renderization.md)).
+(see [lifecycles](renderization.md)).
 
 ### The children property
 

@@ -1,7 +1,7 @@
 # Understanding and taking control over the rendering process
 
 Before reading this, please, make sure you understand the
-[Beagle tree data structure](/data-structure.md).
+[Beagle tree data structure](data-structure.md).
 
 Every Beagle Web library has a very well defined process of how it fetches, process and renders a
 view. There's an order that must always be respected and hook points where the developer can execute
@@ -862,5 +862,6 @@ component.
 # Updating the view with the result of a request
 
 In case you need to update the current view with a tree that comes from the backend, you should
-not use the renderer directly, instead, you should use the method `fetch` of the `BeagleView`.
-It will internally use all the cache mechanisms of Beagle and also do the rendering part.
+not use the renderer directly, instead, you should use
+[the method `fetch` of the `BeagleView`](beagle-view.md#Fetching-a-view). It will internally use all
+the cache mechanisms of Beagle and also do the rendering part.

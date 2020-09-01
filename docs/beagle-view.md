@@ -161,7 +161,7 @@ returns a function to remove the listener.
 - **fetch:** [fetches a view from the backend](#Fetching-a-view) and uses it to update the current
 tree. Receives three parameters: the request options (required), the id of the node to be updated
 (optional) and the insertion mode (optional).
-- getRenderer: returns [the renderer](/renderization.md#The-Renderer-API) of the view. Can be used
+- getRenderer: returns [the renderer](renderization.md#The-Renderer-API) of the view. Can be used
 to update the tree directly.
 - **getTree:** returns a copy of the currently rendered tree.
 - **getBeagleNavigator:** returns the navigator.
