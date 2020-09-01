@@ -695,6 +695,16 @@ When inside a component rendered by Beagle, you can use the
 [ViewContentManager](#The-ViewContentManager-API) to get the BeagleView and obtain access to the
 renderer.
 
+When inside an action handler (custom actions), the Beagle View is provided via parameter, which
+can be used to get the renderer. See the example below:
+
+```typescript
+const MyCustomActionHandler: ActionHandler<MyCustomAction> = ({ action, beagleView }) => {
+  const renderer = beagleView.getRenderer()
+  // ...
+}
+```
+
 ## Using the Renderer
 
 The renderer has only two functions: `doFullRender` and `doPartialRender`. The first renders the
@@ -754,6 +764,15 @@ const item = {
 // we should always do full renders when creating new nodes
 beagleView.getRenderer().doFullRender(item, 'list', { mode: 'append' })
 ```
+
+> Attention: with great powers comes great responsibilities. With the renderer API you get to alter
+the view whenever you want, but it is up to the developer to do it in the right moments. You can't,
+for instance, call `renderer.doFullRender(tree, componentId)` in the `onInit` of the Angular
+component with id `componentId`. If this is done, Beagle will remove a component of the tree before
+it even gets the chance to be fully rendered. Many cases like this can happen when using the Beagle
+Renderer inside components lifecycles, so be careful! A solution to the example given would be to
+replace the children of the component instead of the component itself
+(`renderer.doFullRender(tree, componentId, 'replace')`).
 
 # The ViewContentManager API
 
