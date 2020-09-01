@@ -172,10 +172,10 @@ describe('Binding expressions: replacing with provided contexts', () => {
       expect(withValues).toEqual(['(34) 7788-9944', '(34) 8456-8585', '(34) 91234-5678'])
     })
 
-    it('should not replace and give a warning if path is invalid', () => {
+    it('should return and give a warning if path is invalid', () => {
       const withValues = Expression.resolve('@{ctx.[.]}', [])
-      expect(withValues).toBe('@{ctx.[.]}')
-      expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(Error))
+      expect(withValues).toBe(null)
+      expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(BeagleParseError))
     })
 
     it('should replace with empty string if no context is found on string interpolation', () => {
@@ -291,28 +291,28 @@ describe('Binding expressions: replacing with provided contexts', () => {
 
     it('should log warning and return null if operation doesn\'t exist', () => {
       expect(Expression.resolve('@{blah(42)}', [])).toBe(null)
-      expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(BeagleNotFoundError))
+      expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(BeagleNotFoundError))
     })
 
     it('should log error and return null for malformed parameter list', () => {
       expect(Expression.resolve('@{sum(2, 4))}', [])).toBe(null)
-      expect(globalMocks.log).toHaveBeenLastCalledWith('error', expect.any(BeagleParseError))
+      expect(globalMocks.log).toHaveBeenLastCalledWith('warn', expect.any(BeagleParseError))
       expect(Expression.resolve('@{sum(4(2)}', [])).toBe(null)
-      expect(globalMocks.log).toHaveBeenLastCalledWith('error', expect.any(BeagleParseError))
+      expect(globalMocks.log).toHaveBeenLastCalledWith('warn', expect.any(BeagleParseError))
       expect(Expression.resolve('@{sum(2))}', [])).toBe(null)
-      expect(globalMocks.log).toHaveBeenLastCalledWith('error', expect.any(BeagleParseError))
+      expect(globalMocks.log).toHaveBeenLastCalledWith('warn', expect.any(BeagleParseError))
       expect(Expression.resolve('@{sum(,),)}', [])).toBe(null)
-      expect(globalMocks.log).toHaveBeenLastCalledWith('error', expect.any(BeagleParseError))
+      expect(globalMocks.log).toHaveBeenLastCalledWith('warn', expect.any(BeagleParseError))
     })
 
     it('should log error and replace with empty string when operation name is invalid', () => {
       expect(Expression.resolve('result: @{sum-test(4, 2)}', [])).toBe('result: ')
-      expect(globalMocks.log).toHaveBeenLastCalledWith('error', expect.any(BeagleParseError))
+      expect(globalMocks.log).toHaveBeenLastCalledWith('warn', expect.any(BeagleParseError))
     })
 
     it('should log error and return null when operation name is invalid', () => {
       expect(Expression.resolve('@{s)um(4, 2)}', [])).toBe(null)
-      expect(globalMocks.log).toHaveBeenLastCalledWith('error', expect.any(BeagleParseError))
+      expect(globalMocks.log).toHaveBeenLastCalledWith('warn', expect.any(BeagleParseError))
     })
   })
 })
