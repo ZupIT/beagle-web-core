@@ -92,7 +92,7 @@ function parseParameters(parameterString: string) {
 }
 
 function getOperationValue(operation: string, contextHierarchy: DataContext[]) {
-  const match = operation.match(/^(\w[\w\d_]*)\((.*)\)$/)
+  const match = operation.match(/^(\w+)\((.*)\)$/)
   if (!match) {
     throw new BeagleParseError(`invalid operation in expression: ${operation}`)
   }
@@ -125,12 +125,18 @@ function getLiteralValue(literal: string) {
 }
 
 function evaluateExpression(expression: string, contextHierarchy: DataContext[]) {
-
   const literalValue = getLiteralValue(expression)
   if (literalValue !== undefined) return literalValue
 
   const isOperation = expression.includes('(')
-  if (isOperation) return getOperationValue(expression, contextHierarchy)
+  if (isOperation) {
+    try {
+      return getOperationValue(expression, contextHierarchy)
+    } catch (error) {
+      logger.error(error)
+      return null
+    }
+  }
 
   // otherwise, it's a context binding
   return getContextBindingValue(expression, contextHierarchy)
