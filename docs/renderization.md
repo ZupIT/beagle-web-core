@@ -30,7 +30,7 @@ some code of his own (lifecycles).
 Sometimes, an image can tell more than words, the following graphic shows the full rendering process
 of Beagle Web:
 
-![Beagle Web Flow](https://i.ibb.co/ygdgKhQ/beagle-web-flow.png)
+![Beagle Web Flow](https://i.ibb.co/gZB5GGk/beagle-web-flow.png)
 
 The Beagle lifecycles are:
 - BeforeStart
@@ -652,7 +652,7 @@ const Home: FC = () => {
     if (beagleView.current) {
       const renderer = beagleView.current.getRenderer()
     }
-  }, [beagleView.current])
+  }, [])
 
   return (
     <BeagleRemoteView path="/home" viewRef={beagleView} />
@@ -728,14 +728,14 @@ same position as the node with the id referenced by `anchor`. How the attachment
 by the third parameter.
 3. The third parameter is optional and it is the mode. If the mode is not defined, it is treated
 as `replaceComponent`. There are four different modes:
-  - `replaceComponent`: replaces the node with the same id as the parameter `anchor` (or the root if
-  no anchor is specified) with the tree passed in the first parameter.
-  - `replace`: replaces the children of the node with the same id as the parameter `anchor` (or the
-  root if no anchor is specified) with the tree passed in the first parameter.
-  - `prepend`: pre-pends the tree passed in the first parameter to the children of the node with the
-  same id as the parameter `anchor` (or the root if no anchor is specified).
-  - `append`: appends the tree passed in the first parameter to the children of the node with the
-  same id as the parameter `anchor` (or the root if no anchor is specified).
+    - `replaceComponent`: replaces the node with the same id as the parameter `anchor` (or the root
+    if no anchor is specified) with the tree passed in the first parameter.
+    - `replace`: replaces the children of the node with the same id as the parameter `anchor` (or
+    the root if no anchor is specified) with the tree passed in the first parameter.
+    - `prepend`: pre-pends the tree passed in the first parameter to the children of the node with
+    tht same id as the parameter `anchor` (or the root if no anchor is specified).
+    - `append`: appends the tree passed in the first parameter to the children of the node with the
+    same id as the parameter `anchor` (or the root if no anchor is specified).
 
 **Examples:**
 ```typescript
