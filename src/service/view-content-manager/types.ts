@@ -15,13 +15,9 @@
  */
 
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
-import { BeagleView, LoadParams } from 'beagle-view/types'
+import { BeagleView } from 'beagle-view/types'
 
 export interface ViewContentManager {
-  replaceComponent: (params: LoadParams) => Promise<void>,
-  replace: (params: LoadParams) => Promise<void>,
-  append: (params: LoadParams) => Promise<void>,
-  prepend: (params: LoadParams) => Promise<void>,
   getElementId: () => string,
   getElement: () => IdentifiableBeagleUIElement,
   getView: () => BeagleView,
