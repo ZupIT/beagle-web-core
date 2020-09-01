@@ -16,9 +16,11 @@
 
 import { BeagleUIElement } from 'beagle-tree/types'
 import { BeagleConfig } from 'service/beagle-service/types'
+import logger from 'logger'
 
 export function updateMiddlewaresInConfiguration(config: BeagleConfig<any>) {
   if (config.middlewares) {
+    logger.warn('Middlewares are deprecated. Consider using lifecycles instead.')
     config.lifecycles = config.lifecycles || {}
     const originalBeforeViewSnapshot = config.lifecycles.beforeViewSnapshot
     config.lifecycles.beforeViewSnapshot = (viewTree) => {
