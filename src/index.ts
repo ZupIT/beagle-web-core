@@ -41,6 +41,10 @@ import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 
 export { BeagleError, BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError }
 
+// decorators
+
+export * from 'metadata/decorator'
+
 // service types
 
 export * from 'service/global-context/types'
