@@ -65,5 +65,10 @@ export default {
   BeagleNetworkError: '__function__',
   BeagleCacheError: '__function__',
   BeagleExpiredCacheError: '__function__',
-  default: '__function__'
+  default: '__function__',
+  BeforeStart: '__function__',
+  BeforeViewSnapshot: '__function__',
+  AfterViewSnapshot: '__function__',
+  BeforeRender: '__function__',
+  BeagleChildren: '__function__',
 }

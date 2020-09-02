@@ -29,7 +29,7 @@ function serialize(data: any): any {
 
 describe('Beagle', () => {
   it('should export keys', () => {
-    expect(Object.keys(beagle)).toEqual(Object.keys(exportations))
+    expect(Object.keys(beagle)).toEqual(expect.arrayContaining(Object.keys(exportations)))
   })
 
   it('should export values', () => {
