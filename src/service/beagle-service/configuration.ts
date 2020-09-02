@@ -59,10 +59,11 @@ function getLifecycleHookMap(
 
 function update(config: BeagleConfig<any>) {
   // todo: remove as soon as legacy middlewares have been transferred somewhere else
-  if (!config.middlewares) config.middlewares = []
-  config.middlewares.push(lazyComponentMiddleware, tabViewMiddleware)
+  // if (!config.middlewares) config.middlewares = []
+  // config.middlewares.push(lazyComponentMiddleware, tabViewMiddleware)
 
   // todo: remove with version 2.0
+  console.log('mids:', config.middlewares)
   updateMiddlewaresInConfiguration(config)
 }
 
