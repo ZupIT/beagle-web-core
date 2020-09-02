@@ -36,6 +36,6 @@ export default {
     else answer.pop()
     return answer
   },
-  includes: (array: any[], element: any) => !!find(array, (item: any) => isEqual(item, element)),
+  contains: (array: any[], element: any) => !!find(array, (item: any) => isEqual(item, element)),
   union: (...arrays: any[][]) => arrays.reduce((result, current) => [...result, ...current], []),
 }

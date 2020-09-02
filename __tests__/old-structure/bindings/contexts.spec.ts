@@ -22,6 +22,7 @@
 
 import Context from 'beagle-view/render/context'
 import Expression from 'beagle-view/render/expression'
+import BeagleParseError from 'error/BeagleParseError'
 import Tree from 'beagle-tree'
 import {
   createMockWithSameIdContexts,
@@ -100,35 +101,6 @@ describe('Binding expressions: replacing with calculated contexts', () => {
     },
   )
 
-  it('closest context with invalid name of global should have priority over global context', () => {
-    const global = {
-      id: 'global',
-      value: {
-        text: 'Global context value',
-        obj: {
-          inner: {
-            text: 'Global context object value',
-          }
-        }
-      },
-    }
-
-    const mock = Tree.clone(treeWithGlobalContext)
-    const contexts = Context.evaluate(mock, [global])
-    const treeWithValues = Tree.replaceEach(
-      mock,
-      component => Expression.resolveForComponent(component, contexts[component.id]),
-    )
-
-    let textElement = Tree.findByType(treeWithValues, 'beagle:text1')[0]
-    expect(textElement).toBeDefined()
-    expect(textElement.text).toBe('testing value of context with global id')
-    textElement = Tree.findByType(treeWithValues, 'beagle:text2')[0]
-    expect(textElement).toBeDefined()
-    expect(textElement.text).toBe(null)
-    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
-  })
-
   it('should create implicit contexts', () => {
     const contextMap = Context.evaluate(componentWithOnlyImplicitContexts)
     expect(contextMap.myContainer).toEqual([
@@ -158,9 +130,18 @@ describe('Testing context hierarchy', () => {
     globalMocks.log.mockClear()
   })
 
-  it('should emit a warning if a context with global as id is defined on the tree', () => {
-    Context.evaluate(treeWithGlobalContext)
-    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
+  it('should throw error if context id is invalid', () => {
+    const evaluate = (name: string) => () => Context.evaluate({
+      _beagleComponent_: 'container',
+      id: '1',
+      context: { id: name, value: 0 },
+    })
+    expect(evaluate('global')).toThrow(expect.any(BeagleParseError))
+    expect(evaluate('true')).toThrow(expect.any(BeagleParseError))
+    expect(evaluate('false')).toThrow(expect.any(BeagleParseError))
+    expect(evaluate('null')).toThrow(expect.any(BeagleParseError))
+    expect(evaluate('054545')).toThrow(expect.any(BeagleParseError))
+    expect(evaluate('89.47')).toThrow(expect.any(BeagleParseError))
   })
 
   it('should not emit a warning if valid context id', () => {

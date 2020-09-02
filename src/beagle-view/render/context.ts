@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-import logger from 'logger'
 import findLast from 'lodash/findLast'
 import last from 'lodash/last'
 import { IdentifiableBeagleUIElement, DataContext } from 'beagle-tree/types'
+import BeagleParseError from 'error/BeagleParseError'
 
-const RESERVED_WORDS = ['global', 'true', 'false', 'null', 'item']
+const RESERVED_WORDS = ['global', 'true', 'false', 'null']
 
 function checkContextId(component: IdentifiableBeagleUIElement) {
   if (!component.context) return
   const contextId = component.context.id
 
+  if (component.context.id.match(/^\d+(\.\d+)?$/)) {
+    throw new BeagleParseError(`Numbers are not valid context ids. Please, rename the context with id "${contextId}".`)
+  }
+
   RESERVED_WORDS.forEach(word => {
     if (contextId === word) {
-      logger.warn(
-        `Beagle: context error. The context id "${word}" is a reserved word and probably won't work as expected. Please, consider renaming your context.`,
-      )
+      throw new BeagleParseError(`The context id "${word}" is a reserved word and can't be used as a context id. Please, rename your context.`)
     }
   })
 }

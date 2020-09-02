@@ -145,20 +145,20 @@ describe('Operations', () => {
     })
 
     it('should include', () => {
-      expect(Operation.includes([1, 2, 3], 2)).toEqual(true)
-      expect(Operation.includes([true], true)).toEqual(true)
-      expect(Operation.includes(['1', '2', '3'], '3')).toEqual(true)
-      expect(Operation.includes([[1], [2], [3]], [1])).toEqual(true)
-      expect(Operation.includes([{ a: 1 }, { a: 2 }], { a: 1 })).toEqual(true)
+      expect(Operation.contains([1, 2, 3], 2)).toEqual(true)
+      expect(Operation.contains([true], true)).toEqual(true)
+      expect(Operation.contains(['1', '2', '3'], '3')).toEqual(true)
+      expect(Operation.contains([[1], [2], [3]], [1])).toEqual(true)
+      expect(Operation.contains([{ a: 1 }, { a: 2 }], { a: 1 })).toEqual(true)
     })
 
     it('should not include', () => {
-      expect(Operation.includes([1, 2, 3], 0)).toEqual(false)
-      expect(Operation.includes([false], true)).toEqual(false)
-      expect(Operation.includes([1, 2, 3], '2')).toEqual(false)
-      expect(Operation.includes(['1', '2', '3'], '4')).toEqual(false)
-      expect(Operation.includes([[1], [2], [3]], ['1'])).toEqual(false)
-      expect(Operation.includes([{ a: 1 }, { a: 2 }], { b: 1 })).toEqual(false)
+      expect(Operation.contains([1, 2, 3], 0)).toEqual(false)
+      expect(Operation.contains([false], true)).toEqual(false)
+      expect(Operation.contains([1, 2, 3], '2')).toEqual(false)
+      expect(Operation.contains(['1', '2', '3'], '4')).toEqual(false)
+      expect(Operation.contains([[1], [2], [3]], ['1'])).toEqual(false)
+      expect(Operation.contains([{ a: 1 }, { a: 2 }], { b: 1 })).toEqual(false)
     })
 
     it('should unite/concat arrays', () => {
@@ -170,20 +170,20 @@ describe('Operations', () => {
 
   describe('Other', () => {
     it('should exist', () => {
-      expect(Operation.isNull('')).toBe(true)
-      expect(Operation.isNull('a')).toBe(true)
-      expect(Operation.isNull(-1)).toBe(true)
-      expect(Operation.isNull(0)).toBe(true)
-      expect(Operation.isNull(1)).toBe(true)
-      expect(Operation.isNull({})).toBe(true)
-      expect(Operation.isNull({ a: 1 })).toBe(true)
-      expect(Operation.isNull([])).toBe(true)
-      expect(Operation.isNull([1])).toBe(true)
+      expect(Operation.isNull('')).toBe(false)
+      expect(Operation.isNull('a')).toBe(false)
+      expect(Operation.isNull(-1)).toBe(false)
+      expect(Operation.isNull(0)).toBe(false)
+      expect(Operation.isNull(1)).toBe(false)
+      expect(Operation.isNull({})).toBe(false)
+      expect(Operation.isNull({ a: 1 })).toBe(false)
+      expect(Operation.isNull([])).toBe(false)
+      expect(Operation.isNull([1])).toBe(false)
     })
 
     it('should not exist', () => {
-      expect(Operation.isNull(undefined)).toBe(false)
-      expect(Operation.isNull(null)).toBe(false)
+      expect(Operation.isNull(undefined)).toBe(true)
+      expect(Operation.isNull(null)).toBe(true)
     })
 
     it('should be empty', () => {
