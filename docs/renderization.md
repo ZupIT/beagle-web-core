@@ -401,7 +401,7 @@ have the expected values.
 This example might not have worked if it was placed under the lifecycle `BeforeStart`. This is
 because, at this time, the children wouldn't have been interpreted yet. Let's say we had a component
 `custom:table` where the children is placed under the property `rows` and inside one of the rows
-there was a `beagle:textInput`. The property `model` wouldn't be transformed fo this particular
+there was a `beagle:textInput`. The property `model` wouldn't be transformed for this particular
 text input, because, by this time (`BeforeStart`), Beagle still has no idea that `rows` are the
 `children` of a `custom:table` and the `beagle:textInput` would've been inaccessible.
 

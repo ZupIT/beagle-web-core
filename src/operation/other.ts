@@ -19,7 +19,7 @@ import isEmpty from 'lodash/isEmpty'
 
 export default {
   eq: (a: any, b: any) => isEqual(a, b),
-  isNull: (value: any) => value !== null && value !== undefined,
+  isNull: (value: any) => value === null || value === undefined,
   isEmpty: (value: string | any[] | Record<string, any> | null | undefined) => isEmpty(value),
   length: (value: string | any[]) => value.length,
 }

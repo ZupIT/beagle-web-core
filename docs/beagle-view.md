@@ -134,7 +134,7 @@ errors:
 
 ```typescript
 const removeErrorListener = beagleView.addErrorListener((errors) => {
-  console.log('Oops! And error just happened!')
+  console.log('Oops! An error just happened!')
   console.log(errors)
 })
 ```

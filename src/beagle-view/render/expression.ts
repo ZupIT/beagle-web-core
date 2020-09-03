@@ -43,7 +43,7 @@ function getContextBindingValue(
   const contextId = pathMatch[1]
   const contextPath = pathMatch[2]
   const context = Context.find(contextHierarchy, contextId)
-  if (!context) return null
+  if (!context) throw new BeagleNotFoundError(`Couldn't find context with id "${contextId}"`)
 
   return contextPath ? get(context.value, contextPath, null) : context.value
 }
@@ -92,7 +92,7 @@ function parseParameters(parameterString: string) {
 }
 
 function getOperationValue(operation: string, contextHierarchy: DataContext[]) {
-  const match = operation.match(/^(\w[\w\d_]*)\((.*)\)$/)
+  const match = operation.match(/^(\w+)\((.*)\)$/)
   if (!match) {
     throw new BeagleParseError(`invalid operation in expression: ${operation}`)
   }
@@ -125,7 +125,6 @@ function getLiteralValue(literal: string) {
 }
 
 function evaluateExpression(expression: string, contextHierarchy: DataContext[]) {
-
   const literalValue = getLiteralValue(expression)
   if (literalValue !== undefined) return literalValue
 
@@ -144,7 +143,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
       return bindingValue === undefined ? str : bindingValue
     } catch (error) {
       logger.warn(error)
-      return str
+      return null
     }
   }
   return str.replace(expressionRegex, (bindingStr, slashes, path) => {
