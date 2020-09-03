@@ -142,11 +142,11 @@ export interface LoadParams<T = any> {
    */
   headers?: Record<string, string>,
   /**
-   * Wether to show a loading component or not. By default, uses the global configuration.
+   * Wether to show a loading component or not. True by default.
    */
   shouldShowLoading?: boolean,
   /**
-   * Wether to show an error component or not. By default, uses the global configuration.
+   * Wether to show an error component or not. True by default.
    */
   shouldShowError?: boolean,
   /**
