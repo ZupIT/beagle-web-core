@@ -135,6 +135,10 @@ const Button: FC<ButtonInterface> = ({ text, disabled, onPress }) => (
 export default Button
 ```
 
+## The Beagle Tree data structure
+Beagle works over a tree of components and, for it to work, it must respect some rules.
+[Read more](docs/data-structure.md)
+
 ## Dynamic behaviors: context, expressions and actions
 Beagle thinks the server driven UI should not bring detriment to the user experience and if our
 views are always static we might have to make an excessive number of requests and not be able to
@@ -168,7 +172,6 @@ as soon as we create it, we have access to all of the following:
 
 - [GlobalContext](docs/services#GlobalContext)
 - [UrlBuilder](docs/services#UrlBuilder)
-- ViewContentManagerMap (?)
 - [ViewClient](docs/services#ViewClient)
 - [RemoteCache](docs/services#RemoteCache)
 - [DefaultHeaders](docs/services#DefaultHeaders)

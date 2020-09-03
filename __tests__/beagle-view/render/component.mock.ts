@@ -13,3 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { BeagleUIElement } from 'beagle-tree/types'
+
+export function createTable(): BeagleUIElement {
+  return {
+    _beagleComponent_: 'custom:table',
+    header: 'My table',
+    id: 'table',
+    rows: [{ _beagleComponent_: 'custom:row' }],
+  }
+}

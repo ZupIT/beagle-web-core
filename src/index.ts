@@ -21,8 +21,9 @@ export { logger }
 
 // beagle utilities
 import Tree from 'beagle-tree'
+import Component from 'beagle-view/render/component'
 
-export { Tree }
+export { Tree, Component }
 
 // general utilities
 import ObjectUtils from 'utils/object'
@@ -39,6 +40,10 @@ import BeagleCacheError from 'error/BeagleCacheError'
 import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 
 export { BeagleError, BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError }
+
+// decorators
+
+export * from 'metadata/decorator'
 
 // service types
 

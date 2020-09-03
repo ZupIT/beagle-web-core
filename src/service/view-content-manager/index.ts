@@ -15,7 +15,7 @@
  */
 
 import Tree from 'beagle-tree'
-import { BeagleView, LoadParams } from 'beagle-view/types'
+import { BeagleView } from 'beagle-view/types'
 import { ViewContentManager, ViewContentManagerMap } from './types'
 
 function createViewContentManagerMap(): ViewContentManagerMap {
@@ -23,10 +23,6 @@ function createViewContentManagerMap(): ViewContentManagerMap {
 
   function create(view: BeagleView, elementId: string): ViewContentManager {
     return {
-      replaceComponent: (params: LoadParams) => view.fetch(params, elementId, 'replaceComponent'),
-      replace: (params: LoadParams) => view.fetch(params, elementId, 'replace'),
-      append: (params: LoadParams) => view.fetch(params, elementId, 'append'),
-      prepend: (params: LoadParams) => view.fetch(params, elementId, 'prepend'),
       getElementId: () => elementId,
       getElement: () => Tree.findById(view.getTree(), elementId)!,
       getView: () => view,
