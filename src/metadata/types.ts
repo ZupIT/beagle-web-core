@@ -19,7 +19,7 @@ import { Lifecycle, LifecycleHook } from 'service/beagle-service/types'
 export type ComponentTypeMetadata = any
 
 export interface ChildrenMetadata {
-  property: string,
+  property?: string,
   max?: number,
   min?: number,
   type?: string[],
@@ -40,3 +40,11 @@ export interface ExtractedMetadata {
   children: Record<string, ChildrenMetadata>,
   lifecycles: Record<Lifecycle, Record<string, LifecycleHook>>,
 }
+
+export type LifecycleDecoratorFactory = (
+  (hook: LifecycleHook) => (target: any) => void
+)
+
+export type BeagleChildrenDecoratorFactory = (
+  (childrenMetadata: ChildrenMetadata) => (target: any) => void
+)
