@@ -18,8 +18,24 @@ import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
 
 export interface ViewContentManager {
+  /**
+   * Gets the id of the current component.
+   * 
+   * @returns the component's id
+   */
   getElementId: () => string,
+  /**
+   * Gets the Beagle representation (tree) of the current component. Attention: this is a copy
+   * of the actual node, to alter any property of the node, there must be a re-render.
+   * 
+   * @returns the component's node
+   */
   getElement: () => IdentifiableBeagleUIElement,
+  /**
+   * Gets the BeagleView that generated the current component.
+   * 
+   * @returns the BeagleView
+   */
   getView: () => BeagleView,
 }
 
