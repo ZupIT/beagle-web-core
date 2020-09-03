@@ -72,7 +72,8 @@ export interface BeagleConfig<Schema> {
    */
   middlewares?: Array<BeagleMiddleware<Schema>>,
   /**
-   * The default cache strategy for fetching views from the backend.
+   * The default cache strategy for fetching views from the backend. By default uses
+   * `beagle-with-fallback-to-cache`.
    */
   strategy?: Strategy,
   /**
