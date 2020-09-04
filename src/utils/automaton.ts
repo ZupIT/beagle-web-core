@@ -32,6 +32,13 @@ export interface DPAParams {
 }
 
 export interface DPA {
+  /**
+   * Uses the automaton to identify its patterns inside the string passed as parameter. If a pattern
+   * is identified, the identified substring is returned. Otherwise, null is returned.
+   * 
+   * @param input the string to match against the automaton
+   * @returns the substring matching the pattern
+   */
   match: (input: string) => string | null,
 }
 
@@ -67,13 +74,6 @@ export interface DPA {
  * the stack); and `next` (the next state). The only required property for a transition is `next`.
  */
 function createDPA({ initial, final, transitions }: DPAParams): DPA {
-  /**
-   * Uses the automaton to identify its patterns inside the string passed as parameter. If a pattern
-   * is identified, the identified substring is returned. Otherwise, null is returned.
-   * 
-   * @param input the string to match against the automaton
-   * @returns the substring matching the pattern
-   */
   function match(input: string) {
     const stack: string[] = []
     let currentState = initial
@@ -114,6 +114,9 @@ function createDPA({ initial, final, transitions }: DPAParams): DPA {
 }
 
 export default {
+  /**
+   * The empty symbol for transitions
+   */
   empty,
   createDPA,
 }

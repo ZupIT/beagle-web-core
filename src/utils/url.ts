@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * Creates a query parameter string according to a <key, value> map.
+ * 
+ * Example: for the input `{ name: 'Shallan Davar', 'birth place': 'Jah Keved' }`, the result
+ * would be `?name=Shallan%20Davar&birth%20place=Jah%20Keved`.
+ * 
+ * @param data the <key, value> map
+ * @returns the query string
+ */
 function createQueryString(data: Record<string, string>) {
   if (!data || !Object.keys(data).length) return ''
   const keys = Object.keys(data)
