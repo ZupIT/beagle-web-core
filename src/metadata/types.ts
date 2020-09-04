@@ -19,7 +19,7 @@ import { Lifecycle, LifecycleHook } from 'service/beagle-service/types'
 export type ComponentTypeMetadata = any
 
 export interface ChildrenMetadata {
-  property: string,
+  property?: string,
   max?: number,
   min?: number,
   type?: string[],

@@ -34,7 +34,7 @@ function formatChildrenProperty(
   component: BeagleUIElement,
   childrenMetadata?: ChildrenMetadata,
 ) {
-  const properties = childrenMetadata
+  const properties = childrenMetadata && childrenMetadata.property
     ? [childrenMetadata.property, ...CHILDREN_PROPERTY_NAMES]
     : CHILDREN_PROPERTY_NAMES
 

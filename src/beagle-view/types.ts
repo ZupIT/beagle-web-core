@@ -72,7 +72,7 @@ export interface UpdateWithTreeParams<Schema> {
 export interface BeagleView<T = any> {
   subscribe: (listener: Listener) => (() => void),
   addErrorListener: (listener: ErrorListener) => (() => void),
-  fetch: (params: LoadParams, elementId?: string, mode?: TreeUpdateMode) => Promise<void>,
+  fetch: (params: LoadParams, anchor?: string, mode?: TreeUpdateMode) => Promise<void>,
   getRenderer: () => Renderer,
   getTree: () => IdentifiableBeagleUIElement,
   getBeagleNavigator: () => BeagleNavigator,

@@ -36,10 +36,14 @@ export interface BeagleContext<T = any> {
 export function createBeagleContextFromViewContentManager(
   manager: ViewContentManager,
 ): BeagleContext {
+  function fetch(params: LoadParams, mode: 'replaceComponent' | 'append' | 'prepend') {
+    return manager.getView().fetch(params, manager.getElementId(), mode)
+  }
+
   return {
-    replace: manager.replaceComponent,
-    append: manager.append,
-    prepend: manager.prepend,
+    replace: (params: LoadParams) => fetch(params, 'replaceComponent'),
+    append: (params: LoadParams) => fetch(params, 'append'),
+    prepend: (params: LoadParams) => fetch(params, 'prepend'),
     getElementId: manager.getElementId,
     getElement: manager.getElement,
     getView: manager.getView,
