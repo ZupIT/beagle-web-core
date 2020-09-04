@@ -20,6 +20,7 @@
  * compiler, if we have arrow functions here, the Angular code won't compile.
  */
 
+import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { Lifecycle, LifecycleHook } from 'service/beagle-service/types'
 import {
   ComponentWithMetadata,
@@ -42,19 +43,19 @@ export function BeforeStart(hook: LifecycleHook) {
   }
 }
 
-export function BeforeViewSnapshot(hook: LifecycleHook) {
+export function BeforeViewSnapshot(hook: LifecycleHook<IdentifiableBeagleUIElement>) {
   return function(target: any) {
     registerLifecycleToComponent('beforeViewSnapshot', hook, target)
   }
 }
 
-export function AfterViewSnapshot(hook: LifecycleHook) {
+export function AfterViewSnapshot(hook: LifecycleHook<IdentifiableBeagleUIElement>) {
   return function(target: any) {
     registerLifecycleToComponent('afterViewSnapshot', hook, target)
   }
 }
 
-export function BeforeRender(hook: LifecycleHook) {
+export function BeforeRender(hook: LifecycleHook<IdentifiableBeagleUIElement>) {
   return function(target: any) {
     registerLifecycleToComponent('beforeRender', hook, target)
   }
