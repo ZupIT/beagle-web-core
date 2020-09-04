@@ -108,7 +108,7 @@ export interface BeagleNavigator {
    */
   resetStack: (route: Route) => Route,
   /**
-   * Removes teh entire navigation history and starts it over by navigating to a new initial route
+   * Removes the entire navigation history and starts it over by navigating to a new initial route
    * (passed as parameter).
    * 
    * @route the route to navigate to (new initial route)
