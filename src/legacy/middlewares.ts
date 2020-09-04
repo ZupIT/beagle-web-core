@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement } from 'beagle-tree/types'
+import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { BeagleConfig } from 'service/beagle-service/types'
 import logger from 'logger'
 
@@ -27,7 +27,7 @@ export function updateMiddlewaresInConfiguration(config: BeagleConfig<any>) {
       let result = originalBeforeViewSnapshot ? originalBeforeViewSnapshot(viewTree) : viewTree
       if (!result) result = viewTree 
       config.middlewares!.forEach((middleware) => {
-        result = middleware(result as BeagleUIElement<any>)
+        result = middleware(result as IdentifiableBeagleUIElement) as IdentifiableBeagleUIElement
       })
   
       return result

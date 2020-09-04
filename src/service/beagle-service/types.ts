@@ -14,7 +14,12 @@
   * limitations under the License.
 */
 
-import { BeagleUIElement, ComponentName, DefaultSchema } from 'beagle-tree/types'
+import {
+  BeagleUIElement,
+  IdentifiableBeagleUIElement,
+  ComponentName,
+  DefaultSchema,
+} from 'beagle-tree/types'
 import { ActionHandler } from 'action/types'
 import { BeagleView } from 'beagle-view/types'
 import { RemoteCache } from 'service/network/remote-cache/types'
@@ -30,7 +35,7 @@ export type Lifecycle = 'beforeStart' | 'beforeViewSnapshot' | 'afterViewSnapsho
 
 export type ExecutionMode = 'development' | 'production'
 
-export type LifecycleHook = (viewTree: Record<string, any>) => void | Record<string, any>
+export type LifecycleHook<T = any> = (viewTree: T) => void | T
 
 export type LifecycleHookMap = Record<Lifecycle, {
   global?: (tree: any) => any,
@@ -105,7 +110,12 @@ export interface BeagleConfig<Schema> {
    * The map of global lifecycles, these will be run when rendering a view, before the components
    * themselves are rendered as HTML.
    */
-  lifecycles?: Partial<Record<Lifecycle, (viewTree: Record<string, any>) => void>>,
+  lifecycles?: {
+    beforeStart?: LifecycleHook,
+    beforeViewSnapshot?: LifecycleHook<IdentifiableBeagleUIElement>,
+    afterViewSnapshot?: LifecycleHook<IdentifiableBeagleUIElement>,
+    beforeRender?: LifecycleHook<IdentifiableBeagleUIElement>,
+  },
   /**
    * The custom storage. By default, uses the browser's `localStorage`.
    */
