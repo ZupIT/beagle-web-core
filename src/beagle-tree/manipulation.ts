@@ -19,14 +19,15 @@ import { BeagleUIElement, IdentifiableBeagleUIElement, TreeInsertionMode } from 
 import { findById, findParentByChildId, indexOf } from './reading'
 
 /**
- * todo: revise and complete
  * Adds a child element to the target tree. If the mode is "append", the child will be added as the
- * last element of the target's children. If "prepend", it will be added as the first child. This
- * function modifies "target", it's not a pure function.
+ * last element of the target's children. If "prepend", it will be added as the first child.
  * 
- * @param target 
- * @param child 
- * @param mode 
+ * This function modifies `target`, it's not a pure function.
+ * 
+ * @param target the tree to be modified by receiving the new node `child`
+ * @param child the node to insert into the tree `target`
+ * @param mode the insertion strategy. Prepend (insert as first child), append (insert as last
+ * child) or replace (removes all children and inserts `child`).
  */
 export function addChild<Schema>(
   target: BeagleUIElement<Schema>,
@@ -39,49 +40,62 @@ export function addChild<Schema>(
 }
 
 /**
- * todo: revise and complete
- * Adds a source tree into the target tree. The source tree will be added to the element with id
- * equals to the parentId. You can also specify the mode. If the mode is "append", the source tree
- * will be added as the last element of the parent's children. If "prepend", it will be added as the
- * first child. This function modifies "target", it's not a pure function.
- * @param target 
- * @param source 
- * @param parentId 
- * @param mode 
+ * Combine two trees. This function inserts the tree `source` into the tree `target` at the node
+ * referred by `anchor`. To tell which position `source` should occupy in the array of children of
+ * `anchor`, you should use the last parameter `mode`.
+ * 
+ * If there's no node with id `anchor`, the tree will be left untouched.
+ * 
+ * This function modifies `target`, it's not a pure function.
+ * 
+ * @param target the tree to be modified by receiving the new branch `source`
+ * @param source the tree to be inserted into `target`
+ * @param anchor the id of the node to attach the new branch to
+ * @param mode the insertion strategy. Prepend (insert as first child of `anchor`), append (insert
+ * as last child of `anchor`) or replace (removes all children of `anchor` and inserts `child`).
  */
 export function insertIntoTree<Schema>(
   target: IdentifiableBeagleUIElement<Schema>,
   source: IdentifiableBeagleUIElement<Schema>,
-  parentId: string,
+  anchor: string,
   mode: TreeInsertionMode = 'append'
 ) {
-  const element = findById(target, parentId)
+  const element = findById(target, anchor)
   if (!element) return
   addChild(element, source, mode)
 }
 
 /**
- * todo: revise and complete
- * Replaces with "source" the element in "target" identified by "id". This function modifies
- * "target", it's not a pure function.
- * @param target 
- * @param source 
- * @param id 
+ * Just like `insertIntoTree`, `replaceInTree` combines two trees. But, instead of inserting the
+ * new branch as a child of the node referred by `anchor`, it completely replaces `anchor`, i.e.
+ * after this function runs, `anchor` doesn't exist in `target` anymore, it gets replaced by the
+ * tree `source`.
+ * 
+ * If there's no node with id `anchor` or if `anchor` is the root node, the tree will be left
+ * untouched.
+ * 
+ * This function modifies `target`, it's not a pure function.
+ * 
+ * @param target the tree to be modified by receiving the new branch `source`
+ * @param source the tree to be inserted into `target`
+ * @param anchor the id of the node to be replaced by the new branch `source`
  */
 export function replaceInTree<Schema>(
   target: IdentifiableBeagleUIElement<Schema>,
   source: IdentifiableBeagleUIElement<Schema>,
-  id: string,
+  anchor: string,
 ) {
-  const parent = findParentByChildId(target, id)
+  const parent = findParentByChildId(target, anchor)
   if (!parent) return
-  const index = indexOf(parent, id)
+  const index = indexOf(parent, anchor)
   parent.children!.splice(index, 1, source)
 }
 
 /**
- * todo: complete
- * @param tree 
+ * Deep-clones the tree passed as parameter.
+ * 
+ * @param tree the tree to be cloned
+ * @returns the clone of the tree
  */
 export function clone<T extends BeagleUIElement>(tree: T): T {
   return cloneDeep(tree)

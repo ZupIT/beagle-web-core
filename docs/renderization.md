@@ -130,6 +130,25 @@ BeforeStart((textComponentPayload) => {
 })(Table)
 ```
 
+It is important to notice, mainly for React, where Higher Order Components (HOCs) are common, that
+the component to receive the decorator must be the final component. For instance, suppose, you
+want to apply a hoc named `withTheme` to your component:
+
+```typescript
+const MyComponent: FC = () => {
+  // ...
+}
+
+// This is wrong, it has no effect!
+// BeforeRender(myLifecycleFunction)(MyComponent)
+// export default withTheme(MyComponent)
+
+// You need to apply the decorator to the final component instead:
+const MyComponentWithTheme = withTheme(MyComponent)
+BeforeRender(myLifecycleFunction)(MyComponentWithTheme)
+export default MyComponentWithTheme
+```
+
 The return value of a lifecycle hook can be either nothing (undefined) or a tree. If it is a tree,
 the rendering process will discard the previous tree and start working on the tree returned by the
 hook.

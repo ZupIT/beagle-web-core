@@ -59,21 +59,60 @@ export interface Analytics {
 }
 
 export interface BeagleConfig<Schema> {
+  /**
+   * URL to the backend providing the views (JSON) for Beagle. 
+   */
   baseUrl: string,
+  /**
+   * Reserved for future use. Has no effect for now.
+   */
   schemaUrl?: string,
   /**
    * @deprecated Since version 1.2. Will be deleted in version 2.0. Use lifecycles instead.
    */
   middlewares?: Array<BeagleMiddleware<Schema>>,
+  /**
+   * The default cache strategy for fetching views from the backend. By default uses
+   * `beagle-with-fallback-to-cache`.
+   */
   strategy?: Strategy,
+  /**
+   * Custom function to make HTTP requests. You can use this to implement your own HTTP client,
+   * calculating your own headers, cookies, response transformation, etc. The function provided here
+   * must implement the same interface as the default fetch function of the browser. By default, the
+   * browser's fetch function will be used.
+   */
   fetchData?: typeof fetch,
+  /**
+   * Provides an Analytics client so Analytics records can be generated. By default, no Analytics
+   * data is registered.
+   */
   analytics?: Analytics,
+  /**
+   * The map of components to be used when rendering a view. The key must be the `_beagleComponent_`
+   * identifier and the value must be the component itself. The key must always start with `beagle:`
+   * or `custom:`.
+   */
   components: {
     [K in ComponentName<Schema>]: any
   },
+  /**
+   * The map of custom actions. The key must be the `_beagleAction_` identifier and the value must
+   * be the action handler. The key must always start with `beagle:` or `custom:`.
+   */
   customActions?: Record<string, ActionHandler>,
+  /**
+   * The map of global lifecycles, these will be run when rendering a view, before the components
+   * themselves are rendered as HTML.
+   */
   lifecycles?: Partial<Record<Lifecycle, (viewTree: Record<string, any>) => void>>,
+  /**
+   * The custom storage. By default, uses the browser's `localStorage`.
+   */
   customStorage?: Storage,
+  /**
+   * Wether or not to send specific beagle headers in the requests to fetch a view. Default is true.
+   */
   useBeagleHeaders?: boolean,
 }
 

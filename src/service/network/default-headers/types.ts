@@ -22,5 +22,13 @@ export interface BeagleDefaultHeaders {
 }
 
 export interface DefaultHeaders {
+  /**
+   * Gets the beagle headers for the given url/method pair. Beware, this function is asynchronous,
+   * i.e. it returns a promise and not the headers directly.
+   * 
+   * @param url the url to get the headers for
+   * @param method the http method the url will be called with
+   * @returns a promise that resolves to a <key, value> map with the headers
+   */
   get: (url: string, method: HttpMethod) => Promise<BeagleDefaultHeaders | {}>,
 }

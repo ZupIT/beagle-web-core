@@ -23,7 +23,31 @@ export interface CacheMetadata {
 }
 
 export interface RemoteCache {
+  /**
+   * Updates the locally stored cache metadata for the pair url/method passed as parameter. If
+   * no metadata exists yet, it is created.
+   * 
+   * @param metadata the updated metadata
+   * @param url the url associate to the metadata to
+   * @param method the http method to associate the metadata to
+   */
   updateMetadata: (metadata: CacheMetadata, url: string, method: HttpMethod) => void,
+  /**
+   * Gets the stored hash for the given url and http method. Beware, this function is asynchronous,
+   * i.e. it returns a promise and not the hash directly.
+   * 
+   * @param url the url
+   * @param method the http method
+   * @returns a promise that resolves to the hash
+   */
   getHash: (url: string, method: HttpMethod) => Promise<string>,
+  /**
+   * Gets the cache metadata for the given url and http method. Beware, this function is
+   * asynchronous, i.e. it returns a promise and not the cache metadata directly.
+   * 
+   * @param url the url
+   * @param method the http method
+   * @returns a promise that resolves to the cache metadata
+   */
   getMetadata: (url: string, method: HttpMethod) => Promise<CacheMetadata | null>,
 }
