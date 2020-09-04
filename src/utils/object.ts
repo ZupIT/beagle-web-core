@@ -28,15 +28,36 @@ const getLowercaseMapOfKeys = (() => {
   }
 })()
 
-function getValueByCaseInsensitiveKey(values: Record<string, any>, name: string) {
-  const lowercaseKeyMap = getLowercaseMapOfKeys(values) || {}
-  const originalKey = lowercaseKeyMap[(name as string).toLowerCase()]
-  return values[originalKey]
+/**
+ * Gets the value for `key` in `object`. Using this function, `key` is case-insensitive, i.e,
+ * `object[foo]`, `object[Foo]`, `object[fOo]` are all the same in the eyes of this function.
+ * 
+ * @param object the object to retrieve the value from
+ * @param key the property key (case-insensitive)
+ * @returns the value `object[key]` where `key` is case insensitive
+ */
+function getValueByCaseInsensitiveKey(object: Record<string, any>, key: string) {
+  const lowercaseKeyMap = getLowercaseMapOfKeys(object) || {}
+  const originalKey = lowercaseKeyMap[(key as string).toLowerCase()]
+  return object[originalKey]
 }
 
-function getOriginalKeyByCaseInsensitiveKey(values: Record<string, any>, name: string) {
-  const lowercaseKeyMap = getLowercaseMapOfKeys(values) || {}
-  const originalKey = lowercaseKeyMap[(name as string).toLowerCase()]
+/**
+ * Given an object and a key, finds if the object has the property `key`, but in this function, the
+ * search is done in a case insensitive manner. If the key exists in the object, the original key
+ * (case-sensitive) is returned, otherwise, undefined is returned.
+ * 
+ * Example: suppose an object with a property called `Name`. If this function is called with this
+ * object and the second parameter `name` or `Name` or `nAMe`, the result will be `Name`, the
+ * original name of the property.
+ * 
+ * @param object the object to retrieve the original key from
+ * @param key the property key (case-insensitive)
+ * @returns the original case-sensitive key
+ */
+function getOriginalKeyByCaseInsensitiveKey(object: Record<string, any>, key: string) {
+  const lowercaseKeyMap = getLowercaseMapOfKeys(object) || {}
+  const originalKey = lowercaseKeyMap[(key as string).toLowerCase()]
   return originalKey
 }
 
