@@ -119,4 +119,19 @@ describe('Metadata: decorators', () => {
       },
     })
   })
+
+  it('should be compatible with Angular', () => {
+    // arrow functions are not compatible with Angular
+    expect(BeforeStart.toString()).toMatch(/^function/)
+    expect(BeforeStart(jest.fn()).toString()).toMatch(/^function/)
+
+    expect(BeforeViewSnapshot.toString()).toMatch(/^function/)
+    expect(BeforeViewSnapshot(jest.fn()).toString()).toMatch(/^function/)
+
+    expect(AfterViewSnapshot.toString()).toMatch(/^function/)
+    expect(AfterViewSnapshot(jest.fn()).toString()).toMatch(/^function/)
+
+    expect(BeforeRender.toString()).toMatch(/^function/)
+    expect(BeforeRender(jest.fn()).toString()).toMatch(/^function/)
+  })
 })

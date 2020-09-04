@@ -63,6 +63,8 @@ const config = {
 or local hooks to the lifecycles in a per-component basis (annotations/decorators):
 
 ```typescript
+// Attention: these won't work with production builds in Angular. Keep reading for more details.
+
 @BeforeStart((textComponentPayload) => {
   // ...
 })
@@ -75,6 +77,38 @@ or local hooks to the lifecycles in a per-component basis (annotations/decorator
 @BeforeRender((textComponentPayload) => {
   // ...
 })
+@Component({
+  // ...
+})
+class Text {
+  // ...
+}
+```
+
+As commented in the code above, the example won't work with Angular when building for production.
+This is due to the many limitations of the Angular compiler. To write a code readable by the Angular
+compiler you must choose one of two options:
+
+1. Place the comment `// @dynamic` before calling the decorator. Example:
+```typescript
+// @dynamic
+@BeforeRender((textComponentPayload) => {
+  // ...
+})
+@Component({
+  // ...
+})
+class Text {
+  // ...
+}
+```
+2. Replace the arrow function for a common function and export it. Example:
+```typescript
+export function beforeRender(textComponentPayload) {
+  // ...
+}
+
+@BeforeRender(beforeRender)
 @Component({
   // ...
 })

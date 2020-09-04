@@ -18,8 +18,6 @@ import mapKeys from 'lodash/mapKeys'
 import defaultActionHandlers from 'action'
 import ComponentMetadata from 'metadata/parser'
 import { ExtractedMetadata } from 'metadata/types'
-import lazyComponentMiddleware from 'legacy/lazy-component'
-import tabViewMiddleware from 'legacy/tab-view'
 import { updateMiddlewaresInConfiguration } from 'legacy/middlewares'
 import { BeagleConfig, LifecycleHookMap } from './types'
 
@@ -58,10 +56,6 @@ function getLifecycleHookMap(
 }
 
 function update(config: BeagleConfig<any>) {
-  // todo: remove as soon as legacy middlewares have been transferred somewhere else
-  if (!config.middlewares) config.middlewares = []
-  config.middlewares.push(lazyComponentMiddleware, tabViewMiddleware)
-
   // todo: remove with version 2.0
   updateMiddlewaresInConfiguration(config)
 }

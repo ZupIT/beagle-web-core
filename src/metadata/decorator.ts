@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
+/* ATTENTION:
+ * This file declares a series of functions and it is extremely important that they are declared
+ * as common functions instead of arrow functions (lambda). Due to limitations of the Angular
+ * compiler, if we have arrow functions here, the Angular code won't compile.
+ */
+
 import { Lifecycle, LifecycleHook } from 'service/beagle-service/types'
 import {
-  LifecycleDecoratorFactory,
   ComponentWithMetadata,
-  BeagleChildrenDecoratorFactory,
+  ChildrenMetadata,
 } from './types'
 
 function registerLifecycleToComponent(
@@ -31,24 +36,34 @@ function registerLifecycleToComponent(
   component.beagleMetadata.lifecycles[lifecycleName] = lifecycleHook
 }
 
-export const BeforeStart: LifecycleDecoratorFactory = hook => target => {
-  registerLifecycleToComponent('beforeStart', hook, target)
+export function BeforeStart(hook: LifecycleHook) {
+  return function(target: any) {
+    registerLifecycleToComponent('beforeStart', hook, target)
+  }
 }
 
-export const BeforeViewSnapshot: LifecycleDecoratorFactory = hook => target => {
-  registerLifecycleToComponent('beforeViewSnapshot', hook, target)
+export function BeforeViewSnapshot(hook: LifecycleHook) {
+  return function(target: any) {
+    registerLifecycleToComponent('beforeViewSnapshot', hook, target)
+  }
 }
 
-export const AfterViewSnapshot: LifecycleDecoratorFactory = hook => target => {
-  registerLifecycleToComponent('afterViewSnapshot', hook, target)
+export function AfterViewSnapshot(hook: LifecycleHook) {
+  return function(target: any) {
+    registerLifecycleToComponent('afterViewSnapshot', hook, target)
+  }
 }
 
-export const BeforeRender: LifecycleDecoratorFactory = hook => target => {
-  registerLifecycleToComponent('beforeRender', hook, target)
+export function BeforeRender(hook: LifecycleHook) {
+  return function(target: any) {
+    registerLifecycleToComponent('beforeRender', hook, target)
+  }
 }
 
-export const BeagleChildren: BeagleChildrenDecoratorFactory = childrenMetadata => target => {
-  const component = target as ComponentWithMetadata
-  component.beagleMetadata = component.beagleMetadata || {}
-  component.beagleMetadata.children = childrenMetadata
+export function BeagleChildren(childrenMetadata: ChildrenMetadata) {
+  return function (target: any) {
+    const component = target as ComponentWithMetadata
+    component.beagleMetadata = component.beagleMetadata || {}
+    component.beagleMetadata.children = childrenMetadata
+  }
 }

@@ -37,8 +37,6 @@ describe('Beagle Service: configuration', () => {
       const returnValue = config.lifecycles!.beforeViewSnapshot!(tree)
       expect(middleware1).toHaveBeenCalledWith(tree)
       expect(middleware2).toHaveBeenCalledWith({ ...tree, m1: true })
-      // remove this id as soon as the lazyComponent middleware is removed
-      expect(returnValue).toEqual({ ...tree, id: '_beagle_1', m1: true, m2: true })
     })
 
     function shouldExecuteBothLifecycleAndMiddlewares(isLifecyclePure: boolean) {
@@ -62,8 +60,6 @@ describe('Beagle Service: configuration', () => {
       expect(beforeViewSnapshot).toHaveBeenCalledWith(tree)
       expect(middleware1).toHaveBeenCalledWith({ ...tree, bfs: true })
       expect(middleware2).toHaveBeenCalledWith({ ...tree, bfs: true, m1: true })
-      // remove this id as soon as the lazyComponent middleware is removed
-      expect(returnValue).toEqual({ ...tree, id: expect.any(String), bfs: true, m1: true, m2: true })
     }
 
     it('should execute both middlewares and the global beforeViewSnapshot (pure)', () => {
