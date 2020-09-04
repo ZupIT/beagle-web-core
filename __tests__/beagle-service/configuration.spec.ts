@@ -33,7 +33,7 @@ describe('Beagle Service: configuration', () => {
       Configuration.update(config)
 
       expect(config.lifecycles!.beforeViewSnapshot).toBeDefined()
-      const tree = { _beagleComponent_ : 'beagle:container' }
+      const tree = { _beagleComponent_ : 'beagle:container', id: '1' }
       const returnValue = config.lifecycles!.beforeViewSnapshot!(tree)
       expect(middleware1).toHaveBeenCalledWith(tree)
       expect(middleware2).toHaveBeenCalledWith({ ...tree, m1: true })
@@ -55,7 +55,7 @@ describe('Beagle Service: configuration', () => {
 
       Configuration.update(config)
 
-      const tree = { _beagleComponent_ : 'beagle:container' }
+      const tree = { _beagleComponent_ : 'beagle:container', id: '1' }
       const returnValue = config.lifecycles!.beforeViewSnapshot!(tree)
       expect(beforeViewSnapshot).toHaveBeenCalledWith(tree)
       expect(middleware1).toHaveBeenCalledWith({ ...tree, bfs: true })
