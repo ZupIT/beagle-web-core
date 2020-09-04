@@ -60,7 +60,12 @@ function createRenderer({
     return newTree || viewTree
   }
 
+  function isMalFormedComponent(component: any) {
+    return !component || !component._beagleComponent_
+  }
+
   function runComponentLifecycleHook(component: any, lifecycle: Lifecycle) {
+    if (isMalFormedComponent(component)) return component
     const hook = lifecycleHooks[lifecycle].components[component._beagleComponent_.toLowerCase()]
     if (!hook) return component
     const newComponent = hook(component)
