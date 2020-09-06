@@ -20,6 +20,7 @@ import sendRequest from './send-request'
 import alert from './alert'
 import confirm from './confirm'
 import submitForm from './submit-form'
+import condition from './condition'
 import NavigationActions from './navigation'
 import { ActionHandler } from './types'
 
@@ -30,6 +31,7 @@ const defaultActionHandlers: Record<string, ActionHandler> = {
   'beagle:alert': alert,
   'beagle:confirm': confirm,
   'beagle:submitForm': submitForm,
+  'beagle:condition': condition,
   ...NavigationActions,
 }
 
