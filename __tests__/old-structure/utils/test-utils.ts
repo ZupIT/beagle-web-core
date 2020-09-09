@@ -127,7 +127,7 @@ export function createDefaultHeadersMock(): DefaultHeaders {
 
 export function createUrlBuilderMock(): URLBuilder {
   return {
-    build: jest.fn(),
+    build: jest.fn(url => url),
   }
 }
 
