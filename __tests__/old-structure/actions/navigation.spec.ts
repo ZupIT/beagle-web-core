@@ -29,12 +29,13 @@ describe('Actions: Navigation', () => {
   const initialStack = [{ url: '/home' }]
   const url = 'http://my-app/my-view'
 
-  const pushStack = () => {
+  const pushStack = (shouldPrefetch = false) => {
     NavigationActions['beagle:pushStack']({
       action: {
         _beagleAction_: 'beagle:pushStack',
         route: {
           url: '/profile',
+          shouldPrefetch,
         },
       },
       ...params
@@ -80,6 +81,7 @@ describe('Actions: Navigation', () => {
     // mocks the rendering part of the beagleView, we don't want to test that here
     beagleView.getRenderer().doFullRender = jest.fn()
     beagleView.getRenderer().doPartialRender = jest.fn()
+    beagleView.fetch = jest.fn(beagleView.fetch)
   })
 
   it('should init beagle navigator correctly', () => {
@@ -101,7 +103,7 @@ describe('Actions: Navigation', () => {
 
   it('should pushStack on beagle navigator', () => {
     pushStack()
-    const newStack = [{ url: '/profile' }]
+    const newStack = [{ url: '/profile', shouldPrefetch: false }]
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack, newStack])
     expect(globalMocks.log).not.toHaveBeenCalled()
   })
@@ -164,6 +166,20 @@ describe('Actions: Navigation', () => {
     NavigationActions['beagle:popToView']({ action: { _beagleAction_: 'beagle:popToView', route: '/non-existent-route' }, ...params })
     expect(beagleView.getBeagleNavigator().get()).toEqual([initialStack])
     expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(Error))
+  })
+
+  it('should fetch view on navigation', () => {
+    pushStack()
+    expect(beagleView.fetch).toHaveBeenCalledWith(expect.objectContaining({ path: '/profile' }))
+    expect(globalMocks.log).not.toHaveBeenCalled()
+  })
+
+  it('should use pre-fetched view on navigation', () => {
+    pushStack(true)
+    expect(beagleView.getBeagleService().viewClient.loadFromCache)
+      .toHaveBeenCalledWith('/profile', 'get')
+    expect(beagleView.fetch).not.toHaveBeenCalled()
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
 })

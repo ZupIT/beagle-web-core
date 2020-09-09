@@ -14,21 +14,50 @@
  * limitations under the License.
  */
 
+import flatten from 'lodash/flatten'
 import { BeagleUIElement } from 'beagle-tree/types'
 import NavigationActions from 'action/navigation'
+import { BeagleNavigationAction } from 'action/navigation/types'
 import StringUtils from 'utils/string'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
+import logger from 'logger'
+
+const lowerCaseNavigationActions = Object.keys(NavigationActions).map(key => key.toLowerCase())
+
+function findNavigationActions(data: any, shouldIgnoreComponents = true): BeagleNavigationAction[] {
+  const shouldIgnore = shouldIgnoreComponents && data._beagleComponent_
+  if (!data || typeof data !== 'object' || shouldIgnore) return []
+
+  if (Array.isArray(data)) return flatten(data.map(item => findNavigationActions(item)))
+
+  let result: BeagleNavigationAction[] = []
+  const isNavigationAction = (
+    typeof data._beagleAction_ === 'string'
+    && lowerCaseNavigationActions.includes(data._beagleAction_.toLowerCase())
+  )
+  if (isNavigationAction) result.push(data)
+  const keys = Object.keys(data)
+  keys.forEach(key => result = [...result, ...findNavigationActions(data[key])])
+
+  return result
+}
+
+function validateUrl(url?: string) {
+  if (!url) return false
+  const isDynamic = !!url.match(/@\{.+\}/)
+  if (isDynamic) logger.warn(`Dynamic URLs cannot be pre-fetched: ${url}`)
+  return !isDynamic
+}
 
 function preFetchViews(component: BeagleUIElement, urlBuilder: URLBuilder, viewClient: ViewClient) {
-  const keys = Object.keys(component)
+  const navigationActions = findNavigationActions(component, false)
 
-  keys.forEach((key) => {
-    if (!component[key]) return
-    const isNavigationAction = NavigationActions[component[key]._beagleAction_]
-    const shouldPrefetch = component[key].route && component[key].route.shouldPrefetch
-    if (isNavigationAction && shouldPrefetch) {
-      const path = StringUtils.addPrefix(component[key].route.url, '/')
+  navigationActions.forEach((action: any) => {
+    const shouldPrefetch = action.route && action.route.shouldPrefetch
+    const isUrlValid = validateUrl(action.route.url)
+    if (shouldPrefetch && isUrlValid) {
+      const path = StringUtils.addPrefix(action.route.url, '/')
       const url = urlBuilder.build(path)
       viewClient.loadFromServer(url)
     }
