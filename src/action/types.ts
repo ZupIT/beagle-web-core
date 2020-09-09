@@ -61,6 +61,13 @@ export interface SubmitFormAction {
   _beagleAction_: 'beagle:submitForm',
 }
 
+export interface ConditionAction {
+  _beagleAction_: 'beagle:condition',
+  condition: boolean,
+  onTrue?: BeagleAction | BeagleAction[],
+  onFalse?: BeagleAction | BeagleAction[],
+}
+
 export interface CustomAction {
   _beagleAction_: string,
   [key: string]: any,
@@ -74,6 +81,7 @@ export type BeagleDefaultAction = (
   | ConfirmAction
   | BeagleNavigationAction
   | SubmitFormAction
+  | ConditionAction
 )
 
 export type BeagleAction = BeagleDefaultAction | CustomAction
