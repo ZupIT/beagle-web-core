@@ -25,7 +25,7 @@ import {
 } from './lifecycles.mock'
 
 
-describe('Renderer: lifecycles', () => {
+describe('Beagle View: render: lifecycles', () => {
   it('should run global lifecycles', () => {
     const lifecycleHooks = createLifecycleMap(true, false)
     const renderer = createRenderer({ lifecycleHooks })
