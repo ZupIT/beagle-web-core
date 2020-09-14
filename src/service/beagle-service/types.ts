@@ -22,6 +22,7 @@ import {
 } from 'beagle-tree/types'
 import { ActionHandler } from 'action/types'
 import { BeagleView } from 'beagle-view/types'
+import { NavigationController } from 'beagle-view/navigator/types'
 import { RemoteCache } from 'service/network/remote-cache/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
 import { URLBuilder } from 'service/network/url-builder/types'
@@ -77,8 +78,7 @@ export interface BeagleConfig<Schema> {
    */
   middlewares?: Array<BeagleMiddleware<Schema>>,
   /**
-   * The default cache strategy for fetching views from the backend. By default uses
-   * `beagle-with-fallback-to-cache`.
+   * @deprecated will be removed in version 2.0. Use a default navigationController instead.
    */
   strategy?: Strategy,
   /**
@@ -124,10 +124,14 @@ export interface BeagleConfig<Schema> {
    * Wether or not to send specific beagle headers in the requests to fetch a view. Default is true.
    */
   useBeagleHeaders?: boolean,
+  /**
+   * Options to navigate from one view to another. To set the default options, use `default: true`.
+   */
+  navigationControllers?: Record<string, NavigationController>,
 }
 
 export type BeagleService = Readonly<{
-  createView: () => BeagleView,
+  createView: (navigationControllers?: Record<string, NavigationController>) => BeagleView,
   getConfig: () => BeagleConfig<any>,
   // processed configuration
   actionHandlers: Record<string, ActionHandler>,

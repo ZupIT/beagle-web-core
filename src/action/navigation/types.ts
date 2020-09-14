@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement } from 'beagle-tree/types'
+import { Route } from 'beagle-view/navigator/types'
 
 export interface OpenExternalURLAction {
   _beagleAction_: 'beagle:openExternalURL',
@@ -26,18 +26,6 @@ export interface OpenNativeRouteAction {
   route: string,
   data?: Record<string, any>,
 }
-
-export interface RemoteView {
-  url: string,
-  fallback?: BeagleUIElement,
-  shouldPrefetch?: boolean,
-}
-
-export interface LocalView {
-  screen: BeagleUIElement,
-}
-
-export type Route = LocalView | RemoteView
 
 export interface PushStackAction {
   _beagleAction_: 'beagle:pushStack',
@@ -51,6 +39,7 @@ export interface PopStackAction {
 export interface PushViewAction {
   _beagleAction_: 'beagle:pushView',
   route: Route,
+  controllerId?: string,
 }
 
 export interface PopViewAction {
@@ -65,14 +54,24 @@ export interface PopToViewAction {
 export interface ResetStackAction {
   _beagleAction_: 'beagle:resetStack',
   route: Route,
+  controllerId?: string,
 }
 
 export interface ResetApplicationAction {
   _beagleAction_: 'beagle:resetApplication',
   route: Route,
+  controllerId?: string,
 }
 
-export type BeagleNavigationAction =
+export interface GenericNavigationAction {
+  _beagleAction_: string,
+  route?: Route | string,
+  controllerId?: string,
+  url?: string,
+  data?: Record<string, any>,
+}
+
+export type BeagleNavigationAction = (
   PushStackAction |
   PopStackAction |
   PushViewAction |
@@ -80,3 +79,4 @@ export type BeagleNavigationAction =
   PopToViewAction |
   ResetStackAction |
   ResetApplicationAction
+)

@@ -16,112 +16,15 @@
 
 import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import BeagleError from 'error/BeagleError'
-import { Route } from 'action/navigation/types'
 import { BeagleService, BeagleMiddleware } from 'service/beagle-service/types'
 import { HttpMethod } from 'service/network/types'
 import { Strategy } from 'service/network/view-client/types'
+import { BeagleNavigator } from './navigator/types'
+import { Renderer } from './render/types'
 
 export type Listener = (tree: IdentifiableBeagleUIElement) => void
 
 export type ErrorListener = (errors: Array<BeagleError>) => void
-
-export interface Renderer {
-  /**
-   * Does a partial render to the BeagleView. Compared to the full render, it will skip every step
-   * until the view snapshot, i.e, it will start by taking the view snapshot and end doing a render
-   * to the screen. Useful when updating a view that has already been rendered. If the `viewTree`
-   * hasn't been rendered before, you should use `doFullRender` instead.
-   * 
-   * To see the full documentation of the renderization process, please follow this link:
-   * https://github.com/ZupIT/beagle-web-core/blob/master/docs/renderization.md
-   * 
-   * @param viewTree the new tree to render, can be just a new branch to add to the current tree
-   * @param anchor when `viewTree` is just a new branch to be added to the tree, `anchor` must be
-   * specified, it is the id of the component to attach `viewTree` to.
-   * @param mode when `viewTree` is just a new branch to be added to the tree, the mode must be
-   * specified. It can be `append`, `prepend` or `replace`.
-   */
-  doPartialRender: (
-    viewTree: IdentifiableBeagleUIElement<any>,
-    anchor?: string,
-    mode?: TreeUpdateMode,
-  ) => void,
-  /**
-   * Does a full render to the BeagleView. A full render means that every renderization step will
-   * be executed for the tree passed as parameter. If `viewTree` has been rendered at least once,
-   * you should call `doPartialRender` instead.
-   * 
-   * To see the full documentation of the renderization process, please follow this link:
-   * https://github.com/ZupIT/beagle-web-core/blob/master/docs/renderization.md
-   * 
-   * @param viewTree the new tree to render, can be just a new branch to add to the current tree
-   * @param anchor when `viewTree` is just a new branch to be added to the tree, `anchor` must be
-   * specified, it is the id of the component to attach `viewTree` to.
-   * @param mode when `viewTree` is just a new branch to be added to the tree, the mode must be
-   * specified. It can be `append`, `prepend` or `replace`.
-   */
-  doFullRender: (viewTree: BeagleUIElement<any>, anchor?: string, mode?: TreeUpdateMode) => void,
-}
-
-export interface BeagleNavigator {
-  /**
-   * Creates and navigates to a new navigation stack where the first route is the parameter `route`.
-   * 
-   * @route the route to navigate to
-   * @returns the current route after navigating
-   */
-  pushStack: (route: Route) => Route,
-  /**
-   * Removes the entire current navigation stack and navigates back to the last route of the
-   * previous stack. Throws an error if there's only one navigation stack.
-   * 
-   * @returns the current route after navigating
-   */
-  popStack: () => Route,
-  /**
-   * Navigates to `route` by pushing it to the navigation history of the current navigation stack.
-   * 
-   * @route the route to navigate to
-   * @returns the current route after navigating
-   */
-  pushView: (route: Route) => Route,
-  /**
-   * Goes back one entry in the navigation history. If the current stack has only one view, this
-   * also pops the current stack. If only one stack and one view exist, it will throw an error.
-   * 
-   * @returns the current route after navigating
-   */
-  popView: () => Route,
-  /**
-   * Removes every navigation entry in the current stack until `route` is found. Navigates to
-   * `route`. If `route` doesn't exist in the current stack, an error is thrown.
-   * 
-   * @returns the current route after navigating
-   */
-  popToView: (route: string) => Route,
-  /**
-   * Removes the current navigation stack and navigates to the a new stack where the first route is
-   * the one passed as parameter.
-   * 
-   * @route the route to navigate to
-   * @returns the current route after navigating 
-   */
-  resetStack: (route: Route) => Route,
-  /**
-   * Removes the entire navigation history and starts it over by navigating to a new initial route
-   * (passed as parameter).
-   * 
-   * @route the route to navigate to (new initial route)
-   * @returns the current route after navigating 
-   */
-  resetApplication: (route: Route) => Route,
-  /**
-   * Gets a copy of the navigation history.
-   * 
-   * @returns a copy of all navigation stacks
-   */
-  get: () => Route[][],
-}
 
 // todo: legacy code. Remove <T = any> with v2.0.
 export interface LoadParams<T = any> {
@@ -130,7 +33,8 @@ export interface LoadParams<T = any> {
    */
   path: string,
   /**
-   * A tree to fallback to when an error occurs.
+   * A UI tree to fallback to when a network error occurs. When specified, the properties
+   * `errorComponent` and `showError` are ignored.
    */
   fallback?: BeagleUIElement,
   /**
@@ -142,25 +46,23 @@ export interface LoadParams<T = any> {
    */
   headers?: Record<string, string>,
   /**
-   * Wether to show a loading component or not. True by default.
+   * Wether to show a loading component or not. Uses the navigation controller option by default.
    */
   shouldShowLoading?: boolean,
   /**
-   * Wether to show an error component or not. True by default.
+   * Wether to show an error component or not. Uses the navigation controller option by default.
    */
   shouldShowError?: boolean,
   /**
-   * The cache strategy to use. By default, uses the global configuration.
+   * The cache strategy to use. By default, uses the option in the navigation controller.
    */
   strategy?: Strategy,
   /**
-   * A custom loading component to use. By default will use the loading component of the global
-   * configuration.
+   * A custom loading component to use. By default, uses the option in the navigation controller.
    */
   loadingComponent?: string,
   /**
-   * A custom error component to use. By default will use the error component of the global
-   * configuration.
+   * A custom error component to use. By default, uses the option in the navigation controller
    */
   errorComponent?: string,
 }
@@ -194,25 +96,7 @@ export interface BeagleView<T = any> {
    */
   addErrorListener: (listener: ErrorListener) => (() => void),
   /**
-   * Fetches a new view and replaces the current tree with the result. The options for the request
-   * and for the feedback to render to the user can all be passed in the first parameter `options`.
-   * 
-   * The view fetched can replace the entire tree (default behavior) or be attached to the current
-   * tree. For the second behavior, the second and third parameter must be used. The second
-   * parameter (`anchor`) is the id of the node to attach the view fetched to, while the third
-   * parameter is the insertion strategy. The insertion strategy may be one of four:
-   * 
-   * - `replaceComponent`: replaces the node referred by `anchor` by the view fetched.
-   * - `replace`: replaces the children of the node referred by `anchor` by the view fetched.
-   * - `append`: adds the view fetched to the end of the array of children of the node referred by
-   * `anchor`.
-   * - `prepend`: adds the view fetched to the start of the array of children of the node referred
-   * by `anchor`.
-   * 
-   * @param options an object containing the options for making the request.
-   * @param anchor optional. The id of the node to attach the fetched view to. By default, it's
-   * going to be the root node.
-   * @param mode optional. The insertion mode. By default, it's `replaceComponent`.
+   * @deprecated will be removed in v2.0. Use the navigator instead.
    */
   fetch: (options: LoadParams, anchor?: string, mode?: TreeUpdateMode) => Promise<void>,
   /**
@@ -232,7 +116,7 @@ export interface BeagleView<T = any> {
    * 
    * @returns the navigator
    */
-  getBeagleNavigator: () => BeagleNavigator,
+  getNavigator: () => BeagleNavigator,
   /**
    * Gets the BeagleService that created this BeagleView.
    * 

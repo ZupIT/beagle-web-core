@@ -17,18 +17,18 @@
 import logger from 'logger'
 import Tree from 'beagle-tree'
 import String from 'utils/string'
-import BeagleError from 'error/BeagleError'
+import StringUtils from 'utils/string'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import Renderer from './render'
+import { Renderer as RendererType } from './render/types'
 import BeagleNavigator from './navigator'
-import { BeagleNavigator as BeagleNavigatorType } from './types'
+import { LocalView, RemoteView } from './navigator/types'
 import {
   BeagleView,
   Listener,
   ErrorListener,
   LoadParams,
-  Renderer as RendererType,
   UpdateWithTreeParams,
 } from './types'
 
@@ -36,7 +36,8 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
-  let navigator: BeagleNavigatorType | undefined
+  const { navigationControllers } = beagleService.getConfig()
+  const navigator = BeagleNavigator.create(navigationControllers)
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => {}
 
@@ -70,6 +71,9 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     errorListeners.forEach(l => l(errors))
   }
 
+  /* todo: beagleView.fetch has been deprecated. This  function is still needed for internal usage,
+  but we can probably simplify it a lot once we no longer need to support beagleView.fetch
+  (v2.0). */
   async function fetch(
     params: LoadParams,
     elementId?: string,
@@ -79,7 +83,6 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     const url = beagleService.urlBuilder.build(path)
     const originalTree = currentUITree
     const fallbackUIElement = params.fallback
-    navigator = navigator || BeagleNavigator.create({ url: path })
 
     function onChangeTree(loadedTree: BeagleUIElement) {
       setTree(originalTree) // changes should be made based on the original tree
@@ -113,15 +116,9 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
     return Tree.clone(currentUITree)
   }
 
-  function getBeagleNavigator() {
-    if (!navigator) {
-      throw new BeagleError('You need to fetch at least one view before using the navigator.')
-    }
-    return navigator
-  }
-
   function destroy() {
     unsubscribeFromGlobalContext()
+    navigator.destroy()
   }
 
   // todo: legacy code. Remove this function with v2.0.
@@ -170,32 +167,64 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
   const beagleView: BeagleView = {
     subscribe,
     addErrorListener,
-    fetch,
     getRenderer: () => renderer,
     getTree,
-    getBeagleNavigator,
+    getNavigator: () => navigator,
     getBeagleService: () => beagleService,
     destroy,
-    // todo: legacy code. Remove the following 2 properties with v2.0.
+    // todo: legacy code. Remove the following 3 properties with v2.0.
+    fetch: (...args) => {
+      logger.warn('beagleView.fetch has been deprecated to avoid inconsistencies with the internal Beagle Navigator. It will be removed with version 2.0. If you want to change the current view, according to a new url, consider using the navigator instead.')
+      return fetch(...args)
+    },
     updateWithFetch,
     updateWithTree,
   }
 
-  renderer = Renderer.create({
-    beagleView,
-    actionHandlers: beagleService.actionHandlers,
-    childrenMetadata: beagleService.childrenMetadata,
-    executionMode: 'development',
-    lifecycleHooks: beagleService.lifecycleHooks,
-    renderToScreen: runListeners,
-    setTree,
-    typesMetadata: {},
-  })
+  function createRenderer() {
+    renderer = Renderer.create({
+      beagleView,
+      actionHandlers: beagleService.actionHandlers,
+      childrenMetadata: beagleService.childrenMetadata,
+      executionMode: 'development',
+      lifecycleHooks: beagleService.lifecycleHooks,
+      renderToScreen: runListeners,
+      setTree,
+      typesMetadata: {},
+    })
+  }
 
-  unsubscribeFromGlobalContext = beagleService.globalContext.subscribe(
-    () => renderer.doFullRender(getTree()),
-  )
+  function setupNavigation() {
+    navigator.subscribe(async (route, navigationController) => {
+      const { urlBuilder, viewClient } = beagleService
+      const { screen } = route as LocalView
+      const { url, fallback, shouldPrefetch } = route as RemoteView
+  
+      if (screen) return renderer.doFullRender(screen)
+  
+      if (shouldPrefetch) {
+        const path = StringUtils.addPrefix(url, '/')
+        const baseUrl = urlBuilder.build(path)
+        try {
+          const cachedTree = await viewClient.loadFromCache(baseUrl, 'get')
+          return renderer.doFullRender(cachedTree)
+        } catch {}
+      }
+      
+      await fetch({ path: url, fallback, ...navigationController })
+    })
+  }
 
+  function setupGlobalContext() {
+    unsubscribeFromGlobalContext = beagleService.globalContext.subscribe(
+      () => renderer.doFullRender(getTree()),
+    )
+  }
+
+  createRenderer()
+  setupNavigation()
+  setupGlobalContext()
+  
   return beagleView
 }
 
