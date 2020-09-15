@@ -196,6 +196,11 @@ const createBeagleNavigator = (
     isDestroyed = true
   }
 
+  function isEmpty() {
+    const numberOfRoutes = navigation.reduce((result, stack) => result + stack.routes.length, 0)
+    return numberOfRoutes === 0
+  }
+
   return {
     pushStack: (route, controllerId) => navigate('pushStack', route, controllerId),
     popStack: () => navigate('popStack'),
@@ -209,6 +214,7 @@ const createBeagleNavigator = (
     subscribe,
     get,
     navigate,
+    isEmpty,
     destroy,
   }
 }

@@ -125,7 +125,8 @@ export interface BeagleConfig<Schema> {
    */
   useBeagleHeaders?: boolean,
   /**
-   * Options to navigate from one view to another. To set the default options, use `default: true`.
+   * Options for the visual feedback when navigating from a view to another. To set the default
+   * options, use `default: true`.
    */
   navigationControllers?: Record<string, NavigationController>,
 }

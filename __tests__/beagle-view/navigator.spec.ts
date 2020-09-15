@@ -94,6 +94,21 @@ describe('Beagle View: Navigator', () => {
       expect(error).toBeDefined()
       expect(error!.message).toMatch('navigation error')
     })
+
+    it('should be empty when there are no stacks', () => {
+      const navigator = Navigator.create()
+      expect(navigator.isEmpty()).toBe(true)
+    })
+
+    it('should be empty when there are no routes', () => {
+      const navigator = Navigator.create(undefined, [{ routes: [] }])
+      expect(navigator.isEmpty()).toBe(true)
+    })
+
+    it('should be not be empty', () => {
+      const navigator = Navigator.create(undefined, history)
+      expect(navigator.isEmpty()).toBe(false)
+    })
   })
 
   describe('initialization', () => {

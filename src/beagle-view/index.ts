@@ -43,7 +43,7 @@ function createBeagleView(
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers } = beagleService.getConfig()
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
-  const navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
+  let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => {}
 
@@ -89,6 +89,18 @@ function createBeagleView(
     const url = beagleService.urlBuilder.build(path)
     const originalTree = currentUITree
     const fallbackUIElement = params.fallback
+
+    // todo: legacy code. remove the following "if" in v2.0.
+    // if this is equivalent to a first navigation, reflect it in the navigator
+    if (navigator.isEmpty() && !elementId && mode === 'replaceComponent') {
+      const initialNavigationHistory = [
+        { routes: [{ url: path }],
+        controllerId: initialControllerId,
+      }]
+      navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
+      // eslint-disable-next-line
+      setupNavigation()
+    }
 
     function onChangeTree(loadedTree: BeagleUIElement) {
       setTree(originalTree) // changes should be made based on the original tree
@@ -180,7 +192,7 @@ function createBeagleView(
     destroy,
     // todo: legacy code. Remove the following 3 properties with v2.0.
     fetch: (...args) => {
-      logger.warn('beagleView.fetch has been deprecated to avoid inconsistencies with the internal Beagle Navigator. It will be removed with version 2.0. If you want to change the current view, according to a new url, consider using the navigator instead.')
+      logger.warn('beagleView.fetch has been deprecated to avoid inconsistencies with the internal Beagle Navigator. It will be removed with version 2.0. If you want to change the current view according to a new url, consider using the navigator instead.')
       return fetch(...args)
     },
     updateWithFetch,

@@ -164,6 +164,12 @@ export interface BeagleNavigator {
    */
   get: () => Stack[],
   /**
+   * Verifies if the navigation history is empty, i.e. if there are no registered routes.
+   * 
+   * @returns true for an empty navigation history, false otherwise.
+   */
+  isEmpty: () => boolean,
+  /**
    * Destroys the navigator.
    */
   destroy: () => void,
