@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
+import cloneDeep from 'lodash/cloneDeep'
 import Navigator from 'beagle-view/navigator'
 import { BeagleNavigator, NavigationType, NavigationController } from 'beagle-view/navigator/types'
 
 describe('Beagle View: Navigator', () => {
+  const history = [
+    { routes: [{ url: 'stack1-view1' }] },
+    { routes: [{ url: 'stack2-view1' }, { url: 'stack2-view2' }] },
+  ]
+
   beforeEach(() => {
     globalMocks.log.mockClear()
   })
@@ -94,6 +100,11 @@ describe('Beagle View: Navigator', () => {
     it('should start with empty navigation history', () => {
       const navigator = Navigator.create()
       expect(navigator.get()).toEqual([])
+    })
+
+    it('should start with given navigation history', () => {
+      const navigator = Navigator.create(undefined, history)
+      expect(navigator.get()).toEqual(history)
     })
 
     it('should throw error when trying to popView on empty navigation history', async () => {
@@ -232,78 +243,60 @@ describe('Beagle View: Navigator', () => {
 
   describe('navigations', () => {
     it('should pushStack', async () => {
-      const navigator = Navigator.create()
-      
-      await navigator.pushStack({ url: 'stack1-view1' })
-      expect(navigator.get()).toEqual([{ routes: [{ url: 'stack1-view1' }] }])
-      
-      await navigator.pushStack({ url: 'stack2-view1' })
+      const navigator = Navigator.create(undefined, history)
+      await navigator.pushStack({ url: 'stack3-view1' })
       expect(navigator.get()).toEqual([
-        { routes: [{ url: 'stack1-view1' }] },
-        { routes: [{ url: 'stack2-view1' }] },
+        ...history,
+        { routes: [{ url: 'stack3-view1' }] },
       ])
     })
   
     it('should resetStack', async () => {
-      const navigator = Navigator.create()
-      
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushStack({ url: 'stack2-view1' })
+      const navigator = Navigator.create(undefined, history)
       await navigator.resetStack({ url: 'stack3-view1' })
       expect(navigator.get()).toEqual([
-        { routes: [{ url: 'stack1-view1' }] },
+        history[0],
         { routes: [{ url: 'stack3-view1' }] },
       ])
     })
   
     it('should resetApplication', async () => {
-      const navigator = Navigator.create()
-      
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushStack({ url: 'stack2-view1' })
+      const navigator = Navigator.create(undefined, history)
       await navigator.resetApplication({ url: 'stack3-view1' })
       expect(navigator.get()).toEqual([{ routes: [{ url: 'stack3-view1' }] }])
     })
   
     it('should pushView to top-most stack', async () => {
-      const navigator = Navigator.create()
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushStack({ url: 'stack2-view1' })
-      await navigator.pushView({ url: 'stack2-view2' })
-
+      const navigator = Navigator.create(undefined, history)
+      await navigator.pushView({ url: 'stack2-view3' })
       expect(navigator.get()).toEqual([
-        { routes: [{ url: 'stack1-view1' }] },
-        { routes: [{ url: 'stack2-view1' }, { url: 'stack2-view2' }] },
+        history[0],
+        { routes: [ ...history[1].routes, { url: 'stack2-view3' }] },
       ])
     })
   
     it('should popView and not change stack', async () => {
-      const navigator = Navigator.create()
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushStack({ url: 'stack2-view1' })
-      await navigator.pushView({ url: 'stack2-view2' })
+      const navigator = Navigator.create(undefined, history)
       await navigator.popView()
-
       expect(navigator.get()).toEqual([
-        { routes: [{ url: 'stack1-view1' }] },
+        history[0],
         { routes: [{ url: 'stack2-view1' }] },
       ])
     })
 
     it('should popView and also pop the stack', async() => {
-      const navigator = Navigator.create()
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushStack({ url: 'stack2-view1' })
-      await navigator.popView()
+      const anotherHistory = cloneDeep(history)
+      anotherHistory[1].routes.pop()
+      const navigator = Navigator.create(undefined, anotherHistory)
 
-      expect(navigator.get()).toEqual([{ routes: [{ url: 'stack1-view1' }] }])
+      await navigator.popView()
+      expect(navigator.get()).toEqual([history[0]])
     })
 
     it('should not popView if only a single navigation entry exists', async () => {
-      const navigator = Navigator.create()
+      const anotherHistory = [history[0]]
+      const navigator = Navigator.create(undefined, anotherHistory)
       let error: Error | undefined
-
-      await navigator.pushStack({ url: 'stack1-view1' })
 
       try {
         await navigator.popView()
@@ -313,29 +306,22 @@ describe('Beagle View: Navigator', () => {
 
       expect(error).toBeDefined()
       expect(error!.message).toMatch('navigation error')
-      expect(navigator.get()).toEqual([{ routes: [{ url: 'stack1-view1' }] }])
+      expect(navigator.get()).toEqual(anotherHistory)
     })
   
     it('should popToView', async () => {
-      const navigator = Navigator.create()
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushView({ url: 'stack1-view2' })
-      await navigator.pushView({ url: 'stack1-view3' })
-      await navigator.pushView({ url: 'stack1-view4' })
-      await navigator.popToView('stack1-view2')
+      const anotherHistory = cloneDeep(history)
+      anotherHistory[1].routes.push({ url: 'stack2-view3' })
+      anotherHistory[1].routes.push({ url: 'stack2-view4' })
+      const navigator = Navigator.create(undefined, anotherHistory)
 
-      expect(navigator.get()).toEqual([
-        { routes: [{ url: 'stack1-view1' }, { url: 'stack1-view2' }] },
-      ])
+      await navigator.popToView('stack2-view2')
+      expect(navigator.get()).toEqual(history)
     })
 
     it('should not popToView that doesn\'t exist in the current stack', async () => {
-      const navigator = Navigator.create()
+      const navigator = Navigator.create(undefined, history)
       let error: Error | undefined
-  
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushStack({ url: 'stack2-view1' })
-      await navigator.pushView({ url: 'stack2-view2' })
 
       try {
         await navigator.popToView('stack1-view1')
@@ -345,27 +331,20 @@ describe('Beagle View: Navigator', () => {
 
       expect(error).toBeDefined()
       expect(error!.message).toMatch('navigation error')
-      expect(navigator.get()).toEqual([
-        { routes: [{ url: 'stack1-view1' }] },
-        { routes: [{ url: 'stack2-view1' }, { url: 'stack2-view2' }] },
-      ])
+      expect(navigator.get()).toEqual(history)
     })
   
     it('should popStack', async () => {
-      const navigator = Navigator.create()
-      await navigator.pushStack({ url: 'stack1-view1' })
-      await navigator.pushStack({ url: 'stack2-view1' })
-      await navigator.pushView({ url: 'stack2-view2' })
+      const navigator = Navigator.create(undefined, history)
       await navigator.popStack()
 
-      expect(navigator.get()).toEqual([{ routes: [{ url: 'stack1-view1' }] }])
+      expect(navigator.get()).toEqual([history[0]])
     })
 
     it('should not popStack if only a single stack exists', async () => {
-      const navigator = Navigator.create()
+      const anotherHistory = [history[0]]
+      const navigator = Navigator.create(undefined, anotherHistory)
       let error: Error | undefined
-
-      await navigator.pushStack({ url: 'stack1-view1' })
 
       try {
         await navigator.popStack()
@@ -375,7 +354,7 @@ describe('Beagle View: Navigator', () => {
 
       expect(error).toBeDefined()
       expect(error!.message).toMatch('navigation error')
-      expect(navigator.get()).toEqual([{ routes: [{ url: 'stack1-view1' }] }])
+      expect(navigator.get()).toEqual(anotherHistory)
     })
   })
   
@@ -417,10 +396,8 @@ describe('Beagle View: Navigator', () => {
     })
   
     it('should not popToView if route is an object', async () => {
-      const navigator = Navigator.create()
-      await navigator.pushStack({ url: 'test1' })
-      await navigator.pushView({ url: 'test2' })
-      await expectNavigationError('popToView', { url: 'test1' }, navigator)
+      const navigator = Navigator.create(undefined, history)
+      await expectNavigationError('popToView', { url: 'stack2-view1' }, navigator)
     })
   })
 
@@ -434,7 +411,6 @@ describe('Beagle View: Navigator', () => {
       secured: {
         loadingComponent: 'custom:secured-loading',
         shouldShowError: false,
-        strategy: 'network-only',
       },
     }
 
@@ -472,6 +448,14 @@ describe('Beagle View: Navigator', () => {
       navigator.subscribe(listener)
       await navigator.pushStack({ url: '/sign-up' })
       expect(listener).toHaveBeenCalledWith(expect.anything(), controllers.public)
+    })
+
+    it('should use the controller given in the initial value', async () => {
+      const navigator = Navigator.create(controllers, [{ routes: [], controllerId: 'secured' }])
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+      await navigator.pushView({ url: '/account' })
+      expect(listener).toHaveBeenCalledWith(expect.anything(), controllers.secured)
     })
 
     it('should change the controller after a pushStack', () => {

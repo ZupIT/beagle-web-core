@@ -15,7 +15,7 @@
  */
 
 import BeagleView from 'beagle-view'
-import { BeagleView as BeagleViewType } from 'beagle-view/types'
+import { BeagleView as BeagleViewType, NetworkOptions } from 'beagle-view/types'
 import { NavigationController } from 'beagle-view/navigator/types'
 import { createBeagleServiceMock } from '../old-structure/utils/test-utils'
 
@@ -28,10 +28,8 @@ describe('Beagle View', () => {
       secured: {
         errorComponent: 'test:error',
         loadingComponent: 'test:loading',
-        headers: { testHeader: 'test-header' },
         shouldShowError: false,
         shouldShowLoading: false,
-        strategy: 'network-only',
       }
     }
     let beagleView: BeagleViewType
@@ -47,6 +45,25 @@ describe('Beagle View', () => {
       beagleService.getConfig = () => ({ navigationControllers })
       beagleView = BeagleView.create(beagleService)
       beagleView.getRenderer().doFullRender = doFullRender
+    })
+
+    it('should apply initial navigation controller', () => {
+      beagleView = BeagleView.create(beagleService, {}, 'secured')
+      expect(beagleView.getNavigator().get()).toEqual([{ routes: [], controllerId: 'secured' }])
+    })
+
+    it('should use network options', () => {
+      const networkOptions: NetworkOptions = {
+        method: 'POST',
+        headers: { testHeader: 'test-header' },
+        strategy: 'network-only',
+      }
+      beagleView = BeagleView.create(beagleService, networkOptions)
+      beagleView.getNavigator().pushStack({ url: '/home' })
+      expect(beagleService.viewClient.load).toHaveBeenCalledWith(expect.objectContaining({
+        url: 'base/home',
+        ...networkOptions,
+      }))
     })
 
     it('should navigate to remote route', async () => {

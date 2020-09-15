@@ -30,14 +30,20 @@ import {
   ErrorListener,
   LoadParams,
   UpdateWithTreeParams,
+  NetworkOptions,
 } from './types'
 
-function createBeagleView(beagleService: BeagleService): BeagleView {
+function createBeagleView(
+  beagleService: BeagleService,
+  networkOptions?: NetworkOptions,
+  initialControllerId?: string,
+): BeagleView {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers } = beagleService.getConfig()
-  const navigator = BeagleNavigator.create(navigationControllers)
+  const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
+  const navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => {}
 
@@ -211,7 +217,7 @@ function createBeagleView(beagleService: BeagleService): BeagleView {
         } catch {}
       }
       
-      await fetch({ path: url, fallback, ...navigationController })
+      await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
     })
   }
 

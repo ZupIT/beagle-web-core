@@ -32,8 +32,9 @@ import {
 
 const createBeagleNavigator = (
   navigationControllers?: Record<string, NavigationController>,
+  initialValue?: Stack[],
 ): BeagleNavigator => {
-  let navigation: Stack[] = []
+  let navigation: Stack[] = initialValue ? cloneDeep(initialValue) : []
   let isNavigationInProgress = false
   let isDestroyed = false
   const defaultNavigationController = find(navigationControllers, { default: true }) || {}

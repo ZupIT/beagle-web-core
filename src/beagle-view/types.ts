@@ -26,6 +26,22 @@ export type Listener = (tree: IdentifiableBeagleUIElement) => void
 
 export type ErrorListener = (errors: Array<BeagleError>) => void
 
+export interface NetworkOptions {
+  /**
+   * Additional headers to send in the request.
+   */
+  method?: HttpMethod,
+  /**
+   * Additional headers to send in the request.
+   */
+  headers?: Record<string, string>,
+  /**
+   * The cache strategy for fetching views from the backend. By default uses
+   * `beagle-with-fallback-to-cache`.
+   */
+  strategy?: Strategy,
+}
+
 // todo: legacy code. Remove <T = any> with v2.0.
 export interface LoadParams<T = any> {
   /**

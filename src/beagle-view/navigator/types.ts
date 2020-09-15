@@ -55,10 +55,6 @@ export interface NavigationController {
    */
   default?: boolean,
   /**
-   * Additional headers to send in the request.
-   */
-  headers?: Record<string, string>,
-  /**
    * Wether to show a loading component or not. True by default.
    */
   shouldShowLoading?: boolean,
@@ -66,11 +62,6 @@ export interface NavigationController {
    * Wether to show an error component or not. True by default.
    */
   shouldShowError?: boolean,
-  /**
-   * The cache strategy for fetching views from the backend. By default uses
-   * `beagle-with-fallback-to-cache`.
-   */
-  strategy?: Strategy,
   /**
    * A custom loading component to use. The default value is "beagle:loading"
    */
