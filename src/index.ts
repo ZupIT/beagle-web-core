@@ -62,6 +62,8 @@ export * from 'action/types'
 export * from 'action/navigation/types'
 export * from 'beagle-tree/types'
 export * from 'beagle-view/types'
+export * from 'beagle-view/render/types'
+export * from 'beagle-view/navigator/types'
 export * from 'metadata/types'
 
 // beagle service: default exportation
