@@ -78,7 +78,8 @@ export interface BeagleConfig<Schema> {
    */
   middlewares?: Array<BeagleMiddleware<Schema>>,
   /**
-   * @deprecated will be removed in version 2.0. Use a default navigationController instead.
+   * The default cache strategy for fetching views from the backend. By default uses
+   * `beagle-with-fallback-to-cache`.
    */
   strategy?: Strategy,
   /**
