@@ -222,6 +222,7 @@ export function createNavigatorMock(): BeagleNavigator {
     resetApplication: jest.fn(),
     resetStack: jest.fn(),
     subscribe: jest.fn(),
+    isEmpty: jest.fn(),
   }
 }
 
