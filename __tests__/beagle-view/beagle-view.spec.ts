@@ -20,6 +20,22 @@ import { NavigationController } from 'beagle-view/navigator/types'
 import { createBeagleServiceMock } from '../old-structure/utils/test-utils'
 
 describe('Beagle View', () => {
+  describe('general behavior', () => {
+    it('should return a copy of the NetworkOptions', () => {
+      const beagleService = createBeagleServiceMock()
+      const networkOptions: NetworkOptions = { strategy: 'network-only' }
+      const beagleView = BeagleView.create(beagleService, networkOptions)
+      expect(beagleView.getNetworkOptions()).not.toBe(networkOptions)
+      expect(beagleView.getNetworkOptions()).toEqual(networkOptions)
+    })
+
+    it('should return undefined if no NetworkOptions is provided', () => {
+      const beagleService = createBeagleServiceMock()
+      const beagleView = BeagleView.create(beagleService)
+      expect(beagleView.getNetworkOptions()).toBeUndefined()
+    })
+  })
+
   describe('navigation', () => {
     const beagleService = createBeagleServiceMock()
     const doFullRender = jest.fn()

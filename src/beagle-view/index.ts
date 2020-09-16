@@ -182,6 +182,10 @@ function createBeagleView(
     if (errors.length) logger.error(...errors)
   }
 
+  function getNetworkOptions() {
+    return networkOptions && { ...networkOptions }
+  }
+
   const beagleView: BeagleView = {
     subscribe,
     addErrorListener,
@@ -197,6 +201,7 @@ function createBeagleView(
     },
     updateWithFetch,
     updateWithTree,
+    getNetworkOptions,
   }
 
   function createRenderer() {

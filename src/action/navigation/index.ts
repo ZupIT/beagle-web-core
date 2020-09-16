@@ -19,6 +19,7 @@ import { NavigationType } from 'beagle-view/navigator/types'
 import UrlUtils from 'utils/url'
 import StringUtils from 'utils/string'
 import ObjectUtils from 'utils/object'
+import logger from 'logger'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
@@ -52,7 +53,11 @@ const navigateBeagleView: ActionHandler<GenericNavigationAction> = async ({
     actionNameLowercase,
   )
   const navigationType = actionName.replace(/^beagle:/, '') as NavigationType
-  beagleView.getNavigator().navigate(navigationType, action.route, action.controllerId)
+  try {
+    await beagleView.getNavigator().navigate(navigationType, action.route, action.controllerId)
+  } catch (error) {
+    logger.error(error.message || error)
+  }
 }
 
 NavigationActions = {

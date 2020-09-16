@@ -134,6 +134,13 @@ export interface BeagleView<T = any> {
    */
   getNavigator: () => BeagleNavigator,
   /**
+   * Gets a copy of the NetworkOptions passed as parameter when creating this BeagleView. Undefined
+   * is returned if no NetworkOptions was provided.
+   * 
+   * @returns the NetworkOptions
+   */
+  getNetworkOptions: () => NetworkOptions | undefined,
+  /**
    * Gets the BeagleService that created this BeagleView.
    * 
    * @returns the BeagleService
