@@ -62,23 +62,25 @@ export interface LoadParams<T = any> {
    */
   headers?: Record<string, string>,
   /**
-   * Wether to show a loading component or not. Uses the navigation controller option by default.
+   * Wether to show a loading component or not. True by default.
    */
   shouldShowLoading?: boolean,
   /**
-   * Wether to show an error component or not. Uses the navigation controller option by default.
+   * Wether to show an error component or not. True by default.
    */
   shouldShowError?: boolean,
   /**
-   * The cache strategy to use. By default, uses the option in the navigation controller.
+   * The cache strategy to use. By default, uses the global configuration.
    */
   strategy?: Strategy,
   /**
-   * A custom loading component to use. By default, uses the option in the navigation controller.
+   * A custom loading component to use. By default will use the loading component of the global
+   * configuration.
    */
   loadingComponent?: string,
   /**
-   * A custom error component to use. By default, uses the option in the navigation controller
+   * A custom error component to use. By default will use the error component of the global
+   * configuration.
    */
   errorComponent?: string,
 }
