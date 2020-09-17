@@ -15,7 +15,7 @@
  */
 
 import nock from 'nock'
-import ViewClient, { namespace } from 'service/network/view-client'
+import ViewClient from 'service/network/view-client'
 import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
@@ -63,7 +63,10 @@ describe('Utils: tree fetching (load: general)', () => {
     } catch { }
     expect(onChangeTree).toHaveBeenCalledWith({
       _beagleComponent_: 'custom:error',
-      errors: [expect.stringMatching('network'), expect.stringMatching('cache')],
+      errors: [
+        expect.objectContaining({ message: expect.stringContaining('network error') }),
+        expect.objectContaining({ message: expect.stringContaining('cache') }),
+      ],
       retry,
     })
     expect(nock.isDone()).toBe(true)
@@ -132,9 +135,47 @@ describe('Utils: tree fetching (load: general)', () => {
     } catch { }
     expect(onChangeTree).toHaveBeenCalledWith({
       _beagleComponent_: 'custom-error',
-      errors: [expect.stringMatching('network'), expect.stringMatching('cache')],
+      errors: [
+        expect.objectContaining({ message: expect.stringContaining('network error') }),
+        expect.objectContaining({ message: expect.stringContaining('cache') }),
+      ],
       retry,
     })
+    expect(nock.isDone()).toBe(true)
+  })
+
+  it('error response should be accessible', async () => {
+    nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    const onChangeTree = jest.fn()
+    const retry = jest.fn()
+    try {
+      await viewClient.load({
+        url,
+        strategy,
+        shouldShowLoading: false,
+        onChangeTree,
+        retry,
+      })
+    } catch {}
+
+    const errors = onChangeTree.mock.calls[0][0].errors
+    expect(errors).toEqual([
+      {
+        message: expect.stringContaining('network error'),
+        response: {
+          status: 500,
+          statusText: 'Internal Server Error',
+          ok: false,
+          type: undefined,
+          redirected: false,
+          url: 'http://teste.com/myview',
+          headers: expect.anything(),
+          text: '{"error":"unexpected error"}',
+          json: { error: 'unexpected error' },
+        }
+      },
+      expect.objectContaining({ message: expect.stringContaining('cache') }),
+    ])
     expect(nock.isDone()).toBe(true)
   })
 

@@ -26,8 +26,9 @@ import logger from 'logger'
 const lowerCaseNavigationActions = Object.keys(NavigationActions).map(key => key.toLowerCase())
 
 function findNavigationActions(data: any, shouldIgnoreComponents = true): BeagleNavigationAction[] {
-  const shouldIgnore = shouldIgnoreComponents && data._beagleComponent_
-  if (!data || typeof data !== 'object' || shouldIgnore) return []
+  if (!data || typeof data !== 'object' || (shouldIgnoreComponents && data._beagleComponent_)) {
+    return []
+  }
 
   if (Array.isArray(data)) return flatten(data.map(item => findNavigationActions(item)))
 

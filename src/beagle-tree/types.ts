@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { SerializableError } from 'error/BeagleError'
+
 export type DefaultSchema = Record<string, Record<string, any>>
 
 export type ComponentName<Schema> = keyof Schema | 'custom:error' | 'custom:loading'
@@ -26,7 +28,7 @@ export type Style = Record<string, any>
 
 export interface ErrorComponentParams {
   retry: () => void,
-  errors: string[],
+  errors: SerializableError[],
 }
 
 export interface DataContext {
