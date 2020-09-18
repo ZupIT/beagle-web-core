@@ -141,7 +141,7 @@ export function createViewClientMock(): ViewClient {
   }
 }
 
-export function createHttpClientMock(): HttpClient {
+export function createHttpResponse(): Response {
   const response: Response = {
     body: null,
     bodyUsed: false,
@@ -163,6 +163,11 @@ export function createHttpClientMock(): HttpClient {
     clone: () => response,
   }
 
+  return response
+}
+
+export function createHttpClientMock(): HttpClient {
+  const response = createHttpResponse()
   return {
     fetch: jest.fn(() => Promise.resolve(response))
   }
