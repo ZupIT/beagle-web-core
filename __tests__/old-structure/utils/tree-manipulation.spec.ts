@@ -75,6 +75,14 @@ describe('Utils: tree manipulation', () => {
     expect(target).toEqual(expected)
   })
 
+  it('should replace children of tree node', () => {
+    const target = clone(treeA)
+    const expected = clone(treeA)
+    expected.children![1]!.children = [treeB]
+    insertIntoTree(target, treeB, 'A.1', 'replace')
+    expect(target).toEqual(expected)
+  })
+
   it('should replace specific node in tree', () => {
     const target = clone(treeA)
     const expected = clone(treeA)

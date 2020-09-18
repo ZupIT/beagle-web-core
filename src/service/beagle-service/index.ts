@@ -15,6 +15,7 @@
  */
 
 import BeagleView from 'beagle-view'
+import { NetworkOptions } from 'beagle-view/types'
 import { DefaultSchema } from 'beagle-tree/types'
 import Configuration from './configuration'
 import { createServices } from './services'
@@ -33,7 +34,9 @@ function createBeagleUIService<
     ...services,
     ...processedConfig,
     getConfig: () => config,
-    createView: () => BeagleView.create(beagleService),
+    createView: (networkOptions?: NetworkOptions, initialControllerId?: string) => (
+      BeagleView.create(beagleService, networkOptions, initialControllerId)
+    ),
   }
   
   return beagleService

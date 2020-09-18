@@ -916,5 +916,5 @@ component.
 
 In case you need to update the current view with a tree that comes from the backend, you should
 not use the renderer directly, instead, you should use
-[the method `fetch` of the `BeagleView`](beagle-view.md#Fetching-a-view). It will internally use all
-the cache mechanisms of Beagle and also do the rendering part.
+[the navigator](beagle-view.md#Fetching-a-view). It will internally use all
+the cache mechanisms of Beagle, update the navigation history and also do the rendering part.

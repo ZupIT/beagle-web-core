@@ -35,8 +35,14 @@ export function addChild<Schema>(
   mode: TreeInsertionMode,
 ) {
   target.children = target.children || []
-  if (mode === 'append') target.children.push(child)
-  else target.children.unshift(child)
+
+  const modeHandlers = {
+    append: () => target.children!.push(child),
+    prepend: () => target.children!.unshift(child),
+    replace: () => target.children = [child],
+  }
+
+  modeHandlers[mode]()
 }
 
 /**

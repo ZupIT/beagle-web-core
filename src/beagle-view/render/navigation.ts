@@ -56,7 +56,7 @@ function preFetchViews(component: BeagleUIElement, urlBuilder: URLBuilder, viewC
 
   navigationActions.forEach((action: any) => {
     const shouldPrefetch = action.route && action.route.shouldPrefetch
-    const isUrlValid = validateUrl(action.route.url)
+    const isUrlValid = action.route && validateUrl(action.route.url)
     if (shouldPrefetch && isUrlValid) {
       const path = StringUtils.addPrefix(action.route.url, '/')
       const url = urlBuilder.build(path)
