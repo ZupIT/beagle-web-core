@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 
+export interface SerializableError {
+  message: string,
+  [key: string]: any,
+}
+
 export default class BeagleError extends Error {
   constructor(message: string) {
     super(`Beagle: ${message}`)
   }
+
+  getSerializableError(): SerializableError | Promise<SerializableError> {
+    return { message: this.message }
+  }
+}
+
+export function isBeagleError(error: Error) {
+  return !!(error.message.startsWith('Beagle') && (error as BeagleError).getSerializableError)
 }

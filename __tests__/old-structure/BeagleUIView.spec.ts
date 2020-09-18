@@ -22,7 +22,7 @@ import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import Tree from 'beagle-tree'
 import { treeA, treeB } from './mocks'
-import { mockLocalStorage, stripTreeIds } from './utils/test-utils'
+import { mockLocalStorage, stripTreeIds, createHttpResponse } from './utils/test-utils'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -92,11 +92,9 @@ describe('BeagleUIView', () => {
     view.addErrorListener(listener1)
     view.addErrorListener(listener2)
     await view.fetch({ path })
-    // @ts-ignore
     const expectedErrors = [
       new BeagleExpiredCacheError(url),
-      // @ts-ignore
-      new BeagleNetworkError(url),
+      new BeagleNetworkError(url, createHttpResponse()),
       new BeagleCacheError(url),
     ]
     expect(listener1).toHaveBeenCalledWith(expectedErrors)
@@ -105,11 +103,10 @@ describe('BeagleUIView', () => {
   })
 
   it('should unsubscribe from errors', async () => {
-    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    nock(baseUrl).get(path).times(2).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const listener = jest.fn()
     const unsubscribe = view.addErrorListener(listener)
     await view.fetch({ path })
-    // @ts-ignore
     expect(listener).toHaveBeenCalled()
     listener.mockClear()
     unsubscribe()

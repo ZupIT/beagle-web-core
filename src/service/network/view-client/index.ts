@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import BeagleError, { isBeagleError } from 'error/BeagleError'
 import BeagleCacheError from 'error/BeagleCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
@@ -117,7 +118,7 @@ function createViewClient(
         { method, headers }
       )
     } catch (error) {
-      throw new BeagleNetworkError(url, error)
+      throw new BeagleNetworkError(url, error.message)
     }
 
     if (response.status < 100 || response.status >= 400) throw new BeagleNetworkError(url, response)
@@ -134,6 +135,21 @@ function createViewClient(
       }
     }
     return uiTree
+  }
+
+  function buildSerializableErrorsArray(errors: Error[]) {
+    const promises = errors.map(e => {
+      if (isBeagleError(e)) {
+        const serializableError = (e as BeagleError).getSerializableError()
+        return serializableError instanceof Promise
+          ? serializableError
+          : Promise.resolve(serializableError)
+      }
+
+      return Promise.resolve({ message: e.message })
+    })
+
+    return Promise.all(promises)
   }
 
   async function load({
@@ -215,7 +231,7 @@ function createViewClient(
         const errorUITree: BeagleUIElement & ErrorComponentParams = {
           _beagleComponent_: errorComponent,
           retry,
-          errors: errors.map(e => e.message),
+          errors: await buildSerializableErrorsArray(errors),
         }
         onChangeTree(errorUITree)
       }
