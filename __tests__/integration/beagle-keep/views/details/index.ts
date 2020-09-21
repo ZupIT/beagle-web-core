@@ -13,3 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { BeagleUIElement } from 'beagle-tree/types'
+import form from './form'
+import context, { setNote, setLoading } from './context'
+import { pageStyle } from '../styles'
+
+const fetchNote = [{
+  _beagleAction_: 'beagle:condition',
+  condition: '@{isNull(global.selectedNote)}',
+  onTrue: [setLoading(false)],
+  onFalse: [{
+    _beagleAction_: 'beagle:sendRequest',
+    url: '/note/@{global.selectedNote}',
+    onSuccess: setNote('onSuccess.data'),
+    onError: [{
+      _beagleAction_: 'beagle:addChildren',
+      value: {
+        _beagleComponent_: 'custom:error',
+        message: 'Couldn\'t find note with id @{global.selectedNote}',
+      },
+      mode: 'replace',
+    }],
+    onFinish: [setLoading(false)],
+  }]
+}]
+
+const details: BeagleUIElement = {
+  _beagleComponent_: 'beagle:container',
+  context,
+  onInit: fetchNote,
+  style: pageStyle,
+  children: [
+    {
+      _beagleComponent_: 'custom:loading',
+      isVisible: '@{form.isLoading}',
+    },
+    form,
+  ],
+}
+
+export default details
