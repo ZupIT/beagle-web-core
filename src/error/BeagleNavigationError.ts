@@ -14,21 +14,10 @@
  * limitations under the License.
  */
 
-export interface SerializableError {
-  message: string,
-  [key: string]: any,
-}
+import BeagleError from 'error/BeagleError'
 
-export default class BeagleError extends Error {
+export default class BeagleNavigationError extends BeagleError {
   constructor(message: string) {
-    super(`Beagle: ${message}`)
+    super(`navigation error: ${message}`)
   }
-
-  getSerializableError(): SerializableError | Promise<SerializableError> {
-    return { message: this.message }
-  }
-}
-
-export function isBeagleError(error: Error) {
-  return !!(error.message.startsWith('Beagle') && (error as BeagleError).getSerializableError)
 }

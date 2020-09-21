@@ -21,7 +21,8 @@ import {
   DefaultSchema,
 } from 'beagle-tree/types'
 import { ActionHandler } from 'action/types'
-import { BeagleView } from 'beagle-view/types'
+import { BeagleView, NetworkOptions } from 'beagle-view/types'
+import { NavigationController } from 'beagle-view/navigator/types'
 import { RemoteCache } from 'service/network/remote-cache/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
 import { URLBuilder } from 'service/network/url-builder/types'
@@ -124,10 +125,23 @@ export interface BeagleConfig<Schema> {
    * Wether or not to send specific beagle headers in the requests to fetch a view. Default is true.
    */
   useBeagleHeaders?: boolean,
+  /**
+   * Options for the visual feedback when navigating from a view to another. To set the default
+   * options, use `default: true`.
+   */
+  navigationControllers?: Record<string, NavigationController>,
 }
 
 export type BeagleService = Readonly<{
-  createView: () => BeagleView,
+  /**
+   * Creates a new Beagle View.
+   * 
+   * @param networkOptions the network options (headers, http method and cache strategy) to use for
+   * every request in this BeagleView. Will use the default values when not specified.
+   * @param initialControllerId the id of the navigation controller for the first navigation stack.
+   * Will use the default navigation controller if not specified.
+   */
+  createView: (networkOptions?: NetworkOptions, initialControllerId?: string) => BeagleView,
   getConfig: () => BeagleConfig<any>,
   // processed configuration
   actionHandlers: Record<string, ActionHandler>,

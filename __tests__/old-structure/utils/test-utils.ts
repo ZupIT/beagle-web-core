@@ -16,7 +16,8 @@
 
 import { BeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
-import { Renderer } from 'beagle-view/types'
+import { Renderer } from 'beagle-view/render/types'
+import { BeagleNavigator } from 'beagle-view/navigator/types'
 import { BeagleService } from 'service/beagle-service/types'
 import { GlobalContext } from 'service/global-context/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
@@ -140,7 +141,7 @@ export function createViewClientMock(): ViewClient {
   }
 }
 
-export function createHttpClientMock(): HttpClient {
+export function createHttpResponse(): Response {
   const response: Response = {
     body: null,
     bodyUsed: false,
@@ -162,6 +163,11 @@ export function createHttpClientMock(): HttpClient {
     clone: () => response,
   }
 
+  return response
+}
+
+export function createHttpClientMock(): HttpClient {
+  const response = createHttpResponse()
   return {
     fetch: jest.fn(() => Promise.resolve(response))
   }
@@ -208,8 +214,26 @@ type PartialBeagleView = (
   & { getBeagleService?: () => Partial<BeagleService> }
 )
 
+export function createNavigatorMock(): BeagleNavigator {
+  return {
+    destroy: jest.fn(),
+    get: jest.fn(),
+    navigate: jest.fn(),
+    popStack: jest.fn(),
+    popToView: jest.fn(),
+    popView: jest.fn(),
+    pushStack: jest.fn(),
+    pushView: jest.fn(),
+    resetApplication: jest.fn(),
+    resetStack: jest.fn(),
+    subscribe: jest.fn(),
+    isEmpty: jest.fn(),
+  }
+}
+
 export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView {
   const renderer = createRenderer()
+  const navigator = createNavigatorMock()
   const beagleService = createBeagleServiceMock()
 
   return {
@@ -217,7 +241,7 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
     getTree: jest.fn(custom.getTree),
     subscribe: jest.fn(custom.subscribe),
     fetch: jest.fn(custom.fetch),
-    getBeagleNavigator: jest.fn(),
+    getNavigator: jest.fn(custom.getNavigator || (() => navigator)),
     getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
     // @ts-ignore
     getBeagleService: custom.getBeagleService || jest.fn(() => beagleService),

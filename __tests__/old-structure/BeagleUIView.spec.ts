@@ -22,7 +22,7 @@ import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import Tree from 'beagle-tree'
 import { treeA, treeB } from './mocks'
-import { mockLocalStorage, stripTreeIds } from './utils/test-utils'
+import { mockLocalStorage, stripTreeIds, createHttpResponse } from './utils/test-utils'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -91,12 +91,11 @@ describe('BeagleUIView', () => {
     const listener2 = jest.fn()
     view.addErrorListener(listener1)
     view.addErrorListener(listener2)
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     // @ts-ignore
     const expectedErrors = [
       new BeagleExpiredCacheError(url),
-      // @ts-ignore
-      new BeagleNetworkError(url),
+      new BeagleNetworkError(url, createHttpResponse()),
       new BeagleCacheError(url),
     ]
     expect(listener1).toHaveBeenCalledWith(expectedErrors)
@@ -105,15 +104,15 @@ describe('BeagleUIView', () => {
   })
 
   it('should unsubscribe from errors', async () => {
-    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
+    nock(baseUrl).get(path).times(2).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const listener = jest.fn()
     const unsubscribe = view.addErrorListener(listener)
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     // @ts-ignore
     expect(listener).toHaveBeenCalled()
     listener.mockClear()
     unsubscribe()
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     expect(listener).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
   })
@@ -139,12 +138,13 @@ describe('BeagleUIView', () => {
   it('should replace entire content with network response', async () => {
     view.getRenderer().doFullRender(treeA)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     expect(view.getTree()).toEqual(treeB)
     expect(nock.isDone()).toBe(true)
     nock.cleanAll()
   })
 
+  // todo: remove in v2.0. This feature is deprecated.
   it('should replace part of the tree with loading and network response', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc)
@@ -172,6 +172,7 @@ describe('BeagleUIView', () => {
     expect(nock.isDone()).toBe(true)
   })
 
+  // todo: remove in v2.0. This feature is deprecated.
   it('should append loading and network response to specific part of the tree', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc)
@@ -202,6 +203,7 @@ describe('BeagleUIView', () => {
     expect(nock.isDone()).toBe(true)
   })
 
+  // todo: remove in v2.0. This feature is deprecated.
   it('should prepend network response to specific part of the tree', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc)
@@ -247,7 +249,7 @@ describe('BeagleUIView', () => {
     const path = '/example'
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
 
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
  
     expect(fetchData).toHaveBeenCalledWith(
       baseUrl + path,
@@ -258,15 +260,15 @@ describe('BeagleUIView', () => {
   it('should fallback to UIElement when fetch fails', async () => {
     const fallbackTree = { _beagleComponent_: 'test 1' }
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await view.fetch({ path, fallback: fallbackTree })
+    await view.getNavigator().pushView({ url: path, fallback: fallbackTree })
     expect(view.getTree()).toEqual(fallbackTree)
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should not fallback to UIElement when fetch succeed', async () => {
+  it('should not fallback to UIElement when fetch succeeds', async () => {
     const fallbackTree = { _beagleComponent_: 'test 1' }
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
-    await view.fetch({ path, fallback: fallbackTree })
+    await view.getNavigator().pushView({ url: path, fallback: fallbackTree })
     expect(view.getTree()).toEqual(treeA)
     expect(nock.isDone()).toBe(true)
   })
@@ -276,7 +278,7 @@ describe('BeagleUIView', () => {
     view.subscribe(mockFunc)
     const path = 'example'
     nock(baseUrl).get(`/${path}`).reply(200, JSON.stringify(treeB))
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     expect(nock.isDone()).toBe(true)
   })
 
@@ -285,13 +287,13 @@ describe('BeagleUIView', () => {
     view.subscribe(mockFunc)
     const path = ''
     nock(baseUrl).get(`/${path}`).reply(200, JSON.stringify(treeB))
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     expect(nock.isDone()).toBe(true)
   })
 
   it('should log errors when no error listener is registered', async () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     expect(globalMocks.log).toHaveBeenCalledWith(
       'error',
       expect.any(Error),
@@ -304,7 +306,7 @@ describe('BeagleUIView', () => {
   it('should not log errors when at least one listener is registered', async () => {
     nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     view.addErrorListener(jest.fn())
-    await view.fetch({ path })
+    await view.getNavigator().pushView({ url: path })
     // @ts-ignore
     expect(globalMocks.log).not.toHaveBeenCalled()
     expect(nock.isDone()).toBe(true)
@@ -313,5 +315,11 @@ describe('BeagleUIView', () => {
   it('should call global context unsubscribe when calling destroy', () => {
     view.destroy()
     expect(unsubscribeFromGlobalContext).toHaveBeenCalled()
+  })
+
+  it('should destroy the navigator when the view is destroyed', async () => {
+    view.getNavigator().destroy = jest.fn(view.getNavigator().destroy)
+    view.destroy()
+    expect(view.getNavigator().destroy).toHaveBeenCalled()
   })
 })

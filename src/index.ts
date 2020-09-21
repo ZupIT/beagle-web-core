@@ -35,7 +35,9 @@ export { ObjectUtils, StringUtils, UrlUtils, Automaton }
 
 // errors
 import BeagleError from 'error/BeagleError'
+export { SerializableError } from 'error/BeagleError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
+export { SerializableNetworkError, SerializableResponse } from 'error/BeagleNetworkError'
 import BeagleCacheError from 'error/BeagleCacheError'
 import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 
@@ -62,6 +64,8 @@ export * from 'action/types'
 export * from 'action/navigation/types'
 export * from 'beagle-tree/types'
 export * from 'beagle-view/types'
+export * from 'beagle-view/render/types'
+export * from 'beagle-view/navigator/types'
 export * from 'metadata/types'
 
 // beagle service: default exportation
