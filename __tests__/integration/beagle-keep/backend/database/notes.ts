@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { find, findIndex } from 'lodash'
+import { find, findIndex, cloneDeep } from 'lodash'
 import { LoremIpsum } from 'lorem-ipsum'
+import { create as createRNG } from 'random-seed'
 import { getLabels, Label } from './labels'
 
 interface Note {
@@ -31,7 +32,7 @@ interface FullNote extends Omit<Note, 'labels'> {
 }
 
 const MAX_LENGTH = 100
-let randomCounter = 0
+const rng = createRNG('1600721513470')
 let idCounter = 0
 
 const lorem = new LoremIpsum({
@@ -43,10 +44,11 @@ const lorem = new LoremIpsum({
     max: 16,
     min: 4
   },
-  random: () => randomCounter++ / 100,
+  // guarantees the same sentences will be generated everytime
+  random: rng.random,
 })
 
-const notes: Note[] = [
+const initialNotes: Note[] = [
   {
     id: idCounter++,
     title: 'Dentist',
@@ -105,6 +107,8 @@ const notes: Note[] = [
   },
 ]
 
+let notes = cloneDeep(initialNotes)
+
 function asFullNote(note: Note): FullNote {
   const labels = getLabels()
   const noteLabels = note.labels.map(id => find(labels, { id })).filter(l => !!l) as Label[]
@@ -121,7 +125,7 @@ function asNote(note: FullNote): Note {
 export function getNotes(): FullNote[] {
   return notes.map(n => ({
     ...asFullNote(n),
-    text: n.text.length <= MAX_LENGTH ? n.text : `${n.text.substr(MAX_LENGTH)}...`,
+    text: n.text.length <= MAX_LENGTH ? n.text : `${n.text.substr(0, MAX_LENGTH)}...`,
   }))
 }
 
@@ -133,9 +137,10 @@ export function getNoteById(id: number): FullNote | undefined {
 export function addNote(note: Omit<FullNote, 'id'>) {
   const noteWithId = { ...note, id: idCounter++ }
   notes.push(asNote(noteWithId))
+  return noteWithId
 }
 
-export function removeNote(id: number) {
+export function removeNoteById(id: number) {
   const index = findIndex(notes, { id })
   if (index !== -1) notes.splice(index, 1)
 }
@@ -143,4 +148,9 @@ export function removeNote(id: number) {
 export function editNote(note: FullNote) {
   const index = findIndex(notes, { id: note.id })
   if (index !== -1) notes[index] = asNote(note)
+  return note
+}
+
+export function resetNotes() {
+  notes = cloneDeep(initialNotes)
 }

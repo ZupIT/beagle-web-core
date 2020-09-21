@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { findIndex } from 'lodash'
+import { findIndex, cloneDeep } from 'lodash'
 
 export interface Label {
   id: number,
@@ -24,7 +24,7 @@ export interface Label {
 
 let idCounter = 0
 
-const labels: Label[] = [
+const initialLabels: Label[] = [
   {
     id: idCounter++,
     name: 'Personal',
@@ -47,6 +47,8 @@ const labels: Label[] = [
   }
 ]
 
+let labels = cloneDeep(initialLabels)
+
 export function getLabels() {
   return labels
 }
@@ -54,9 +56,10 @@ export function getLabels() {
 export function addLabel(label: Omit<Label, 'id'>) {
   const labelWithId = { ...label, id: idCounter++ }
   labels.push(labelWithId)
+  return labelWithId
 }
 
-export function removeById(id: number) {
+export function removeLabelById(id: number) {
   const index = findIndex(labels, { id })
   if (index !== -1) labels.splice(index, 1)
 }
@@ -64,4 +67,9 @@ export function removeById(id: number) {
 export function editLabel(label: Label) {
   const index = findIndex(labels, { id: label.id })
   if (index !== -1) labels[index] = label
+  return label
+}
+
+export function resetLabels() {
+  labels = cloneDeep(initialLabels)
 }
