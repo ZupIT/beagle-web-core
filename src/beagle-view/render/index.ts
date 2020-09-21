@@ -20,7 +20,7 @@ import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'be
 import { ExecutionMode, Lifecycle, LifecycleHookMap } from 'service/beagle-service/types'
 import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
-import { Renderer } from '../types'
+import { Renderer } from './types'
 import Component from './component'
 import Navigation from './navigation'
 import Expression from './expression'

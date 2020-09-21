@@ -67,48 +67,13 @@ by a child component, it won't be available before the children components are c
 
 ## Fetching a view
 
-To fetch a view from the backend and update the current view, you need to use the method `fetch` of
-the `BeagleView`.
-
-A fetch operation can be over the entire tree or just a branch. If it's the former, the entire tree
-gets replaced by the result of the request. Otherwise, the tree is kept the same, but for the branch
-we told `fetch` to update, this specific branch will get replaced by the result of the request.
-Below we see an example of a call to the function `fetch`:
+To navigate to a new remote view, you should use the Beagle Navigator. To access the navigator of
+the BeagleView, you must call `beagleView.getNavigator()`.
 
 ```typescript
-// fetches the remote view at /my-path and uses it to replace the entire current view
-beagleView.fetch({ path: '/my-path' })
-
-// fetches the remote view at /my-lazy-container and uses it to replace the component with id 'lazy'
-beagleView.fetch({ path: '/my-lazy-container' }, 'lazy')
+// fetches the remote view at /my-path, adds it to the navigation history and renders its tree.
+beagleView.getNavigator().pushView({ url: '/my-path' })
 ```
-
-`fetch` can accept 3 parameters, they are:
-
-1. **loadParams:** required. object containing the parameters to control the request, the options
-are the following:
-    - path: required. Path to the view in the backend.
-    - fallback: optional. A Beagle Tree to fallback to in case of an error.
-    - method: optional. `get` by default. Use this option if you need another http method.
-    - headers: optional. Use this option to pass additional headers to this single request.
-    - shouldShowLoading: optional. Tells wether to use or not the loadingComponent while the view
-    loads. Will use the global configuration if not specified.
-    - shouldShowError?: optional. Tells wether or not to show the error component if the request
-    fails. Will use the global configuration if not specified.
-    - strategy: optional. Tells which
-    [cache strategy](https://docs.usebeagle.io/resources/customization/beagle-para-web/cache-strategy)
-    should be used to load this specific view. Will use the global configuration if not specified.
-    - loadingComponent: optional. The loading component to use. Will use the global configuration if
-    not specified.
-    - errorComponent: optional. The error component to use. Will use the global configuration if not
-    specified.
-2. **anchor:** optional. Id of the node to attach the resulting view to. By default, it uses the
-root node. Use it to update a single branch instead of the whole tree.
-3. **mode:** optional. How to attach the resulting view to the anchor. There are four modes:
-    - `replaceComponent`: default. Replaces the entire anchor with the result of the request.
-    - `replace`: replaces the children of the anchor with the result of the request.
-    - `prepend`: adds the result of the request at the start of the list of children of the anchor.
-    - `append`: adds the result of the request at the end of the list of children of the anchor.
 
 ## Subscribing to events
 
@@ -158,12 +123,9 @@ Below you can find all methods of the Beagle View and their description:
 returns a function to remove the listener.
 - **addErrorListener:** [subscribes to errors](#Subscribing-to-events). Receives the listener and
 returns a function to remove the listener.
-- **fetch:** [fetches a view from the backend](#Fetching-a-view) and uses it to update the current
-tree. Receives three parameters: the request options (required), the id of the node to be updated
-(optional) and the insertion mode (optional).
 - getRenderer: returns [the renderer](renderization.md#The-Renderer-API) of the view. Can be used
 to update the tree directly.
 - **getTree:** returns a copy of the currently rendered tree.
-- **getBeagleNavigator:** returns the navigator.
+- **getNavigator:** returns the navigator.
 - **getBeagleService:** returns the BeagleService that created this view.
 - **destroy:** destroys this view.

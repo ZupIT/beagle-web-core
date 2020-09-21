@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-import logger from 'logger'
 import { ActionHandler } from 'action/types'
-import { BeagleNavigator } from 'beagle-view/types'
+import { NavigationType } from 'beagle-view/navigator/types'
 import UrlUtils from 'utils/url'
 import StringUtils from 'utils/string'
 import ObjectUtils from 'utils/object'
+import logger from 'logger'
 import {
   OpenExternalURLAction,
   OpenNativeRouteAction,
-  BeagleNavigationAction,
-  Route,
-  LocalView,
-  RemoteView,
+  GenericNavigationAction,
 } from './types'
 
 let NavigationActions: Record<string, ActionHandler> = {}
@@ -46,43 +43,20 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
   window.location.href = `${origin}${prefixedRoute}${qs || ''}`
 }
 
-interface Action {
-  _beagleAction_: string,
-  route: Route & string,
-}
-
-const navigateBeagleView: ActionHandler<BeagleNavigationAction> = async ({
+const navigateBeagleView: ActionHandler<GenericNavigationAction> = async ({
   action,
   beagleView,
 }) => {
-  const { urlBuilder, viewClient } = beagleView.getBeagleService()
-
+  const actionNameLowercase = action._beagleAction_.toLowerCase()
+  const actionName = ObjectUtils.getOriginalKeyByCaseInsensitiveKey(
+    NavigationActions,
+    actionNameLowercase,
+  )
+  const navigationType = actionName.replace(/^beagle:/, '') as NavigationType
   try {
-    const actionNameLowercase = action._beagleAction_.toLowerCase()
-    const actionName = ObjectUtils.getOriginalKeyByCaseInsensitiveKey(
-      NavigationActions,
-      actionNameLowercase,
-    )
-    const functionName = actionName.replace(/^beagle:/, '') as keyof BeagleNavigator
-    const element = beagleView.getBeagleNavigator()[functionName]((action as Action).route)
-    const screen = (element as LocalView).screen
-    const { url, fallback, shouldPrefetch } = element as RemoteView
-
-    if (screen) return beagleView.getRenderer().doFullRender(screen)
-    if (shouldPrefetch) {
-      try {
-        const path = StringUtils.addPrefix(url, '/')
-        const baseUrl = urlBuilder.build(path)
-        const cachedTree = await viewClient.loadFromCache(baseUrl, 'get')
-        return beagleView.getRenderer().doFullRender(cachedTree)
-      } catch (error) {
-        logger.error(error)
-      }
-    }
-    
-    return beagleView.fetch({ path: url, fallback })
+    await beagleView.getNavigator().navigate(navigationType, action.route, action.controllerId)
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message || error)
   }
 }
 
