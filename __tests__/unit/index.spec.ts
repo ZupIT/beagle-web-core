@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as beagle from '../src'
+import * as beagle from '../../src'
 import exportations from './index.snapshot'
 
 function serialize(data: any): any {
