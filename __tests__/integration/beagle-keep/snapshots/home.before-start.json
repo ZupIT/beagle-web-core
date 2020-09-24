@@ -12,9 +12,9 @@
           "createdAt": 1600453354284,
           "labels": [
             {
-              "id": 1,
-              "name": "Work",
-              "color": "#0000ff"
+              "id": 0,
+              "name": "Personal",
+              "color": "#00ff00"
             }
           ]
         },
@@ -25,9 +25,9 @@
           "createdAt": 1600453354284,
           "labels": [
             {
-              "id": 1,
-              "name": "Work",
-              "color": "#0000ff"
+              "id": 0,
+              "name": "Personal",
+              "color": "#00ff00"
             }
           ]
         },
@@ -38,14 +38,14 @@
           "createdAt": 1600453354284,
           "labels": [
             {
+              "id": 1,
+              "name": "Work",
+              "color": "#0000ff"
+            },
+            {
               "id": 2,
               "name": "Urgent",
               "color": "#ff0000"
-            },
-            {
-              "id": 3,
-              "name": "Supermarket",
-              "color": "#ffff00"
             }
           ]
         },
@@ -54,14 +54,26 @@
           "title": "Market list for september",
           "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
           "createdAt": 1600453354284,
-          "labels": []
+          "labels": [
+            {
+              "id": 3,
+              "name": "Supermarket",
+              "color": "#ffff00"
+            }
+          ]
         },
         {
           "id": 4,
           "title": "Check the new coffee brand",
           "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
           "createdAt": 1600453354284,
-          "labels": []
+          "labels": [
+            {
+              "id": 3,
+              "name": "Supermarket",
+              "color": "#ffff00"
+            }
+          ]
         },
         {
           "id": 5,
@@ -70,9 +82,9 @@
           "createdAt": 1600453354284,
           "labels": [
             {
-              "id": 2,
-              "name": "Urgent",
-              "color": "#ff0000"
+              "id": 1,
+              "name": "Work",
+              "color": "#0000ff"
             }
           ]
         },
@@ -83,9 +95,9 @@
           "createdAt": 1600453354284,
           "labels": [
             {
-              "id": 2,
-              "name": "Urgent",
-              "color": "#ff0000"
+              "id": 1,
+              "name": "Work",
+              "color": "#0000ff"
             }
           ]
         },
@@ -96,9 +108,9 @@
           "createdAt": 1600453354284,
           "labels": [
             {
-              "id": 1,
-              "name": "Work",
-              "color": "#0000ff"
+              "id": 0,
+              "name": "Personal",
+              "color": "#00ff00"
             }
           ]
         }
@@ -172,32 +184,29 @@
           "_beagleComponent_": "custom:menu",
           "id": "menu",
           "context": {
-            "id": "active",
+            "id": "activeMenuItem",
             "value": "Notes"
           },
           "items": [
             {
               "_beagleComponent_": "custom:menuItem",
-              "active": "@{eq(data.currentLabel, 'Notes')}",
+              "id": "menu:notes",
+              "active": "{isNull(data.currentLabel)}",
               "icon": "light-bulb",
               "label": "Notes",
               "onPress": [
                 {
                   "_beagleAction_": "beagle:setContext",
-                  "contextId": "menu",
-                  "path": "active",
-                  "value": "Notes"
-                },
-                {
-                  "_beagleAction_": "beagle:setContext",
-                  "contextId": "filteredLabel",
+                  "contextId": "data",
+                  "path": "currentLabel",
                   "value": null
                 }
               ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
-              "active": "@{eq(data.currentLabel, 'Edit labels')}",
+              "id": "menu:labels",
+              "active": false,
               "icon": "pencil",
               "label": "Edit labels",
               "onPress": [
@@ -211,7 +220,8 @@
             },
             {
               "_beagleComponent_": "custom:menuItem",
-              "active": "@{eq(data.currentLabel, 'Personal')}",
+              "id": "menu:label:0",
+              "active": "@{eq(data.currentLabel, 0)}",
               "icon": "tag",
               "color": "#00ff00",
               "label": "Personal",
@@ -220,13 +230,14 @@
                   "_beagleAction_": "beagle:setContext",
                   "contextId": "data",
                   "path": "currentLabel",
-                  "value": "Personal"
+                  "value": 0
                 }
               ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
-              "active": "@{eq(data.currentLabel, 'Work')}",
+              "id": "menu:label:1",
+              "active": "@{eq(data.currentLabel, 1)}",
               "icon": "tag",
               "color": "#0000ff",
               "label": "Work",
@@ -235,13 +246,14 @@
                   "_beagleAction_": "beagle:setContext",
                   "contextId": "data",
                   "path": "currentLabel",
-                  "value": "Work"
+                  "value": 1
                 }
               ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
-              "active": "@{eq(data.currentLabel, 'Urgent')}",
+              "id": "menu:label:2",
+              "active": "@{eq(data.currentLabel, 2)}",
               "icon": "tag",
               "color": "#ff0000",
               "label": "Urgent",
@@ -250,13 +262,14 @@
                   "_beagleAction_": "beagle:setContext",
                   "contextId": "data",
                   "path": "currentLabel",
-                  "value": "Urgent"
+                  "value": 2
                 }
               ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
-              "active": "@{eq(data.currentLabel, 'Supermarket')}",
+              "id": "menu:label:3",
+              "active": "@{eq(data.currentLabel, 3)}",
               "icon": "tag",
               "color": "#ffff00",
               "label": "Supermarket",
@@ -265,7 +278,7 @@
                   "_beagleAction_": "beagle:setContext",
                   "contextId": "data",
                   "path": "currentLabel",
-                  "value": "Supermarket"
+                  "value": 3
                 }
               ]
             }
@@ -281,10 +294,13 @@
         },
         {
           "_beagleComponent_": "custom:repeater",
-          "dataSource": "@{data.notes}",
+          "id": "note-list",
+          "dataSource": "@{filterNotesByLabel(data.notes, data.currentLabel)}",
           "key": "id",
           "template": {
             "_beagleComponent_": "custom:note",
+            "noteId": "@{item.id}",
+            "title": "@{item.title}",
             "text": "@{item.text}",
             "labels": "@{item.labels}",
             "onSelect": [

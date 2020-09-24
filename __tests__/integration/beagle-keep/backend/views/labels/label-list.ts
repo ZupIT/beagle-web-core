@@ -80,6 +80,7 @@ const removeLabel = [
 
 const labelList: BeagleUIElement = {
   _beagleComponent_: 'custom:repeater',
+  id: 'label-list',
   style: cardStyle,
   dataSource: '@{condition(isNull(labels.new), labels.current, insert(labels.current, labels.new))}',
   key: 'id',

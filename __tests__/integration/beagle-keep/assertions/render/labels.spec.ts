@@ -17,7 +17,7 @@
 import Tree from 'beagle-tree'
 import { BeagleUIElement } from 'beagle-tree/types'
 import { BeagleConfig } from 'service/beagle-service/types'
-import setup, { paths } from '../../backend/routes'
+import setup from '../../backend/routes'
 import createService from '../../frontend/service'
 import { expectToMatchSnapshot } from '../../utils/snapshot'
 import { enableLogging, disableLogging } from '../../utils/log'
@@ -45,7 +45,7 @@ describe('Beagle Keep: render labels', () => {
   const { createBeagleRemoteView } = createService(config)
   
   beforeAll(async () => {
-    const result = await createBeagleRemoteView({ route: `${paths.view}/labels` })
+    const result = await createBeagleRemoteView({ route: '/labels' })
     render = result.render
   })
 

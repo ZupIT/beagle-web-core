@@ -39,6 +39,7 @@
   "children": [
     {
       "_beagleComponent_": "custom:repeater",
+      "id": "label-list",
       "style": {
         "maxWidth": "500px",
         "flexDirection": "column",
@@ -172,8 +173,7 @@
             ]
           }
         ]
-      },
-      "id": "_beagle_1"
+      }
     },
     {
       "_beagleComponent_": "beagle:container",
@@ -188,7 +188,7 @@
           "_beagleComponent_": "beagle:button",
           "text": "Go back",
           "onPress": "__function__",
-          "id": "_beagle_2",
+          "id": "_beagle_1",
           "isSubmit": false
         },
         {
@@ -196,7 +196,7 @@
           "text": "Create new label",
           "onPress": "__function__",
           "disabled": false,
-          "id": "_beagle_3",
+          "id": "_beagle_2",
           "isSubmit": false
         }
       ],

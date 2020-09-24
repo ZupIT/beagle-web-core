@@ -19,19 +19,15 @@ import { getLabels } from '../../database/labels'
 
 const notesItem: BeagleUIElement = {
   _beagleComponent_: 'custom:menuItem',
-  active: '@{eq(data.currentLabel, \'Notes\')}',
+  id: 'menu:notes',
+  active: '{isNull(data.currentLabel)}',
   icon: 'light-bulb',
   label: 'Notes',
   onPress: [
     {
       _beagleAction_: 'beagle:setContext',
-      contextId: 'menu',
-      path: 'active',
-      value: 'Notes',
-    },
-    {
-      _beagleAction_: 'beagle:setContext',
-      contextId: 'filteredLabel',
+      contextId: 'data',
+      path: 'currentLabel',
       value: null,
     },
   ],
@@ -39,7 +35,8 @@ const notesItem: BeagleUIElement = {
 
 const editLabelsItem: BeagleUIElement = {
   _beagleComponent_: 'custom:menuItem',
-  active: '@{eq(data.currentLabel, \'Edit labels\')}',
+  id: 'menu:labels',
+  active: false,
   icon: 'pencil',
   label: 'Edit labels',
   onPress: [
@@ -54,7 +51,8 @@ const editLabelsItem: BeagleUIElement = {
 
 const labelsItems: BeagleUIElement[] = getLabels().map(label => ({
   _beagleComponent_: 'custom:menuItem',
-  active: `@{eq(data.currentLabel, '${label.name}')}`,
+  id: `menu:label:${label.id}`,
+  active: `@{eq(data.currentLabel, ${label.id})}`,
   icon: 'tag',
   color: label.color,
   label: label.name,
@@ -63,7 +61,7 @@ const labelsItems: BeagleUIElement[] = getLabels().map(label => ({
       _beagleAction_: 'beagle:setContext',
       contextId: 'data',
       path: 'currentLabel',
-      value: label.name,
+      value: label.id,
     },
   ],
 }))
@@ -72,7 +70,7 @@ const menu: BeagleUIElement = {
   _beagleComponent_: 'custom:menu',
   id: 'menu',
   context: {
-    id: 'active',
+    id: 'activeMenuItem',
     value: 'Notes',
   },
   items: [

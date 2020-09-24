@@ -1,5 +1,6 @@
 {
   "_beagleComponent_": "custom:repeater",
+  "id": "label-list",
   "style": {
     "maxWidth": "500px",
     "flexDirection": "column",
@@ -134,7 +135,6 @@
       }
     ]
   },
-  "id": "_beagle_1",
   "children": [
     {
       "_beagleComponent_": "custom:editableLabel",
@@ -164,7 +164,8 @@
           "value": 0
         }
       ],
-      "id": "_beagle_4"
+      "key": 0,
+      "id": "_beagle_3"
     },
     {
       "_beagleComponent_": "custom:editableLabel",
@@ -194,7 +195,8 @@
           "value": 1
         }
       ],
-      "id": "_beagle_5"
+      "key": 1,
+      "id": "_beagle_4"
     },
     {
       "_beagleComponent_": "custom:editableLabel",
@@ -224,7 +226,8 @@
           "value": 2
         }
       ],
-      "id": "_beagle_6"
+      "key": 2,
+      "id": "_beagle_5"
     },
     {
       "_beagleComponent_": "custom:editableLabel",
@@ -254,7 +257,8 @@
           "value": 3
         }
       ],
-      "id": "_beagle_7"
+      "key": 3,
+      "id": "_beagle_6"
     }
   ]
 }

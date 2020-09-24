@@ -19,7 +19,7 @@ import { LoremIpsum } from 'lorem-ipsum'
 import { create as createRNG } from 'random-seed'
 import { getLabels, Label } from './labels'
 
-interface Note {
+export interface Note {
   id: number,
   labels: number[],
   text: string,
@@ -27,7 +27,7 @@ interface Note {
   title?: string,
 }
 
-interface FullNote extends Omit<Note, 'labels'> {
+export interface FullNote extends Omit<Note, 'labels'> {
   labels: Label[],
 }
 
@@ -54,56 +54,56 @@ const initialNotes: Note[] = [
     title: 'Dentist',
     text: lorem.generateParagraphs(1),
     createdAt: 1600453354284,
-    labels: [1],
+    labels: [0],
   },
   {
     id: idCounter++,
     title: 'Gym exercises for monday',
     text: lorem.generateParagraphs(3),
     createdAt: 1600453354284,
-    labels: [1],
+    labels: [0],
   },
   {
     id: idCounter++,
     title: 'Send research results',
     text: lorem.generateParagraphs(1),
     createdAt: 1600453354284,
-    labels: [2, 3],
+    labels: [1, 2],
   },
   {
     id: idCounter++,
     title: 'Market list for september',
     text: lorem.generateParagraphs(2),
     createdAt: 1600453354284,
-    labels: [4],
+    labels: [3],
   },
   {
     id: idCounter++,
     title: 'Check the new coffee brand',
     text: lorem.generateParagraphs(1),
     createdAt: 1600453354284,
-    labels: [4],
+    labels: [3],
   },
   {
     id: idCounter++,
     title: 'Ask for a raise',
     text: lorem.generateParagraphs(4),
     createdAt: 1600453354284,
-    labels: [2],
+    labels: [1],
   },
   {
     id: idCounter++,
     title: 'Ask George to read his e-mails',
     text: lorem.generateParagraphs(2),
     createdAt: 1600453354284,
-    labels: [2],
+    labels: [1],
   },
   {
     id: idCounter++,
     title: 'Parents meeting at school',
     text: lorem.generateParagraphs(3),
     createdAt: 1600453354284,
-    labels: [1],
+    labels: [0],
   },
 ]
 

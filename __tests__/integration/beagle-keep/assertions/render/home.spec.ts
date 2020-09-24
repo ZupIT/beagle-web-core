@@ -17,7 +17,7 @@
 import { Lifecycle } from 'service/beagle-service/types'
 import Tree from 'beagle-tree'
 import { BeagleUIElement } from 'beagle-tree/types'
-import setup, { paths } from '../../backend/routes'
+import setup from '../../backend/routes'
 import createService from '../../frontend/service'
 import { expectToMatchSnapshot } from '../../utils/snapshot'
 import { enableLogging, disableLogging } from '../../utils/log'
@@ -36,7 +36,7 @@ describe('Beagle Keep: render home', () => {
   } = service.getConfig().lifecycles! as Record<Lifecycle, jest.Mock>
   
   beforeAll(async () => {
-    const result = await createBeagleRemoteView({ route: `${paths.view}/home` })
+    const result = await createBeagleRemoteView({ route: '/home' })
     render = result.render
   })
 

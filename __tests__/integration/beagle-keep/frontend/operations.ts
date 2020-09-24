@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-import { resetLabels } from '../database/labels'
-import { resetNotes } from '../database/notes'
-import setupLabels, { path as labelPath } from './label'
-import setupNotes, { path as notePath } from './note'
-import setupViews, { path as viewPath } from './view'
+// todo: this entire code should be replaced by custom operations when they are available
+import { find, isNil } from 'lodash'
+import Operation from 'operation'
+import { FullNote } from '../backend/database/notes'
 
-export default function setup() {
-  resetLabels()
-  resetNotes()
-  setupLabels()
-  setupNotes()
-  setupViews()
-}
-
-export const paths = {
-  label: labelPath,
-  note: notePath,
-  view: viewPath,
+export default () => {
+  // @ts-ignore
+  Operation.filterNotesByLabel = (notes: FullNote[], labelId: number) => (
+    isNil(labelId) ? notes : notes.filter(({ labels }) => !!find(labels, { id: labelId }))
+  )
 }

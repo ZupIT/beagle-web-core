@@ -1,5 +1,6 @@
 {
   "_beagleComponent_": "custom:repeater",
+  "id": "note-list",
   "dataSource": [
     {
       "id": 0,
@@ -8,9 +9,9 @@
       "createdAt": 1600453354284,
       "labels": [
         {
-          "id": 1,
-          "name": "Work",
-          "color": "#0000ff"
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
         }
       ]
     },
@@ -21,9 +22,9 @@
       "createdAt": 1600453354284,
       "labels": [
         {
-          "id": 1,
-          "name": "Work",
-          "color": "#0000ff"
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
         }
       ]
     },
@@ -34,14 +35,14 @@
       "createdAt": 1600453354284,
       "labels": [
         {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        },
+        {
           "id": 2,
           "name": "Urgent",
           "color": "#ff0000"
-        },
-        {
-          "id": 3,
-          "name": "Supermarket",
-          "color": "#ffff00"
         }
       ]
     },
@@ -50,14 +51,26 @@
       "title": "Market list for september",
       "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
       "createdAt": 1600453354284,
-      "labels": []
+      "labels": [
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ]
     },
     {
       "id": 4,
       "title": "Check the new coffee brand",
       "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
       "createdAt": 1600453354284,
-      "labels": []
+      "labels": [
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ]
     },
     {
       "id": 5,
@@ -66,9 +79,9 @@
       "createdAt": 1600453354284,
       "labels": [
         {
-          "id": 2,
-          "name": "Urgent",
-          "color": "#ff0000"
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
         }
       ]
     },
@@ -79,9 +92,9 @@
       "createdAt": 1600453354284,
       "labels": [
         {
-          "id": 2,
-          "name": "Urgent",
-          "color": "#ff0000"
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
         }
       ]
     },
@@ -92,9 +105,9 @@
       "createdAt": 1600453354284,
       "labels": [
         {
-          "id": 1,
-          "name": "Work",
-          "color": "#0000ff"
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
         }
       ]
     }
@@ -102,6 +115,8 @@
   "key": "id",
   "template": {
     "_beagleComponent_": "custom:note",
+    "noteId": "@{item.id}",
+    "title": "@{item.title}",
     "text": "@{item.text}",
     "labels": "@{item.labels}",
     "onSelect": [
@@ -214,16 +229,17 @@
       }
     }
   },
-  "id": "_beagle_10",
   "children": [
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 0,
+      "title": "Dentist",
       "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
       "labels": [
         {
-          "id": 1,
-          "name": "Work",
-          "color": "#0000ff"
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
         }
       ],
       "onSelect": "__function__",
@@ -243,9 +259,9 @@
             "createdAt": 1600453354284,
             "labels": [
               {
-                "id": 1,
-                "name": "Work",
-                "color": "#0000ff"
+                "id": 0,
+                "name": "Personal",
+                "color": "#00ff00"
               }
             ]
           }
@@ -255,16 +271,19 @@
           "value": 0
         }
       ],
-      "id": "_beagle_11"
+      "key": 0,
+      "id": "_beagle_4"
     },
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 1,
+      "title": "Gym exercises for monday",
       "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
       "labels": [
         {
-          "id": 1,
-          "name": "Work",
-          "color": "#0000ff"
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
         }
       ],
       "onSelect": "__function__",
@@ -284,9 +303,9 @@
             "createdAt": 1600453354284,
             "labels": [
               {
-                "id": 1,
-                "name": "Work",
-                "color": "#0000ff"
+                "id": 0,
+                "name": "Personal",
+                "color": "#00ff00"
               }
             ]
           }
@@ -296,21 +315,24 @@
           "value": 1
         }
       ],
-      "id": "_beagle_12"
+      "key": 1,
+      "id": "_beagle_5"
     },
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 2,
+      "title": "Send research results",
       "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
       "labels": [
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        },
         {
           "id": 2,
           "name": "Urgent",
           "color": "#ff0000"
-        },
-        {
-          "id": 3,
-          "name": "Supermarket",
-          "color": "#ffff00"
         }
       ],
       "onSelect": "__function__",
@@ -330,14 +352,14 @@
             "createdAt": 1600453354284,
             "labels": [
               {
+                "id": 1,
+                "name": "Work",
+                "color": "#0000ff"
+              },
+              {
                 "id": 2,
                 "name": "Urgent",
                 "color": "#ff0000"
-              },
-              {
-                "id": 3,
-                "name": "Supermarket",
-                "color": "#ffff00"
               }
             ]
           }
@@ -347,12 +369,21 @@
           "value": 2
         }
       ],
-      "id": "_beagle_13"
+      "key": 2,
+      "id": "_beagle_6"
     },
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 3,
+      "title": "Market list for september",
       "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
-      "labels": [],
+      "labels": [
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ],
       "onSelect": "__function__",
       "onRemoveLabel": "__function__",
       "onAddLabel": "__function__",
@@ -368,7 +399,13 @@
             "title": "Market list for september",
             "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
             "createdAt": 1600453354284,
-            "labels": []
+            "labels": [
+              {
+                "id": 3,
+                "name": "Supermarket",
+                "color": "#ffff00"
+              }
+            ]
           }
         },
         {
@@ -376,12 +413,21 @@
           "value": 3
         }
       ],
-      "id": "_beagle_14"
+      "key": 3,
+      "id": "_beagle_7"
     },
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 4,
+      "title": "Check the new coffee brand",
       "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
-      "labels": [],
+      "labels": [
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ],
       "onSelect": "__function__",
       "onRemoveLabel": "__function__",
       "onAddLabel": "__function__",
@@ -397,7 +443,13 @@
             "title": "Check the new coffee brand",
             "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
             "createdAt": 1600453354284,
-            "labels": []
+            "labels": [
+              {
+                "id": 3,
+                "name": "Supermarket",
+                "color": "#ffff00"
+              }
+            ]
           }
         },
         {
@@ -405,16 +457,19 @@
           "value": 4
         }
       ],
-      "id": "_beagle_15"
+      "key": 4,
+      "id": "_beagle_8"
     },
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 5,
+      "title": "Ask for a raise",
       "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
       "labels": [
         {
-          "id": 2,
-          "name": "Urgent",
-          "color": "#ff0000"
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
         }
       ],
       "onSelect": "__function__",
@@ -434,9 +489,9 @@
             "createdAt": 1600453354284,
             "labels": [
               {
-                "id": 2,
-                "name": "Urgent",
-                "color": "#ff0000"
+                "id": 1,
+                "name": "Work",
+                "color": "#0000ff"
               }
             ]
           }
@@ -446,16 +501,19 @@
           "value": 5
         }
       ],
-      "id": "_beagle_16"
+      "key": 5,
+      "id": "_beagle_9"
     },
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 6,
+      "title": "Ask George to read his e-mails",
       "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
       "labels": [
         {
-          "id": 2,
-          "name": "Urgent",
-          "color": "#ff0000"
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
         }
       ],
       "onSelect": "__function__",
@@ -475,9 +533,9 @@
             "createdAt": 1600453354284,
             "labels": [
               {
-                "id": 2,
-                "name": "Urgent",
-                "color": "#ff0000"
+                "id": 1,
+                "name": "Work",
+                "color": "#0000ff"
               }
             ]
           }
@@ -487,16 +545,19 @@
           "value": 6
         }
       ],
-      "id": "_beagle_17"
+      "key": 6,
+      "id": "_beagle_10"
     },
     {
       "_beagleComponent_": "custom:note",
+      "noteId": 7,
+      "title": "Parents meeting at school",
       "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
       "labels": [
         {
-          "id": 1,
-          "name": "Work",
-          "color": "#0000ff"
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
         }
       ],
       "onSelect": "__function__",
@@ -516,9 +577,9 @@
             "createdAt": 1600453354284,
             "labels": [
               {
-                "id": 1,
-                "name": "Work",
-                "color": "#0000ff"
+                "id": 0,
+                "name": "Personal",
+                "color": "#00ff00"
               }
             ]
           }
@@ -528,7 +589,8 @@
           "value": 7
         }
       ],
-      "id": "_beagle_18"
+      "key": 7,
+      "id": "_beagle_11"
     }
   ]
 }

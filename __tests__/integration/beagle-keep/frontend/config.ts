@@ -17,12 +17,15 @@
 import { clone } from 'beagle-tree/manipulation'
 import { BeagleConfig } from 'service/beagle-service/types'
 import { createLocalStorageMock } from '../../../old-structure/utils/test-utils'
+import { paths } from '../backend/routes'
 import { url } from '../constants'
 import components from './components'
+import setupOperations from './operations'
 
 function createConfig(): BeagleConfig<any> {
+  setupOperations()
   return {
-    baseUrl: url,
+    baseUrl: `${url}${paths.view}`,
     components,
     customActions: {
       'custom:feedback': jest.fn(),

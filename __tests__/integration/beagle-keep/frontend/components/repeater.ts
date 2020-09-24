@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-import { isEqual } from 'lodash'
+import { map, isEqual } from 'lodash'
 import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { Component, RepeaterProps } from './types'
 
-let previousDataSource: Record<string, any[]> = {}
 
 const Repeater: Component<RepeaterProps> = ({
   id,
+  key,
   dataSource,
   template,
   viewContentManager,
+  children,
 }) => {
   function onChange() {
-    if (!dataSource || isEqual(dataSource, previousDataSource[id])) return
+    const shouldIgnoreUpdate = (
+      !Array.isArray(dataSource)
+      || isEqual(map(children, 'key'), map(dataSource, key))
+    )
+    if (shouldIgnoreUpdate) return
     const element = viewContentManager.getElement()
 
     element.children = dataSource.map((item, index) => {
@@ -37,12 +42,12 @@ const Repeater: Component<RepeaterProps> = ({
         { id: 'item', value: item },
         { id: 'index', value: index },
       ]
+      templateTree.key = item[key]
       
       return templateTree as IdentifiableBeagleUIElement
     })
 
     viewContentManager.getView().getRenderer().doFullRender(element, id)
-    previousDataSource[id] = dataSource
   }
   
 
