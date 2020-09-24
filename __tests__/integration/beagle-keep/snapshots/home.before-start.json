@@ -148,19 +148,16 @@
           "path": {
             "_beagleImagePath_": "local",
             "url": "/assets/logo"
-          },
-          "id": "_beagle_2"
+          }
         },
         {
           "_beagleComponent_": "beagle:image",
           "path": {
             "_beagleImagePath_": "remote",
             "url": "https://www.test.com/profile/picture.png"
-          },
-          "id": "_beagle_3"
+          }
         }
-      ],
-      "id": "container:1"
+      ]
     },
     {
       "_beagleComponent_": "beagle:container",
@@ -178,15 +175,7 @@
             "id": "active",
             "value": "Notes"
           },
-          "style": {
-            "margin": {
-              "right": {
-                "value": 20,
-                "type": "REAL"
-              }
-            }
-          },
-          "children": [
+          "items": [
             {
               "_beagleComponent_": "custom:menuItem",
               "active": "@{eq(data.currentLabel, 'Notes')}",
@@ -201,10 +190,10 @@
                 },
                 {
                   "_beagleAction_": "beagle:setContext",
-                  "contextId": "filteredLabel"
+                  "contextId": "filteredLabel",
+                  "value": null
                 }
-              ],
-              "id": "_beagle_4"
+              ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
@@ -218,8 +207,7 @@
                     "url": "/labels"
                   }
                 }
-              ],
-              "id": "_beagle_5"
+              ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
@@ -234,8 +222,7 @@
                   "path": "currentLabel",
                   "value": "Personal"
                 }
-              ],
-              "id": "_beagle_6"
+              ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
@@ -250,8 +237,7 @@
                   "path": "currentLabel",
                   "value": "Work"
                 }
-              ],
-              "id": "_beagle_7"
+              ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
@@ -266,8 +252,7 @@
                   "path": "currentLabel",
                   "value": "Urgent"
                 }
-              ],
-              "id": "_beagle_8"
+              ]
             },
             {
               "_beagleComponent_": "custom:menuItem",
@@ -282,10 +267,17 @@
                   "path": "currentLabel",
                   "value": "Supermarket"
                 }
-              ],
-              "id": "_beagle_9"
+              ]
             }
-          ]
+          ],
+          "style": {
+            "margin": {
+              "right": {
+                "value": 20,
+                "type": "REAL"
+              }
+            }
+          }
         },
         {
           "_beagleComponent_": "custom:repeater",
@@ -404,11 +396,9 @@
                 }
               }
             }
-          },
-          "id": "_beagle_10"
+          }
         }
-      ],
-      "id": "container:2"
+      ]
     },
     {
       "_beagleComponent_": "beagle:button",
@@ -418,7 +408,8 @@
         {
           "_beagleAction_": "beagle:setContext",
           "contextId": "global",
-          "path": "selectedNote"
+          "path": "selectedNote",
+          "value": null
         },
         {
           "_beagleAction_": "beagle:pushView",
@@ -441,6 +432,5 @@
         }
       }
     }
-  ],
-  "id": "container:0"
+  ]
 }

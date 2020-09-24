@@ -24,3 +24,7 @@ export interface RepeaterProps extends IdentifiableBeagleUIElement {
   dataSource: any[],
   template: BeagleUIElement,
 }
+
+export interface ContainerProps extends IdentifiableBeagleUIElement {
+  onInit: () => void,
+}

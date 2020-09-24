@@ -1,0 +1,260 @@
+{
+  "_beagleComponent_": "custom:repeater",
+  "style": {
+    "maxWidth": "500px",
+    "flexDirection": "column",
+    "borderRadius": "20px",
+    "padding": "15px",
+    "backgroundColor": "#333"
+  },
+  "dataSource": [
+    {
+      "id": 0,
+      "name": "Personal",
+      "color": "#00ff00"
+    },
+    {
+      "id": 1,
+      "name": "Work",
+      "color": "#0000ff"
+    },
+    {
+      "id": 2,
+      "name": "Urgent",
+      "color": "#ff0000"
+    },
+    {
+      "id": 3,
+      "name": "Supermarket",
+      "color": "#ffff00"
+    }
+  ],
+  "key": "id",
+  "template": {
+    "_beagleComponent_": "custom:editableLabel",
+    "context": {
+      "id": "isLoading",
+      "value": false
+    },
+    "isLoading": "@{isLoading}",
+    "label": "@{item}",
+    "onSave": [
+      {
+        "_beagleAction_": "beagle:setContext",
+        "contextId": "isLoading",
+        "value": true
+      },
+      {
+        "_beagleAction_": "beagle:sendRequest",
+        "url": "/label",
+        "method": "@{condition(isEmpty(item.id), 'POST', 'PUT')}",
+        "data": "@{onSave.value}",
+        "onSuccess": [
+          {
+            "_beagleAction_": "beagle:condition",
+            "condition": "isEmpty(item.id)",
+            "onTrue": [
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "labels",
+                "value": {
+                  "current": "@{insert(labels.current, onSuccess.data)}"
+                }
+              }
+            ],
+            "onFalse": [
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "labels",
+                "path": "current[@{index}]",
+                "value": "@{onSuccess.data}"
+              }
+            ]
+          }
+        ],
+        "onError": [
+          {
+            "_beagleAction_": "custom:feedback",
+            "type": "error",
+            "message": "@{error.data.message}"
+          }
+        ],
+        "onFinish": [
+          {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "isLoading",
+            "value": false
+          }
+        ]
+      }
+    ],
+    "onRemove": [
+      {
+        "_beagleAction_": "beagle:condition",
+        "condition": "@{isEmpty(item.id)}",
+        "onTrue": [
+          {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "labels",
+            "path": "new"
+          }
+        ],
+        "onFalse": [
+          {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "isLoading",
+            "value": true
+          },
+          {
+            "_beagleAction_": "beagle:sendRequest",
+            "url": "/label/@{item.id}",
+            "method": "DELETE",
+            "onSuccess": [
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "labels",
+                "path": "current",
+                "value": "@{remove(labels.current, item)}"
+              }
+            ],
+            "onError": [
+              {
+                "_beagleAction_": "custom:feedback",
+                "type": "error",
+                "message": "Error while deleting label."
+              },
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "isLoading",
+                "value": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "id": "_beagle_1",
+  "children": [
+    {
+      "_beagleComponent_": "custom:editableLabel",
+      "context": {
+        "id": "isLoading",
+        "value": false
+      },
+      "isLoading": false,
+      "label": {
+        "id": 0,
+        "name": "Personal",
+        "color": "#00ff00"
+      },
+      "onSave": "__function__",
+      "onRemove": "__function__",
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 0,
+            "name": "Personal",
+            "color": "#00ff00"
+          }
+        },
+        {
+          "id": "index",
+          "value": 0
+        }
+      ],
+      "id": "_beagle_4"
+    },
+    {
+      "_beagleComponent_": "custom:editableLabel",
+      "context": {
+        "id": "isLoading",
+        "value": false
+      },
+      "isLoading": false,
+      "label": {
+        "id": 1,
+        "name": "Work",
+        "color": "#0000ff"
+      },
+      "onSave": "__function__",
+      "onRemove": "__function__",
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 1,
+            "name": "Work",
+            "color": "#0000ff"
+          }
+        },
+        {
+          "id": "index",
+          "value": 1
+        }
+      ],
+      "id": "_beagle_5"
+    },
+    {
+      "_beagleComponent_": "custom:editableLabel",
+      "context": {
+        "id": "isLoading",
+        "value": false
+      },
+      "isLoading": false,
+      "label": {
+        "id": 2,
+        "name": "Urgent",
+        "color": "#ff0000"
+      },
+      "onSave": "__function__",
+      "onRemove": "__function__",
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 2,
+            "name": "Urgent",
+            "color": "#ff0000"
+          }
+        },
+        {
+          "id": "index",
+          "value": 2
+        }
+      ],
+      "id": "_beagle_6"
+    },
+    {
+      "_beagleComponent_": "custom:editableLabel",
+      "context": {
+        "id": "isLoading",
+        "value": false
+      },
+      "isLoading": false,
+      "label": {
+        "id": 3,
+        "name": "Supermarket",
+        "color": "#ffff00"
+      },
+      "onSave": "__function__",
+      "onRemove": "__function__",
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 3,
+            "name": "Supermarket",
+            "color": "#ffff00"
+          }
+        },
+        {
+          "id": "index",
+          "value": 3
+        }
+      ],
+      "id": "_beagle_7"
+    }
+  ]
+}

@@ -32,7 +32,7 @@ function createConfig(): BeagleConfig<any> {
         /* making a clone guarantees Beagle won't alter the tree received as parameter, making it
         possible to verify the snapshots when testing. The same is done in all other lifecycles. */
         const newTree = clone(tree)
-        if (newTree.version) {
+        if (newTree.version !== undefined) {
           newTree.version = 'Beagle Keep v1.0'
           return newTree
         }

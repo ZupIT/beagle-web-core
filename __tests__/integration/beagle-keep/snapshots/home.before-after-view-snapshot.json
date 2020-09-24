@@ -1,6 +1,6 @@
 {
   "_beagleComponent_": "beagle:container",
-  "version": "",
+  "version": "Beagle Keep v1.0",
   "context": {
     "id": "data",
     "value": {

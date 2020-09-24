@@ -24,8 +24,8 @@ import { enableLogging, disableLogging } from '../../utils/log'
 import { whenCalledTimes } from '../../utils/function'
 
 describe('Beagle Keep: render home', () => {
+  enableLogging()
   setup()
-  
   let render: jest.Mock
   const { service, createBeagleRemoteView } = createService()
   const {
@@ -34,14 +34,11 @@ describe('Beagle Keep: render home', () => {
     beforeStart,
     beforeViewSnapshot,
   } = service.getConfig().lifecycles! as Record<Lifecycle, jest.Mock>
-  enableLogging()
   
   beforeAll(async () => {
     const result = await createBeagleRemoteView({ route: `${paths.view}/home` })
     render = result.render
   })
-
-  beforeEach(globalMocks.log.mockClear)
 
   afterAll(disableLogging)
 
@@ -66,6 +63,7 @@ describe('Beagle Keep: render home', () => {
     expect(beforeViewSnapshot).toHaveBeenCalledTimes(3)
     expect(afterViewSnapshot).toHaveBeenCalledTimes(3)
     expect(beforeRender).toHaveBeenCalledTimes(3)
+    expect(render).toHaveBeenCalledTimes(3)
     expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
@@ -86,7 +84,8 @@ describe('Beagle Keep: render home', () => {
 
     /**
      * Expected difference from the previous lifecycle (beforeStart): ids for every component;
-     * menu.items transformed to menu.children.
+     * menu.items transformed to menu.children. Containers should have special ids according to
+     * their beforeStart lifecycle.
      */
     it('should match snapshot on before view snapshot', async () => {
       const home = beforeViewSnapshot.mock.calls[1][0]
@@ -209,7 +208,7 @@ describe('Beagle Keep: render home', () => {
      * 
      * The rest of the tree should be equal to the snapshot of the first render (home).
      */
-    it('should match snapshot on before render', () => (
+    it('should render home for the second time, now with the list of notes', () => (
       shouldMatchRepeaterAndLastRenderSnapshots(render, '')
     ))
   })

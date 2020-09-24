@@ -1,0 +1,236 @@
+{
+  "_beagleComponent_": "beagle:container",
+  "version": "",
+  "context": {
+    "id": "form",
+    "value": {
+      "data": {
+        "title": "",
+        "text": "",
+        "labels": []
+      },
+      "labels": [
+        {
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
+        },
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        },
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        },
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ],
+      "isLoading": true
+    }
+  },
+  "onInit": [
+    {
+      "_beagleAction_": "beagle:condition",
+      "condition": "@{isNull(global.selectedNote)}",
+      "onTrue": [
+        {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": false
+        }
+      ],
+      "onFalse": [
+        {
+          "_beagleAction_": "beagle:sendRequest",
+          "url": "/note/@{global.selectedNote}",
+          "onSuccess": {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "form",
+            "path": "data",
+            "value": {
+              "id": "@{onSuccess.data.id}",
+              "title": "@{onSuccess.data.title}",
+              "text": "@{onSuccess.data.text}",
+              "labels": "@{onSuccess.data.labels}"
+            }
+          },
+          "onError": [
+            {
+              "_beagleAction_": "beagle:addChildren",
+              "value": {
+                "_beagleComponent_": "custom:error",
+                "message": "Couldn't find note with id @{global.selectedNote}"
+              },
+              "mode": "replace"
+            }
+          ],
+          "onFinish": [
+            {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "style": {
+    "flex": {
+      "flex": 1,
+      "alignItems": "center",
+      "justifyContent": "center"
+    },
+    "size": {
+      "height": {
+        "value": 100,
+        "type": "PERCENT"
+      }
+    },
+    "backgroundColor": "#111"
+  },
+  "children": [
+    {
+      "_beagleComponent_": "custom:loadingOverlay",
+      "isVisible": "@{form.isLoading}"
+    },
+    {
+      "_beagleComponent_": "beagle:simpleForm",
+      "onSubmit": [
+        {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": true
+        },
+        {
+          "_beagleAction_": "beagle:sendRequest",
+          "url": "/notes",
+          "method": "@{condition(isNull(global.selectedNote), 'POST', 'PUT')}",
+          "data": "@{form.data}",
+          "onSuccess": [
+            {
+              "_beagleAction_": "custom:feedback",
+              "type": "success",
+              "message": "Note successfully created!"
+            },
+            {
+              "_beagleAction_": "beagle:popView"
+            }
+          ],
+          "onError": [
+            {
+              "_beagleAction_": "custom:feedback",
+              "type": "error",
+              "message": "Could not save the message. Please, try again later."
+            }
+          ],
+          "onFinish": [
+            {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "children": [
+        {
+          "_beagleComponent_": "beagle:container",
+          "style": {
+            "size": {
+              "maxWidth": {
+                "value": 500,
+                "type": "REAL"
+              }
+            },
+            "flex": {
+              "flexDirection": "COLUMN"
+            },
+            "padding": {
+              "all": {
+                "value": 15,
+                "type": "REAL"
+              }
+            },
+            "backgroundColor": "#333",
+            "cornerRadius": {
+              "radius": 20
+            }
+          },
+          "children": [
+            {
+              "_beagleComponent_": "beagle:textInput",
+              "model": "form.data.title",
+              "onBlur": [
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.title",
+                  "value": true
+                }
+              ],
+              "error": "@{condition(isEmpty(form.data.title), 'This field is required', '')}",
+              "showError": "@{or(form.showErrors, form.showFieldError.title)}",
+              "placeholder": "Title"
+            },
+            {
+              "_beagleComponent_": "custom:textArea",
+              "model": "form.data.text",
+              "onBlur": [
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.text",
+                  "value": true
+                }
+              ],
+              "error": "@{condition(isEmpty(form.data.text), 'This field is required', '')}",
+              "showError": "@{or(form.showErrors, form.showFieldError.text)}",
+              "label": "Content"
+            },
+            {
+              "_beagleComponent_": "beagle:container",
+              "style": {
+                "flex": {
+                  "flex": 1,
+                  "justifyContent": "SPACE_BETWEEN",
+                  "flexDirection": "ROW"
+                }
+              },
+              "children": [
+                {
+                  "_beagleComponent_": "beagle:button",
+                  "text": "Cancel",
+                  "onPress": [
+                    {
+                      "_beagleAction_": "beagle:popView"
+                    }
+                  ]
+                },
+                {
+                  "_beagleComponent_": "beagle:button",
+                  "text": "Save",
+                  "onPress": [
+                    {
+                      "_beagleAction_": "beagle:submitForm"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -15,53 +15,18 @@
  */
 
 import { find } from 'lodash'
-import {
-  BeforeStart,
-  BeforeViewSnapshot,
-  AfterViewSnapshot,
-  BeforeRender,
-  BeagleChildren,
-} from 'metadata/decorator'
+import { AfterViewSnapshot, BeagleChildren } from 'metadata/decorator'
 import Repeater from './repeater'
+import Container from './container'
+import { TextArea, TextInput } from './input'
 import { Component } from './types'
 
-let containerIdCounter = 0
-
-const TextInput: Component<any> = jest.fn()
-const TextArea: Component<any> = jest.fn()
 const Button: Component<any> = jest.fn()
-const Container: Component<any> = jest.fn()
 const Menu: Component<any> = jest.fn()
-
-function parseInputModel(input: any) {
-  if (!input.model) return
-  const [contextId, path] = input.model.match(/(\w+)\.().*)/)
-  input.value = `@{${input.model}}`
-  input.onChange = input.onChange || []
-  input.onChange.push({
-    _beagleAction_: 'beagle:setContext',
-    contextId,
-    path,
-    value: '@{onChange.value}',
-  })
-  delete input.model
-}
-
-BeforeStart(container => {
-  container.id = `container:${containerIdCounter++}`
-})(Container)
-
-BeforeViewSnapshot(parseInputModel)(TextInput)
-BeforeViewSnapshot(parseInputModel)(TextArea)
 
 AfterViewSnapshot((button) => {
   button.isSubmit = !!find(button.onPress, { _beagleAction_: 'beagle:submitForm' })
 })(Button)
-
-BeforeRender((container) => {
-  container.style = container.style || {}
-  container.style.color = '#FFF'
-})(Container)
 
 BeagleChildren({ property: 'items' })(Menu)
 
@@ -77,6 +42,7 @@ const components: Record<string, Component<any>> = {
   'custom:textArea': TextArea,
   'custom:note': jest.fn(),
   'custom:editableLabel': jest.fn(),
+  'custom:loadingOverlay': jest.fn(),
   'custom:loading': jest.fn(),
   'custom:error': jest.fn(),
 }

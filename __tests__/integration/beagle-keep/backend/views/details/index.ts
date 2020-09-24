@@ -47,7 +47,7 @@ const details: BeagleUIElement = {
   style: pageStyle,
   children: [
     {
-      _beagleComponent_: 'custom:loading',
+      _beagleComponent_: 'custom:loadingOverlay',
       isVisible: '@{form.isLoading}',
     },
     form,

@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 
+/**
+ * Returns a promise that is resolved as soon as the function mock passed as parameter is called
+ * for the nth time, where n is the parameter `times`.
+ * 
+ * The function calls will be checked every 20ms, so when this is resolved, the function might
+ * have been called more then desired number of times.
+ * 
+ * If the function is not called the desired number of times before `timeout` ms, the promise is
+ * rejected.
+ * 
+ * @param fn the function mock to check
+ * @param times the minimum number of times you wish the function to be called before resolving the
+ * promise
+ * @param timeout the maximum time (ms) to wait
+ * @returns the promise
+ */
 export function whenCalledTimes(fn: jest.Mock, times: number, timeout = 100) {
   const interval = 20
   let attempts = 0

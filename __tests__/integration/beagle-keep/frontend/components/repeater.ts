@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isEqual, isNil } from 'lodash'
+import { isEqual } from 'lodash'
 import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { Component, RepeaterProps } from './types'
@@ -23,12 +23,11 @@ let previousDataSource: Record<string, any[]> = {}
 
 const Repeater: Component<RepeaterProps> = ({
   id,
-  key,
   dataSource,
   template,
   viewContentManager,
 }) => {
-  function onInit() {
+  function onChange() {
     if (!dataSource || isEqual(dataSource, previousDataSource[id])) return
     const element = viewContentManager.getElement()
 
@@ -49,7 +48,7 @@ const Repeater: Component<RepeaterProps> = ({
 
   /* the setTimeout here is to simulate angular and react lifecycles, "onInit", for instance. This
   lets the current render finish and makes the next one an actual new render. */
-  setTimeout(onInit, 10)
+  setTimeout(onChange, 10)
 }
 
 export default Repeater
