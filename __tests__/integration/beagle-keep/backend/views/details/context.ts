@@ -70,13 +70,4 @@ export function showFieldError(fieldName: string, value: boolean) {
   }
 }
 
-export function setFieldValue(fieldName: string, value: string) {
-  return {
-    _beagleAction_: 'beagle:setContext',
-    contextId: 'form',
-    path: `data.${fieldName}`,
-    value,
-  }
-}
-
 export default context

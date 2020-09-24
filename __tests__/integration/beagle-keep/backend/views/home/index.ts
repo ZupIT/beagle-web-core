@@ -23,6 +23,7 @@ import noteList from './note-list'
 
 const home: BeagleUIElement = {
   _beagleComponent_: 'beagle:container',
+  version: '',
   context: {
     id: 'data',
     value: {
@@ -33,7 +34,7 @@ const home: BeagleUIElement = {
   children: [
     header,
     {
-      _beagleComponent_: 'beagle:component',
+      _beagleComponent_: 'beagle:container',
       style: {
         flex: {
           flexDirection: 'ROW',

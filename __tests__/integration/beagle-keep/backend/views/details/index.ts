@@ -41,6 +41,7 @@ const fetchNote = [{
 
 const details: BeagleUIElement = {
   _beagleComponent_: 'beagle:container',
+  version: '',
   context,
   onInit: fetchNote,
   style: pageStyle,

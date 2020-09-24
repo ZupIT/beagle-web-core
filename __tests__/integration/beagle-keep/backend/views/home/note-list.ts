@@ -18,7 +18,6 @@ import { BeagleUIElement } from 'beagle-tree/types'
 
 const noteTemplate: BeagleUIElement = {
   _beagleComponent_: 'custom:note',
-  id: 'note-list',
   text: '@{item.text}',
   labels: '@{item.labels}',
   onSelect: [
@@ -129,7 +128,7 @@ const noteTemplate: BeagleUIElement = {
 
 const noteList: BeagleUIElement = {
   _beagleComponent_: 'custom:repeater',
-  dataSource: 'data.notes',
+  dataSource: '@{data.notes}',
   key: 'id',
   template: noteTemplate,
 }

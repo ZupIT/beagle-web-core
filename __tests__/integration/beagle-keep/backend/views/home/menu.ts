@@ -1,5 +1,5 @@
 import { BeagleUIElement } from 'beagle-tree/types'
-import { BeagleAction } from 'action/types'
+import { getLabels } from '../../database/labels'
 
 /*
  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
@@ -17,61 +17,74 @@ import { BeagleAction } from 'action/types'
  * limitations under the License.
  */
 
-export interface MenuItem {
-  icon: string,
-  label: string,
-  onPress: BeagleAction[],
+const notesItem: BeagleUIElement = {
+  _beagleComponent_: 'custom:menuItem',
+  active: '@{eq(data.currentLabel, \'Notes\')}',
+  icon: 'light-bulb',
+  label: 'Notes',
+  onPress: [
+    {
+      _beagleAction_: 'beagle:setContext',
+      contextId: 'menu',
+      path: 'active',
+      value: 'Notes',
+    },
+    {
+      _beagleAction_: 'beagle:setContext',
+      contextId: 'filteredLabel',
+      value: null,
+    },
+  ],
 }
 
-function createMenu(items: MenuItem[]): BeagleUIElement {
-  return {
-    _beagleComponent_: 'custom:menu',
-    id: 'menu',
-    context: {
-      id: 'menu',
-      value: {
-        items,
-        active: 'Notes'
-      },
+const editLabelsItem: BeagleUIElement = {
+  _beagleComponent_: 'custom:menuItem',
+  active: '@{eq(data.currentLabel, \'Edit labels\')}',
+  icon: 'pencil',
+  label: 'Edit labels',
+  onPress: [
+    {
+      _beagleAction_: 'beagle:pushView',
+      route: {
+        url: '/labels'
+      }
     },
-    items: '@{union(menu.items, labelsToMenuItems(labels))}',
-    active: '@{menu.active}',
-    style: {
-      margin: {
-        right: { value: 20, type: 'REAL' },
-      },
-    },
-  }
+  ],
 }
 
-export default createMenu([
-  {
-    icon: 'light-bulb',
-    label: 'Notes',
-    onPress: [
-      {
-        _beagleAction_: 'beagle:setContext',
-        contextId: 'menu',
-        path: 'active',
-        value: 'Notes',
-      },
-      {
-        _beagleAction_: 'beagle:setContext',
-        contextId: 'filteredLabel',
-        value: null,
-      },
-    ],
+const labelsItems: BeagleUIElement[] = getLabels().map(label => ({
+  _beagleComponent_: 'custom:menuItem',
+  active: `@{eq(data.currentLabel, '${label.name}')}`,
+  icon: 'tag',
+  color: label.color,
+  label: label.name,
+  onPress: [
+    {
+      _beagleAction_: 'beagle:setContext',
+      contextId: 'data',
+      path: 'currentLabel',
+      value: label.name,
+    },
+  ],
+}))
+
+const menu: BeagleUIElement = {
+  _beagleComponent_: 'custom:menu',
+  id: 'menu',
+  context: {
+    id: 'active',
+    value: 'Notes',
   },
-  {
-    icon: 'pencil',
-    label: 'Edit labels',
-    onPress: [
-      {
-        _beagleAction_: 'beagle:pushView',
-        route: {
-          url: '/labels'
-        }
-      },
-    ],
-  }
-])
+  items: [
+    notesItem,
+    editLabelsItem,
+    ...labelsItems,
+  ],
+  style: {
+    margin: {
+      right: { value: 20, type: 'REAL' },
+    },
+  },
+}
+
+export default menu

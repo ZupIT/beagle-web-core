@@ -15,7 +15,7 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
-import { setLoading, showFieldError, showFormErrors, setFieldValue } from './context'
+import { setLoading, showFieldError, showFormErrors } from './context'
 import { buttonGroupStyle, cardStyle } from '../styles'
 
 function showFeedback(type: string, message: string) {
@@ -41,7 +41,7 @@ function createButton(text: string, isSubmit: boolean): BeagleUIElement {
 function createField(name: string, label: string, isTextArea: boolean): BeagleUIElement {
   const field: BeagleUIElement = {
     _beagleComponent_: isTextArea? 'custom:textArea' : 'beagle:textInput',
-    onChange: [setFieldValue(name, '@{onChange.value}')],
+    model: `form.data.${name}`,
     onBlur: [showFieldError(name, true)],
     error: `@{condition(isEmpty(form.data.${name}), 'This field is required', '')}`,
     showError: `@{or(form.showErrors, form.showFieldError.${name})}`,

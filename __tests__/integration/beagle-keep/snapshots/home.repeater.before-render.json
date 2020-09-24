@@ -1,0 +1,534 @@
+{
+  "_beagleComponent_": "custom:repeater",
+  "dataSource": [
+    {
+      "id": 0,
+      "title": "Dentist",
+      "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
+      "createdAt": 1600453354284,
+      "labels": [
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Gym exercises for monday",
+      "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
+      "createdAt": 1600453354284,
+      "labels": [
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Send research results",
+      "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
+      "createdAt": 1600453354284,
+      "labels": [
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        },
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Market list for september",
+      "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
+      "createdAt": 1600453354284,
+      "labels": []
+    },
+    {
+      "id": 4,
+      "title": "Check the new coffee brand",
+      "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
+      "createdAt": 1600453354284,
+      "labels": []
+    },
+    {
+      "id": 5,
+      "title": "Ask for a raise",
+      "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
+      "createdAt": 1600453354284,
+      "labels": [
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Ask George to read his e-mails",
+      "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
+      "createdAt": 1600453354284,
+      "labels": [
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Parents meeting at school",
+      "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
+      "createdAt": 1600453354284,
+      "labels": [
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        }
+      ]
+    }
+  ],
+  "key": "id",
+  "template": {
+    "_beagleComponent_": "custom:note",
+    "text": "@{item.text}",
+    "labels": "@{item.labels}",
+    "onSelect": [
+      {
+        "_beagleAction_": "beagle:setContext",
+        "contextId": "global",
+        "path": "selectedNote",
+        "value": "@{item.id}"
+      },
+      {
+        "_beagleAction_": "beagle:pushView",
+        "route": {
+          "url": "/details"
+        }
+      }
+    ],
+    "onRemoveLabel": [
+      {
+        "_beagleAction_": "beagle:setContext",
+        "contextId": "data",
+        "path": "notes[@{index}]",
+        "value": "@{removeLabelFromNote(item, onRemoveLabel.id)}"
+      },
+      {
+        "_beagleAction_": "beagle:sendRequest",
+        "url": "/note/@{item.id}",
+        "method": "PUT",
+        "data": "@{removeLabelFromNote(item, onRemoveLabel.id)}",
+        "onError": [
+          {
+            "_beagleAction_": "custom:feedbackMessage",
+            "type": "error",
+            "text": "Connection error. Couldn't remove the label."
+          },
+          {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes[@{index}]",
+            "value": "@{item}"
+          }
+        ]
+      }
+    ],
+    "onAddLabel": [
+      {
+        "_beagleAction_": "beagle:setContext",
+        "contextId": "data",
+        "path": "notes[@{index}]",
+        "value": "@{addLabelToNote(item, onAddLabel)}"
+      },
+      {
+        "_beagleAction_": "beagle:sendRequest",
+        "url": "/note/@{item.id}",
+        "method": "PUT",
+        "data": "@{addLabelToNote(item, onAddLabel)}",
+        "onError": [
+          {
+            "_beagleAction_": "custom:feedbackMessage",
+            "type": "error",
+            "text": "Connection error. Couldn't add the label."
+          },
+          {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes[@{index}]",
+            "value": "@{item}"
+          }
+        ]
+      }
+    ],
+    "onRemoveNote": [
+      {
+        "_beagleAction_": "beagle:setContext",
+        "contextId": "data",
+        "path": "notes",
+        "value": "@{remove(data.notes, item)}"
+      },
+      {
+        "_beagleAction_": "beagle:sendRequest",
+        "url": "/note/@{item.id}",
+        "method": "DELETE",
+        "onSuccess": [
+          {
+            "_beagleAction_": "custom:feedbackMessage",
+            "type": "success",
+            "text": "Note removed successfully!"
+          }
+        ],
+        "onError": [
+          {
+            "_beagleAction_": "custom:feedbackMessage",
+            "type": "error",
+            "text": "Connection error. Couldn't remove the label."
+          },
+          {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes",
+            "value": "@{insert(data.notes, item, index)}"
+          }
+        ]
+      }
+    ],
+    "style": {
+      "margin": {
+        "all": {
+          "value": 10,
+          "type": "REAL"
+        }
+      }
+    }
+  },
+  "id": "_beagle_10",
+  "children": [
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
+      "labels": [
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        }
+      ],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 0,
+            "title": "Dentist",
+            "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
+            "createdAt": 1600453354284,
+            "labels": [
+              {
+                "id": 1,
+                "name": "Work",
+                "color": "#0000ff"
+              }
+            ]
+          }
+        },
+        {
+          "id": "index",
+          "value": 0
+        }
+      ],
+      "id": "_beagle_11"
+    },
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
+      "labels": [
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        }
+      ],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 1,
+            "title": "Gym exercises for monday",
+            "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
+            "createdAt": 1600453354284,
+            "labels": [
+              {
+                "id": 1,
+                "name": "Work",
+                "color": "#0000ff"
+              }
+            ]
+          }
+        },
+        {
+          "id": "index",
+          "value": 1
+        }
+      ],
+      "id": "_beagle_12"
+    },
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
+      "labels": [
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        },
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 2,
+            "title": "Send research results",
+            "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
+            "createdAt": 1600453354284,
+            "labels": [
+              {
+                "id": 2,
+                "name": "Urgent",
+                "color": "#ff0000"
+              },
+              {
+                "id": 3,
+                "name": "Supermarket",
+                "color": "#ffff00"
+              }
+            ]
+          }
+        },
+        {
+          "id": "index",
+          "value": 2
+        }
+      ],
+      "id": "_beagle_13"
+    },
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
+      "labels": [],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 3,
+            "title": "Market list for september",
+            "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
+            "createdAt": 1600453354284,
+            "labels": []
+          }
+        },
+        {
+          "id": "index",
+          "value": 3
+        }
+      ],
+      "id": "_beagle_14"
+    },
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
+      "labels": [],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 4,
+            "title": "Check the new coffee brand",
+            "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
+            "createdAt": 1600453354284,
+            "labels": []
+          }
+        },
+        {
+          "id": "index",
+          "value": 4
+        }
+      ],
+      "id": "_beagle_15"
+    },
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
+      "labels": [
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        }
+      ],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 5,
+            "title": "Ask for a raise",
+            "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
+            "createdAt": 1600453354284,
+            "labels": [
+              {
+                "id": 2,
+                "name": "Urgent",
+                "color": "#ff0000"
+              }
+            ]
+          }
+        },
+        {
+          "id": "index",
+          "value": 5
+        }
+      ],
+      "id": "_beagle_16"
+    },
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
+      "labels": [
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        }
+      ],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 6,
+            "title": "Ask George to read his e-mails",
+            "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
+            "createdAt": 1600453354284,
+            "labels": [
+              {
+                "id": 2,
+                "name": "Urgent",
+                "color": "#ff0000"
+              }
+            ]
+          }
+        },
+        {
+          "id": "index",
+          "value": 6
+        }
+      ],
+      "id": "_beagle_17"
+    },
+    {
+      "_beagleComponent_": "custom:note",
+      "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
+      "labels": [
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        }
+      ],
+      "onSelect": "__function__",
+      "onRemoveLabel": "__function__",
+      "onAddLabel": "__function__",
+      "onRemoveNote": "__function__",
+      "style": {
+        "margin": "10px"
+      },
+      "_implicitContexts_": [
+        {
+          "id": "item",
+          "value": {
+            "id": 7,
+            "title": "Parents meeting at school",
+            "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
+            "createdAt": 1600453354284,
+            "labels": [
+              {
+                "id": 1,
+                "name": "Work",
+                "color": "#0000ff"
+              }
+            ]
+          }
+        },
+        {
+          "id": "index",
+          "value": 7
+        }
+      ],
+      "id": "_beagle_18"
+    }
+  ]
+}

@@ -40,6 +40,7 @@ const buttonGroup: BeagleUIElement = {
 
 const labels: BeagleUIElement = {
   _beagleComponent_: 'beagle:container',
+  version: '',
   style: pageStyle,
   context,
   children: [

@@ -1,0 +1,446 @@
+{
+  "_beagleComponent_": "beagle:container",
+  "version": "",
+  "context": {
+    "id": "data",
+    "value": {
+      "notes": [
+        {
+          "id": 0,
+          "title": "Dentist",
+          "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
+          "createdAt": 1600453354284,
+          "labels": [
+            {
+              "id": 1,
+              "name": "Work",
+              "color": "#0000ff"
+            }
+          ]
+        },
+        {
+          "id": 1,
+          "title": "Gym exercises for monday",
+          "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
+          "createdAt": 1600453354284,
+          "labels": [
+            {
+              "id": 1,
+              "name": "Work",
+              "color": "#0000ff"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Send research results",
+          "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
+          "createdAt": 1600453354284,
+          "labels": [
+            {
+              "id": 2,
+              "name": "Urgent",
+              "color": "#ff0000"
+            },
+            {
+              "id": 3,
+              "name": "Supermarket",
+              "color": "#ffff00"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Market list for september",
+          "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
+          "createdAt": 1600453354284,
+          "labels": []
+        },
+        {
+          "id": 4,
+          "title": "Check the new coffee brand",
+          "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
+          "createdAt": 1600453354284,
+          "labels": []
+        },
+        {
+          "id": 5,
+          "title": "Ask for a raise",
+          "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
+          "createdAt": 1600453354284,
+          "labels": [
+            {
+              "id": 2,
+              "name": "Urgent",
+              "color": "#ff0000"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Ask George to read his e-mails",
+          "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
+          "createdAt": 1600453354284,
+          "labels": [
+            {
+              "id": 2,
+              "name": "Urgent",
+              "color": "#ff0000"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Parents meeting at school",
+          "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
+          "createdAt": 1600453354284,
+          "labels": [
+            {
+              "id": 1,
+              "name": "Work",
+              "color": "#0000ff"
+            }
+          ]
+        }
+      ],
+      "labels": [
+        {
+          "id": 0,
+          "name": "Personal",
+          "color": "#00ff00"
+        },
+        {
+          "id": 1,
+          "name": "Work",
+          "color": "#0000ff"
+        },
+        {
+          "id": 2,
+          "name": "Urgent",
+          "color": "#ff0000"
+        },
+        {
+          "id": 3,
+          "name": "Supermarket",
+          "color": "#ffff00"
+        }
+      ]
+    }
+  },
+  "children": [
+    {
+      "_beagleComponent_": "beagle:container",
+      "style": {
+        "margin": {
+          "bottom": {
+            "value": 10,
+            "type": "REAL"
+          }
+        },
+        "flex": {
+          "flexDirection": "ROW",
+          "justifyContent": "SPACE-BETWEEN"
+        }
+      },
+      "children": [
+        {
+          "_beagleComponent_": "beagle:image",
+          "path": {
+            "_beagleImagePath_": "local",
+            "url": "/assets/logo"
+          },
+          "id": "_beagle_2"
+        },
+        {
+          "_beagleComponent_": "beagle:image",
+          "path": {
+            "_beagleImagePath_": "remote",
+            "url": "https://www.test.com/profile/picture.png"
+          },
+          "id": "_beagle_3"
+        }
+      ],
+      "id": "container:1"
+    },
+    {
+      "_beagleComponent_": "beagle:container",
+      "style": {
+        "flex": {
+          "flexDirection": "ROW",
+          "flex": 1
+        }
+      },
+      "children": [
+        {
+          "_beagleComponent_": "custom:menu",
+          "id": "menu",
+          "context": {
+            "id": "active",
+            "value": "Notes"
+          },
+          "style": {
+            "margin": {
+              "right": {
+                "value": 20,
+                "type": "REAL"
+              }
+            }
+          },
+          "children": [
+            {
+              "_beagleComponent_": "custom:menuItem",
+              "active": "@{eq(data.currentLabel, 'Notes')}",
+              "icon": "light-bulb",
+              "label": "Notes",
+              "onPress": [
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "menu",
+                  "path": "active",
+                  "value": "Notes"
+                },
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "filteredLabel"
+                }
+              ],
+              "id": "_beagle_4"
+            },
+            {
+              "_beagleComponent_": "custom:menuItem",
+              "active": "@{eq(data.currentLabel, 'Edit labels')}",
+              "icon": "pencil",
+              "label": "Edit labels",
+              "onPress": [
+                {
+                  "_beagleAction_": "beagle:pushView",
+                  "route": {
+                    "url": "/labels"
+                  }
+                }
+              ],
+              "id": "_beagle_5"
+            },
+            {
+              "_beagleComponent_": "custom:menuItem",
+              "active": "@{eq(data.currentLabel, 'Personal')}",
+              "icon": "tag",
+              "color": "#00ff00",
+              "label": "Personal",
+              "onPress": [
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "data",
+                  "path": "currentLabel",
+                  "value": "Personal"
+                }
+              ],
+              "id": "_beagle_6"
+            },
+            {
+              "_beagleComponent_": "custom:menuItem",
+              "active": "@{eq(data.currentLabel, 'Work')}",
+              "icon": "tag",
+              "color": "#0000ff",
+              "label": "Work",
+              "onPress": [
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "data",
+                  "path": "currentLabel",
+                  "value": "Work"
+                }
+              ],
+              "id": "_beagle_7"
+            },
+            {
+              "_beagleComponent_": "custom:menuItem",
+              "active": "@{eq(data.currentLabel, 'Urgent')}",
+              "icon": "tag",
+              "color": "#ff0000",
+              "label": "Urgent",
+              "onPress": [
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "data",
+                  "path": "currentLabel",
+                  "value": "Urgent"
+                }
+              ],
+              "id": "_beagle_8"
+            },
+            {
+              "_beagleComponent_": "custom:menuItem",
+              "active": "@{eq(data.currentLabel, 'Supermarket')}",
+              "icon": "tag",
+              "color": "#ffff00",
+              "label": "Supermarket",
+              "onPress": [
+                {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "data",
+                  "path": "currentLabel",
+                  "value": "Supermarket"
+                }
+              ],
+              "id": "_beagle_9"
+            }
+          ]
+        },
+        {
+          "_beagleComponent_": "custom:repeater",
+          "dataSource": "@{data.notes}",
+          "key": "id",
+          "template": {
+            "_beagleComponent_": "custom:note",
+            "text": "@{item.text}",
+            "labels": "@{item.labels}",
+            "onSelect": [
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "global",
+                "path": "selectedNote",
+                "value": "@{item.id}"
+              },
+              {
+                "_beagleAction_": "beagle:pushView",
+                "route": {
+                  "url": "/details"
+                }
+              }
+            ],
+            "onRemoveLabel": [
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "data",
+                "path": "notes[@{index}]",
+                "value": "@{removeLabelFromNote(item, onRemoveLabel.id)}"
+              },
+              {
+                "_beagleAction_": "beagle:sendRequest",
+                "url": "/note/@{item.id}",
+                "method": "PUT",
+                "data": "@{removeLabelFromNote(item, onRemoveLabel.id)}",
+                "onError": [
+                  {
+                    "_beagleAction_": "custom:feedbackMessage",
+                    "type": "error",
+                    "text": "Connection error. Couldn't remove the label."
+                  },
+                  {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes[@{index}]",
+                    "value": "@{item}"
+                  }
+                ]
+              }
+            ],
+            "onAddLabel": [
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "data",
+                "path": "notes[@{index}]",
+                "value": "@{addLabelToNote(item, onAddLabel)}"
+              },
+              {
+                "_beagleAction_": "beagle:sendRequest",
+                "url": "/note/@{item.id}",
+                "method": "PUT",
+                "data": "@{addLabelToNote(item, onAddLabel)}",
+                "onError": [
+                  {
+                    "_beagleAction_": "custom:feedbackMessage",
+                    "type": "error",
+                    "text": "Connection error. Couldn't add the label."
+                  },
+                  {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes[@{index}]",
+                    "value": "@{item}"
+                  }
+                ]
+              }
+            ],
+            "onRemoveNote": [
+              {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "data",
+                "path": "notes",
+                "value": "@{remove(data.notes, item)}"
+              },
+              {
+                "_beagleAction_": "beagle:sendRequest",
+                "url": "/note/@{item.id}",
+                "method": "DELETE",
+                "onSuccess": [
+                  {
+                    "_beagleAction_": "custom:feedbackMessage",
+                    "type": "success",
+                    "text": "Note removed successfully!"
+                  }
+                ],
+                "onError": [
+                  {
+                    "_beagleAction_": "custom:feedbackMessage",
+                    "type": "error",
+                    "text": "Connection error. Couldn't remove the label."
+                  },
+                  {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes",
+                    "value": "@{insert(data.notes, item, index)}"
+                  }
+                ]
+              }
+            ],
+            "style": {
+              "margin": {
+                "all": {
+                  "value": 10,
+                  "type": "REAL"
+                }
+              }
+            }
+          },
+          "id": "_beagle_10"
+        }
+      ],
+      "id": "container:2"
+    },
+    {
+      "_beagleComponent_": "beagle:button",
+      "id": "create-note",
+      "text": "Create note",
+      "onPress": [
+        {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "global",
+          "path": "selectedNote"
+        },
+        {
+          "_beagleAction_": "beagle:pushView",
+          "route": {
+            "url": "/details"
+          }
+        }
+      ],
+      "style": {
+        "positionType": "ABSOLUTE",
+        "position": {
+          "bottom": {
+            "value": 20,
+            "type": "REAL"
+          },
+          "right": {
+            "value": 20,
+            "type": "REAL"
+          }
+        }
+      }
+    }
+  ],
+  "id": "container:0"
+}

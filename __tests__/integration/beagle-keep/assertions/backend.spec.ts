@@ -20,7 +20,10 @@ import { getLabels, resetLabels } from '../backend/database/labels'
 import { getNotes, getNoteById, resetNotes } from '../backend/database/notes'
 import { url } from '../constants'
 
-describe('Integration: backend should work before testing Beagle itself', () => {
+/**
+ * Before actually testing beagle, we should guarantee the backend we wrote actually works.
+ */
+describe('Beagle Keep: backend', () => {
   setup()
 
   describe('label', () => {
