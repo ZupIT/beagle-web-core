@@ -21,7 +21,7 @@ import Tree from 'beagle-tree'
 import {
   createBeagleContextFromViewContentManager,
   BeagleContext,
-} from '../../src/legacy/beagle-context'
+} from '../../../src/legacy/beagle-context'
 import { treeA, treeC, treeD } from './mocks'
 import { mockLocalStorage } from './utils/test-utils'
 
