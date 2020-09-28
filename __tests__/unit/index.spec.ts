@@ -17,22 +17,12 @@
 import * as beagle from '../../src'
 import exportations from './index.snapshot'
 
-function serialize(data: any): any {
-  if (Array.isArray(data)) return data.map(serialize)
-  if (typeof data === 'object') {
-    const keys = Object.keys(data)
-    return keys.reduce((result, key) => ({ ...result, [key]: serialize(data[key]) }), {})
-  }
-  if (typeof data === 'function') return '__function__'
-  return data
-}
-
 describe('Beagle', () => {
   it('should export keys', () => {
     expect(Object.keys(beagle)).toEqual(expect.arrayContaining(Object.keys(exportations)))
   })
 
-  it('should export values', () => {
-    expect(serialize(beagle)).toEqual(exportations)
+  it.only('should export values', () => {
+    expect(beagle).toMatchSnapshot()
   })
 })

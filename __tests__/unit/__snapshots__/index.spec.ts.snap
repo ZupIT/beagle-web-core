@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Beagle should export values 1`] = `
+Object {
+  "AfterViewSnapshot": [Function],
+  "Automaton": Object {
+    "createDPA": [Function],
+    "empty": "∅",
+  },
+  "BeagleCacheError": [Function],
+  "BeagleChildren": [Function],
+  "BeagleError": [Function],
+  "BeagleExpiredCacheError": [Function],
+  "BeagleNetworkError": [Function],
+  "BeforeRender": [Function],
+  "BeforeStart": [Function],
+  "BeforeViewSnapshot": [Function],
+  "Component": Object {
+    "assignId": [Function],
+    "eraseNullProperties": [Function],
+    "formatChildrenProperty": [Function],
+  },
+  "ObjectUtils": Object {
+    "getOriginalKeyByCaseInsensitiveKey": [Function],
+    "getValueByCaseInsensitiveKey": [Function],
+  },
+  "StringUtils": Object {
+    "addPrefix": [Function],
+    "capitalizeFirstLetter": [Function],
+    "removePrefix": [Function],
+    "removeSuffix": [Function],
+  },
+  "Tree": Object {
+    "addChild": [Function],
+    "clone": [Function],
+    "findByAttribute": [Function],
+    "findById": [Function],
+    "findByType": [Function],
+    "findParentByChildId": [Function],
+    "forEach": [Function],
+    "indexOf": [Function],
+    "insertIntoTree": [Function],
+    "iterator": [Function],
+    "replaceEach": [Function],
+    "replaceInTree": [Function],
+  },
+  "UrlUtils": Object {
+    "createQueryString": [Function],
+  },
+  "default": [Function],
+  "logger": Object {
+    "disable": [Function],
+    "enable": [Function],
+    "error": [Function],
+    "info": [Function],
+    "log": [Function],
+    "setCustomLogFunction": [Function],
+    "setTypesToLog": [Function],
+    "warn": [Function],
+  },
+}
+`;
