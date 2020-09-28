@@ -20,6 +20,10 @@ describe('Beagle Keep: actions: labels: navigate', () => {
     more initial renders) */
     // click the button to go back
 
-    it.todo('should go back to home')
+    it.todo('should do 4 renders with no warnings or errors')
+
+    it.todo('should show loading')
+
+    it.todo('should remove the loading and display the home')
   })
 })
