@@ -15,14 +15,9 @@
  */
 
 import * as beagle from '../../src'
-import exportations from './index.snapshot'
 
 describe('Beagle', () => {
-  it('should export keys', () => {
-    expect(Object.keys(beagle)).toEqual(expect.arrayContaining(Object.keys(exportations)))
-  })
-
-  it.only('should export values', () => {
+  it('should export', () => {
     expect(beagle).toMatchSnapshot()
   })
 })
