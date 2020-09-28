@@ -51,10 +51,15 @@ const saveLabel = [
       _beagleAction_: 'beagle:condition',
       condition: 'isEmpty(item.id)',
       onTrue: [addNewLabelToCurrentLabels('onSuccess.data')],
-      onFalse: [replaceCurrent('onSuccess.data')],
+      onFalse: [
+        replaceCurrent('onSuccess.data'),
+        setLoading(false),
+      ],
     }],
-    onError: [showFeedback('error', '@{error.data.message}')],
-    onFinish: [setLoading(false)],
+    onError: [
+      showFeedback('error', '@{error.data.message}'),
+      setLoading(false),
+    ],
   },
 ]
 

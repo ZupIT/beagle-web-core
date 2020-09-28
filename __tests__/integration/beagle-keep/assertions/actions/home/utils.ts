@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import setup from '../../../backend/routes'
 import createService from '../../../frontend/service'
@@ -47,4 +48,8 @@ export function setupHomeActionsTest() {
   }
 
   return { createRemoteViewAndWaitInitialRendering }
+}
+
+export function getNoteItem(tree: IdentifiableBeagleUIElement, index = 0) {
+  return Tree.findByType(tree, 'custom:note')[index]
 }

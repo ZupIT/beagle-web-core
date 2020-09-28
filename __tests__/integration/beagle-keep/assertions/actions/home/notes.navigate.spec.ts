@@ -20,15 +20,10 @@ import { BeagleView } from 'beagle-view/types'
 import { whenCalledTimes } from '../../../../../utils/function'
 import { takeSnapshot } from '../../../../../utils/snapshot'
 import { FullNote, getNoteById } from '../../../backend/database/notes'
-import { url, paths } from '../../../constants'
-import { setupHomeActionsTest } from './utils'
+import { setupHomeActionsTest, getNoteItem } from './utils'
 
 describe('Beagle Keep: actions: home: note list', () => {
   const { createRemoteViewAndWaitInitialRendering } = setupHomeActionsTest()
-
-  function getNoteItem(tree: IdentifiableBeagleUIElement, index = 0) {
-    return Tree.findByType(tree, 'custom:note')[index]
-  }
 
   describe('should select a note and navigate to its details', () => {
     let renderFn: jest.Mock
@@ -73,73 +68,6 @@ describe('Beagle Keep: actions: home: note list', () => {
       expect(textField).toBeTruthy()
       expect(titleField!.value).toBe(selectedNote.title)
       expect(textField!.value).toBe(selectedNote.text)
-    })
-  })
-
-  describe('should remove note', () => {
-    let renderFn: jest.Mock
-    let beagleView: BeagleView
-    let removedNoteId: number
-    let originalView: IdentifiableBeagleUIElement
-    let viewAfterChangeToTheGlobalContext: IdentifiableBeagleUIElement
-    let viewBeforeDeletingNote: IdentifiableBeagleUIElement
-    let viewAfterDeletingNote: IdentifiableBeagleUIElement
-
-    beforeAll(async () => {
-      const { render, tree, beagleView: bView } = await createRemoteViewAndWaitInitialRendering()
-      renderFn = render
-      beagleView = bView
-      const noteItem = getNoteItem(tree, 2)
-      globalMocks.fetch.mockClear()
-      noteItem.onRemove()
-      removedNoteId = noteItem.noteId
-      /* two renders: first: the note is removed from the data source of the repeater via the
-      setContext action; second: the repeater will notice the change and call a re-render to update
-      its children. */
-      await whenCalledTimes(render, 2)
-      viewBeforeDeletingNote = tree
-      viewAfterDeletingNote = render.mock.calls[1][0]
-    })
-
-    afterAll(() => beagleView.destroy())
-
-    it('should do 2 renders with no warnings or errors', () => {
-      expect(renderFn).toHaveBeenCalledTimes(2)
-      expect(globalMocks.log).not.toHaveBeenCalled()
-    })
-
-    it('changes to the global context should not alter the view', () => {
-      expect(takeSnapshot(viewAfterChangeToTheGlobalContext)).toEqual(takeSnapshot(originalView))
-    })
-
-    it('should remove the note from the list', () => {
-      const allNotes: FullNote[] = viewBeforeDeletingNote.context!.value.notes
-      const allIds = allNotes.map(note => note.id)
-      const renderedNotes = Tree.findByType(viewAfterDeletingNote, 'custom:note')
-      const renderedIds = renderedNotes.map(renderedNote => renderedNote.noteId)
-      expect(allIds.length - renderedIds.length).toBe(1)
-      expect(allIds.filter(id => id !== removedNoteId)).toEqual(renderedIds)
-    })
-
-    it('should have called the backend service to remove the note', () => {
-      expect(globalMocks.fetch).toHaveBeenCalledWith(
-        `${url}${paths.note}/${removedNoteId}`,
-        expect.objectContaining({ method: expect.stringMatching(/delete/i) }),
-      )
-    })
-
-    it('should show a success feedback via the custom action "custom:feedback"', async () => {
-      const config = beagleView.getBeagleService().getConfig()
-      const actionHandler = config.customActions!['custom:feedback'] as jest.Mock
-      await whenCalledTimes(actionHandler, 1)
-      expect(actionHandler).toHaveBeenCalledTimes(1)
-      expect(actionHandler).toHaveBeenCalledWith(expect.objectContaining({
-        action: {
-          _beagleAction_: 'custom:feedback',
-          type: 'success',
-          text: 'Note removed successfully!',
-        }
-      }))
     })
   })
 

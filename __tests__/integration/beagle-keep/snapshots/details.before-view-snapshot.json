@@ -121,12 +121,25 @@
           "data": "@{form.data}",
           "onSuccess": [
             {
-              "_beagleAction_": "custom:feedback",
-              "type": "success",
-              "message": "Note successfully created!"
-            },
-            {
-              "_beagleAction_": "beagle:popView"
+              "_beagleAction_": "beagle:condition",
+              "condition": "@{sNull(global.selectedNote)}",
+              "onTrue": [
+                {
+                  "_beagleAction_": "custom:feedback",
+                  "type": "success",
+                  "message": "Note successfully created!"
+                },
+                {
+                  "_beagleAction_": "beagle:popView"
+                }
+              ],
+              "onFalse": [
+                {
+                  "_beagleAction_": "custom:feedback",
+                  "type": "success",
+                  "message": "Note successfully updated!"
+                }
+              ]
             }
           ],
           "onError": [

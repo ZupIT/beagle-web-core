@@ -108,6 +108,11 @@
                     "contextId": "labels",
                     "path": "current[@{index}]",
                     "value": "@{onSuccess.data}"
+                  },
+                  {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "isLoading",
+                    "value": false
                   }
                 ]
               }
@@ -117,9 +122,7 @@
                 "_beagleAction_": "custom:feedback",
                 "type": "error",
                 "message": "@{error.data.message}"
-              }
-            ],
-            "onFinish": [
+              },
               {
                 "_beagleAction_": "beagle:setContext",
                 "contextId": "isLoading",

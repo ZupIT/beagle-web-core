@@ -60,10 +60,15 @@ const saveNote = [
     url: `${url}${paths.note}`,
     method: '@{condition(isNull(global.selectedNote), \'POST\', \'PUT\')}',
     data: '@{form.data}',
-    onSuccess: [
-      showFeedback('success', 'Note successfully created!'),
-      { _beagleAction_: 'beagle:popView' },
-    ],
+    onSuccess: [{
+      _beagleAction_: 'beagle:condition',
+      condition: '@{sNull(global.selectedNote)}',
+      onTrue: [
+        showFeedback('success', 'Note successfully created!'),
+        { _beagleAction_: 'beagle:popView' },
+      ],
+      onFalse: [showFeedback('success', 'Note successfully updated!')],
+    }],
     onError: [showFeedback('error', 'Could not save the message. Please, try again later.')],
     onFinish: [setLoading(false)],
   },
