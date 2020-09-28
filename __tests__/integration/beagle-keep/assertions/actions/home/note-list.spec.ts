@@ -109,7 +109,7 @@ describe('Beagle Keep: actions: home: note list', () => {
     })
 
     it('changes to the global context should not alter the view', () => {
-      expect(viewAfterChangeToTheGlobalContext).toEqual(originalView)
+      expect(takeSnapshot(viewAfterChangeToTheGlobalContext)).toEqual(takeSnapshot(originalView))
     })
 
     it('should remove the note from the list', () => {
