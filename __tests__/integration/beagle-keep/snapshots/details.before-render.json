@@ -64,21 +64,21 @@
           "children": [
             {
               "_beagleComponent_": "beagle:textInput",
+              "id": "form:title",
               "onBlur": "__function__",
               "error": "This field is required",
               "showError": false,
               "placeholder": "Title",
-              "id": "_beagle_3",
               "value": "",
               "onChange": "__function__"
             },
             {
               "_beagleComponent_": "custom:textArea",
+              "id": "form:text",
               "onBlur": "__function__",
               "error": "This field is required",
               "showError": false,
               "label": "Content",
-              "id": "_beagle_4",
               "value": "",
               "onChange": "__function__"
             },
@@ -94,14 +94,14 @@
                   "_beagleComponent_": "beagle:button",
                   "text": "Cancel",
                   "onPress": "__function__",
-                  "id": "_beagle_5",
+                  "id": "_beagle_3",
                   "isSubmit": false
                 },
                 {
                   "_beagleComponent_": "beagle:button",
                   "text": "Save",
                   "onPress": "__function__",
-                  "id": "_beagle_6",
+                  "id": "_beagle_4",
                   "isSubmit": true
                 }
               ],

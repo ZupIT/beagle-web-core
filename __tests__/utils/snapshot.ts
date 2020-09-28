@@ -19,7 +19,15 @@ import { readFile, writeFile } from 'fs'
 
 const snapshotsDir = './__tests__/integration/beagle-keep/snapshots'
 
-function takeSnapshot(data: any): any {
+/**
+ * Transforms the object into a serializable entity that can than be stored in a file. Basically, it
+ * transforms every function into the string `"__function__"`, so it can also be used to compare
+ * objects and we don't really care about what the functions actually do, just that they are
+ * functions.
+ * 
+ * @param data the object to be transformed into a serializable version of itself 
+ */
+export function takeSnapshot(data: any): any {
   if (!data) return data
   if (Array.isArray(data)) return data.map(takeSnapshot)
   if (typeof data === 'object') {

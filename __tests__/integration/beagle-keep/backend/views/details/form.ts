@@ -15,6 +15,7 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
+import { url, paths } from '../../../constants'
 import { setLoading, showFieldError, showFormErrors } from './context'
 import { buttonGroupStyle, cardStyle } from '../styles'
 
@@ -41,6 +42,7 @@ function createButton(text: string, isSubmit: boolean): BeagleUIElement {
 function createField(name: string, label: string, isTextArea: boolean): BeagleUIElement {
   const field: BeagleUIElement = {
     _beagleComponent_: isTextArea? 'custom:textArea' : 'beagle:textInput',
+    id: `form:${name}`,
     model: `form.data.${name}`,
     onBlur: [showFieldError(name, true)],
     error: `@{condition(isEmpty(form.data.${name}), 'This field is required', '')}`,
@@ -55,7 +57,7 @@ const saveNote = [
   setLoading(true),
   {
     _beagleAction_: 'beagle:sendRequest',
-    url: '/notes',
+    url: `${url}${paths.note}`,
     method: '@{condition(isNull(global.selectedNote), \'POST\', \'PUT\')}',
     data: '@{form.data}',
     onSuccess: [

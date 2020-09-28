@@ -19,9 +19,9 @@ import { BeagleUIElement } from 'beagle-tree/types'
 import { BeagleConfig } from 'service/beagle-service/types'
 import setup from '../../backend/routes'
 import createService from '../../frontend/service'
-import { expectToMatchSnapshot } from '../../utils/snapshot'
-import { enableLogging, disableLogging } from '../../utils/log'
-import { whenCalledTimes } from '../../utils/function'
+import { expectToMatchSnapshot } from '../../../../utils/snapshot'
+import { enableLogging, disableLogging } from '../../../../utils/log'
+import { whenCalledTimes } from '../../../../utils/function'
 
 /**
  * The view labels is way too similar to the view home, and, since we already tested home

@@ -47,7 +47,7 @@
       },
       {
         "_beagleAction_": "beagle:sendRequest",
-        "url": "/label",
+        "url": "https://keep.beagle.io/label",
         "method": "@{condition(isEmpty(item.id), 'POST', 'PUT')}",
         "data": "@{onSave.value}",
         "onSuccess": [
@@ -108,7 +108,7 @@
           },
           {
             "_beagleAction_": "beagle:sendRequest",
-            "url": "/label/@{item.id}",
+            "url": "https://keep.beagle.io/label/@{item.id}",
             "method": "DELETE",
             "onSuccess": [
               {

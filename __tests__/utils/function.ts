@@ -27,7 +27,7 @@
  * @param fn the function mock to check
  * @param times the minimum number of times you wish the function to be called before resolving the
  * promise
- * @param timeout the maximum time (ms) to wait
+ * @param timeout the maximum time (ms) to wait. Default is 100ms.
  * @returns the promise
  */
 export function whenCalledTimes(fn: jest.Mock, times: number, timeout = 100) {

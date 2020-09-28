@@ -15,17 +15,17 @@
  */
 
 import nock from 'nock'
-import { url } from '../../constants'
+import { url, paths } from '../../constants'
 import { getNotes, addNote, editNote, getNoteById, removeNoteById } from '../database/notes'
 
-export const path = '/note'
+export const path = paths.note
 
 function list() {
   nock(url).get(path).reply(200, getNotes()).persist()
 }
 
 function get() {
-  const regex = new RegExp(`${path}/([^/]+)`)
+  const regex = new RegExp(`^${path}/([^/]+)$`)
   nock(url).get(regex).reply(function(uri) {
     const [_, id] = uri.match(regex)!
     const result = getNoteById(parseInt(id))

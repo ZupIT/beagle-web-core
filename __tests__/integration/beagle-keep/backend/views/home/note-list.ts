@@ -15,6 +15,7 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
+import { url, paths } from '../../../constants'
 
 const noteTemplate: BeagleUIElement = {
   _beagleComponent_: 'custom:note',
@@ -34,61 +35,7 @@ const noteTemplate: BeagleUIElement = {
       route: { url: '/details' },
     },
   ],
-  onRemoveLabel: [
-    {
-      _beagleAction_: 'beagle:setContext',
-      contextId: 'data',
-      path: 'notes[@{index}]',
-      value: '@{removeLabelFromNote(item, onRemoveLabel.id)}',
-    },
-    {
-      _beagleAction_: 'beagle:sendRequest',
-      url: '/note/@{item.id}',
-      method: 'PUT',
-      data: '@{removeLabelFromNote(item, onRemoveLabel.id)}',
-      onError: [
-        {
-          _beagleAction_: 'custom:feedbackMessage',
-          type: 'error',
-          text: 'Connection error. Couldn\'t remove the label.'
-        },
-        {
-          _beagleAction_: 'beagle:setContext',
-          contextId: 'data',
-          path: 'notes[@{index}]',
-          value: '@{item}',
-        },
-      ],
-    },
-  ],
-  onAddLabel: [
-    {
-      _beagleAction_: 'beagle:setContext',
-      contextId: 'data',
-      path: 'notes[@{index}]',
-      value: '@{addLabelToNote(item, onAddLabel)}',
-    },
-    {
-      _beagleAction_: 'beagle:sendRequest',
-      url: '/note/@{item.id}',
-      method: 'PUT',
-      data: '@{addLabelToNote(item, onAddLabel)}',
-      onError: [
-        {
-          _beagleAction_: 'custom:feedbackMessage',
-          type: 'error',
-          text: 'Connection error. Couldn\'t add the label.'
-        },
-        {
-          _beagleAction_: 'beagle:setContext',
-          contextId: 'data',
-          path: 'notes[@{index}]',
-          value: '@{item}',
-        },
-      ],
-    },
-  ],
-  onRemoveNote: [
+  onRemove: [
     {
       _beagleAction_: 'beagle:setContext',
       contextId: 'data',
@@ -97,18 +44,18 @@ const noteTemplate: BeagleUIElement = {
     },
     {
       _beagleAction_: 'beagle:sendRequest',
-      url: '/note/@{item.id}',
+      url: `${url}${paths.note}/@{item.id}`,
       method: 'DELETE',
       onSuccess: [
         {
-          _beagleAction_: 'custom:feedbackMessage',
+          _beagleAction_: 'custom:feedback',
           type: 'success',
           text: 'Note removed successfully!'
         },
       ],
       onError: [
         {
-          _beagleAction_: 'custom:feedbackMessage',
+          _beagleAction_: 'custom:feedback',
           type: 'error',
           text: 'Connection error. Couldn\'t remove the label.'
         },

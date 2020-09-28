@@ -15,3 +15,9 @@
  */
 
 export const url = 'https://keep.beagle.io'
+
+export const paths = {
+  label: '/label',
+  note: '/note',
+  view: '/view',
+}

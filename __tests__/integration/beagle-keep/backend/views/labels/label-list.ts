@@ -15,6 +15,7 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
+import { url, paths } from '../../../constants'
 import {
   disableLabelCreation,
   removeCurrent,
@@ -43,7 +44,7 @@ const saveLabel = [
   setLoading(true),
   {
     _beagleAction_: 'beagle:sendRequest',
-    url: '/label',
+    url: `${url}${paths.label}`,
     method: '@{condition(isEmpty(item.id), \'POST\', \'PUT\')}',
     data: '@{onSave.value}',
     onSuccess: [{
@@ -66,7 +67,7 @@ const removeLabel = [
       setLoading(true),
       {
         _beagleAction_: 'beagle:sendRequest',
-        url: '/label/@{item.id}',
+        url: `${url}${paths.label}/@{item.id}`,
         method: 'DELETE',
         onSuccess: [removeCurrent],
         onError: [

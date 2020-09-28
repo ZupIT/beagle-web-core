@@ -19,9 +19,9 @@ import Tree from 'beagle-tree'
 import { BeagleUIElement } from 'beagle-tree/types'
 import setup from '../../backend/routes'
 import createService from '../../frontend/service'
-import { expectToMatchSnapshot } from '../../utils/snapshot'
-import { enableLogging, disableLogging } from '../../utils/log'
-import { whenCalledTimes } from '../../utils/function'
+import { expectToMatchSnapshot } from '../../../../utils/snapshot'
+import { enableLogging, disableLogging } from '../../../../utils/log'
+import { whenCalledTimes } from '../../../../utils/function'
 
 describe('Beagle Keep: render home', () => {
   enableLogging()

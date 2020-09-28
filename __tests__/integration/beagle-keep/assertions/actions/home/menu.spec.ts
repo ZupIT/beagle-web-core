@@ -18,7 +18,7 @@ import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
 import { FullNote } from '../../../backend/database/notes'
-import { whenCalledTimes } from '../../../utils/function'
+import { whenCalledTimes } from '../../../../../utils/function'
 import { setupHomeActionsTest } from './utils'
 
 describe('Beagle Keep: actions: home: menu', () => {

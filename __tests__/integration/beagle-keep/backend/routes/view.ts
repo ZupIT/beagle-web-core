@@ -15,12 +15,12 @@
  */
 
 import nock from 'nock'
-import { url } from '../../constants'
+import { url, paths } from '../../constants'
 import home from '../views/home'
 import details from '../views/details'
 import labels from '../views/labels'
 
-export const path = '/view'
+export const path = paths.view
 
 const views = { home, details, labels }
 

@@ -17,16 +17,18 @@
 import { Lifecycle } from 'service/beagle-service/types'
 import { BeagleConfig } from 'service/beagle-service/types'
 import Tree from 'beagle-tree'
+import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import setup from '../../backend/routes'
 import createService from '../../frontend/service'
-import { expectToMatchSnapshot } from '../../utils/snapshot'
-import { enableLogging, disableLogging } from '../../utils/log'
-import { whenCalledTimes } from '../../utils/function'
+import { expectToMatchSnapshot, takeSnapshot } from '../../../../utils/snapshot'
+import { enableLogging, disableLogging } from '../../../../utils/log'
+import { whenCalledTimes } from '../../../../utils/function'
 
 /**
  * This page is very different from details and labels, so we'll test every lifecycle again.
+ * Here we test the "create note" mode of the view "details".
  */
-describe('Beagle Keep: render details', () => {
+describe('Beagle Keep: render details (create note)', () => {
   enableLogging()
   setup()
   let render: jest.Mock
@@ -58,7 +60,7 @@ describe('Beagle Keep: render details', () => {
 
   /**
    * Two renders are expected:
-   * - first: the view labels
+   * - first: the view details, with a loading overlay.
    * - second: the same view after the onInit from the root container is run. The onInit will call
    * a setContext action, which will trigger a new render. Since the second render is triggered by
    * a setContext, only a partial render is expected and a not full render, i.e., every lifecycle
@@ -74,7 +76,7 @@ describe('Beagle Keep: render details', () => {
     expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
-  describe('first render of labels', () => {
+  describe('first render of details', () => {
     /**
      * Should start rendering the details page. The snapshot here is raw, just the way the server
      * sent it.
@@ -133,51 +135,69 @@ describe('Beagle Keep: render details', () => {
    * The only difference from the second render to the first is that "isVisible" in the component
    * "custom:loadingOverlay" will be false instead of true.
    */
-  describe('second render of labels (partial). Hides the loading.', () => {
+  describe('second render of details (partial). Hides the loading.', () => {
     beforeAll(async () => {
       await whenCalledTimes(render, 2)
     })
 
-    async function shouldMatchEverythingButLoading(
-      mockFn: jest.Mock,
-      suffix: string,
-      shouldCheckComponent: boolean,
-    ) {
-      const details = Tree.clone(mockFn.mock.calls[1][0])
-      expect(details.context.value.isLoading).toBe(false)
-      details.context.value.isLoading = true
+    function loadingOverlayShouldBeInvisible(details: IdentifiableBeagleUIElement) {
+      const loadingOverlay = Tree.findByType(details, 'custom:loadingOverlay')[0]
+      expect(loadingOverlay.isVisible).toBe(false)
+    }
 
-      if (shouldCheckComponent) {
-        const loadingOverlay = Tree.findByType(details, 'custom:loadingOverlay')[0]
-        expect(loadingOverlay.isVisible).toBe(false)
-        loadingOverlay.isVisible = true
-      }
-      
-      await expectToMatchSnapshot(details, `details${suffix}`)
+    function shouldBeTheSameExcludingLoadingOverlayVisibility(fn: jest.Mock) {
+      const details = Tree.clone(fn.mock.calls[1][0])
+      const loadingOverlay = Tree.findByType(details, 'custom:loadingOverlay')[0]
+      details.context.value.isLoading = true
+      loadingOverlay.isVisible = true
+      // we need to use takeSnapshot here so the functions in the trees can be considered the same
+      expect(takeSnapshot(details)).toEqual(takeSnapshot(fn.mock.calls[0][0]))
     }
 
     /**
      * At this time, the only difference from the previous render is the context, where isLoading is
      * now false.
      */
-    it('should match snapshot on afterViewSnapshot', () => (
-      shouldMatchEverythingButLoading(afterViewSnapshot, '.after-view-snapshot', false)
-    ))
+    it('afterViewSnapshot: isLoading in the context should be false', () => {
+      const details = afterViewSnapshot.mock.calls[1][0]
+      expect(details.context.value.isLoading).toBe(false)
+    })
+
+    it(
+      'afterViewSnapshot: with the exception of the context, the rest of the tree should be the same as the last afterViewSnapshot',
+      () => {
+        const details = Tree.clone(afterViewSnapshot.mock.calls[1][0])
+        details.context.value.isLoading = true
+        expect(details).toEqual(afterViewSnapshot.mock.calls[0][0])
+      },
+    )
 
     /**
-     * In comparison to the last render, there are two differences:
-     * - isLoading, in the context is false
+     * In comparison to the last beforeRender, there are two differences:
+     * - isLoading, in the context is false, as seen in the last lifecycle (afterViewSnapshot)
      * - the property "isVisible" from the component "custom:loadingOverlay" is resolved to false.
      */
-    it('should match snapshot on beforeRender', () => (
-      shouldMatchEverythingButLoading(beforeRender, '.before-render', true)
-    ))
+    it('beforeRender: loading overlay should be invisible', () => {
+      const details = beforeRender.mock.calls[1][0]
+      loadingOverlayShouldBeInvisible(details)
+    })
+
+    it(
+      'beforeRender: with the exception of the visibility of the loading overlay, the rest of the tree should be the same as the last beforeRender',
+      () => shouldBeTheSameExcludingLoadingOverlayVisibility(beforeRender),
+    )
 
     /**
-     * Same differences to he last render as the previous lifecycle (beforeRender)
+     * Same differences to the last render as the previous lifecycle (beforeRender)
      */
-    it('should render labels with the loading component hidden', () => (
-      shouldMatchEverythingButLoading(render, '', true)
-    ))
+    it('render: loading overlay should be invisible', () => {
+      const details = render.mock.calls[1][0]
+      loadingOverlayShouldBeInvisible(details)
+    })
+
+    it(
+      'render: with the exception of the visibility of the loading overlay, the rest of the tree should be the same as the last render',
+      () => shouldBeTheSameExcludingLoadingOverlayVisibility(render),
+    )
   })
 })

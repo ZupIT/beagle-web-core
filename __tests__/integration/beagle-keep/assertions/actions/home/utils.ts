@@ -17,8 +17,8 @@
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import setup from '../../../backend/routes'
 import createService from '../../../frontend/service'
-import { enableLogging, disableLogging } from '../../../utils/log'
-import { whenCalledTimes } from '../../../utils/function'
+import { enableLogging, disableLogging } from '../../../../../utils/log'
+import { whenCalledTimes } from '../../../../../utils/function'
 
 export function setupHomeActionsTest() {
   enableLogging()

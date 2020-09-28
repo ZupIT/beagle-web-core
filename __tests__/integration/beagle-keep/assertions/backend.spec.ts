@@ -15,10 +15,10 @@
  */
 
 import { last, dropRight } from 'lodash'
-import setup, { paths } from '../backend/routes'
+import setup from '../backend/routes'
 import { getLabels, resetLabels } from '../backend/database/labels'
 import { getNotes, getNoteById, resetNotes } from '../backend/database/notes'
-import { url } from '../constants'
+import { url, paths } from '../constants'
 
 /**
  * Before actually testing beagle, we should guarantee the backend we wrote actually works.

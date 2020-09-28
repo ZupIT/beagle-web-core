@@ -15,10 +15,10 @@
  */
 
 import nock from 'nock'
-import { url } from '../../constants'
+import { url, paths } from '../../constants'
 import { getLabels, addLabel, editLabel, removeLabelById } from '../database/labels'
 
-export const path = '/label'
+const path = paths.label
 
 function list() {
   nock(url).get(path).reply(200, getLabels()).persist()

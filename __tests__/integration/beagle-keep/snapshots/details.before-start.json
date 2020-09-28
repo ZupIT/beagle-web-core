@@ -49,18 +49,20 @@
       "onFalse": [
         {
           "_beagleAction_": "beagle:sendRequest",
-          "url": "/note/@{global.selectedNote}",
-          "onSuccess": {
-            "_beagleAction_": "beagle:setContext",
-            "contextId": "form",
-            "path": "data",
-            "value": {
-              "id": "@{onSuccess.data.id}",
-              "title": "@{onSuccess.data.title}",
-              "text": "@{onSuccess.data.text}",
-              "labels": "@{onSuccess.data.labels}"
+          "url": "https://keep.beagle.io/note/@{global.selectedNote}",
+          "onSuccess": [
+            {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "data",
+              "value": {
+                "id": "@{onSuccess.data.id}",
+                "title": "@{onSuccess.data.title}",
+                "text": "@{onSuccess.data.text}",
+                "labels": "@{onSuccess.data.labels}"
+              }
             }
-          },
+          ],
           "onError": [
             {
               "_beagleAction_": "beagle:addChildren",
@@ -113,7 +115,7 @@
         },
         {
           "_beagleAction_": "beagle:sendRequest",
-          "url": "/notes",
+          "url": "https://keep.beagle.io/note",
           "method": "@{condition(isNull(global.selectedNote), 'POST', 'PUT')}",
           "data": "@{form.data}",
           "onSuccess": [
@@ -170,6 +172,7 @@
           "children": [
             {
               "_beagleComponent_": "beagle:textInput",
+              "id": "form:title",
               "model": "form.data.title",
               "onBlur": [
                 {
@@ -185,6 +188,7 @@
             },
             {
               "_beagleComponent_": "custom:textArea",
+              "id": "form:text",
               "model": "form.data.text",
               "onBlur": [
                 {

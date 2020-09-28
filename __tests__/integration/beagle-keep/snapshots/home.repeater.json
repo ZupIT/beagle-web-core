@@ -133,61 +133,7 @@
         }
       }
     ],
-    "onRemoveLabel": [
-      {
-        "_beagleAction_": "beagle:setContext",
-        "contextId": "data",
-        "path": "notes[@{index}]",
-        "value": "@{removeLabelFromNote(item, onRemoveLabel.id)}"
-      },
-      {
-        "_beagleAction_": "beagle:sendRequest",
-        "url": "/note/@{item.id}",
-        "method": "PUT",
-        "data": "@{removeLabelFromNote(item, onRemoveLabel.id)}",
-        "onError": [
-          {
-            "_beagleAction_": "custom:feedbackMessage",
-            "type": "error",
-            "text": "Connection error. Couldn't remove the label."
-          },
-          {
-            "_beagleAction_": "beagle:setContext",
-            "contextId": "data",
-            "path": "notes[@{index}]",
-            "value": "@{item}"
-          }
-        ]
-      }
-    ],
-    "onAddLabel": [
-      {
-        "_beagleAction_": "beagle:setContext",
-        "contextId": "data",
-        "path": "notes[@{index}]",
-        "value": "@{addLabelToNote(item, onAddLabel)}"
-      },
-      {
-        "_beagleAction_": "beagle:sendRequest",
-        "url": "/note/@{item.id}",
-        "method": "PUT",
-        "data": "@{addLabelToNote(item, onAddLabel)}",
-        "onError": [
-          {
-            "_beagleAction_": "custom:feedbackMessage",
-            "type": "error",
-            "text": "Connection error. Couldn't add the label."
-          },
-          {
-            "_beagleAction_": "beagle:setContext",
-            "contextId": "data",
-            "path": "notes[@{index}]",
-            "value": "@{item}"
-          }
-        ]
-      }
-    ],
-    "onRemoveNote": [
+    "onRemove": [
       {
         "_beagleAction_": "beagle:setContext",
         "contextId": "data",
@@ -196,18 +142,18 @@
       },
       {
         "_beagleAction_": "beagle:sendRequest",
-        "url": "/note/@{item.id}",
+        "url": "https://keep.beagle.io/note/@{item.id}",
         "method": "DELETE",
         "onSuccess": [
           {
-            "_beagleAction_": "custom:feedbackMessage",
+            "_beagleAction_": "custom:feedback",
             "type": "success",
             "text": "Note removed successfully!"
           }
         ],
         "onError": [
           {
-            "_beagleAction_": "custom:feedbackMessage",
+            "_beagleAction_": "custom:feedback",
             "type": "error",
             "text": "Connection error. Couldn't remove the label."
           },
@@ -243,9 +189,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },
@@ -287,9 +231,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },
@@ -336,9 +278,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },
@@ -385,9 +325,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },
@@ -429,9 +367,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },
@@ -473,9 +409,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },
@@ -517,9 +451,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },
@@ -561,9 +493,7 @@
         }
       ],
       "onSelect": "__function__",
-      "onRemoveLabel": "__function__",
-      "onAddLabel": "__function__",
-      "onRemoveNote": "__function__",
+      "onRemove": "__function__",
       "style": {
         "margin": "10px"
       },

@@ -16,9 +16,9 @@
 
 import { resetLabels } from '../database/labels'
 import { resetNotes } from '../database/notes'
-import setupLabels, { path as labelPath } from './label'
-import setupNotes, { path as notePath } from './note'
-import setupViews, { path as viewPath } from './view'
+import setupLabels from './label'
+import setupNotes from './note'
+import setupViews from './view'
 
 export default function setup() {
   resetLabels()
@@ -26,10 +26,4 @@ export default function setup() {
   setupLabels()
   setupNotes()
   setupViews()
-}
-
-export const paths = {
-  label: labelPath,
-  note: notePath,
-  view: viewPath,
 }

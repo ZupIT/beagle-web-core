@@ -15,9 +15,10 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
+import { url, paths } from '../../../constants'
+import { pageStyle } from '../styles'
 import form from './form'
 import context, { setNote, setLoading } from './context'
-import { pageStyle } from '../styles'
 
 const fetchNote = [{
   _beagleAction_: 'beagle:condition',
@@ -25,8 +26,8 @@ const fetchNote = [{
   onTrue: [setLoading(false)],
   onFalse: [{
     _beagleAction_: 'beagle:sendRequest',
-    url: '/note/@{global.selectedNote}',
-    onSuccess: setNote('onSuccess.data'),
+    url: `${url}${paths.note}/@{global.selectedNote}`,
+    onSuccess: [setNote('onSuccess.data')],
     onError: [{
       _beagleAction_: 'beagle:addChildren',
       value: {

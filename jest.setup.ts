@@ -19,6 +19,6 @@ import fetch from 'node-fetch'
 
 const globalScope = global as any
 
-globalScope.fetch = fetch
-globalScope.globalMocks = { log: jest.fn() }
+globalScope.fetch = jest.fn(fetch)
+globalScope.globalMocks = { log: jest.fn(), fetch: globalScope.fetch }
 logger.setCustomLogFunction(globalScope.globalMocks.log)

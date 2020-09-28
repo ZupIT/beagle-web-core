@@ -38,7 +38,7 @@ export function setLoading(value: boolean) {
   }
 }
 
-export function setNote(pathToNote: string){
+export function setNote(pathToNote: string) {
   return {
     _beagleAction_: 'beagle:setContext',
     contextId: 'form',
