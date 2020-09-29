@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Beagle should export values 1`] = `
+exports[`Beagle should export 1`] = `
 Object {
   "AfterViewSnapshot": [Function],
   "Automaton": Object {

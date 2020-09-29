@@ -22,7 +22,8 @@
  * have been called more then desired number of times.
  * 
  * If the function is not called the desired number of times before `timeout` ms, the promise is
- * rejected.
+ * either rejected (default) or it's resolved with an error message logged to the console. The
+ * behavior will depend on the parameter `rejectOnTimeout`.
  * 
  * @param fn the function mock to check
  * @param times the minimum number of times you wish the function to be called before resolving the
@@ -30,17 +31,54 @@
  * @param timeout the maximum time (ms) to wait. Default is 100ms.
  * @returns the promise
  */
-export function whenCalledTimes(fn: jest.Mock, times: number, timeout = 100) {
+export function whenCalledTimes(
+  fn: jest.Mock,
+  times: number,
+  timeout = 100,
+  rejectOnTimeout = true,
+) {
   const interval = 20
   let attempts = 0
 
   return new Promise((resolve, reject) => {
     const id = setInterval(() => {
-      if (fn.mock.calls.length >= times) resolve()
+      if (fn.mock.calls.length >= times) {
+        clearInterval(id)
+        resolve()
+      }
       else if (attempts++ * interval >= timeout) {
         clearInterval(id)
-        reject(`Timeout while waiting function to be executed ${times} times.`)
+        const message = `Timeout while waiting function to be executed ${times} times.`
+        if (rejectOnTimeout) reject(message)
+        else {
+          console.error(message)
+          resolve()
+        }
       }
     }, 20)
   })
+}
+
+/**
+ * Gets the nth parameter of the mth call to the function `fn`, where n is `parameterIndex` and m is
+ * `callIndex`.
+ * 
+ * @param fn the function mock
+ * @param callIndex the index of the call to get parameter from
+ * @param parameterIndex the index of the desired parameter
+ * @returns the parameter value
+ */
+export function getParameter(fn: jest.Mock, callIndex = 0, parameterIndex = 0) {
+  return fn.mock.calls[callIndex][parameterIndex]
+}
+
+/**
+ * Gets the nth parameter of all calls to the function `fn`, where n is `parameterIndex`.
+ * 
+ * @param fn the function mock
+ * @param parameterIndex the index of the desired parameter
+ * @returns an array with the parameter value for each one of the calls
+ */
+export function getParameterByCalls(fn: jest.Mock, parameterIndex = 0) {
+  return fn.mock.calls.map(call => call[parameterIndex])
 }

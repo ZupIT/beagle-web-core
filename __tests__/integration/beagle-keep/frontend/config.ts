@@ -21,8 +21,25 @@ import { url, paths } from '../constants'
 import components from './components'
 import setupOperations from './operations'
 
-function createConfig(): BeagleConfig<any> {
+export interface ConfigOptions {
+  showLoading?: boolean,
+}
+
+const defaultOptions: ConfigOptions = {
+  showLoading: true,
+}
+
+function createConfig(options?: ConfigOptions): BeagleConfig<any> {
   setupOperations()
+  options = { ...defaultOptions, ...options }
+
+  const navigationControllers = {
+    main: {
+      default: true,
+      shouldShowLoading: false,
+    }
+  }
+
   return {
     baseUrl: `${url}${paths.view}`,
     components,
@@ -44,6 +61,7 @@ function createConfig(): BeagleConfig<any> {
       beforeRender: jest.fn(clone),
     },
     customStorage: createLocalStorageMock(),
+    navigationControllers: options.showLoading ? undefined : navigationControllers,
   }
 }
 

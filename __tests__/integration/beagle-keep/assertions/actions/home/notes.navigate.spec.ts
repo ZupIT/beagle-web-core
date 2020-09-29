@@ -18,7 +18,6 @@ import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
 import { whenCalledTimes } from '../../../../../utils/function'
-import { takeSnapshot } from '../../../../../utils/snapshot'
 import { FullNote, getNoteById } from '../../../backend/database/notes'
 import { setupHomeActionsTest, getNoteItem } from './utils'
 
@@ -107,10 +106,10 @@ describe('Beagle Keep: actions: home: note list', () => {
     })
 
     it('changes to the global context should not alter the view', () => {
-      expect(takeSnapshot(renderedTrees.afterFirstChangeToTheGlobalContext))
-        .toEqual(takeSnapshot(renderedTrees.original))
-      expect(takeSnapshot(renderedTrees.afterSecondChangeToTheGlobalContext))
-        .toEqual(takeSnapshot(renderedTrees.afterFirstChangeToTheGlobalContext))
+      expect(JSON.stringify(renderedTrees.afterFirstChangeToTheGlobalContext))
+        .toEqual(JSON.stringify(renderedTrees.original))
+      expect(JSON.stringify(renderedTrees.afterSecondChangeToTheGlobalContext))
+        .toEqual(JSON.stringify(renderedTrees.afterFirstChangeToTheGlobalContext))
     })
 
     it('should show loading', async () => {

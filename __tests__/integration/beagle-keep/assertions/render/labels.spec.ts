@@ -14,49 +14,29 @@
  * limitations under the License.
  */
 
-import Tree from 'beagle-tree'
-import { BeagleUIElement } from 'beagle-tree/types'
-import { BeagleConfig } from 'service/beagle-service/types'
 import setup from '../../backend/routes'
-import createService from '../../frontend/service'
-import { expectToMatchSnapshot } from '../../../../utils/snapshot'
 import { enableLogging, disableLogging } from '../../../../utils/log'
-import { whenCalledTimes } from '../../../../utils/function'
+import {
+  RenderingResult,
+  renderLabelsView,
+  getRepeater,
+  getViewWithAnEmptyRepeater,
+} from '../utils'
 
 /**
  * The view labels is way too similar to the view home, and, since we already tested home
  * thoroughly, we'll only test the final renders and not lifecycle by lifecycle.
  */
 describe('Beagle Keep: render labels', () => {
+  let renderedTrees: RenderingResult
   enableLogging()
   setup()
-  let render: jest.Mock
-  /* this config prevents the loading component from being rendered. We tested this component
-  already when rendering the home page. It also allow us to test a default navigation
-  controller. */
-  const config: Partial<BeagleConfig<any>> = {
-    navigationControllers: {
-      main: {
-        default: true,
-        shouldShowLoading: false,
-      }
-    }
-  }
-  const { createBeagleRemoteView } = createService(config)
   
   beforeAll(async () => {
-    const result = await createBeagleRemoteView({ route: '/labels' })
-    render = result.render
+    renderedTrees = await renderLabelsView()
   })
 
   afterAll(disableLogging)
-
-  function getViewWithAnEmptyRepeater(view: BeagleUIElement) {
-    const emptyRepeaterView = Tree.clone(view)
-    const emptyRepeater = Tree.findByType(emptyRepeaterView, 'custom:repeater')[0]
-    delete emptyRepeater.children
-    return emptyRepeaterView
-  }
 
   /**
    * Two renders are expected:
@@ -64,9 +44,8 @@ describe('Beagle Keep: render labels', () => {
    * - second: the repeater is initialized and calls for a second render of the view labels, now
    * with as many children as elements in its data source.
    */
-  it('should do two full renders with no errors or warnings', async () => {
-    await whenCalledTimes(render, 2)
-    expect(render).toHaveBeenCalledTimes(2)
+  it('should do two full renders with no errors or warnings', () => {
+    expect(renderedTrees.render.length).toBe(2)
     expect(globalMocks.log).not.toHaveBeenCalled()
   })
 
@@ -75,9 +54,8 @@ describe('Beagle Keep: render labels', () => {
    * repeater's template should be processed. The repeater will only have children in the second
    * render of the view.
    */
-  it('should render labels for the first time', async () => {
-    const labels = render.mock.calls[0][0]
-    await expectToMatchSnapshot(labels, 'labels')
+  it('should render labels for the first time', () => {
+    expect(renderedTrees.render[0]).toMatchSnapshot()
   })
 
   /**
@@ -87,11 +65,19 @@ describe('Beagle Keep: render labels', () => {
    * 
    * The rest of the tree should be exactly the same as the first render.
    */
-  it('should render labels for the second time, now with the list of labels', async () => {
-    const labels = render.mock.calls[1][0]
-    const repeater = Tree.findByType(labels, 'custom:repeater')[0]
-    const labelsWithEmptyRepeater = getViewWithAnEmptyRepeater(labels)
-    await expectToMatchSnapshot(labelsWithEmptyRepeater, 'labels')
-    await expectToMatchSnapshot(repeater, `labels.repeater`)
+  it('should render labels for the second time, now with the list of labels', () => {
+    const labels = renderedTrees.render[1]
+    const repeater = getRepeater(labels)
+    expect(repeater).toMatchSnapshot()
+  })
+
+  /**
+   * The rest of the tree should be exactly the same as the first render.
+   */
+  it('second render should be the same as the first, except for the repeater', () => {
+    const current = renderedTrees.render[1]
+    const previous = renderedTrees.render[0]
+    const labelsWithEmptyRepeater = getViewWithAnEmptyRepeater(current)
+    expect(JSON.stringify(labelsWithEmptyRepeater)).toEqual(JSON.stringify(previous))
   })
 })

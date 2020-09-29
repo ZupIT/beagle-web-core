@@ -14,41 +14,21 @@
  * limitations under the License.
  */
 
-import { Lifecycle } from 'service/beagle-service/types'
-import Tree from 'beagle-tree'
 import { BeagleUIElement } from 'beagle-tree/types'
-import setup from '../../backend/routes'
-import createService from '../../frontend/service'
-import { expectToMatchSnapshot } from '../../../../utils/snapshot'
 import { enableLogging, disableLogging } from '../../../../utils/log'
-import { whenCalledTimes } from '../../../../utils/function'
+import setup from '../../backend/routes'
+import { RenderingResult, renderHomeView, getRepeater, getViewWithAnEmptyRepeater } from '../utils'
 
 describe('Beagle Keep: render home', () => {
+  let renderedTrees: RenderingResult
   enableLogging()
   setup()
-  let render: jest.Mock
-  const { service, createBeagleRemoteView } = createService()
-  const {
-    afterViewSnapshot,
-    beforeRender,
-    beforeStart,
-    beforeViewSnapshot,
-  } = service.getConfig().lifecycles! as Record<Lifecycle, jest.Mock>
   
   beforeAll(async () => {
-    const result = await createBeagleRemoteView({ route: '/home' })
-    render = result.render
+    renderedTrees = await renderHomeView()
   })
 
   afterAll(disableLogging)
-
-  /**
-   * The first render should be the loading component.
-   */
-  it('should render loading', async () => {
-    const firstRenderedTree = render.mock.calls[0][0]
-    await expectToMatchSnapshot(firstRenderedTree, 'loading')
-  })
 
   /**
    * Three renders are expected:
@@ -57,14 +37,21 @@ describe('Beagle Keep: render home', () => {
    * - third: the repeater is initialized and calls for a second render of the view home, now with
    * as many children as elements in its data source.
    */
-  it('should do three full renders with no errors or warnings', async () => {
-    await whenCalledTimes(render, 3)
-    expect(beforeStart).toHaveBeenCalledTimes(3)
-    expect(beforeViewSnapshot).toHaveBeenCalledTimes(3)
-    expect(afterViewSnapshot).toHaveBeenCalledTimes(3)
-    expect(beforeRender).toHaveBeenCalledTimes(3)
-    expect(render).toHaveBeenCalledTimes(3)
+  it('should do three full renders with no errors or warnings', () => {
+    expect(renderedTrees.beforeStart.length).toBe(3)
+    expect(renderedTrees.beforeViewSnapshot.length).toBe(3)
+    expect(renderedTrees.afterViewSnapshot.length).toBe(3)
+    expect(renderedTrees.beforeRender.length).toBe(3)
+    expect(renderedTrees.render.length).toBe(3)
     expect(globalMocks.log).not.toHaveBeenCalled()
+  })
+
+  /**
+   * The first render should be the loading component.
+   */
+  it('should render loading', () => {
+    const firstRenderedTree = renderedTrees.render[0]
+    expect(firstRenderedTree).toMatchSnapshot()
   })
 
   /**
@@ -77,9 +64,8 @@ describe('Beagle Keep: render home', () => {
      * After rendering the loading component and fetching the view, should start rendering the home
      * page. The snapshot here is raw, just the way the server sent it.
      */
-    it('should match snapshot on before start', async () => {
-      const home = beforeStart.mock.calls[1][0]
-      await expectToMatchSnapshot(home, 'home.before-start')
+    it('should match snapshot on before start', () => {
+      expect(renderedTrees.beforeStart[1]).toMatchSnapshot()
     })
 
     /**
@@ -87,9 +73,8 @@ describe('Beagle Keep: render home', () => {
      * menu.items transformed to menu.children. Containers should have special ids according to
      * their beforeStart lifecycle.
      */
-    it('should match snapshot on before view snapshot', async () => {
-      const home = beforeViewSnapshot.mock.calls[1][0]
-      await expectToMatchSnapshot(home, 'home.before-after-view-snapshot')
+    it('should match snapshot on before view snapshot', () => {
+      expect(renderedTrees.beforeViewSnapshot[1]).toMatchSnapshot()
     })
 
     /**
@@ -97,9 +82,8 @@ describe('Beagle Keep: render home', () => {
      * there should be no difference in the views received by beforeViewSnapshot and
      * afterViewSnapshot.
      */
-    it('should match snapshot on after view snapshot', async () => {
-      const home = afterViewSnapshot.mock.calls[1][0]
-      await expectToMatchSnapshot(home, 'home.before-after-view-snapshot')
+    it('should match snapshot on after view snapshot', () => {
+      expect(renderedTrees.afterViewSnapshot[1]).toMatchSnapshot()
     })
 
     /**
@@ -109,9 +93,8 @@ describe('Beagle Keep: render home', () => {
      * - expressions should have been assigned real values.
      * - styles should have been translated to camel-case css.
      */
-    it('should match snapshot on before render', async () => {
-      const home = beforeRender.mock.calls[1][0]
-      await expectToMatchSnapshot(home, 'home.before-render')
+    it('should match snapshot on before render', () => {
+      expect(renderedTrees.beforeRender[1]).toMatchSnapshot()
     })
 
     /**
@@ -119,9 +102,8 @@ describe('Beagle Keep: render home', () => {
      * Expected difference from the the last lifecycle (beforeRender): every container should have
      * { style: { color: '#FFF' } }.
      */
-    it('should render home for the first time', async () => {
-      const home = render.mock.calls[1][0]
-      await expectToMatchSnapshot(home, 'home')
+    it('should render home for the first time', () => {
+      expect(renderedTrees.render[1]).toMatchSnapshot()
     })
   })
 
@@ -131,26 +113,18 @@ describe('Beagle Keep: render home', () => {
    * should have been calculated according to the template and data source.
    */
   describe('Second render of home (repeater with content)', () => {
-    beforeAll(async () => {
-      await whenCalledTimes(render, 3)
-    })
-
-    function getViewWithAnEmptyRepeater(view: BeagleUIElement) {
-      const emptyRepeaterView = Tree.clone(view)
-      const emptyRepeater = Tree.findByType(emptyRepeaterView, 'custom:repeater')[0]
-      delete emptyRepeater.children
-      return emptyRepeaterView
+    function shouldBeTheSameAsPreviousExcludingRepeater(
+      current: BeagleUIElement,
+      previous: BeagleUIElement,
+    ) {
+      const currentWithEmptyRepeater = getViewWithAnEmptyRepeater(current)
+      expect(JSON.stringify(currentWithEmptyRepeater)).toEqual(JSON.stringify(previous))
     }
 
-    async function shouldMatchRepeaterAndLastRenderSnapshots(
-      mockFn: jest.Mock,
-      pathSuffix: string,
-    ) {
-      const home = mockFn.mock.calls[2][0]
-      const repeater = Tree.findByType(home, 'custom:repeater')[0]
-      const homeWithEmptyRepeater = getViewWithAnEmptyRepeater(home)
-      await expectToMatchSnapshot(homeWithEmptyRepeater, `home${pathSuffix}`)
-      await expectToMatchSnapshot(repeater, `home.repeater${pathSuffix}`)
+    function shouldBeTheSameAsPreviousExceptForRepeater(step: keyof RenderingResult) {
+      const current = renderedTrees[step][2]
+      const previous = renderedTrees[step][1]
+      shouldBeTheSameAsPreviousExcludingRepeater(current, previous)
     }
 
     /**
@@ -161,17 +135,19 @@ describe('Beagle Keep: render home', () => {
      * In this lifecycle, the only component with an id must be the repeater itself, that has been
      * assigned an id in the first render.
      */
-    it('should match snapshot on before start', async () => {
-      const repeater = beforeStart.mock.calls[2][0]
-      await expectToMatchSnapshot(repeater, 'home.repeater.before-start')
+    it('should match snapshot on before start', () => {
+      const repeater = renderedTrees.beforeStart[2]
+      expect(repeater._beagleComponent_).toBe('custom:repeater')
+      expect(repeater).toMatchSnapshot()
     })
 
     /**
      * Expected difference from the previous lifecycle (beforeStart): ids for every component.
      */
-    it('should match snapshot on before view snapshot', async () => {
-      const repeater = beforeViewSnapshot.mock.calls[2][0]
-      await expectToMatchSnapshot(repeater, 'home.repeater.before-after-view-snapshot')
+    it('should match snapshot on before view snapshot', () => {
+      const repeater = renderedTrees.beforeViewSnapshot[2]
+      expect(repeater._beagleComponent_).toBe('custom:repeater')
+      expect(repeater).toMatchSnapshot()
     })
 
     /**
@@ -184,9 +160,15 @@ describe('Beagle Keep: render home', () => {
      * 
      * The repeater must be the same of the last lifecycle (beforeRender).
      */
-    it('should match snapshot on after view snapshot', () => (
-      shouldMatchRepeaterAndLastRenderSnapshots(afterViewSnapshot, '.before-after-view-snapshot')
-    ))
+    it('afterViewSnapshot: repeater must match snapshot', () => {
+      const repeater = getRepeater(renderedTrees.afterViewSnapshot[2])
+      expect(repeater).toMatchSnapshot()
+    })
+
+    it(
+      'afterViewSnapshot: should be the same as the previous render, except for the repeater',
+      () => shouldBeTheSameAsPreviousExceptForRepeater('afterViewSnapshot'),
+    )
 
     /**
      * Expected differences in the repeater from the previous lifecycle (afterViewSnapshot):
@@ -197,9 +179,15 @@ describe('Beagle Keep: render home', () => {
      * The rest of the tree should be equal to the snapshot of the first render in the same
      * lifecycle (home.before-render).
      */
-    it('should match snapshot on before render', () => (
-      shouldMatchRepeaterAndLastRenderSnapshots(beforeRender, '.before-render')
-    ))
+    it('beforeRender: repeater must match snapshot', () => {
+      const repeater = getRepeater(renderedTrees.beforeRender[2])
+      expect(repeater).toMatchSnapshot()
+    })
+
+    it(
+      'beforeRender: should be the same as the previous render, except for the repeater',
+      () => shouldBeTheSameAsPreviousExceptForRepeater('beforeRender'),
+    )
 
     /**
      * The tree here is fully processed and ready to be rendered.
@@ -208,8 +196,14 @@ describe('Beagle Keep: render home', () => {
      * 
      * The rest of the tree should be equal to the snapshot of the first render (home).
      */
-    it('should render home for the second time, now with the list of notes', () => (
-      shouldMatchRepeaterAndLastRenderSnapshots(render, '')
-    ))
+    it('render: repeater must match snapshot', () => {
+      const repeater = getRepeater(renderedTrees.render[2])
+      expect(repeater).toMatchSnapshot()
+    })
+
+    it(
+      'render: should be the same as the previous render, except for the repeater',
+      () => shouldBeTheSameAsPreviousExceptForRepeater('render'),
+    )
   })
 })

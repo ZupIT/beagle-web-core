@@ -21,9 +21,12 @@ const mockedLogFunction = globalMocks.log
 
 export function enableLogging() {
   const log = jest.fn((type: LogType, ...messages: any[]) => {
-    console.log(`--- start of ${type} ---`)
-    console.log(messages.join('\n'))
-    console.log(`---  end of ${type}  ---`)
+    const logFunctions: Record<string, any> = {
+      warn: console.warn,
+      error: console.error,
+    }
+    const log = logFunctions[type] || console.log
+    log(`--- start of ${type} ---\n${messages.join('\n')}\n---  end of ${type}  ---`)
   })
   // @ts-ignore
   globalMocks.log = log

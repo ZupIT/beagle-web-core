@@ -19,7 +19,7 @@ import BeagleService from 'service/beagle-service'
 import { BeagleConfig } from 'service/beagle-service/types'
 import Tree from 'beagle-tree'
 import { NetworkOptions } from 'beagle-view/types'
-import createConfig from './config'
+import createConfig, { ConfigOptions } from './config'
 
 interface ViewParams {
   route?: string,
@@ -27,11 +27,8 @@ interface ViewParams {
   initialController?: string,
 }
 
-function start(additionalConfig?: Partial<BeagleConfig<any>>) {
-  const service = BeagleService.create({
-    ...createConfig(),
-    ...additionalConfig,
-  })
+function start(options?: ConfigOptions) {
+  const service = BeagleService.create(createConfig(options))
 
   async function createBeagleRemoteView({ networkOptions, initialController, route }: ViewParams) {
     const view = service.createView(networkOptions, initialController)

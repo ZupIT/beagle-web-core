@@ -1,0 +1,1044 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Beagle Keep: render details (create note) first render of details should match snapshot on after view snapshot 1`] = `
+Object {
+  "_beagleComponent_": "beagle:container",
+  "children": Array [
+    Object {
+      "_beagleComponent_": "custom:loadingOverlay",
+      "id": "_beagle_1",
+      "isVisible": "@{form.isLoading}",
+    },
+    Object {
+      "_beagleComponent_": "beagle:simpleForm",
+      "children": Array [
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:textInput",
+              "error": "@{condition(isEmpty(form.data.title), 'This field is required', '')}",
+              "id": "form:title",
+              "onBlur": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.title",
+                  "value": true,
+                },
+              ],
+              "onChange": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "data.title",
+                  "value": "@{onChange.value}",
+                },
+              ],
+              "placeholder": "Title",
+              "showError": "@{or(form.showErrors, form.showFieldError.title)}",
+              "value": "@{form.data.title}",
+            },
+            Object {
+              "_beagleComponent_": "custom:textArea",
+              "error": "@{condition(isEmpty(form.data.text), 'This field is required', '')}",
+              "id": "form:text",
+              "label": "Content",
+              "onBlur": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.text",
+                  "value": true,
+                },
+              ],
+              "onChange": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "data.text",
+                  "value": "@{onChange.value}",
+                },
+              ],
+              "showError": "@{or(form.showErrors, form.showFieldError.text)}",
+              "value": "@{form.data.text}",
+            },
+            Object {
+              "_beagleComponent_": "beagle:container",
+              "children": Array [
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_3",
+                  "onPress": Array [
+                    Object {
+                      "_beagleAction_": "beagle:popView",
+                    },
+                  ],
+                  "text": "Cancel",
+                },
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_4",
+                  "onPress": Array [
+                    Object {
+                      "_beagleAction_": "beagle:submitForm",
+                    },
+                  ],
+                  "text": "Save",
+                },
+              ],
+              "id": "container:2",
+              "style": Object {
+                "flex": Object {
+                  "flex": 1,
+                  "flexDirection": "ROW",
+                  "justifyContent": "SPACE_BETWEEN",
+                },
+              },
+            },
+          ],
+          "id": "container:1",
+          "style": Object {
+            "backgroundColor": "#333",
+            "cornerRadius": Object {
+              "radius": 20,
+            },
+            "flex": Object {
+              "flexDirection": "COLUMN",
+            },
+            "padding": Object {
+              "all": Object {
+                "type": "REAL",
+                "value": 15,
+              },
+            },
+            "size": Object {
+              "maxWidth": Object {
+                "type": "REAL",
+                "value": 500,
+              },
+            },
+          },
+        },
+      ],
+      "id": "_beagle_2",
+      "onSubmit": Array [
+        Object {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": true,
+        },
+        Object {
+          "_beagleAction_": "beagle:sendRequest",
+          "data": "@{form.data}",
+          "method": "@{condition(isNull(global.selectedNote), 'POST', 'PUT')}",
+          "onError": Array [
+            Object {
+              "_beagleAction_": "custom:feedback",
+              "message": "Could not save the message. Please, try again later.",
+              "type": "error",
+            },
+          ],
+          "onFinish": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false,
+            },
+          ],
+          "onSuccess": Array [
+            Object {
+              "_beagleAction_": "beagle:condition",
+              "condition": "@{sNull(global.selectedNote)}",
+              "onFalse": Array [
+                Object {
+                  "_beagleAction_": "custom:feedback",
+                  "message": "Note successfully updated!",
+                  "type": "success",
+                },
+              ],
+              "onTrue": Array [
+                Object {
+                  "_beagleAction_": "custom:feedback",
+                  "message": "Note successfully created!",
+                  "type": "success",
+                },
+                Object {
+                  "_beagleAction_": "beagle:popView",
+                },
+              ],
+            },
+          ],
+          "url": "https://keep.beagle.io/note",
+        },
+      ],
+    },
+  ],
+  "context": Object {
+    "id": "form",
+    "value": Object {
+      "data": Object {
+        "labels": Array [],
+        "text": "",
+        "title": "",
+      },
+      "isLoading": true,
+      "labels": Array [
+        Object {
+          "color": "#00ff00",
+          "id": 0,
+          "name": "Personal",
+        },
+        Object {
+          "color": "#0000ff",
+          "id": 1,
+          "name": "Work",
+        },
+        Object {
+          "color": "#ff0000",
+          "id": 2,
+          "name": "Urgent",
+        },
+        Object {
+          "color": "#ffff00",
+          "id": 3,
+          "name": "Supermarket",
+        },
+      ],
+    },
+  },
+  "id": "container:0",
+  "onInit": Array [
+    Object {
+      "_beagleAction_": "beagle:condition",
+      "condition": "@{isNull(global.selectedNote)}",
+      "onFalse": Array [
+        Object {
+          "_beagleAction_": "beagle:sendRequest",
+          "onError": Array [
+            Object {
+              "_beagleAction_": "beagle:addChildren",
+              "mode": "replace",
+              "value": Object {
+                "_beagleComponent_": "custom:error",
+                "message": "Couldn't find note with id @{global.selectedNote}",
+              },
+            },
+          ],
+          "onFinish": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false,
+            },
+          ],
+          "onSuccess": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "data",
+              "value": Object {
+                "id": "@{onSuccess.data.id}",
+                "labels": "@{onSuccess.data.labels}",
+                "text": "@{onSuccess.data.text}",
+                "title": "@{onSuccess.data.title}",
+              },
+            },
+          ],
+          "url": "https://keep.beagle.io/note/@{global.selectedNote}",
+        },
+      ],
+      "onTrue": Array [
+        Object {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": false,
+        },
+      ],
+    },
+  ],
+  "style": Object {
+    "backgroundColor": "#111",
+    "flex": Object {
+      "alignItems": "center",
+      "flex": 1,
+      "justifyContent": "center",
+    },
+    "size": Object {
+      "height": Object {
+        "type": "PERCENT",
+        "value": 100,
+      },
+    },
+  },
+  "version": "Beagle Keep v1.0",
+}
+`;
+
+exports[`Beagle Keep: render details (create note) first render of details should match snapshot on before render 1`] = `
+Object {
+  "_beagleComponent_": "beagle:container",
+  "children": Array [
+    Object {
+      "_beagleComponent_": "custom:loadingOverlay",
+      "id": "_beagle_1",
+      "isVisible": true,
+    },
+    Object {
+      "_beagleComponent_": "beagle:simpleForm",
+      "children": Array [
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:textInput",
+              "error": "This field is required",
+              "id": "form:title",
+              "onBlur": [Function],
+              "onChange": [Function],
+              "placeholder": "Title",
+              "showError": false,
+              "value": "",
+            },
+            Object {
+              "_beagleComponent_": "custom:textArea",
+              "error": "This field is required",
+              "id": "form:text",
+              "label": "Content",
+              "onBlur": [Function],
+              "onChange": [Function],
+              "showError": false,
+              "value": "",
+            },
+            Object {
+              "_beagleComponent_": "beagle:container",
+              "children": Array [
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_3",
+                  "isSubmit": false,
+                  "onPress": [Function],
+                  "text": "Cancel",
+                },
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_4",
+                  "isSubmit": true,
+                  "onPress": [Function],
+                  "text": "Save",
+                },
+              ],
+              "id": "container:2",
+              "style": Object {
+                "flex": 1,
+                "flexDirection": "row",
+                "justifyContent": "space-between",
+              },
+            },
+          ],
+          "id": "container:1",
+          "style": Object {
+            "backgroundColor": "#333",
+            "borderRadius": "20px",
+            "flexDirection": "column",
+            "maxWidth": "500px",
+            "padding": "15px",
+          },
+        },
+      ],
+      "id": "_beagle_2",
+      "onSubmit": [Function],
+    },
+  ],
+  "context": Object {
+    "id": "form",
+    "value": Object {
+      "data": Object {
+        "labels": Array [],
+        "text": "",
+        "title": "",
+      },
+      "isLoading": true,
+      "labels": Array [
+        Object {
+          "color": "#00ff00",
+          "id": 0,
+          "name": "Personal",
+        },
+        Object {
+          "color": "#0000ff",
+          "id": 1,
+          "name": "Work",
+        },
+        Object {
+          "color": "#ff0000",
+          "id": 2,
+          "name": "Urgent",
+        },
+        Object {
+          "color": "#ffff00",
+          "id": 3,
+          "name": "Supermarket",
+        },
+      ],
+    },
+  },
+  "id": "container:0",
+  "onInit": [Function],
+  "style": Object {
+    "alignItems": "center",
+    "backgroundColor": "#111",
+    "flex": 1,
+    "height": "100%",
+    "justifyContent": "center",
+  },
+  "version": "Beagle Keep v1.0",
+}
+`;
+
+exports[`Beagle Keep: render details (create note) first render of details should match snapshot on before start 1`] = `
+Object {
+  "_beagleComponent_": "beagle:container",
+  "children": Array [
+    Object {
+      "_beagleComponent_": "custom:loadingOverlay",
+      "isVisible": "@{form.isLoading}",
+    },
+    Object {
+      "_beagleComponent_": "beagle:simpleForm",
+      "children": Array [
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:textInput",
+              "error": "@{condition(isEmpty(form.data.title), 'This field is required', '')}",
+              "id": "form:title",
+              "model": "form.data.title",
+              "onBlur": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.title",
+                  "value": true,
+                },
+              ],
+              "placeholder": "Title",
+              "showError": "@{or(form.showErrors, form.showFieldError.title)}",
+            },
+            Object {
+              "_beagleComponent_": "custom:textArea",
+              "error": "@{condition(isEmpty(form.data.text), 'This field is required', '')}",
+              "id": "form:text",
+              "label": "Content",
+              "model": "form.data.text",
+              "onBlur": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.text",
+                  "value": true,
+                },
+              ],
+              "showError": "@{or(form.showErrors, form.showFieldError.text)}",
+            },
+            Object {
+              "_beagleComponent_": "beagle:container",
+              "children": Array [
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "onPress": Array [
+                    Object {
+                      "_beagleAction_": "beagle:popView",
+                    },
+                  ],
+                  "text": "Cancel",
+                },
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "onPress": Array [
+                    Object {
+                      "_beagleAction_": "beagle:submitForm",
+                    },
+                  ],
+                  "text": "Save",
+                },
+              ],
+              "style": Object {
+                "flex": Object {
+                  "flex": 1,
+                  "flexDirection": "ROW",
+                  "justifyContent": "SPACE_BETWEEN",
+                },
+              },
+            },
+          ],
+          "style": Object {
+            "backgroundColor": "#333",
+            "cornerRadius": Object {
+              "radius": 20,
+            },
+            "flex": Object {
+              "flexDirection": "COLUMN",
+            },
+            "padding": Object {
+              "all": Object {
+                "type": "REAL",
+                "value": 15,
+              },
+            },
+            "size": Object {
+              "maxWidth": Object {
+                "type": "REAL",
+                "value": 500,
+              },
+            },
+          },
+        },
+      ],
+      "onSubmit": Array [
+        Object {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": true,
+        },
+        Object {
+          "_beagleAction_": "beagle:sendRequest",
+          "data": "@{form.data}",
+          "method": "@{condition(isNull(global.selectedNote), 'POST', 'PUT')}",
+          "onError": Array [
+            Object {
+              "_beagleAction_": "custom:feedback",
+              "message": "Could not save the message. Please, try again later.",
+              "type": "error",
+            },
+          ],
+          "onFinish": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false,
+            },
+          ],
+          "onSuccess": Array [
+            Object {
+              "_beagleAction_": "beagle:condition",
+              "condition": "@{sNull(global.selectedNote)}",
+              "onFalse": Array [
+                Object {
+                  "_beagleAction_": "custom:feedback",
+                  "message": "Note successfully updated!",
+                  "type": "success",
+                },
+              ],
+              "onTrue": Array [
+                Object {
+                  "_beagleAction_": "custom:feedback",
+                  "message": "Note successfully created!",
+                  "type": "success",
+                },
+                Object {
+                  "_beagleAction_": "beagle:popView",
+                },
+              ],
+            },
+          ],
+          "url": "https://keep.beagle.io/note",
+        },
+      ],
+    },
+  ],
+  "context": Object {
+    "id": "form",
+    "value": Object {
+      "data": Object {
+        "labels": Array [],
+        "text": "",
+        "title": "",
+      },
+      "isLoading": true,
+      "labels": Array [
+        Object {
+          "color": "#00ff00",
+          "id": 0,
+          "name": "Personal",
+        },
+        Object {
+          "color": "#0000ff",
+          "id": 1,
+          "name": "Work",
+        },
+        Object {
+          "color": "#ff0000",
+          "id": 2,
+          "name": "Urgent",
+        },
+        Object {
+          "color": "#ffff00",
+          "id": 3,
+          "name": "Supermarket",
+        },
+      ],
+    },
+  },
+  "onInit": Array [
+    Object {
+      "_beagleAction_": "beagle:condition",
+      "condition": "@{isNull(global.selectedNote)}",
+      "onFalse": Array [
+        Object {
+          "_beagleAction_": "beagle:sendRequest",
+          "onError": Array [
+            Object {
+              "_beagleAction_": "beagle:addChildren",
+              "mode": "replace",
+              "value": Object {
+                "_beagleComponent_": "custom:error",
+                "message": "Couldn't find note with id @{global.selectedNote}",
+              },
+            },
+          ],
+          "onFinish": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false,
+            },
+          ],
+          "onSuccess": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "data",
+              "value": Object {
+                "id": "@{onSuccess.data.id}",
+                "labels": "@{onSuccess.data.labels}",
+                "text": "@{onSuccess.data.text}",
+                "title": "@{onSuccess.data.title}",
+              },
+            },
+          ],
+          "url": "https://keep.beagle.io/note/@{global.selectedNote}",
+        },
+      ],
+      "onTrue": Array [
+        Object {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": false,
+        },
+      ],
+    },
+  ],
+  "style": Object {
+    "backgroundColor": "#111",
+    "flex": Object {
+      "alignItems": "center",
+      "flex": 1,
+      "justifyContent": "center",
+    },
+    "size": Object {
+      "height": Object {
+        "type": "PERCENT",
+        "value": 100,
+      },
+    },
+  },
+  "version": "",
+}
+`;
+
+exports[`Beagle Keep: render details (create note) first render of details should match snapshot on before view snapshot 1`] = `
+Object {
+  "_beagleComponent_": "beagle:container",
+  "children": Array [
+    Object {
+      "_beagleComponent_": "custom:loadingOverlay",
+      "id": "_beagle_1",
+      "isVisible": "@{form.isLoading}",
+    },
+    Object {
+      "_beagleComponent_": "beagle:simpleForm",
+      "children": Array [
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:textInput",
+              "error": "@{condition(isEmpty(form.data.title), 'This field is required', '')}",
+              "id": "form:title",
+              "model": "form.data.title",
+              "onBlur": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.title",
+                  "value": true,
+                },
+              ],
+              "placeholder": "Title",
+              "showError": "@{or(form.showErrors, form.showFieldError.title)}",
+            },
+            Object {
+              "_beagleComponent_": "custom:textArea",
+              "error": "@{condition(isEmpty(form.data.text), 'This field is required', '')}",
+              "id": "form:text",
+              "label": "Content",
+              "model": "form.data.text",
+              "onBlur": Array [
+                Object {
+                  "_beagleAction_": "beagle:setContext",
+                  "contextId": "form",
+                  "path": "showFieldError.text",
+                  "value": true,
+                },
+              ],
+              "showError": "@{or(form.showErrors, form.showFieldError.text)}",
+            },
+            Object {
+              "_beagleComponent_": "beagle:container",
+              "children": Array [
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_3",
+                  "onPress": Array [
+                    Object {
+                      "_beagleAction_": "beagle:popView",
+                    },
+                  ],
+                  "text": "Cancel",
+                },
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_4",
+                  "onPress": Array [
+                    Object {
+                      "_beagleAction_": "beagle:submitForm",
+                    },
+                  ],
+                  "text": "Save",
+                },
+              ],
+              "id": "container:2",
+              "style": Object {
+                "flex": Object {
+                  "flex": 1,
+                  "flexDirection": "ROW",
+                  "justifyContent": "SPACE_BETWEEN",
+                },
+              },
+            },
+          ],
+          "id": "container:1",
+          "style": Object {
+            "backgroundColor": "#333",
+            "cornerRadius": Object {
+              "radius": 20,
+            },
+            "flex": Object {
+              "flexDirection": "COLUMN",
+            },
+            "padding": Object {
+              "all": Object {
+                "type": "REAL",
+                "value": 15,
+              },
+            },
+            "size": Object {
+              "maxWidth": Object {
+                "type": "REAL",
+                "value": 500,
+              },
+            },
+          },
+        },
+      ],
+      "id": "_beagle_2",
+      "onSubmit": Array [
+        Object {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": true,
+        },
+        Object {
+          "_beagleAction_": "beagle:sendRequest",
+          "data": "@{form.data}",
+          "method": "@{condition(isNull(global.selectedNote), 'POST', 'PUT')}",
+          "onError": Array [
+            Object {
+              "_beagleAction_": "custom:feedback",
+              "message": "Could not save the message. Please, try again later.",
+              "type": "error",
+            },
+          ],
+          "onFinish": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false,
+            },
+          ],
+          "onSuccess": Array [
+            Object {
+              "_beagleAction_": "beagle:condition",
+              "condition": "@{sNull(global.selectedNote)}",
+              "onFalse": Array [
+                Object {
+                  "_beagleAction_": "custom:feedback",
+                  "message": "Note successfully updated!",
+                  "type": "success",
+                },
+              ],
+              "onTrue": Array [
+                Object {
+                  "_beagleAction_": "custom:feedback",
+                  "message": "Note successfully created!",
+                  "type": "success",
+                },
+                Object {
+                  "_beagleAction_": "beagle:popView",
+                },
+              ],
+            },
+          ],
+          "url": "https://keep.beagle.io/note",
+        },
+      ],
+    },
+  ],
+  "context": Object {
+    "id": "form",
+    "value": Object {
+      "data": Object {
+        "labels": Array [],
+        "text": "",
+        "title": "",
+      },
+      "isLoading": true,
+      "labels": Array [
+        Object {
+          "color": "#00ff00",
+          "id": 0,
+          "name": "Personal",
+        },
+        Object {
+          "color": "#0000ff",
+          "id": 1,
+          "name": "Work",
+        },
+        Object {
+          "color": "#ff0000",
+          "id": 2,
+          "name": "Urgent",
+        },
+        Object {
+          "color": "#ffff00",
+          "id": 3,
+          "name": "Supermarket",
+        },
+      ],
+    },
+  },
+  "id": "container:0",
+  "onInit": Array [
+    Object {
+      "_beagleAction_": "beagle:condition",
+      "condition": "@{isNull(global.selectedNote)}",
+      "onFalse": Array [
+        Object {
+          "_beagleAction_": "beagle:sendRequest",
+          "onError": Array [
+            Object {
+              "_beagleAction_": "beagle:addChildren",
+              "mode": "replace",
+              "value": Object {
+                "_beagleComponent_": "custom:error",
+                "message": "Couldn't find note with id @{global.selectedNote}",
+              },
+            },
+          ],
+          "onFinish": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "isLoading",
+              "value": false,
+            },
+          ],
+          "onSuccess": Array [
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "form",
+              "path": "data",
+              "value": Object {
+                "id": "@{onSuccess.data.id}",
+                "labels": "@{onSuccess.data.labels}",
+                "text": "@{onSuccess.data.text}",
+                "title": "@{onSuccess.data.title}",
+              },
+            },
+          ],
+          "url": "https://keep.beagle.io/note/@{global.selectedNote}",
+        },
+      ],
+      "onTrue": Array [
+        Object {
+          "_beagleAction_": "beagle:setContext",
+          "contextId": "form",
+          "path": "isLoading",
+          "value": false,
+        },
+      ],
+    },
+  ],
+  "style": Object {
+    "backgroundColor": "#111",
+    "flex": Object {
+      "alignItems": "center",
+      "flex": 1,
+      "justifyContent": "center",
+    },
+    "size": Object {
+      "height": Object {
+        "type": "PERCENT",
+        "value": 100,
+      },
+    },
+  },
+  "version": "Beagle Keep v1.0",
+}
+`;
+
+exports[`Beagle Keep: render details (create note) first render of details should render details for the first time 1`] = `
+Object {
+  "_beagleComponent_": "beagle:container",
+  "children": Array [
+    Object {
+      "_beagleComponent_": "custom:loadingOverlay",
+      "id": "_beagle_1",
+      "isVisible": true,
+    },
+    Object {
+      "_beagleComponent_": "beagle:simpleForm",
+      "children": Array [
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:textInput",
+              "error": "This field is required",
+              "id": "form:title",
+              "onBlur": [Function],
+              "onChange": [Function],
+              "placeholder": "Title",
+              "showError": false,
+              "value": "",
+            },
+            Object {
+              "_beagleComponent_": "custom:textArea",
+              "error": "This field is required",
+              "id": "form:text",
+              "label": "Content",
+              "onBlur": [Function],
+              "onChange": [Function],
+              "showError": false,
+              "value": "",
+            },
+            Object {
+              "_beagleComponent_": "beagle:container",
+              "children": Array [
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_3",
+                  "isSubmit": false,
+                  "onPress": [Function],
+                  "text": "Cancel",
+                },
+                Object {
+                  "_beagleComponent_": "beagle:button",
+                  "id": "_beagle_4",
+                  "isSubmit": true,
+                  "onPress": [Function],
+                  "text": "Save",
+                },
+              ],
+              "id": "container:2",
+              "style": Object {
+                "color": "#FFF",
+                "flex": 1,
+                "flexDirection": "row",
+                "justifyContent": "space-between",
+              },
+            },
+          ],
+          "id": "container:1",
+          "style": Object {
+            "backgroundColor": "#333",
+            "borderRadius": "20px",
+            "color": "#FFF",
+            "flexDirection": "column",
+            "maxWidth": "500px",
+            "padding": "15px",
+          },
+        },
+      ],
+      "id": "_beagle_2",
+      "onSubmit": [Function],
+    },
+  ],
+  "context": Object {
+    "id": "form",
+    "value": Object {
+      "data": Object {
+        "labels": Array [],
+        "text": "",
+        "title": "",
+      },
+      "isLoading": true,
+      "labels": Array [
+        Object {
+          "color": "#00ff00",
+          "id": 0,
+          "name": "Personal",
+        },
+        Object {
+          "color": "#0000ff",
+          "id": 1,
+          "name": "Work",
+        },
+        Object {
+          "color": "#ff0000",
+          "id": 2,
+          "name": "Urgent",
+        },
+        Object {
+          "color": "#ffff00",
+          "id": 3,
+          "name": "Supermarket",
+        },
+      ],
+    },
+  },
+  "id": "container:0",
+  "onInit": [Function],
+  "style": Object {
+    "alignItems": "center",
+    "backgroundColor": "#111",
+    "color": "#FFF",
+    "flex": 1,
+    "height": "100%",
+    "justifyContent": "center",
+  },
+  "version": "Beagle Keep v1.0",
+}
+`;
