@@ -67,6 +67,17 @@ describe('Beagle Keep: actions: home: menu', () => {
     })
   })
 
+  describe('should not navigate to labels (error case) and then, retry', () => {
+    /* do the same as the previous test suit, but before clicking the button, prepare the backend
+    to respond with an error */
+
+    it.todo('should do 2 renders with no warning and 3 errors')
+
+    it.todo('should show the error component with the errors that occurred')
+
+    it.todo('should retry and successfully load the view labels')
+  })
+
   describe('should filter notes by label', () => {
     let renderFn: jest.Mock
     let beagleView: BeagleView

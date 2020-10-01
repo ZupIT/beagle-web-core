@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
-import nock from 'nock'
+import { createPersistentEndpoint } from '../../../../utils/nock'
 import { url, paths } from '../../constants'
 import home from '../views/home'
 import details from '../views/details'
 import labels from '../views/labels'
 
 export const path = paths.view
+const endpoint = createPersistentEndpoint(url)
 
 const views = { home, details, labels }
 
 function get(name: keyof typeof views) {
-  nock(url).get(`${path}/${name}`).reply(200, views[name]).persist()
+  endpoint.get(`${path}/${name}`, () => views[name])
+}
+
+/**
+ * Makes the next request to the view endpoint to fail.
+ * 
+ * @param message the error message 
+ */
+export function simulateError(message: string) {
+  endpoint.simulateError(message)
 }
 
 export default function setup() {

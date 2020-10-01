@@ -15,38 +15,47 @@
  */
 
 import nock from 'nock'
-import { url, paths } from '../../constants'
+import { createPersistentEndpoint } from '../../../../utils/nock'
+import { url, paths, delay } from '../../constants'
 import { getLabels, addLabel, editLabel, removeLabelById } from '../database/labels'
 
 const path = paths.label
 
+const endpoint = createPersistentEndpoint(url)
+
 function list() {
-  nock(url).get(path).reply(200, getLabels()).persist()
+  endpoint.get(path, getLabels)
 }
 
 function edit() {
-  nock(url).put(path).reply(function(uri, requestBody) {
+  endpoint.put(path, ({ requestBody }) => {
     const label = JSON.parse(requestBody.toString())
-    const result = editLabel(label)
-    return [200, result]
-  }).persist()
+    return editLabel(label)
+  })
 }
 
 function create() {
-  nock(url).post(path).reply(function(uri, requestBody) {
+  endpoint.post(path, ({ requestBody }) => {
     const label = JSON.parse(requestBody.toString())
-    const result = addLabel(label)
-    return [200, result]
-  }).persist()
+    return addLabel(label)
+  })
 }
 
 function remove() {
   const regex = new RegExp(`${path}/([^/]+)`)
-  nock(url).delete(regex).reply(function(uri) {
-    const [fullMatch, id] = uri.match(regex)!
+  endpoint.delete(regex, ({ url }) => {
+    const [fullMatch, id] = url.match(regex)!
     removeLabelById(parseInt(id))
-    return [200]
-  }).persist()
+  })
+}
+
+/**
+ * Makes the next request to the label endpoint to fail.
+ * 
+ * @param message the error message 
+ */
+export function simulateError(message: string) {
+  endpoint.simulateError(message)
 }
 
 export default function setup() {

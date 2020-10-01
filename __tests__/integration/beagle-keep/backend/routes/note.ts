@@ -14,84 +14,54 @@
  * limitations under the License.
  */
 
-import nock from 'nock'
+import { createPersistentEndpoint } from '../../../../utils/nock'
 import { url, paths } from '../../constants'
 import { getNotes, addNote, editNote, getNoteById, removeNoteById } from '../database/notes'
 
 export const path = paths.note
-
-let error = ''
-
-function checkError() {
-  if (error) {
-    const message = error
-    error = ''
-    return [500, { message }]
-  }
-}
+const endpoint = createPersistentEndpoint(url)
 
 function list() {
-  nock(url).get(path).reply(() => {
-    const error = checkError()
-    if (error) return error
-
-    return [200, getNotes()]
-  }).persist()
+  endpoint.get(path, getNotes)
 }
 
 function get() {
   const regex = new RegExp(`^${path}/([^/]+)$`)
-  nock(url).get(regex).reply(function(uri) {
-    const error = checkError()
-    if (error) return error
-
-    const [_, id] = uri.match(regex)!
-    const result = getNoteById(parseInt(id))
-    return [200, result]
-  }).persist()
+  endpoint.get(regex, ({ url }) => {
+    const [_, id] = url.match(regex)!
+    return getNoteById(parseInt(id))!
+  })
 }
 
 function edit() {
-  nock(url).put(path).reply(function(uri, requestBody) {
-    const error = checkError()
-    if (error) return error
-
+  endpoint.put(path, ({ requestBody }) => {
     const note = JSON.parse(requestBody.toString())
-    const result = editNote(note)
-    return [200, result]
-  }).persist()
+    return editNote(note)
+  })
 }
 
 function create() {
-  nock(url).post(path).reply(function(uri, requestBody) {
-    const error = checkError()
-    if (error) return error
-
+  endpoint.post(path, ({ requestBody }) => {
     const note = JSON.parse(requestBody.toString())
-    const result = addNote(note)
-    return [200, result]
-  }).persist()
+    return addNote(note)
+  })
 }
 
 function remove() {
   const regex = new RegExp(`${path}/([^/]+)`)
-  nock(url).delete(regex).reply(function(uri) {
-    const error = checkError()
-    if (error) return error
-
-    const [fullMatch, id] = uri.match(regex)!
+  endpoint.delete(regex, ({ url }) => {
+    const [fullMatch, id] = url.match(regex)!
     removeNoteById(parseInt(id))
-    return [200]
-  }).persist()
+  })
 }
 
 /**
- * Makes the next request to the notes endpoint to fail.
+ * Makes the next request to the note endpoint to fail.
  * 
  * @param message the error message 
  */
 export function simulateError(message: string) {
-  error = message
+  endpoint.simulateError(message)
 }
 
 export default function setup() {

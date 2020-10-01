@@ -21,3 +21,5 @@ export const paths = {
   note: '/note',
   view: '/view',
 }
+
+export const delay = 50
