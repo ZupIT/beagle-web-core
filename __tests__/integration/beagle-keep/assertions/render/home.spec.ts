@@ -15,20 +15,16 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
-import { enableLogging, disableLogging } from '../../../../utils/log'
 import setup from '../../backend/routes'
 import { RenderingResult, renderHomeView, getRepeater, getViewWithAnEmptyRepeater } from '../utils'
 
 describe('Beagle Keep: render home', () => {
   let renderedTrees: RenderingResult
-  enableLogging()
   setup()
   
   beforeAll(async () => {
     renderedTrees = await renderHomeView()
   })
-
-  afterAll(disableLogging)
 
   /**
    * Three renders are expected:

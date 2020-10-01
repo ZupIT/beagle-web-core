@@ -20,13 +20,31 @@ import { getNotes, addNote, editNote, getNoteById, removeNoteById } from '../dat
 
 export const path = paths.note
 
+let error = ''
+
+function checkError() {
+  if (error) {
+    const message = error
+    error = ''
+    return [500, { message }]
+  }
+}
+
 function list() {
-  nock(url).get(path).reply(200, getNotes()).persist()
+  nock(url).get(path).reply(() => {
+    const error = checkError()
+    if (error) return error
+
+    return [200, getNotes()]
+  }).persist()
 }
 
 function get() {
   const regex = new RegExp(`^${path}/([^/]+)$`)
   nock(url).get(regex).reply(function(uri) {
+    const error = checkError()
+    if (error) return error
+
     const [_, id] = uri.match(regex)!
     const result = getNoteById(parseInt(id))
     return [200, result]
@@ -35,6 +53,9 @@ function get() {
 
 function edit() {
   nock(url).put(path).reply(function(uri, requestBody) {
+    const error = checkError()
+    if (error) return error
+
     const note = JSON.parse(requestBody.toString())
     const result = editNote(note)
     return [200, result]
@@ -43,6 +64,9 @@ function edit() {
 
 function create() {
   nock(url).post(path).reply(function(uri, requestBody) {
+    const error = checkError()
+    if (error) return error
+
     const note = JSON.parse(requestBody.toString())
     const result = addNote(note)
     return [200, result]
@@ -52,10 +76,22 @@ function create() {
 function remove() {
   const regex = new RegExp(`${path}/([^/]+)`)
   nock(url).delete(regex).reply(function(uri) {
+    const error = checkError()
+    if (error) return error
+
     const [fullMatch, id] = uri.match(regex)!
     removeNoteById(parseInt(id))
     return [200]
   }).persist()
+}
+
+/**
+ * Makes the next request to the notes endpoint to fail.
+ * 
+ * @param message the error message 
+ */
+export function simulateError(message: string) {
+  error = message
 }
 
 export default function setup() {

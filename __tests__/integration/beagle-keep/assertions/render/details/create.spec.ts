@@ -17,7 +17,6 @@
 import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import setup from '../../../backend/routes'
-import { enableLogging, disableLogging } from '../../../../../utils/log'
 import { RenderingResult, renderDetailsView } from '../../utils'
 
 /**
@@ -26,14 +25,11 @@ import { RenderingResult, renderDetailsView } from '../../utils'
  */
 describe('Beagle Keep: render details (create note)', () => {
   let renderedTrees: RenderingResult
-  enableLogging()
   setup()
   
   beforeAll(async () => {
     renderedTrees = await renderDetailsView()
   })
-
-  afterAll(disableLogging)
 
   /**
    * Two renders are expected:

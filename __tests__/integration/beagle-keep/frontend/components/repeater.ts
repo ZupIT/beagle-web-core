@@ -19,22 +19,22 @@ import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { Component, RepeaterProps } from './types'
 
-
 const Repeater: Component<RepeaterProps> = ({
   id,
   key,
   dataSource,
   template,
   viewContentManager,
-  children,
 }) => {
   function onChange() {
-    const shouldIgnoreUpdate = (
-      !Array.isArray(dataSource)
-      || isEqual(map(children, 'key'), map(dataSource, key))
-    )
-    if (shouldIgnoreUpdate) return
     const element = viewContentManager.getElement()
+    const hasChanged = (
+      element
+      && Array.isArray(dataSource)
+      && !isEqual(map(element.children, 'key'), map(dataSource, key))
+    )
+
+    if (!hasChanged) return
 
     element.children = dataSource.map((item, index) => {
       const templateTree = Tree.clone(template)
@@ -43,6 +43,10 @@ const Repeater: Component<RepeaterProps> = ({
         { id: 'index', value: index },
       ]
       templateTree.key = item[key]
+
+      Tree.forEach(templateTree, (component, index) => {
+        component.id = `repeater:${id}:${item[key]}:${index}`
+      })
       
       return templateTree as IdentifiableBeagleUIElement
     })

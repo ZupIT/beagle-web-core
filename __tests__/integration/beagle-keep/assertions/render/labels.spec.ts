@@ -15,7 +15,6 @@
  */
 
 import setup from '../../backend/routes'
-import { enableLogging, disableLogging } from '../../../../utils/log'
 import {
   RenderingResult,
   renderLabelsView,
@@ -29,14 +28,11 @@ import {
  */
 describe('Beagle Keep: render labels', () => {
   let renderedTrees: RenderingResult
-  enableLogging()
   setup()
   
   beforeAll(async () => {
     renderedTrees = await renderLabelsView()
   })
-
-  afterAll(disableLogging)
 
   /**
    * Two renders are expected:

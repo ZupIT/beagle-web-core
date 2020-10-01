@@ -22,13 +22,15 @@
  * have been called more then desired number of times.
  * 
  * If the function is not called the desired number of times before `timeout` ms, the promise is
- * either rejected (default) or it's resolved with an error message logged to the console. The
- * behavior will depend on the parameter `rejectOnTimeout`.
+ * either rejected or it's resolved with an error message logged to the console. The behavior will
+ * depend on the parameter `rejectOnTimeout`.
  * 
  * @param fn the function mock to check
  * @param times the minimum number of times you wish the function to be called before resolving the
  * promise
  * @param timeout the maximum time (ms) to wait. Default is 100ms.
+ * @param rejectOnTimeout default is false. When true, will reject once it times out. When false,
+ * will resolve even on timeout, but with an error message logged to the console
  * @returns the promise
  */
 export function whenCalledTimes(

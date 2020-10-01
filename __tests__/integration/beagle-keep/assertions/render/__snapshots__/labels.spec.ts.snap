@@ -237,7 +237,7 @@ Object {
         "id": "isLoading",
         "value": false,
       },
-      "id": "_beagle_3",
+      "id": "repeater:label-list:0:0",
       "isLoading": false,
       "key": 0,
       "label": Object {
@@ -268,7 +268,7 @@ Object {
         "id": "isLoading",
         "value": false,
       },
-      "id": "_beagle_4",
+      "id": "repeater:label-list:1:0",
       "isLoading": false,
       "key": 1,
       "label": Object {
@@ -299,7 +299,7 @@ Object {
         "id": "isLoading",
         "value": false,
       },
-      "id": "_beagle_5",
+      "id": "repeater:label-list:2:0",
       "isLoading": false,
       "key": 2,
       "label": Object {
@@ -330,7 +330,7 @@ Object {
         "id": "isLoading",
         "value": false,
       },
-      "id": "_beagle_6",
+      "id": "repeater:label-list:3:0",
       "isLoading": false,
       "key": 3,
       "label": Object {

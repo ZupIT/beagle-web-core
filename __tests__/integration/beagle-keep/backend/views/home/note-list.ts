@@ -23,6 +23,10 @@ const noteTemplate: BeagleUIElement = {
   title: '@{item.title}',
   text: '@{item.text}',
   labels: '@{item.labels}',
+  context: {
+    id: 'isHidden',
+    value: false,
+  },
   onSelect: [
     {
       _beagleAction_: 'beagle:setContext',
@@ -38,9 +42,8 @@ const noteTemplate: BeagleUIElement = {
   onRemove: [
     {
       _beagleAction_: 'beagle:setContext',
-      contextId: 'data',
-      path: 'notes',
-      value: '@{remove(data.notes, item)}',
+      contextId: 'isHidden',
+      value: true,
     },
     {
       _beagleAction_: 'beagle:sendRequest',
@@ -52,23 +55,29 @@ const noteTemplate: BeagleUIElement = {
           type: 'success',
           text: 'Note removed successfully!'
         },
+        {
+          _beagleAction_: 'beagle:setContext',
+          contextId: 'data',
+          path: 'notes',
+          value: '@{remove(data.notes, item)}',
+        },
       ],
       onError: [
         {
           _beagleAction_: 'custom:feedback',
           type: 'error',
-          text: 'Connection error. Couldn\'t remove the label.'
+          text: 'Connection error. Couldn\'t remove the note. @{onError.status}: @{onError.data.message}'
         },
         {
           _beagleAction_: 'beagle:setContext',
-          contextId: 'data',
-          path: 'notes',
-          value: '@{insert(data.notes, item, index)}',
+          contextId: 'isHidden',
+          value: false,
         },
       ],
     },
   ],
   style: {
+    display: '@{condition(isHidden, \'none\', \'flex\')}',
     margin: {
       all: { value: 10, type: 'REAL' },
     },

@@ -33,8 +33,6 @@ export interface RenderingResult {
 
 export interface RenderOptions extends ConfigOptions {
   beforeViewCreation?: (service: BeagleService) => void,
-  afterRender?: (view: BeagleView) => void,
-  shouldDestroyView?: boolean,
 }
 
 /**
@@ -61,8 +59,6 @@ export async function renderView(
 ): Promise<RenderingResult> {
   const {
     beforeViewCreation,
-    afterRender,
-    shouldDestroyView = true,
     ...configOptions
   } = options
 
@@ -71,9 +67,7 @@ export async function renderView(
   const lifecycles = service.getConfig().lifecycles! as Record<Lifecycle, jest.Mock>
   const { render, view } = await createBeagleRemoteView({ route })
 
-  await whenCalledTimes(render, numberOfRenders, 100, false)
-  if (afterRender) afterRender(view)
-  if (shouldDestroyView) view.destroy()
+  await whenCalledTimes(render, numberOfRenders)
 
   return {
     beforeStart: getParameterByCalls(lifecycles.beforeStart),

@@ -159,14 +159,17 @@ Object {
           "key": "id",
           "template": Object {
             "_beagleComponent_": "custom:note",
+            "context": Object {
+              "id": "isHidden",
+              "value": false,
+            },
             "labels": "@{item.labels}",
             "noteId": "@{item.id}",
             "onRemove": Array [
               Object {
                 "_beagleAction_": "beagle:setContext",
-                "contextId": "data",
-                "path": "notes",
-                "value": "@{remove(data.notes, item)}",
+                "contextId": "isHidden",
+                "value": true,
               },
               Object {
                 "_beagleAction_": "beagle:sendRequest",
@@ -174,14 +177,13 @@ Object {
                 "onError": Array [
                   Object {
                     "_beagleAction_": "custom:feedback",
-                    "text": "Connection error. Couldn't remove the label.",
+                    "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
                     "type": "error",
                   },
                   Object {
                     "_beagleAction_": "beagle:setContext",
-                    "contextId": "data",
-                    "path": "notes",
-                    "value": "@{insert(data.notes, item, index)}",
+                    "contextId": "isHidden",
+                    "value": false,
                   },
                 ],
                 "onSuccess": Array [
@@ -189,6 +191,12 @@ Object {
                     "_beagleAction_": "custom:feedback",
                     "text": "Note removed successfully!",
                     "type": "success",
+                  },
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes",
+                    "value": "@{remove(data.notes, item)}",
                   },
                 ],
                 "url": "https://keep.beagle.io/note/@{item.id}",
@@ -209,6 +217,7 @@ Object {
               },
             ],
             "style": Object {
+              "display": "@{condition(isHidden, 'none', 'flex')}",
               "margin": Object {
                 "all": Object {
                   "type": "REAL",
@@ -620,14 +629,17 @@ Object {
           "key": "id",
           "template": Object {
             "_beagleComponent_": "custom:note",
+            "context": Object {
+              "id": "isHidden",
+              "value": false,
+            },
             "labels": "@{item.labels}",
             "noteId": "@{item.id}",
             "onRemove": Array [
               Object {
                 "_beagleAction_": "beagle:setContext",
-                "contextId": "data",
-                "path": "notes",
-                "value": "@{remove(data.notes, item)}",
+                "contextId": "isHidden",
+                "value": true,
               },
               Object {
                 "_beagleAction_": "beagle:sendRequest",
@@ -635,14 +647,13 @@ Object {
                 "onError": Array [
                   Object {
                     "_beagleAction_": "custom:feedback",
-                    "text": "Connection error. Couldn't remove the label.",
+                    "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
                     "type": "error",
                   },
                   Object {
                     "_beagleAction_": "beagle:setContext",
-                    "contextId": "data",
-                    "path": "notes",
-                    "value": "@{insert(data.notes, item, index)}",
+                    "contextId": "isHidden",
+                    "value": false,
                   },
                 ],
                 "onSuccess": Array [
@@ -650,6 +661,12 @@ Object {
                     "_beagleAction_": "custom:feedback",
                     "text": "Note removed successfully!",
                     "type": "success",
+                  },
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes",
+                    "value": "@{remove(data.notes, item)}",
                   },
                 ],
                 "url": "https://keep.beagle.io/note/@{item.id}",
@@ -670,6 +687,7 @@ Object {
               },
             ],
             "style": Object {
+              "display": "@{condition(isHidden, 'none', 'flex')}",
               "margin": Object {
                 "all": Object {
                   "type": "REAL",
@@ -1001,14 +1019,17 @@ Object {
           "key": "id",
           "template": Object {
             "_beagleComponent_": "custom:note",
+            "context": Object {
+              "id": "isHidden",
+              "value": false,
+            },
             "labels": "@{item.labels}",
             "noteId": "@{item.id}",
             "onRemove": Array [
               Object {
                 "_beagleAction_": "beagle:setContext",
-                "contextId": "data",
-                "path": "notes",
-                "value": "@{remove(data.notes, item)}",
+                "contextId": "isHidden",
+                "value": true,
               },
               Object {
                 "_beagleAction_": "beagle:sendRequest",
@@ -1016,14 +1037,13 @@ Object {
                 "onError": Array [
                   Object {
                     "_beagleAction_": "custom:feedback",
-                    "text": "Connection error. Couldn't remove the label.",
+                    "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
                     "type": "error",
                   },
                   Object {
                     "_beagleAction_": "beagle:setContext",
-                    "contextId": "data",
-                    "path": "notes",
-                    "value": "@{insert(data.notes, item, index)}",
+                    "contextId": "isHidden",
+                    "value": false,
                   },
                 ],
                 "onSuccess": Array [
@@ -1031,6 +1051,12 @@ Object {
                     "_beagleAction_": "custom:feedback",
                     "text": "Note removed successfully!",
                     "type": "success",
+                  },
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes",
+                    "value": "@{remove(data.notes, item)}",
                   },
                 ],
                 "url": "https://keep.beagle.io/note/@{item.id}",
@@ -1051,6 +1077,7 @@ Object {
               },
             ],
             "style": Object {
+              "display": "@{condition(isHidden, 'none', 'flex')}",
               "margin": Object {
                 "all": Object {
                   "type": "REAL",
@@ -1404,14 +1431,17 @@ Object {
           "key": "id",
           "template": Object {
             "_beagleComponent_": "custom:note",
+            "context": Object {
+              "id": "isHidden",
+              "value": false,
+            },
             "labels": "@{item.labels}",
             "noteId": "@{item.id}",
             "onRemove": Array [
               Object {
                 "_beagleAction_": "beagle:setContext",
-                "contextId": "data",
-                "path": "notes",
-                "value": "@{remove(data.notes, item)}",
+                "contextId": "isHidden",
+                "value": true,
               },
               Object {
                 "_beagleAction_": "beagle:sendRequest",
@@ -1419,14 +1449,13 @@ Object {
                 "onError": Array [
                   Object {
                     "_beagleAction_": "custom:feedback",
-                    "text": "Connection error. Couldn't remove the label.",
+                    "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
                     "type": "error",
                   },
                   Object {
                     "_beagleAction_": "beagle:setContext",
-                    "contextId": "data",
-                    "path": "notes",
-                    "value": "@{insert(data.notes, item, index)}",
+                    "contextId": "isHidden",
+                    "value": false,
                   },
                 ],
                 "onSuccess": Array [
@@ -1434,6 +1463,12 @@ Object {
                     "_beagleAction_": "custom:feedback",
                     "text": "Note removed successfully!",
                     "type": "success",
+                  },
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes",
+                    "value": "@{remove(data.notes, item)}",
                   },
                 ],
                 "url": "https://keep.beagle.io/note/@{item.id}",
@@ -1454,6 +1489,7 @@ Object {
               },
             ],
             "style": Object {
+              "display": "@{condition(isHidden, 'none', 'flex')}",
               "margin": Object {
                 "all": Object {
                   "type": "REAL",
@@ -1866,14 +1902,17 @@ Object {
           "key": "id",
           "template": Object {
             "_beagleComponent_": "custom:note",
+            "context": Object {
+              "id": "isHidden",
+              "value": false,
+            },
             "labels": "@{item.labels}",
             "noteId": "@{item.id}",
             "onRemove": Array [
               Object {
                 "_beagleAction_": "beagle:setContext",
-                "contextId": "data",
-                "path": "notes",
-                "value": "@{remove(data.notes, item)}",
+                "contextId": "isHidden",
+                "value": true,
               },
               Object {
                 "_beagleAction_": "beagle:sendRequest",
@@ -1881,14 +1920,13 @@ Object {
                 "onError": Array [
                   Object {
                     "_beagleAction_": "custom:feedback",
-                    "text": "Connection error. Couldn't remove the label.",
+                    "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
                     "type": "error",
                   },
                   Object {
                     "_beagleAction_": "beagle:setContext",
-                    "contextId": "data",
-                    "path": "notes",
-                    "value": "@{insert(data.notes, item, index)}",
+                    "contextId": "isHidden",
+                    "value": false,
                   },
                 ],
                 "onSuccess": Array [
@@ -1896,6 +1934,12 @@ Object {
                     "_beagleAction_": "custom:feedback",
                     "text": "Note removed successfully!",
                     "type": "success",
+                  },
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "data",
+                    "path": "notes",
+                    "value": "@{remove(data.notes, item)}",
                   },
                 ],
                 "url": "https://keep.beagle.io/note/@{item.id}",
@@ -1916,6 +1960,7 @@ Object {
               },
             ],
             "style": Object {
+              "display": "@{condition(isHidden, 'none', 'flex')}",
               "margin": Object {
                 "all": Object {
                   "type": "REAL",
@@ -2122,16 +2167,19 @@ Object {
           "value": 0,
         },
       ],
-      "id": "_beagle_4",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:0:0",
       "key": 0,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2139,14 +2187,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2154,6 +2201,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2174,6 +2227,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2208,16 +2262,19 @@ Object {
           "value": 1,
         },
       ],
-      "id": "_beagle_5",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:1:0",
       "key": 1,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2225,14 +2282,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2240,6 +2296,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2260,6 +2322,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2299,16 +2362,19 @@ Object {
           "value": 2,
         },
       ],
-      "id": "_beagle_6",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:2:0",
       "key": 2,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2316,14 +2382,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2331,6 +2396,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2351,6 +2422,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2385,16 +2457,19 @@ Object {
           "value": 3,
         },
       ],
-      "id": "_beagle_7",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:3:0",
       "key": 3,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2402,14 +2477,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2417,6 +2491,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2437,6 +2517,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2471,16 +2552,19 @@ Object {
           "value": 4,
         },
       ],
-      "id": "_beagle_8",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:4:0",
       "key": 4,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2488,14 +2572,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2503,6 +2586,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2523,6 +2612,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2557,16 +2647,19 @@ Object {
           "value": 5,
         },
       ],
-      "id": "_beagle_9",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:5:0",
       "key": 5,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2574,14 +2667,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2589,6 +2681,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2609,6 +2707,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2643,16 +2742,19 @@ Object {
           "value": 6,
         },
       ],
-      "id": "_beagle_10",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:6:0",
       "key": 6,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2660,14 +2762,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2675,6 +2776,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2695,6 +2802,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2729,16 +2837,19 @@ Object {
           "value": 7,
         },
       ],
-      "id": "_beagle_11",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:7:0",
       "key": 7,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -2746,14 +2857,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -2761,6 +2871,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2781,6 +2897,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -2797,14 +2914,17 @@ Object {
   "key": "id",
   "template": Object {
     "_beagleComponent_": "custom:note",
+    "context": Object {
+      "id": "isHidden",
+      "value": false,
+    },
     "labels": "@{item.labels}",
     "noteId": "@{item.id}",
     "onRemove": Array [
       Object {
         "_beagleAction_": "beagle:setContext",
-        "contextId": "data",
-        "path": "notes",
-        "value": "@{remove(data.notes, item)}",
+        "contextId": "isHidden",
+        "value": true,
       },
       Object {
         "_beagleAction_": "beagle:sendRequest",
@@ -2812,14 +2932,13 @@ Object {
         "onError": Array [
           Object {
             "_beagleAction_": "custom:feedback",
-            "text": "Connection error. Couldn't remove the label.",
+            "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
             "type": "error",
           },
           Object {
             "_beagleAction_": "beagle:setContext",
-            "contextId": "data",
-            "path": "notes",
-            "value": "@{insert(data.notes, item, index)}",
+            "contextId": "isHidden",
+            "value": false,
           },
         ],
         "onSuccess": Array [
@@ -2827,6 +2946,12 @@ Object {
             "_beagleAction_": "custom:feedback",
             "text": "Note removed successfully!",
             "type": "success",
+          },
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes",
+            "value": "@{remove(data.notes, item)}",
           },
         ],
         "url": "https://keep.beagle.io/note/@{item.id}",
@@ -2847,6 +2972,7 @@ Object {
       },
     ],
     "style": Object {
+      "display": "@{condition(isHidden, 'none', 'flex')}",
       "margin": Object {
         "all": Object {
           "type": "REAL",
@@ -2888,7 +3014,11 @@ Object {
           "value": 0,
         },
       ],
-      "id": "_beagle_4",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:0:0",
       "key": 0,
       "labels": Array [
         Object {
@@ -2901,6 +3031,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
@@ -2930,7 +3061,11 @@ Object {
           "value": 1,
         },
       ],
-      "id": "_beagle_5",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:1:0",
       "key": 1,
       "labels": Array [
         Object {
@@ -2943,6 +3078,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
@@ -2977,7 +3113,11 @@ Object {
           "value": 2,
         },
       ],
-      "id": "_beagle_6",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:2:0",
       "key": 2,
       "labels": Array [
         Object {
@@ -2995,6 +3135,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
@@ -3024,7 +3165,11 @@ Object {
           "value": 3,
         },
       ],
-      "id": "_beagle_7",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:3:0",
       "key": 3,
       "labels": Array [
         Object {
@@ -3037,6 +3182,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
@@ -3066,7 +3212,11 @@ Object {
           "value": 4,
         },
       ],
-      "id": "_beagle_8",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:4:0",
       "key": 4,
       "labels": Array [
         Object {
@@ -3079,6 +3229,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
@@ -3108,7 +3259,11 @@ Object {
           "value": 5,
         },
       ],
-      "id": "_beagle_9",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:5:0",
       "key": 5,
       "labels": Array [
         Object {
@@ -3121,6 +3276,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
@@ -3150,7 +3306,11 @@ Object {
           "value": 6,
         },
       ],
-      "id": "_beagle_10",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:6:0",
       "key": 6,
       "labels": Array [
         Object {
@@ -3163,6 +3323,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
@@ -3192,7 +3353,11 @@ Object {
           "value": 7,
         },
       ],
-      "id": "_beagle_11",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:7:0",
       "key": 7,
       "labels": Array [
         Object {
@@ -3205,6 +3370,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
@@ -3326,14 +3492,17 @@ Object {
   "key": "id",
   "template": Object {
     "_beagleComponent_": "custom:note",
+    "context": Object {
+      "id": "isHidden",
+      "value": false,
+    },
     "labels": "@{item.labels}",
     "noteId": "@{item.id}",
     "onRemove": Array [
       Object {
         "_beagleAction_": "beagle:setContext",
-        "contextId": "data",
-        "path": "notes",
-        "value": "@{remove(data.notes, item)}",
+        "contextId": "isHidden",
+        "value": true,
       },
       Object {
         "_beagleAction_": "beagle:sendRequest",
@@ -3341,14 +3510,13 @@ Object {
         "onError": Array [
           Object {
             "_beagleAction_": "custom:feedback",
-            "text": "Connection error. Couldn't remove the label.",
+            "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
             "type": "error",
           },
           Object {
             "_beagleAction_": "beagle:setContext",
-            "contextId": "data",
-            "path": "notes",
-            "value": "@{insert(data.notes, item, index)}",
+            "contextId": "isHidden",
+            "value": false,
           },
         ],
         "onSuccess": Array [
@@ -3356,6 +3524,12 @@ Object {
             "_beagleAction_": "custom:feedback",
             "text": "Note removed successfully!",
             "type": "success",
+          },
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes",
+            "value": "@{remove(data.notes, item)}",
           },
         ],
         "url": "https://keep.beagle.io/note/@{item.id}",
@@ -3376,6 +3550,7 @@ Object {
       },
     ],
     "style": Object {
+      "display": "@{condition(isHidden, 'none', 'flex')}",
       "margin": Object {
         "all": Object {
           "type": "REAL",
@@ -3417,7 +3592,11 @@ Object {
           "value": 0,
         },
       ],
-      "id": "_beagle_4",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:0:0",
       "key": 0,
       "labels": Array [
         Object {
@@ -3430,6 +3609,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
@@ -3459,7 +3639,11 @@ Object {
           "value": 1,
         },
       ],
-      "id": "_beagle_5",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:1:0",
       "key": 1,
       "labels": Array [
         Object {
@@ -3472,6 +3656,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
@@ -3506,7 +3691,11 @@ Object {
           "value": 2,
         },
       ],
-      "id": "_beagle_6",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:2:0",
       "key": 2,
       "labels": Array [
         Object {
@@ -3524,6 +3713,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
@@ -3553,7 +3743,11 @@ Object {
           "value": 3,
         },
       ],
-      "id": "_beagle_7",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:3:0",
       "key": 3,
       "labels": Array [
         Object {
@@ -3566,6 +3760,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
@@ -3595,7 +3790,11 @@ Object {
           "value": 4,
         },
       ],
-      "id": "_beagle_8",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:4:0",
       "key": 4,
       "labels": Array [
         Object {
@@ -3608,6 +3807,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
@@ -3637,7 +3837,11 @@ Object {
           "value": 5,
         },
       ],
-      "id": "_beagle_9",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:5:0",
       "key": 5,
       "labels": Array [
         Object {
@@ -3650,6 +3854,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
@@ -3679,7 +3884,11 @@ Object {
           "value": 6,
         },
       ],
-      "id": "_beagle_10",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:6:0",
       "key": 6,
       "labels": Array [
         Object {
@@ -3692,6 +3901,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
@@ -3721,7 +3931,11 @@ Object {
           "value": 7,
         },
       ],
-      "id": "_beagle_11",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:7:0",
       "key": 7,
       "labels": Array [
         Object {
@@ -3734,6 +3948,7 @@ Object {
       "onRemove": [Function],
       "onSelect": [Function],
       "style": Object {
+        "display": "flex",
         "margin": "10px",
       },
       "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
@@ -3855,14 +4070,17 @@ Object {
   "key": "id",
   "template": Object {
     "_beagleComponent_": "custom:note",
+    "context": Object {
+      "id": "isHidden",
+      "value": false,
+    },
     "labels": "@{item.labels}",
     "noteId": "@{item.id}",
     "onRemove": Array [
       Object {
         "_beagleAction_": "beagle:setContext",
-        "contextId": "data",
-        "path": "notes",
-        "value": "@{remove(data.notes, item)}",
+        "contextId": "isHidden",
+        "value": true,
       },
       Object {
         "_beagleAction_": "beagle:sendRequest",
@@ -3870,14 +4088,13 @@ Object {
         "onError": Array [
           Object {
             "_beagleAction_": "custom:feedback",
-            "text": "Connection error. Couldn't remove the label.",
+            "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
             "type": "error",
           },
           Object {
             "_beagleAction_": "beagle:setContext",
-            "contextId": "data",
-            "path": "notes",
-            "value": "@{insert(data.notes, item, index)}",
+            "contextId": "isHidden",
+            "value": false,
           },
         ],
         "onSuccess": Array [
@@ -3885,6 +4102,12 @@ Object {
             "_beagleAction_": "custom:feedback",
             "text": "Note removed successfully!",
             "type": "success",
+          },
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes",
+            "value": "@{remove(data.notes, item)}",
           },
         ],
         "url": "https://keep.beagle.io/note/@{item.id}",
@@ -3905,6 +4128,7 @@ Object {
       },
     ],
     "style": Object {
+      "display": "@{condition(isHidden, 'none', 'flex')}",
       "margin": Object {
         "all": Object {
           "type": "REAL",
@@ -3946,16 +4170,19 @@ Object {
           "value": 0,
         },
       ],
-      "id": "_beagle_4",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:0:0",
       "key": 0,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -3963,14 +4190,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -3978,6 +4204,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -3998,6 +4230,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4032,16 +4265,19 @@ Object {
           "value": 1,
         },
       ],
-      "id": "_beagle_5",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:1:0",
       "key": 1,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4049,14 +4285,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4064,6 +4299,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4084,6 +4325,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4123,16 +4365,19 @@ Object {
           "value": 2,
         },
       ],
-      "id": "_beagle_6",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:2:0",
       "key": 2,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4140,14 +4385,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4155,6 +4399,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4175,6 +4425,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4209,16 +4460,19 @@ Object {
           "value": 3,
         },
       ],
-      "id": "_beagle_7",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:3:0",
       "key": 3,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4226,14 +4480,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4241,6 +4494,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4261,6 +4520,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4295,16 +4555,19 @@ Object {
           "value": 4,
         },
       ],
-      "id": "_beagle_8",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:4:0",
       "key": 4,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4312,14 +4575,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4327,6 +4589,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4347,6 +4615,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4381,16 +4650,19 @@ Object {
           "value": 5,
         },
       ],
-      "id": "_beagle_9",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:5:0",
       "key": 5,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4398,14 +4670,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4413,6 +4684,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4433,6 +4710,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4467,16 +4745,19 @@ Object {
           "value": 6,
         },
       ],
-      "id": "_beagle_10",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:6:0",
       "key": 6,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4484,14 +4765,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4499,6 +4779,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4519,6 +4805,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4553,16 +4840,19 @@ Object {
           "value": 7,
         },
       ],
-      "id": "_beagle_11",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:7:0",
       "key": 7,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4570,14 +4860,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4585,6 +4874,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4605,6 +4900,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4621,14 +4917,17 @@ Object {
   "key": "id",
   "template": Object {
     "_beagleComponent_": "custom:note",
+    "context": Object {
+      "id": "isHidden",
+      "value": false,
+    },
     "labels": "@{item.labels}",
     "noteId": "@{item.id}",
     "onRemove": Array [
       Object {
         "_beagleAction_": "beagle:setContext",
-        "contextId": "data",
-        "path": "notes",
-        "value": "@{remove(data.notes, item)}",
+        "contextId": "isHidden",
+        "value": true,
       },
       Object {
         "_beagleAction_": "beagle:sendRequest",
@@ -4636,14 +4935,13 @@ Object {
         "onError": Array [
           Object {
             "_beagleAction_": "custom:feedback",
-            "text": "Connection error. Couldn't remove the label.",
+            "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
             "type": "error",
           },
           Object {
             "_beagleAction_": "beagle:setContext",
-            "contextId": "data",
-            "path": "notes",
-            "value": "@{insert(data.notes, item, index)}",
+            "contextId": "isHidden",
+            "value": false,
           },
         ],
         "onSuccess": Array [
@@ -4651,6 +4949,12 @@ Object {
             "_beagleAction_": "custom:feedback",
             "text": "Note removed successfully!",
             "type": "success",
+          },
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes",
+            "value": "@{remove(data.notes, item)}",
           },
         ],
         "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4671,6 +4975,7 @@ Object {
       },
     ],
     "style": Object {
+      "display": "@{condition(isHidden, 'none', 'flex')}",
       "margin": Object {
         "all": Object {
           "type": "REAL",
@@ -4712,16 +5017,19 @@ Object {
           "value": 0,
         },
       ],
-      "id": "_beagle_4",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:0:0",
       "key": 0,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4729,14 +5037,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4744,6 +5051,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4764,6 +5077,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4798,16 +5112,19 @@ Object {
           "value": 1,
         },
       ],
-      "id": "_beagle_5",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:1:0",
       "key": 1,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4815,14 +5132,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4830,6 +5146,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4850,6 +5172,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4889,16 +5212,19 @@ Object {
           "value": 2,
         },
       ],
-      "id": "_beagle_6",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:2:0",
       "key": 2,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4906,14 +5232,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -4921,6 +5246,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -4941,6 +5272,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -4975,16 +5307,19 @@ Object {
           "value": 3,
         },
       ],
-      "id": "_beagle_7",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:3:0",
       "key": 3,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -4992,14 +5327,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -5007,6 +5341,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -5027,6 +5367,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -5061,16 +5402,19 @@ Object {
           "value": 4,
         },
       ],
-      "id": "_beagle_8",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:4:0",
       "key": 4,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -5078,14 +5422,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -5093,6 +5436,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -5113,6 +5462,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -5147,16 +5497,19 @@ Object {
           "value": 5,
         },
       ],
-      "id": "_beagle_9",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:5:0",
       "key": 5,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -5164,14 +5517,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -5179,6 +5531,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -5199,6 +5557,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -5233,16 +5592,19 @@ Object {
           "value": 6,
         },
       ],
-      "id": "_beagle_10",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:6:0",
       "key": 6,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -5250,14 +5612,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -5265,6 +5626,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -5285,6 +5652,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -5319,16 +5687,19 @@ Object {
           "value": 7,
         },
       ],
-      "id": "_beagle_11",
+      "context": Object {
+        "id": "isHidden",
+        "value": false,
+      },
+      "id": "repeater:note-list:7:0",
       "key": 7,
       "labels": "@{item.labels}",
       "noteId": "@{item.id}",
       "onRemove": Array [
         Object {
           "_beagleAction_": "beagle:setContext",
-          "contextId": "data",
-          "path": "notes",
-          "value": "@{remove(data.notes, item)}",
+          "contextId": "isHidden",
+          "value": true,
         },
         Object {
           "_beagleAction_": "beagle:sendRequest",
@@ -5336,14 +5707,13 @@ Object {
           "onError": Array [
             Object {
               "_beagleAction_": "custom:feedback",
-              "text": "Connection error. Couldn't remove the label.",
+              "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
               "type": "error",
             },
             Object {
               "_beagleAction_": "beagle:setContext",
-              "contextId": "data",
-              "path": "notes",
-              "value": "@{insert(data.notes, item, index)}",
+              "contextId": "isHidden",
+              "value": false,
             },
           ],
           "onSuccess": Array [
@@ -5351,6 +5721,12 @@ Object {
               "_beagleAction_": "custom:feedback",
               "text": "Note removed successfully!",
               "type": "success",
+            },
+            Object {
+              "_beagleAction_": "beagle:setContext",
+              "contextId": "data",
+              "path": "notes",
+              "value": "@{remove(data.notes, item)}",
             },
           ],
           "url": "https://keep.beagle.io/note/@{item.id}",
@@ -5371,6 +5747,7 @@ Object {
         },
       ],
       "style": Object {
+        "display": "@{condition(isHidden, 'none', 'flex')}",
         "margin": Object {
           "all": Object {
             "type": "REAL",
@@ -5387,14 +5764,17 @@ Object {
   "key": "id",
   "template": Object {
     "_beagleComponent_": "custom:note",
+    "context": Object {
+      "id": "isHidden",
+      "value": false,
+    },
     "labels": "@{item.labels}",
     "noteId": "@{item.id}",
     "onRemove": Array [
       Object {
         "_beagleAction_": "beagle:setContext",
-        "contextId": "data",
-        "path": "notes",
-        "value": "@{remove(data.notes, item)}",
+        "contextId": "isHidden",
+        "value": true,
       },
       Object {
         "_beagleAction_": "beagle:sendRequest",
@@ -5402,14 +5782,13 @@ Object {
         "onError": Array [
           Object {
             "_beagleAction_": "custom:feedback",
-            "text": "Connection error. Couldn't remove the label.",
+            "text": "Connection error. Couldn't remove the note. @{onError.status}: @{onError.data.message}",
             "type": "error",
           },
           Object {
             "_beagleAction_": "beagle:setContext",
-            "contextId": "data",
-            "path": "notes",
-            "value": "@{insert(data.notes, item, index)}",
+            "contextId": "isHidden",
+            "value": false,
           },
         ],
         "onSuccess": Array [
@@ -5417,6 +5796,12 @@ Object {
             "_beagleAction_": "custom:feedback",
             "text": "Note removed successfully!",
             "type": "success",
+          },
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "data",
+            "path": "notes",
+            "value": "@{remove(data.notes, item)}",
           },
         ],
         "url": "https://keep.beagle.io/note/@{item.id}",
@@ -5437,6 +5822,7 @@ Object {
       },
     ],
     "style": Object {
+      "display": "@{condition(isHidden, 'none', 'flex')}",
       "margin": Object {
         "all": Object {
           "type": "REAL",

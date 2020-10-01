@@ -18,15 +18,11 @@ import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import setup from '../../../backend/routes'
 import createService from '../../../frontend/service'
-import { enableLogging, disableLogging } from '../../../../../utils/log'
 import { whenCalledTimes } from '../../../../../utils/function'
 
 export function setupHomeActionsTest() {
-  enableLogging()
   setup()
   const { createBeagleRemoteView } = createService()
-
-  afterAll(disableLogging)
 
   /**
    * These tests must start after the initial rendering. As seen in the rendering tests, the home is

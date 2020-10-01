@@ -18,7 +18,6 @@ import Tree from 'beagle-tree'
 import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import setup from '../../../backend/routes'
 import { getNoteById } from '../../../backend/database/notes'
-import { enableLogging, disableLogging } from '../../../../../utils/log'
 import { RenderingResult, renderDetailsView } from '../../utils'
 
 const selectedNote = 1
@@ -30,15 +29,12 @@ const selectedNote = 1
 describe('Beagle Keep: render details (edit note)', () => {
   let createNoteFirstRender: IdentifiableBeagleUIElement
   let editNoteResult: RenderingResult
-  enableLogging()
   setup()
   
   beforeAll(async () => {
     createNoteFirstRender = (await renderDetailsView()).render[0]
     editNoteResult = await renderDetailsView(selectedNote)
   })
-
-  afterAll(disableLogging)
 
   /**
    * Three renders are expected. The first is a full render and the others are partial renders,
