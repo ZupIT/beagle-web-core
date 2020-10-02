@@ -132,7 +132,7 @@ on the left.
 In this page, the content of the note will be fully visible instead of truncated. Also, it will
 be in the format of a form, making it possible to edit both the title and the text (content).
 
-The button in the right submit the form and save the changes. The button in the left returns to
+The button in the right submits the form and saves the changes. The button in the left returns to
 the home page.
 
 The creation of a note also uses this view, but the form is started empty.
