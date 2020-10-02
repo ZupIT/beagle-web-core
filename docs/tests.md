@@ -47,6 +47,7 @@ application (everything that is not part of the rendering process). Although we 
 In summary, unit tests should:
 - be feature oriented;
 - be as isolated as possible, by mocking everything else;
+
 so we know exactly where to look when a test fails and we can easily fix the problem.
 
 **In this project, we must always have at least 75% of the code covered by unit tests.**
