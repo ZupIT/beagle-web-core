@@ -106,7 +106,7 @@ The main information in the home page is the list of notes in the center. By def
 are shown, but they can be filtered by the labels in the menu on the left. To remove any filters,
 click the menu item "Notes".
 
-To go to the view where labels can be create, edited or removed, click the item "Edit Labels" in the
+To go to the view where labels can be created, edited or removed, click the item "Edit Labels" in the
 menu.
 
 To create a new note, the floating button on the bottom right corner must be clicked.
