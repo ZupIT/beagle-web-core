@@ -15,7 +15,7 @@ yarn test:integration
 
 You can also replace `yarn` by `npm run` when using npm.
 
-The tests the core of Beagle WEB are located under the directory `__tests__` and can be split into
+The tests for the core of Beagle WEB are located under the directory `__tests__` and can be split into
 two categories: unit and integration.
 
 ## Unit tests
