@@ -78,7 +78,7 @@ const buttons: BeagleUIElement = {
   _beagleComponent_: 'beagle:container',
   style: buttonGroupStyle,
   children: [
-    createButton('Cancel', false),
+    createButton('Go back', false),
     createButton('Save', true),
   ]
 }
@@ -94,9 +94,9 @@ const form: BeagleUIElement  = {
       children: [
         createField('title', 'Title', false),
         createField('text', 'Content', true),
-        buttons,
       ]
     },
+    buttons,
   ],
 }
 

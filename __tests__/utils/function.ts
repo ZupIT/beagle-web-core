@@ -28,7 +28,7 @@
  * @param fn the function mock to check
  * @param times the minimum number of times you wish the function to be called before resolving the
  * promise
- * @param timeout the maximum time (ms) to wait. Default is 100ms.
+ * @param timeout the maximum time (ms) to wait. Default is 500ms.
  * @param rejectOnTimeout default is false. When true, will reject once it times out. When false,
  * will resolve even on timeout, but with an error message logged to the console
  * @returns the promise
@@ -36,7 +36,7 @@
 export function whenCalledTimes(
   fn: jest.Mock,
   times: number,
-  timeout = 100,
+  timeout = 500,
   rejectOnTimeout = true,
 ) {
   const interval = 20

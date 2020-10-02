@@ -99,7 +99,7 @@ The application Beagle Keep is composed by three views, they are:
 
 ##### 1. Home
 
-> Image representing home
+![Home image](https://i.ibb.co/zJR6zmv/bkeep-home.png)
 
 The main information in the home page is the list of notes in the center. By default, all notes
 are shown, but they can be filtered by the labels in the menu on the left. To remove any filters,
@@ -116,7 +116,7 @@ To remove a note, the trash bin button of the note must be clicked.
 
 ##### 2. Labels
 
-> Image representing labels
+![Labels image](https://i.ibb.co/vdW0Hc1/bkeep-labels.png)
 
 This view shows every label in the database. Each label can have its name or color changed and it
 can also be entirely removed.
@@ -126,7 +126,7 @@ on the left.
 
 ##### 3. Note details
 
-> Image representing details
+![Details image](https://i.ibb.co/JQZNKht/bkeep-details.png)
 
 In this page, the content of the note will be fully visible instead of truncated. Also, it will
 be in the format of a form, making it possible to edit both the title and the text (content).

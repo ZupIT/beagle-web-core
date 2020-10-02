@@ -63,39 +63,6 @@ Object {
               "showError": "@{or(form.showErrors, form.showFieldError.text)}",
               "value": "@{form.data.text}",
             },
-            Object {
-              "_beagleComponent_": "beagle:container",
-              "children": Array [
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_3",
-                  "onPress": Array [
-                    Object {
-                      "_beagleAction_": "beagle:popView",
-                    },
-                  ],
-                  "text": "Cancel",
-                },
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_4",
-                  "onPress": Array [
-                    Object {
-                      "_beagleAction_": "beagle:submitForm",
-                    },
-                  ],
-                  "text": "Save",
-                },
-              ],
-              "id": "container:2",
-              "style": Object {
-                "flex": Object {
-                  "flex": 1,
-                  "flexDirection": "ROW",
-                  "justifyContent": "SPACE_BETWEEN",
-                },
-              },
-            },
           ],
           "id": "container:1",
           "style": Object {
@@ -105,6 +72,12 @@ Object {
             },
             "flex": Object {
               "flexDirection": "COLUMN",
+            },
+            "margin": Object {
+              "bottom": Object {
+                "type": "REAL",
+                "value": 30,
+              },
             },
             "padding": Object {
               "all": Object {
@@ -117,6 +90,39 @@ Object {
                 "type": "REAL",
                 "value": 500,
               },
+            },
+          },
+        },
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_3",
+              "onPress": Array [
+                Object {
+                  "_beagleAction_": "beagle:popView",
+                },
+              ],
+              "text": "Go back",
+            },
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_4",
+              "onPress": Array [
+                Object {
+                  "_beagleAction_": "beagle:submitForm",
+                },
+              ],
+              "text": "Save",
+            },
+          ],
+          "id": "container:2",
+          "style": Object {
+            "flex": Object {
+              "flex": 1,
+              "flexDirection": "ROW",
+              "justifyContent": "SPACE_BETWEEN",
             },
           },
         },
@@ -262,7 +268,6 @@ Object {
     },
   ],
   "style": Object {
-    "backgroundColor": "#111",
     "flex": Object {
       "alignItems": "center",
       "flex": 1,
@@ -314,39 +319,40 @@ Object {
               "showError": false,
               "value": "",
             },
-            Object {
-              "_beagleComponent_": "beagle:container",
-              "children": Array [
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_3",
-                  "isSubmit": false,
-                  "onPress": [Function],
-                  "text": "Cancel",
-                },
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_4",
-                  "isSubmit": true,
-                  "onPress": [Function],
-                  "text": "Save",
-                },
-              ],
-              "id": "container:2",
-              "style": Object {
-                "flex": 1,
-                "flexDirection": "row",
-                "justifyContent": "space-between",
-              },
-            },
           ],
           "id": "container:1",
           "style": Object {
             "backgroundColor": "#333",
             "borderRadius": "20px",
             "flexDirection": "column",
+            "marginBottom": "30px",
             "maxWidth": "500px",
             "padding": "15px",
+          },
+        },
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_3",
+              "isSubmit": false,
+              "onPress": [Function],
+              "text": "Go back",
+            },
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_4",
+              "isSubmit": true,
+              "onPress": [Function],
+              "text": "Save",
+            },
+          ],
+          "id": "container:2",
+          "style": Object {
+            "flex": 1,
+            "flexDirection": "row",
+            "justifyContent": "space-between",
           },
         },
       ],
@@ -391,7 +397,6 @@ Object {
   "onInit": [Function],
   "style": Object {
     "alignItems": "center",
-    "backgroundColor": "#111",
     "flex": 1,
     "height": "100%",
     "justifyContent": "center",
@@ -446,36 +451,6 @@ Object {
               ],
               "showError": "@{or(form.showErrors, form.showFieldError.text)}",
             },
-            Object {
-              "_beagleComponent_": "beagle:container",
-              "children": Array [
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "onPress": Array [
-                    Object {
-                      "_beagleAction_": "beagle:popView",
-                    },
-                  ],
-                  "text": "Cancel",
-                },
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "onPress": Array [
-                    Object {
-                      "_beagleAction_": "beagle:submitForm",
-                    },
-                  ],
-                  "text": "Save",
-                },
-              ],
-              "style": Object {
-                "flex": Object {
-                  "flex": 1,
-                  "flexDirection": "ROW",
-                  "justifyContent": "SPACE_BETWEEN",
-                },
-              },
-            },
           ],
           "style": Object {
             "backgroundColor": "#333",
@@ -484,6 +459,12 @@ Object {
             },
             "flex": Object {
               "flexDirection": "COLUMN",
+            },
+            "margin": Object {
+              "bottom": Object {
+                "type": "REAL",
+                "value": 30,
+              },
             },
             "padding": Object {
               "all": Object {
@@ -496,6 +477,36 @@ Object {
                 "type": "REAL",
                 "value": 500,
               },
+            },
+          },
+        },
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "onPress": Array [
+                Object {
+                  "_beagleAction_": "beagle:popView",
+                },
+              ],
+              "text": "Go back",
+            },
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "onPress": Array [
+                Object {
+                  "_beagleAction_": "beagle:submitForm",
+                },
+              ],
+              "text": "Save",
+            },
+          ],
+          "style": Object {
+            "flex": Object {
+              "flex": 1,
+              "flexDirection": "ROW",
+              "justifyContent": "SPACE_BETWEEN",
             },
           },
         },
@@ -639,7 +650,6 @@ Object {
     },
   ],
   "style": Object {
-    "backgroundColor": "#111",
     "flex": Object {
       "alignItems": "center",
       "flex": 1,
@@ -703,39 +713,6 @@ Object {
               ],
               "showError": "@{or(form.showErrors, form.showFieldError.text)}",
             },
-            Object {
-              "_beagleComponent_": "beagle:container",
-              "children": Array [
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_3",
-                  "onPress": Array [
-                    Object {
-                      "_beagleAction_": "beagle:popView",
-                    },
-                  ],
-                  "text": "Cancel",
-                },
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_4",
-                  "onPress": Array [
-                    Object {
-                      "_beagleAction_": "beagle:submitForm",
-                    },
-                  ],
-                  "text": "Save",
-                },
-              ],
-              "id": "container:2",
-              "style": Object {
-                "flex": Object {
-                  "flex": 1,
-                  "flexDirection": "ROW",
-                  "justifyContent": "SPACE_BETWEEN",
-                },
-              },
-            },
           ],
           "id": "container:1",
           "style": Object {
@@ -745,6 +722,12 @@ Object {
             },
             "flex": Object {
               "flexDirection": "COLUMN",
+            },
+            "margin": Object {
+              "bottom": Object {
+                "type": "REAL",
+                "value": 30,
+              },
             },
             "padding": Object {
               "all": Object {
@@ -757,6 +740,39 @@ Object {
                 "type": "REAL",
                 "value": 500,
               },
+            },
+          },
+        },
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_3",
+              "onPress": Array [
+                Object {
+                  "_beagleAction_": "beagle:popView",
+                },
+              ],
+              "text": "Go back",
+            },
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_4",
+              "onPress": Array [
+                Object {
+                  "_beagleAction_": "beagle:submitForm",
+                },
+              ],
+              "text": "Save",
+            },
+          ],
+          "id": "container:2",
+          "style": Object {
+            "flex": Object {
+              "flex": 1,
+              "flexDirection": "ROW",
+              "justifyContent": "SPACE_BETWEEN",
             },
           },
         },
@@ -902,7 +918,6 @@ Object {
     },
   ],
   "style": Object {
-    "backgroundColor": "#111",
     "flex": Object {
       "alignItems": "center",
       "flex": 1,
@@ -954,32 +969,6 @@ Object {
               "showError": false,
               "value": "",
             },
-            Object {
-              "_beagleComponent_": "beagle:container",
-              "children": Array [
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_3",
-                  "isSubmit": false,
-                  "onPress": [Function],
-                  "text": "Cancel",
-                },
-                Object {
-                  "_beagleComponent_": "beagle:button",
-                  "id": "_beagle_4",
-                  "isSubmit": true,
-                  "onPress": [Function],
-                  "text": "Save",
-                },
-              ],
-              "id": "container:2",
-              "style": Object {
-                "color": "#FFF",
-                "flex": 1,
-                "flexDirection": "row",
-                "justifyContent": "space-between",
-              },
-            },
           ],
           "id": "container:1",
           "style": Object {
@@ -987,8 +976,35 @@ Object {
             "borderRadius": "20px",
             "color": "#FFF",
             "flexDirection": "column",
+            "marginBottom": "30px",
             "maxWidth": "500px",
             "padding": "15px",
+          },
+        },
+        Object {
+          "_beagleComponent_": "beagle:container",
+          "children": Array [
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_3",
+              "isSubmit": false,
+              "onPress": [Function],
+              "text": "Go back",
+            },
+            Object {
+              "_beagleComponent_": "beagle:button",
+              "id": "_beagle_4",
+              "isSubmit": true,
+              "onPress": [Function],
+              "text": "Save",
+            },
+          ],
+          "id": "container:2",
+          "style": Object {
+            "color": "#FFF",
+            "flex": 1,
+            "flexDirection": "row",
+            "justifyContent": "space-between",
           },
         },
       ],
@@ -1033,7 +1049,6 @@ Object {
   "onInit": [Function],
   "style": Object {
     "alignItems": "center",
-    "backgroundColor": "#111",
     "color": "#FFF",
     "flex": 1,
     "height": "100%",

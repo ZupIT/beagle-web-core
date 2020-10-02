@@ -23,7 +23,6 @@ export const pageStyle = {
   size: {
     height: { value: 100, type: 'PERCENT' },
   },
-  backgroundColor: '#111',
 }
 
 export const cardStyle = {
@@ -35,6 +34,9 @@ export const cardStyle = {
   },
   padding: { 
     all: { value: 15, type: 'REAL' },
+  },
+  margin: {
+    bottom: { value: 30, type: 'REAL' },
   },
   backgroundColor: '#333',
   cornerRadius: { radius: 20 },
