@@ -49,7 +49,7 @@ export default class BeagleNetworkError extends BeagleError {
     let json: any
     try {
       json = JSON.parse(text)
-    } catch {}
+    } catch(error) {}
 
     return {
       message: this.message,

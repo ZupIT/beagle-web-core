@@ -83,7 +83,7 @@ describe('ViewContentManager', () => {
   it('should throw an error trying to create a context for an unregistered view', () => {
     try {
       viewContentManagerMap.get('viewNotRegistered', '1')
-    } catch {
+    } catch(error) {
       expect(viewContentManagerMap.get).toThrowError()
     }
   })

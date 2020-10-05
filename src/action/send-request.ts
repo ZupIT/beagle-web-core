@@ -47,7 +47,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     try {
       const resultData = resultText && JSON.parse(resultText)
       contextResponse.data = resultData
-    } catch {
+    } catch(error) {
       contextResponse.data = resultText
     }
     

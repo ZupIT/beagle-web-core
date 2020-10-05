@@ -231,7 +231,7 @@ function createBeagleView(
         try {
           const cachedTree = await viewClient.loadFromCache(baseUrl, 'get')
           return renderer.doFullRender(cachedTree)
-        } catch {}
+        } catch(error) {}
       }
       
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })

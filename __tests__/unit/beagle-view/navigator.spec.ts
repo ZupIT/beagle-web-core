@@ -72,7 +72,7 @@ describe('Beagle View: Navigator', () => {
 
       try {
         await navigator.navigate('pushView', { url: '/test2' })
-      } catch {}
+      } catch(error) {}
 
       await firstNavigation
       await navigator.navigate('pushView', { url: '/test3' })
@@ -233,7 +233,7 @@ describe('Beagle View: Navigator', () => {
 
       try {
         await navigator.navigate('pushStack', { url: '/test' })
-      } catch {
+      } catch(error) {
         hasError = true
       }
 
@@ -249,7 +249,7 @@ describe('Beagle View: Navigator', () => {
 
       try {
         await navigator.navigate('pushStack', { url: '/test' })
-      } catch {
+      } catch(error) {
         hasError = true
       }
 

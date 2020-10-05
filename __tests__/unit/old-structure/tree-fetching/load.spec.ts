@@ -60,7 +60,7 @@ describe('Utils: tree fetching (load: general)', () => {
     onChangeTree.mockClear()
     try {
       await promise
-    } catch { }
+    } catch(error) { }
     expect(onChangeTree).toHaveBeenCalledWith({
       _beagleComponent_: 'custom:error',
       errors: [
@@ -100,7 +100,7 @@ describe('Utils: tree fetching (load: general)', () => {
         shouldShowError: false,
         retry,
       })
-    } catch { }
+    } catch(error) { }
     expect(onChangeTree).not.toHaveBeenCalledWith()
     expect(nock.isDone()).toBe(true)
   })
@@ -132,7 +132,7 @@ describe('Utils: tree fetching (load: general)', () => {
         errorComponent: 'custom-error',
         retry,
       })
-    } catch { }
+    } catch(error) { }
     expect(onChangeTree).toHaveBeenCalledWith({
       _beagleComponent_: 'custom-error',
       errors: [
@@ -156,7 +156,7 @@ describe('Utils: tree fetching (load: general)', () => {
         onChangeTree,
         retry,
       })
-    } catch {}
+    } catch(error) {}
 
     const errors = onChangeTree.mock.calls[0][0].errors
     expect(errors).toEqual([
