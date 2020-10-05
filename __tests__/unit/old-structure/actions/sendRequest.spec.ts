@@ -181,7 +181,7 @@ describe('Actions: beagle:sendRequest', () => {
         data: response,
         status: 500,
         statusText: 'Internal Server Error',
-        message: 'Internal Server Error',
+        message: 'Beagle: Internal Server Error',
       },
     }
 
