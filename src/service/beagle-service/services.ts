@@ -25,7 +25,9 @@ import { BeagleConfig } from './types'
 
 export function createServices(config: BeagleConfig<any>) {
   const httpClient: HttpClient = {
-    fetch: (...args) => (config.fetchData ? config.fetchData(...args) : fetch(...args)),
+    fetch: (...args: Parameters<HttpClient['fetch']>) => (
+      config.fetchData ? config.fetchData(...args) : fetch(...args)
+    ),
   }
   const storage = config.customStorage || localStorage
   const urlBuilder = URLBuilder.create(config.baseUrl)

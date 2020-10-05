@@ -25,6 +25,7 @@ import { RemoteCache } from 'service/network/remote-cache/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
 import { HttpClient } from 'service/network/types'
+import { Omit } from 'types'
 
 export function createLocalStorageMock(storage: Record<string, string> = {}): Storage {
   return {
@@ -237,10 +238,10 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
   const beagleService = createBeagleServiceMock()
 
   return {
-    addErrorListener: jest.fn(custom.addErrorListener),
-    getTree: jest.fn(custom.getTree),
-    subscribe: jest.fn(custom.subscribe),
-    fetch: jest.fn(custom.fetch),
+    addErrorListener: jest.fn(custom.addErrorListener!),
+    getTree: jest.fn(custom.getTree!),
+    subscribe: jest.fn(custom.subscribe!),
+    fetch: jest.fn(custom.fetch!),
     getNavigator: jest.fn(custom.getNavigator || (() => navigator)),
     getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
     // @ts-ignore

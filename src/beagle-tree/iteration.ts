@@ -85,7 +85,7 @@ export function replaceEach<T extends BeagleUIElement>(
  * @returns the iterator to iterate over the nodes
  */
 export function iterator(tree: BeagleUIElement): Iterator<BeagleUIElement> {
-  if (Object.keys(tree).length === 0) return (function* () {})()
+  if (Object.keys(tree).length === 0) return (function* (): Iterator<BeagleUIElement> {})()
   
   function* generator(node: BeagleUIElement): Iterator<BeagleUIElement> {
     yield node

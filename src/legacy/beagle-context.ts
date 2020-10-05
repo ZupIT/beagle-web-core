@@ -19,6 +19,7 @@
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { LoadParams, BeagleView, UpdateWithTreeParams } from 'beagle-view/types'
 import { ViewContentManager } from 'service/view-content-manager/types'
+import { Omit } from 'types'
 
 /**
  * @deprecated since v1.2. Will de deleted in v2.0. Use `ViewContentManager` instead.
