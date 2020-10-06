@@ -15,7 +15,7 @@
 */
 
 import logger from 'logger'
-import BeagleError from 'error/BeagleError'
+import BeagleNetworkError from 'error/BeagleNetworkError'
 import { ActionHandler, SendRequestAction } from './types'
 
 interface ParsedResponse {
@@ -52,7 +52,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
       contextResponse.data = resultText
     }
     
-    if (!response.ok) throw new BeagleError(contextResponse.statusText)
+    if (!response.ok) throw new BeagleNetworkError(url, contextResponse.statusText)
     onSuccess && executeAction(onSuccess, 'onSuccess', contextResponse)
   } catch (error) {
     logger.error(error)
