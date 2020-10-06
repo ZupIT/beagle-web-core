@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Strategy } from 'service/network/view-client/types'
 import { BeagleUIElement } from 'beagle-tree/types'
 
 export type NavigationType = (

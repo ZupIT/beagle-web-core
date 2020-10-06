@@ -51,7 +51,7 @@ const createBeagleNavigator = (
 
   function subscribe(listener: NavigationListener) {
     listeners.push(listener)
-    
+
     return () => {
       const index = listeners.indexOf(listener)
       if (index !== -1) listeners.splice(index, 1)
@@ -80,7 +80,7 @@ const createBeagleNavigator = (
 
   function getPreviousRoute() {
     const currentStack = getCurrentStack()
-    const route = currentStack.routes.length >  1
+    const route = currentStack.routes.length > 1
       ? nth(currentStack.routes, -2)
       : last(getPreviousStack().routes)
 
@@ -92,6 +92,20 @@ const createBeagleNavigator = (
     const controllerId = navigation.length ? getCurrentStack().controllerId : undefined
     const navigationController = getNavigationController(controllerId)
     return Promise.all(listeners.map(l => l(route, navigationController)))
+  }
+
+  function getRouteIndex(route: string, currentStack: Stack) {
+    let index = findIndex(currentStack.routes, { url: route })
+    if (index === -1) {
+      for (let i = 0; i < currentStack.routes.length; i++) {
+        const r = currentStack.routes[i]
+        if ('screen' in r && r.screen.screenId === route) {
+          index = i
+          break
+        }
+      }
+    }
+    return index
   }
 
   async function navigate(
@@ -123,7 +137,7 @@ const createBeagleNavigator = (
         if (!route || typeof route === 'string') {
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
-  
+
         await runListeners(route)
         if (navigation.length === 0) navigation.push({ routes: [] })
         getCurrentStack().routes.push(route)
@@ -146,7 +160,7 @@ const createBeagleNavigator = (
         }
 
         const currentStack = getCurrentStack()
-        const index = findIndex(currentStack.routes, { url: route })
+        const index = getRouteIndex(route, currentStack)
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
         await runListeners(currentStack.routes[index])
         currentStack.routes.splice(index + 1)
