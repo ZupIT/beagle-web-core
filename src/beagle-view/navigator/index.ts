@@ -99,7 +99,7 @@ const createBeagleNavigator = (
     if (index === -1) {
       for (let i = 0; i < currentStack.routes.length; i++) {
         const r = currentStack.routes[i]
-        if ('screen' in r && r.screen.screenId === route) {
+        if ('screen' in r && r.screen.identifier === route) {
           index = i
           break
         }
