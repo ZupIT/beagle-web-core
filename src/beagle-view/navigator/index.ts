@@ -18,7 +18,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import last from 'lodash/last'
 import nth from 'lodash/nth'
 import find from 'lodash/find'
-import findIndex from 'lodash/findIndex'
 import BeagleNavigationError from 'error/BeagleNavigationError'
 import logger from 'logger'
 import {
@@ -94,18 +93,9 @@ const createBeagleNavigator = (
     return Promise.all(listeners.map(l => l(route, navigationController)))
   }
 
-  function getRouteIndex(route: string, currentStack: Stack) {
-    let index = findIndex(currentStack.routes, { url: route })
-    if (index === -1) {
-      for (let i = 0; i < currentStack.routes.length; i++) {
-        const r = currentStack.routes[i]
-        if ('screen' in r && r.screen.identifier === route) {
-          index = i
-          break
-        }
-      }
-    }
-    return index
+  function isRouteIdentifiedBy(route: Route, id: string) {
+    return ('url' in route && route.url === id) ||
+      ('screen' in route && route.screen.identifier === id)
   }
 
   async function navigate(
@@ -160,7 +150,7 @@ const createBeagleNavigator = (
         }
 
         const currentStack = getCurrentStack()
-        const index = getRouteIndex(route, currentStack)
+        const index = currentStack.routes.findIndex(r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
         await runListeners(currentStack.routes[index])
         currentStack.routes.splice(index + 1)
