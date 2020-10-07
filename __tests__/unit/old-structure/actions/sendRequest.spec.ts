@@ -181,15 +181,15 @@ describe('Actions: beagle:sendRequest', () => {
         data: response,
         status: 500,
         statusText: 'Internal Server Error',
-        message: 'Beagle: network error while trying to access /url-builder. Internal Server Error',
+        message: 'Beagle: network error while trying to access /url-builder.',
       },
     }
-
+    
     expect(nock.isDone()).toBe(true)
     expect(executeAction).toHaveBeenCalledWith(
       onError,
       expectedImplicitContext.id,
-      expectedImplicitContext.value,
+      expectedImplicitContext.value
     )
     expect(globalMocks.log).toHaveBeenCalledWith('error', expect.any(Error))
   })
