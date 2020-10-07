@@ -15,9 +15,9 @@
  */
 
 import Tree from 'beagle-tree'
+import BeagleError from 'error/BeagleError'
 import { BeagleView } from 'beagle-view/types'
 import { ViewContentManager, ViewContentManagerMap } from './types'
-import BeagleError from 'error/BeagleError'
 
 function createViewContentManagerMap(): ViewContentManagerMap {
   const views: Record<string, BeagleView> = {}
