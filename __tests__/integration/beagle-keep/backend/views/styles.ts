@@ -14,10 +14,38 @@
  * limitations under the License.
  */
 
-import * as beagle from '../../src'
+export const pageStyle = {
+  flex: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  size: {
+    height: { value: 100, type: 'PERCENT' },
+  },
+}
 
-describe('Beagle', () => {
-  it('should export', () => {
-    expect(beagle).toMatchSnapshot()
-  })
-})
+export const cardStyle = {
+  size: {
+    maxWidth: { value: 500, type: 'REAL' },
+  },
+  flex: {
+    flexDirection: 'COLUMN',
+  },
+  padding: { 
+    all: { value: 15, type: 'REAL' },
+  },
+  margin: {
+    bottom: { value: 30, type: 'REAL' },
+  },
+  backgroundColor: '#333',
+  cornerRadius: { radius: 20 },
+}
+
+export const buttonGroupStyle = {
+  flex: {
+    flex: 1,
+    justifyContent: 'SPACE_BETWEEN',
+    flexDirection: 'ROW',
+  }
+}

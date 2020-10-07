@@ -14,11 +14,24 @@
  * limitations under the License.
  */
 
-import logger from './src/logger'
 import fetch from 'node-fetch'
+import { LogType } from './src/logger/types'
+import logger from './src/logger'
+
+function customLogger(type: LogType, ...messages: any[]) {
+  if (!process.env.IS_LOGGING_ENABLED) return
+
+  const logFunctions: Record<string, any> = {
+    warn: console.warn,
+    error: console.error,
+  }
+  const log = logFunctions[type] || console.log
+  log(`--- start of ${type} ---\n${messages.join('\n')}\n---  end of ${type}  ---`)
+}
 
 const globalScope = global as any
 
-globalScope.fetch = fetch
-globalScope.globalMocks = { log: jest.fn() }
+globalScope.fetch = jest.fn(fetch)
+globalScope.globalMocks = { fetch: globalScope.fetch }
+globalScope.globalMocks.log = jest.fn(customLogger)
 logger.setCustomLogFunction(globalScope.globalMocks.log)
