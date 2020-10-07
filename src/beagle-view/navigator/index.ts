@@ -20,6 +20,7 @@ import nth from 'lodash/nth'
 import find from 'lodash/find'
 import BeagleNavigationError from 'error/BeagleNavigationError'
 import logger from 'logger'
+import  findLastIndex  from 'lodash/findLastIndex'
 import {
   BeagleNavigator,
   Route,
@@ -150,7 +151,7 @@ const createBeagleNavigator = (
         }
 
         const currentStack = getCurrentStack()
-        const index = currentStack.routes.findIndex(r => isRouteIdentifiedBy(r, route))
+        const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
         await runListeners(currentStack.routes[index])
         currentStack.routes.splice(index + 1)
