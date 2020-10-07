@@ -20,6 +20,7 @@ import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'be
 import { ExecutionMode, Lifecycle, LifecycleHookMap } from 'service/beagle-service/types'
 import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
+import BeagleParseError from 'error/BeagleParseError'
 import { Renderer } from './types'
 import Component from './component'
 import Navigation from './navigation'
@@ -65,7 +66,10 @@ function createRenderer({
   }
 
   function runComponentLifecycleHook(component: any, lifecycle: Lifecycle) {
-    if (isMalFormedComponent(component)) return component
+    if (isMalFormedComponent(component)) {
+      const componentStr = JSON.stringify(component, null, 2) || typeof component
+      throw new BeagleParseError(`You have a malformed component, please check the view json. Detected at lifecycle "${lifecycle}". Component value:\n${componentStr}`)
+    }
     const hook = lifecycleHooks[lifecycle].components[component._beagleComponent_.toLowerCase()]
     if (!hook) return component
     const newComponent = hook(component)

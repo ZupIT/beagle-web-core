@@ -240,7 +240,7 @@ function createBeagleView(
 
   function setupGlobalContext() {
     unsubscribeFromGlobalContext = beagleService.globalContext.subscribe(
-      () => renderer.doFullRender(getTree()),
+      () => renderer.doPartialRender(getTree()),
     )
   }
 

@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-import * as beagle from '../../src'
+import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
+import { ViewContentManager } from 'service/view-content-manager/types'
 
-describe('Beagle', () => {
-  it('should export', () => {
-    expect(beagle).toMatchSnapshot()
-  })
-})
+export type Component<T> = (props: T & { viewContentManager: ViewContentManager }) => any
+
+export interface RepeaterProps extends IdentifiableBeagleUIElement {
+  key: string,
+  dataSource: any[],
+  template: BeagleUIElement,
+}
+
+export interface ContainerProps extends IdentifiableBeagleUIElement {
+  onInit: () => void,
+}
