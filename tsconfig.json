@@ -22,7 +22,8 @@
       "metadata/*": ["metadata/*"],
       "operation/*": ["operation/*"],
       "service/*": ["service/*"],
-      "utils/*": ["utils/*"]
+      "utils/*": ["utils/*"],
+      "types/*": ["types/*"]
     }
   },
   "include": [

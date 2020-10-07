@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Iterator } from 'types'
 import { BeagleUIElement } from './types'
 
 type Iteratee<ItemType, ReturnType> = (item: ItemType, index: number) => ReturnType
