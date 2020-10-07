@@ -1212,7 +1212,7 @@ export const treeOrderPositionParsed: IdentifiableBeagleUIElement = {
     top: '25px',
     bottom: '25px',
     left: '5px',
-    right: '5px',    
+    right: '5px',
     position: 'relative'
   }
 }
@@ -1234,5 +1234,26 @@ export const treeWithCornerRadiusParsed = {
   style: {
     backgroundColor: "#0f4c81",
     borderRadius: '10px'
+  }
+}
+
+export const treeWithBorder = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    border: {
+      borderWidth: 10,
+      borderColor: '#f2f2f2'
+    }
+  }
+}
+
+export const treeWithBorderParsed = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderStyle: 'solid',
+    borderWidth: '10px',
+    borderColor: '#f2f2f2'
   }
 }
