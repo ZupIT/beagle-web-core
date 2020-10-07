@@ -29,7 +29,8 @@ interface BeagleStyle {
   positionType?: string,
   display?: string,
   backgroundColor?: string,
-  border?: Record<string, any>,
+  borderWidth?: string,
+  borderColor?: string,
 }
 
 interface HeightDataFormat {
@@ -52,7 +53,8 @@ const BEAGLE_STYLE_KEYS = [
   'positionType',
   'display',
   'backgroundColor',
-  'border',
+  'borderWidth',
+  'borderColor',
 ]
 
 const UNITY_TYPE: Record<string, string> = {
@@ -65,6 +67,7 @@ const SINGLE_ATTRIBUTES: Record<string, string> = {
   'positionType': 'position',
   'backgroundColor': 'backgroundColor',
   'display': 'display',
+  'borderColor': 'borderColor',
 }
 
 const EDGE_SPECIAL_VALUES: Record<string, string[]> = {
@@ -232,14 +235,14 @@ function handleSpecialEdge(
   }, {})
 }
 
-function formatBorderAttributes(border: BeagleStyle['border']) {
-  if (typeof border === 'object') {
-    const key = 'borderWidth'
-    if (border[key])
-      border[key] = `${border[key]}px`
+function addBorderStyle(style: BeagleStyle) {
+  if (style.borderColor || style.borderWidth && !style.hasOwnProperty('borderStyle'))
+    return { borderStyle: 'solid' }
+}
 
-    return border = { ...border, borderStyle: 'solid' }
-  }
+function formatBorderWidthAttributes(style: BeagleStyle['borderWidth']) {
+  if (style)
+    return { borderWidth: `${style}px` }
 }
 
 function formatEdgeAttributes(style: BeagleStyle, edgeType: 'margin' | 'padding') {
@@ -288,7 +291,8 @@ function convertToCSS(style: BeagleStyle) {
   }
 
   let css = formatSizeProperty(style.size)
-  css = { ...css, ...formatBorderAttributes(style.border) }
+  css = { ...css, ...formatBorderWidthAttributes(style.borderWidth) }
+  css = { ...css, ...addBorderStyle(style) }
   css = { ...css, ...formatPositionProperty(style.position) }
   css = { ...css, ...formatFlexAttributes(style.flex) }
   css = { ...css, ...formatCornerRadiusAttributes(style.cornerRadius) }
