@@ -14,7 +14,31 @@
  * limitations under the License.
  */
 
+/* compatibility mode: older versions of Typescript that must be supported by Beagle (>= 3.1.1)
+don't have "Omit" natively */
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+
+/* The following 4 types have been copied from the original ES6 module definition and slightly
+altered. This must be done because we must target ES5 in our build, which doesn't have support to
+iterators. It's true that iterators won't work in ES5 environments, but we don't want to limit
+Beagle for people using ES6 or later. */
+export interface IteratorYieldResult<TYield> {
+  done?: false,
+  value: TYield,
+}
+
+export interface IteratorReturnResult {
+  done: true,
+  value: any,
+}
+
+export type IteratorResult<T> = IteratorYieldResult<T> | IteratorReturnResult
+
+export interface Iterator<T> {
+  next(...args: []): IteratorResult<T>,
+  return?(value?: any): IteratorResult<T>,
+  throw?(e?: any): IteratorResult<T>,
+}
 
 // todo: legacy code, remove with v2.0
 import { ClickEvent as CE, ScreenEvent as SE } from 'service/beagle-service/types'
