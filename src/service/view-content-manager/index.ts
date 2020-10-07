@@ -17,6 +17,7 @@
 import Tree from 'beagle-tree'
 import { BeagleView } from 'beagle-view/types'
 import { ViewContentManager, ViewContentManagerMap } from './types'
+import BeagleError from 'error/BeagleError'
 
 function createViewContentManagerMap(): ViewContentManagerMap {
   const views: Record<string, BeagleView> = {}
@@ -28,26 +29,26 @@ function createViewContentManagerMap(): ViewContentManagerMap {
       getView: () => view,
     }
   }
-  
+
   function get(viewId: string, elementId: string) {
     if (!viewId || !elementId) {
-      throw Error('Beagle: ViewContentManagerMap couldn\'t find viewId or elementId')
+      throw new BeagleError('ViewContentManagerMap couldn\'t find viewId or elementId')
     }
-  
+
     const view = views[viewId]
-    if (!view) throw Error(`Beagle: ViewContentManagerMap couldn\'t find view with id ${viewId}`)
-  
+    if (!view) throw new BeagleError(`ViewContentManagerMap couldn\'t find view with id ${viewId}`)
+
     return create(view, elementId)
   }
-  
+
   function register(viewId: string, view: BeagleView) {
     views[viewId] = view
   }
-  
+
   function unregister(viewId: string) {
     delete views[viewId]
   }
-  
+
   return {
     get,
     register,
