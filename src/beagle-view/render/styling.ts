@@ -235,7 +235,7 @@ function handleSpecialEdge(
   }, {})
 }
 
-function addBorderStyle(style: BeagleStyle) {
+function formatBorderStyle(style: BeagleStyle) {
   if (style.borderColor || style.borderWidth && !style.hasOwnProperty('borderStyle'))
     return { borderStyle: 'solid' }
 }
@@ -292,7 +292,7 @@ function convertToCSS(style: BeagleStyle) {
 
   let css = formatSizeProperty(style.size)
   css = { ...css, ...formatBorderWidthAttributes(style.borderWidth) }
-  css = { ...css, ...addBorderStyle(style) }
+  css = { ...css, ...formatBorderStyle(style) }
   css = { ...css, ...formatPositionProperty(style.position) }
   css = { ...css, ...formatFlexAttributes(style.flex) }
   css = { ...css, ...formatCornerRadiusAttributes(style.cornerRadius) }
