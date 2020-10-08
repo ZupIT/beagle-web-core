@@ -441,4 +441,36 @@ describe('Actions: beagle:setContext', () => {
       },
     })
   })
+
+  /* simulates the case where the element that triggered the action is removed from the tree before
+  the action is executed. */
+  it('should fail to setContext if the element that triggered the action doesn\'t exist', () => {
+    const mock: IdentifiableBeagleUIElement = {
+      _beagleComponent_: 'beagle:container',
+      id: '1',
+      context: {
+        id: 'ctx',
+        value: 'test',
+      },
+    }
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'ctx',
+        value: 'value',
+      },
+      beagleView,
+      element: { id: '2', _beagleComponent_: 'beagle:button' },
+      executeAction: jest.fn(),
+    })
+
+    expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
+    expect(globalMocks.log).toHaveBeenCalledWith(
+      'warn',
+      expect.stringContaining('is detached from the current tree and attempted to change the value of the context'),
+      expect.any(String),
+    )
+  })
 })

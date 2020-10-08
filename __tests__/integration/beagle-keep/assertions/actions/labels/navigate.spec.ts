@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import * as beagle from '../../src'
+describe('Beagle Keep: actions: labels: navigate', () => {
+  describe('should get back to home', () => {
+    /* load the view home, then click the menu item "labels". Wait for "labels" to become stable (no
+    more initial renders) */
+    // click the button to go back
 
-describe('Beagle', () => {
-  it('should export', () => {
-    expect(beagle).toMatchSnapshot()
+    it.todo('should do 4 renders with no warnings or errors')
+
+    it.todo('should show loading')
+
+    it.todo('should remove the loading and display the home')
   })
 })

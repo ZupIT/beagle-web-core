@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import * as beagle from '../../src'
+import { resetLabels } from '../database/labels'
+import { resetNotes } from '../database/notes'
+import setupLabels from './label'
+import setupNotes from './note'
+import setupViews from './view'
 
-describe('Beagle', () => {
-  it('should export', () => {
-    expect(beagle).toMatchSnapshot()
-  })
-})
+export default function setup() {
+  resetLabels()
+  resetNotes()
+  setupLabels()
+  setupNotes()
+  setupViews()
+}
