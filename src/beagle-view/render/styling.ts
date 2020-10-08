@@ -29,7 +29,7 @@ interface BeagleStyle {
   positionType?: string,
   display?: string,
   backgroundColor?: string,
-  borderWidth?: string,
+  borderWidth?: number,
   borderColor?: string,
 }
 
