@@ -1237,66 +1237,75 @@ export const treeWithCornerRadiusParsed = {
   }
 }
 
-export const treeWithBorder = {
+export const treeWithoutBorderStyle = {
   id: 'Border',
   _beagleComponent_: 'type-border',
   style: {
     borderWidth: 10,
+    borderColor: '#f2f2f2'
+  }
+}
+
+export const treeWithoutBorderStyleParsed = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderWidth: '10px',
+    borderColor: '#f2f2f2',
+    borderStyle: 'solid'
+  }
+}
+
+export const treeWithBorderStyle = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderWidth: 10,
+    borderColor: '#f2f2f2',
+    borderStyle: 'dashed'
+  }
+}
+
+export const treeWithBorderStyleParsed = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderStyle: 'dashed',
+    borderWidth: '10px',
+    borderColor: '#f2f2f2'
+  }
+}
+
+export const treeBorderColor = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderColor: '#f2f2f2',
+  },
+  children: [
+    {
+      _beagleComponent_: 'type-border',
+      style: {
+        borderColor: '#f2f2f2',
+        borderStyle: 'dashed'
+      },
+    }
+  ]
+}
+
+export const treeBorderColorParsed = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderStyle: 'solid',
     borderColor: '#f2f2f2'
   },
   children: [
     {
       _beagleComponent_: 'type-border',
       style: {
-        borderColor: '#f2f2f2'
-      }
-    },
-    {
-      _beagleComponent_: 'type-border',
-      style: {
-        borderWidth: 10,
-      }
-    },
-    {
-      _beagleComponent_: 'type-border',
-      style: {
-        borderWidth: 10,
-        borderStyle: 'dashed',
-        borderColor: '#f2f2f2'
-      }
-    }
-  ]
-}
-
-export const treeWithBorderParsed = {
-  id: 'Border',
-  _beagleComponent_: 'type-border',
-  style: {
-    borderStyle: 'solid',
-    borderWidth: '10px',
-    borderColor: '#f2f2f2'
-  },
-  children:[
-    {
-      _beagleComponent_: 'type-border',
-      style: {
-        borderStyle: 'solid',
-        borderColor: '#f2f2f2'
-      },
-    },
-    {
-      _beagleComponent_: 'type-border',
-      style: {
-        borderStyle: 'solid',
-        borderWidth: '10px',
-      },
-    },
-    {
-      _beagleComponent_: 'type-border',
-      style: {
-        borderStyle: 'dashed',
-        borderWidth: '10px',
-        borderColor: '#f2f2f2'
+        borderColor: '#f2f2f2',
+        borderStyle: 'dashed'
       },
     }
   ]
