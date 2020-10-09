@@ -24,6 +24,7 @@ import {
 } from '../../../src/legacy/beagle-context'
 import { treeA, treeC, treeD } from './mocks'
 import { mockLocalStorage } from './utils/test-utils'
+import {ViewContentManager} from "service/view-content-manager/types";
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -86,6 +87,30 @@ describe('ViewContentManager', () => {
     } catch {
       expect(viewContentManagerMap.get).toThrowError()
     }
+  })
+
+  it('should throw an Beagle Error when trying to create a context without a viewId', () => {
+    expect(() => {
+      viewContentManagerMap.get(viewId, '')
+    }).toThrow(
+        new Error(`Beagle: ViewContentManagerMap couldn't find viewId or elementId`)
+    )
+  })
+
+  it('should throw an Beagle Error when trying to create a context without a elementId', () => {
+    expect(() => {
+      viewContentManagerMap.get('', '1');
+    }).toThrow(
+        new Error(`Beagle: ViewContentManagerMap couldn't find viewId or elementId`)
+    )
+  })
+
+  it('should throw an Beagle Error when trying to create a context and couldn\'t find view with provided id', () => {
+    expect(() => {
+      viewContentManagerMap.get('testid', '1');
+    }).toThrow(
+        new Error(`Beagle: ViewContentManagerMap couldn\'t find view with id testid`)
+    )
   })
 
   it('should unregister a view', () => {

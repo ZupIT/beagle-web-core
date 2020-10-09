@@ -95,7 +95,7 @@ describe('Utils: tree manipulation', () => {
   it('should insert custom word', () => {
     expect(() => Configuration.validate(configComponentsWrong)).toThrow(
       new Error(
-        `Please check your config. The button is not a valid name. Yours components or actions should always start with "beagle:" if it\'s overwriting a default component or an action, "custom:" if it\'s a custom component or an action`,
+        `Beagle: Please check your config. The button is not a valid name. Yours components or actions should always start with "beagle:" if it\'s overwriting a default component or an action, "custom:" if it\'s a custom component or an action`,
         )
       )
     }
