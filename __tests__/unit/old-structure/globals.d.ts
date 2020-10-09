@@ -16,4 +16,5 @@
 
 namespace globalMocks {
   const log: jest.Mock
+  const fetch: jest.Mock
 }

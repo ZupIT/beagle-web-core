@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import * as beagle from '../../src'
+export const url = 'https://keep.beagle.io'
 
-describe('Beagle', () => {
-  it('should export', () => {
-    expect(beagle).toMatchSnapshot()
-  })
-})
+export const paths = {
+  label: '/label',
+  note: '/note',
+  view: '/view',
+}
+
+export const delay = 50

@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import * as beagle from '../../src'
+describe('Beagle Keep: actions: details: navigate', () => {
+  describe('should get back to home', () => {
+    // from home, navigate to details and wait the view to become stable (no more initial renders).
+    // click the button to go back 
+    // wait for 4 renders: 1st: a loading overlay on the form; 2nd, 3rd and 4th: navigation to home
 
-describe('Beagle', () => {
-  it('should export', () => {
-    expect(beagle).toMatchSnapshot()
+    it.todo('should do 4 renders with no warnings or errors')
+
+    it.todo('should show loading')
+
+    it.todo('should remove the loading and display the home')
   })
 })

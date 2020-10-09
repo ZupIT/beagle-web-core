@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-import * as beagle from '../../src'
+// todo: this entire code should be replaced by custom operations when they are available
+import { find, isNil } from 'lodash'
+import Operation from 'operation'
+import { FullNote } from '../backend/database/notes'
 
-describe('Beagle', () => {
-  it('should export', () => {
-    expect(beagle).toMatchSnapshot()
-  })
-})
+export default () => {
+  // @ts-ignore
+  Operation.filterNotesByLabel = (notes: FullNote[], labelId: number) => (
+    isNil(labelId) ? notes : notes.filter(({ labels }) => !!find(labels, { id: labelId }))
+  )
+}

@@ -1,0 +1,485 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Beagle Keep: render labels should render labels for the first time 1`] = `
+Object {
+  "_beagleComponent_": "beagle:container",
+  "children": Array [
+    Object {
+      "_beagleComponent_": "custom:repeater",
+      "dataSource": Array [
+        Object {
+          "color": "#00ff00",
+          "id": 0,
+          "name": "Personal",
+        },
+        Object {
+          "color": "#0000ff",
+          "id": 1,
+          "name": "Work",
+        },
+        Object {
+          "color": "#ff0000",
+          "id": 2,
+          "name": "Urgent",
+        },
+        Object {
+          "color": "#ffff00",
+          "id": 3,
+          "name": "Supermarket",
+        },
+      ],
+      "id": "label-list",
+      "key": "id",
+      "style": Object {
+        "backgroundColor": "#333",
+        "borderRadius": "20px",
+        "flexDirection": "column",
+        "marginBottom": "30px",
+        "maxWidth": "500px",
+        "padding": "15px",
+      },
+      "template": Object {
+        "_beagleComponent_": "custom:editableLabel",
+        "context": Object {
+          "id": "isLoading",
+          "value": false,
+        },
+        "isLoading": "@{isLoading}",
+        "label": "@{item}",
+        "onRemove": Array [
+          Object {
+            "_beagleAction_": "beagle:condition",
+            "condition": "@{isEmpty(item.id)}",
+            "onFalse": Array [
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "isLoading",
+                "value": true,
+              },
+              Object {
+                "_beagleAction_": "beagle:sendRequest",
+                "method": "DELETE",
+                "onError": Array [
+                  Object {
+                    "_beagleAction_": "custom:feedback",
+                    "message": "Error while deleting label.",
+                    "type": "error",
+                  },
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "isLoading",
+                    "value": false,
+                  },
+                ],
+                "onSuccess": Array [
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "labels",
+                    "path": "current",
+                    "value": "@{remove(labels.current, item)}",
+                  },
+                ],
+                "url": "https://keep.beagle.io/label/@{item.id}",
+              },
+            ],
+            "onTrue": Array [
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "labels",
+                "path": "new",
+              },
+            ],
+          },
+        ],
+        "onSave": Array [
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "isLoading",
+            "value": true,
+          },
+          Object {
+            "_beagleAction_": "beagle:sendRequest",
+            "data": "@{onSave.value}",
+            "method": "@{condition(isEmpty(item.id), 'POST', 'PUT')}",
+            "onError": Array [
+              Object {
+                "_beagleAction_": "custom:feedback",
+                "message": "@{error.data.message}",
+                "type": "error",
+              },
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "isLoading",
+                "value": false,
+              },
+            ],
+            "onSuccess": Array [
+              Object {
+                "_beagleAction_": "beagle:condition",
+                "condition": "isEmpty(item.id)",
+                "onFalse": Array [
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "labels",
+                    "path": "current[@{index}]",
+                    "value": "@{onSuccess.data}",
+                  },
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "isLoading",
+                    "value": false,
+                  },
+                ],
+                "onTrue": Array [
+                  Object {
+                    "_beagleAction_": "beagle:setContext",
+                    "contextId": "labels",
+                    "value": Object {
+                      "current": "@{insert(labels.current, onSuccess.data)}",
+                    },
+                  },
+                ],
+              },
+            ],
+            "url": "https://keep.beagle.io/label",
+          },
+        ],
+      },
+    },
+    Object {
+      "_beagleComponent_": "beagle:container",
+      "children": Array [
+        Object {
+          "_beagleComponent_": "beagle:button",
+          "id": "_beagle_1",
+          "isSubmit": false,
+          "onPress": [Function],
+          "text": "Go back",
+        },
+        Object {
+          "_beagleComponent_": "beagle:button",
+          "disabled": false,
+          "id": "_beagle_2",
+          "isSubmit": false,
+          "onPress": [Function],
+          "text": "Create new label",
+        },
+      ],
+      "id": "container:1",
+      "style": Object {
+        "color": "#FFF",
+        "flex": 1,
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+      },
+    },
+  ],
+  "context": Object {
+    "id": "labels",
+    "value": Object {
+      "current": Array [
+        Object {
+          "color": "#00ff00",
+          "id": 0,
+          "name": "Personal",
+        },
+        Object {
+          "color": "#0000ff",
+          "id": 1,
+          "name": "Work",
+        },
+        Object {
+          "color": "#ff0000",
+          "id": 2,
+          "name": "Urgent",
+        },
+        Object {
+          "color": "#ffff00",
+          "id": 3,
+          "name": "Supermarket",
+        },
+      ],
+    },
+  },
+  "id": "container:0",
+  "style": Object {
+    "alignItems": "center",
+    "color": "#FFF",
+    "flex": 1,
+    "height": "100%",
+    "justifyContent": "center",
+  },
+  "version": "Beagle Keep v1.0",
+}
+`;
+
+exports[`Beagle Keep: render labels should render labels for the second time, now with the list of labels 1`] = `
+Object {
+  "_beagleComponent_": "custom:repeater",
+  "children": Array [
+    Object {
+      "_beagleComponent_": "custom:editableLabel",
+      "_implicitContexts_": Array [
+        Object {
+          "id": "item",
+          "value": Object {
+            "color": "#00ff00",
+            "id": 0,
+            "name": "Personal",
+          },
+        },
+        Object {
+          "id": "index",
+          "value": 0,
+        },
+      ],
+      "context": Object {
+        "id": "isLoading",
+        "value": false,
+      },
+      "id": "repeater:label-list:0:0",
+      "isLoading": false,
+      "key": 0,
+      "label": Object {
+        "color": "#00ff00",
+        "id": 0,
+        "name": "Personal",
+      },
+      "onRemove": [Function],
+      "onSave": [Function],
+    },
+    Object {
+      "_beagleComponent_": "custom:editableLabel",
+      "_implicitContexts_": Array [
+        Object {
+          "id": "item",
+          "value": Object {
+            "color": "#0000ff",
+            "id": 1,
+            "name": "Work",
+          },
+        },
+        Object {
+          "id": "index",
+          "value": 1,
+        },
+      ],
+      "context": Object {
+        "id": "isLoading",
+        "value": false,
+      },
+      "id": "repeater:label-list:1:0",
+      "isLoading": false,
+      "key": 1,
+      "label": Object {
+        "color": "#0000ff",
+        "id": 1,
+        "name": "Work",
+      },
+      "onRemove": [Function],
+      "onSave": [Function],
+    },
+    Object {
+      "_beagleComponent_": "custom:editableLabel",
+      "_implicitContexts_": Array [
+        Object {
+          "id": "item",
+          "value": Object {
+            "color": "#ff0000",
+            "id": 2,
+            "name": "Urgent",
+          },
+        },
+        Object {
+          "id": "index",
+          "value": 2,
+        },
+      ],
+      "context": Object {
+        "id": "isLoading",
+        "value": false,
+      },
+      "id": "repeater:label-list:2:0",
+      "isLoading": false,
+      "key": 2,
+      "label": Object {
+        "color": "#ff0000",
+        "id": 2,
+        "name": "Urgent",
+      },
+      "onRemove": [Function],
+      "onSave": [Function],
+    },
+    Object {
+      "_beagleComponent_": "custom:editableLabel",
+      "_implicitContexts_": Array [
+        Object {
+          "id": "item",
+          "value": Object {
+            "color": "#ffff00",
+            "id": 3,
+            "name": "Supermarket",
+          },
+        },
+        Object {
+          "id": "index",
+          "value": 3,
+        },
+      ],
+      "context": Object {
+        "id": "isLoading",
+        "value": false,
+      },
+      "id": "repeater:label-list:3:0",
+      "isLoading": false,
+      "key": 3,
+      "label": Object {
+        "color": "#ffff00",
+        "id": 3,
+        "name": "Supermarket",
+      },
+      "onRemove": [Function],
+      "onSave": [Function],
+    },
+  ],
+  "dataSource": Array [
+    Object {
+      "color": "#00ff00",
+      "id": 0,
+      "name": "Personal",
+    },
+    Object {
+      "color": "#0000ff",
+      "id": 1,
+      "name": "Work",
+    },
+    Object {
+      "color": "#ff0000",
+      "id": 2,
+      "name": "Urgent",
+    },
+    Object {
+      "color": "#ffff00",
+      "id": 3,
+      "name": "Supermarket",
+    },
+  ],
+  "id": "label-list",
+  "key": "id",
+  "style": Object {
+    "backgroundColor": "#333",
+    "borderRadius": "20px",
+    "flexDirection": "column",
+    "marginBottom": "30px",
+    "maxWidth": "500px",
+    "padding": "15px",
+  },
+  "template": Object {
+    "_beagleComponent_": "custom:editableLabel",
+    "context": Object {
+      "id": "isLoading",
+      "value": false,
+    },
+    "isLoading": "@{isLoading}",
+    "label": "@{item}",
+    "onRemove": Array [
+      Object {
+        "_beagleAction_": "beagle:condition",
+        "condition": "@{isEmpty(item.id)}",
+        "onFalse": Array [
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "isLoading",
+            "value": true,
+          },
+          Object {
+            "_beagleAction_": "beagle:sendRequest",
+            "method": "DELETE",
+            "onError": Array [
+              Object {
+                "_beagleAction_": "custom:feedback",
+                "message": "Error while deleting label.",
+                "type": "error",
+              },
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "isLoading",
+                "value": false,
+              },
+            ],
+            "onSuccess": Array [
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "labels",
+                "path": "current",
+                "value": "@{remove(labels.current, item)}",
+              },
+            ],
+            "url": "https://keep.beagle.io/label/@{item.id}",
+          },
+        ],
+        "onTrue": Array [
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "labels",
+            "path": "new",
+          },
+        ],
+      },
+    ],
+    "onSave": Array [
+      Object {
+        "_beagleAction_": "beagle:setContext",
+        "contextId": "isLoading",
+        "value": true,
+      },
+      Object {
+        "_beagleAction_": "beagle:sendRequest",
+        "data": "@{onSave.value}",
+        "method": "@{condition(isEmpty(item.id), 'POST', 'PUT')}",
+        "onError": Array [
+          Object {
+            "_beagleAction_": "custom:feedback",
+            "message": "@{error.data.message}",
+            "type": "error",
+          },
+          Object {
+            "_beagleAction_": "beagle:setContext",
+            "contextId": "isLoading",
+            "value": false,
+          },
+        ],
+        "onSuccess": Array [
+          Object {
+            "_beagleAction_": "beagle:condition",
+            "condition": "isEmpty(item.id)",
+            "onFalse": Array [
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "labels",
+                "path": "current[@{index}]",
+                "value": "@{onSuccess.data}",
+              },
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "isLoading",
+                "value": false,
+              },
+            ],
+            "onTrue": Array [
+              Object {
+                "_beagleAction_": "beagle:setContext",
+                "contextId": "labels",
+                "value": Object {
+                  "current": "@{insert(labels.current, onSuccess.data)}",
+                },
+              },
+            ],
+          },
+        ],
+        "url": "https://keep.beagle.io/label",
+      },
+    ],
+  },
+}
+`;
