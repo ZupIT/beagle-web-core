@@ -126,7 +126,7 @@ describe('Beagle Keep: actions: home: note list', () => {
     it('should do 2 renders with no warnings and 1 error', () => {
       expect(result.render).toHaveBeenCalledTimes(2)
       expect(globalMocks.log).toHaveBeenCalledTimes(1)
-      expect(globalMocks.log).toHaveBeenCalledWith('error', new Error('Internal Server Error'))
+      expect(globalMocks.log).toHaveBeenCalledWith('error', new Error('Beagle: network error while trying to access https://keep.beagle.io/note/2.'))
     })
 
     it('should hide the note in the list', () => shouldHideNote(result))
