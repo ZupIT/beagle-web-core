@@ -18,9 +18,9 @@ import cloneDeep from 'lodash/cloneDeep'
 import last from 'lodash/last'
 import nth from 'lodash/nth'
 import find from 'lodash/find'
-import findIndex from 'lodash/findIndex'
 import BeagleNavigationError from 'error/BeagleNavigationError'
 import logger from 'logger'
+import  findLastIndex  from 'lodash/findLastIndex'
 import {
   BeagleNavigator,
   Route,
@@ -51,7 +51,7 @@ const createBeagleNavigator = (
 
   function subscribe(listener: NavigationListener) {
     listeners.push(listener)
-    
+
     return () => {
       const index = listeners.indexOf(listener)
       if (index !== -1) listeners.splice(index, 1)
@@ -80,7 +80,7 @@ const createBeagleNavigator = (
 
   function getPreviousRoute() {
     const currentStack = getCurrentStack()
-    const route = currentStack.routes.length >  1
+    const route = currentStack.routes.length > 1
       ? nth(currentStack.routes, -2)
       : last(getPreviousStack().routes)
 
@@ -92,6 +92,11 @@ const createBeagleNavigator = (
     const controllerId = navigation.length ? getCurrentStack().controllerId : undefined
     const navigationController = getNavigationController(controllerId)
     return Promise.all(listeners.map(l => l(route, navigationController)))
+  }
+
+  function isRouteIdentifiedBy(route: Route, id: string) {
+    return ('url' in route && route.url === id) ||
+      ('screen' in route && route.screen.identifier === id)
   }
 
   async function navigate(
@@ -123,7 +128,7 @@ const createBeagleNavigator = (
         if (!route || typeof route === 'string') {
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
-  
+
         await runListeners(route)
         if (navigation.length === 0) navigation.push({ routes: [] })
         getCurrentStack().routes.push(route)
@@ -146,7 +151,7 @@ const createBeagleNavigator = (
         }
 
         const currentStack = getCurrentStack()
-        const index = findIndex(currentStack.routes, { url: route })
+        const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
         await runListeners(currentStack.routes[index])
         currentStack.routes.splice(index + 1)

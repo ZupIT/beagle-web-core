@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Strategy } from 'service/network/view-client/types'
 import { BeagleUIElement } from 'beagle-tree/types'
 
 export type NavigationType = (
@@ -39,7 +38,11 @@ export interface RemoteView {
 }
 
 export interface LocalView {
-  screen: BeagleUIElement,
+  screen: Screen,
+}
+
+interface Screen extends BeagleUIElement{
+  identifier?: string,
 }
 
 export type Route = LocalView | RemoteView

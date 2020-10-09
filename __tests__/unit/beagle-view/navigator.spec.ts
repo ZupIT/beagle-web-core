@@ -33,13 +33,13 @@ describe('Beagle View: Navigator', () => {
       const navigator = Navigator.create()
       expect(navigator).toEqual(expect.any(Object))
     })
-  
+
     it('should navigate', async () => {
       const navigator = Navigator.create()
       await navigator.navigate('pushStack', { url: '/test' })
       expect(navigator.get()).toEqual([{ routes: [{ url: '/test' }] }])
     })
-  
+
     it(
       'should throw error if a navigation attempts to start while another is in progress',
       async () => {
@@ -72,7 +72,7 @@ describe('Beagle View: Navigator', () => {
 
       try {
         await navigator.navigate('pushView', { url: '/test2' })
-      } catch {}
+      } catch { }
 
       await firstNavigation
       await navigator.navigate('pushView', { url: '/test3' })
@@ -169,7 +169,7 @@ describe('Beagle View: Navigator', () => {
       await navigator.navigate('pushStack', { url: '/test' })
       expect(listener).toHaveBeenCalledWith({ url: '/test' }, expect.anything())
     })
-  
+
     it('should wait for listener and complete the navigation', async () => {
       const navigator = Navigator.create()
       const listener = () => new Promise<void>(resolve => setTimeout(resolve, 100))
@@ -195,11 +195,11 @@ describe('Beagle View: Navigator', () => {
       expect(listeners[1]).toHaveBeenCalledWith({ url: '/test' }, expect.anything())
       expect(listeners[2]).toHaveBeenCalledWith({ url: '/test' }, expect.anything())
     })
-  
+
     it('should run multiple listeners at once and wait for all of them', async () => {
       const navigator = Navigator.create()
       let finishCounter = 0
-      
+
       const listener = async () => {
         expect(finishCounter).toBe(0)
         await new Promise<void>(resolve => setTimeout(resolve, 50))
@@ -213,7 +213,7 @@ describe('Beagle View: Navigator', () => {
       await navigator.navigate('pushStack', { url: '/test' })
       expect(finishCounter).toBe(3)
     })
-  
+
     it('should unsubscribe listener', async () => {
       const navigator = Navigator.create()
       const listener = jest.fn()
@@ -222,7 +222,7 @@ describe('Beagle View: Navigator', () => {
       await navigator.navigate('pushStack', { url: '/test' })
       expect(listener).not.toHaveBeenCalled()
     })
-  
+
     it('should abort navigation if a listener throws an error', async () => {
       const navigator = Navigator.create()
       let hasError = false
@@ -267,7 +267,7 @@ describe('Beagle View: Navigator', () => {
         { routes: [{ url: 'stack3-view1' }] },
       ])
     })
-  
+
     it('should resetStack', async () => {
       const navigator = Navigator.create(undefined, history)
       await navigator.resetStack({ url: 'stack3-view1' })
@@ -276,22 +276,22 @@ describe('Beagle View: Navigator', () => {
         { routes: [{ url: 'stack3-view1' }] },
       ])
     })
-  
+
     it('should resetApplication', async () => {
       const navigator = Navigator.create(undefined, history)
       await navigator.resetApplication({ url: 'stack3-view1' })
       expect(navigator.get()).toEqual([{ routes: [{ url: 'stack3-view1' }] }])
     })
-  
+
     it('should pushView to top-most stack', async () => {
       const navigator = Navigator.create(undefined, history)
       await navigator.pushView({ url: 'stack2-view3' })
       expect(navigator.get()).toEqual([
         history[0],
-        { routes: [ ...history[1].routes, { url: 'stack2-view3' }] },
+        { routes: [...history[1].routes, { url: 'stack2-view3' }] },
       ])
     })
-  
+
     it('should popView and not change stack', async () => {
       const navigator = Navigator.create(undefined, history)
       await navigator.popView()
@@ -301,7 +301,7 @@ describe('Beagle View: Navigator', () => {
       ])
     })
 
-    it('should popView and also pop the stack', async() => {
+    it('should popView and also pop the stack', async () => {
       const anotherHistory = cloneDeep(history)
       anotherHistory[1].routes.pop()
       const navigator = Navigator.create(undefined, anotherHistory)
@@ -325,7 +325,7 @@ describe('Beagle View: Navigator', () => {
       expect(error!.message).toMatch('navigation error')
       expect(navigator.get()).toEqual(anotherHistory)
     })
-  
+
     it('should popToView', async () => {
       const anotherHistory = cloneDeep(history)
       anotherHistory[1].routes.push({ url: 'stack2-view3' })
@@ -350,7 +350,7 @@ describe('Beagle View: Navigator', () => {
       expect(error!.message).toMatch('navigation error')
       expect(navigator.get()).toEqual(history)
     })
-  
+
     it('should popStack', async () => {
       const navigator = Navigator.create(undefined, history)
       await navigator.popStack()
@@ -373,8 +373,92 @@ describe('Beagle View: Navigator', () => {
       expect(error!.message).toMatch('navigation error')
       expect(navigator.get()).toEqual(anotherHistory)
     })
+
+    it('should pop to a local view', async () => {
+      const mockStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-B' } },
+            { url: 'stack-C' }
+          ]
+        }
+      ]
+
+      const expectedStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-B' } },
+          ]
+        }
+      ]
+
+      const navigator = Navigator.create(undefined, mockStack)
+      await navigator.popToView('stack-B')
+      expect(navigator.get()).toEqual(expectedStack)
+    })
+
+    it('should pop to first view matching the route (URL)', async () => {
+      const mockStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { url: 'stack-C' },
+            { url: 'stack-D' }
+          ]
+        }
+      ]
+
+      const expectedStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { url: 'stack-C' }
+          ]
+        }
+      ]
+
+      const navigator = Navigator.create(undefined, mockStack)
+      await navigator.popToView('stack-C')
+      expect(navigator.get()).toEqual(expectedStack)
+    })
+
+    it('should pop to first view matching the route (ScreenComponent)', async () => {
+      const mockStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { url: 'stack-C' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { url: 'stack-D' }
+          ]
+        }
+      ]
+
+      const expectedStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { url: 'stack-C' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } }
+          ]
+        }
+      ]
+
+      const navigator = Navigator.create(undefined, mockStack)
+      await navigator.popToView('stack-C')
+      expect(navigator.get()).toEqual(expectedStack)
+    })
+
   })
-  
+
   describe('generic navigation function', () => {
     async function expectNavigationError(
       type: NavigationType,
@@ -399,19 +483,19 @@ describe('Beagle View: Navigator', () => {
     it('should not pushStack if route is a string', () => {
       return expectNavigationError('pushStack', 'test')
     })
-  
+
     it('should not resetStack if route is a string', () => {
       return expectNavigationError('resetStack', 'test')
     })
-  
+
     it('should not resetApplication if route is a string', () => {
       return expectNavigationError('resetApplication', 'test')
     })
-  
+
     it('should not pushView if route is a string', () => {
       return expectNavigationError('pushView', 'test')
     })
-  
+
     it('should not popToView if route is an object', async () => {
       const navigator = Navigator.create(undefined, history)
       await expectNavigationError('popToView', { url: 'stack2-view1' }, navigator)
@@ -502,7 +586,7 @@ describe('Beagle View: Navigator', () => {
         const navigator = Navigator.create(controllers)
         const listener = jest.fn()
         navigator.subscribe(listener)
-        
+
         await navigator.pushStack({ url: '/login' })
         await navigator.pushStack({ url: '/account' }, 'secured')
         await navigator.pushView({ url: '/profile' })
@@ -560,7 +644,7 @@ describe('Beagle View: Navigator', () => {
       const listener = jest.fn()
       navigator.subscribe(listener)
       navigator.pushStack({ url: '/account' })
-      
+
       expect(listener).toHaveBeenCalledWith(expect.anything(), {})
     })
 
