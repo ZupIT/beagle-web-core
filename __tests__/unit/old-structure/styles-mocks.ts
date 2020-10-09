@@ -1212,7 +1212,7 @@ export const treeOrderPositionParsed: IdentifiableBeagleUIElement = {
     top: '25px',
     bottom: '25px',
     left: '5px',
-    right: '5px',    
+    right: '5px',
     position: 'relative'
   }
 }
@@ -1235,4 +1235,78 @@ export const treeWithCornerRadiusParsed = {
     backgroundColor: "#0f4c81",
     borderRadius: '10px'
   }
+}
+
+export const treeWithoutBorderStyle = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderWidth: 10,
+    borderColor: '#f2f2f2'
+  }
+}
+
+export const treeWithoutBorderStyleParsed = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderWidth: '10px',
+    borderColor: '#f2f2f2',
+    borderStyle: 'solid'
+  }
+}
+
+export const treeWithBorderStyle = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderWidth: 10,
+    borderColor: '#f2f2f2',
+    borderStyle: 'dashed'
+  }
+}
+
+export const treeWithBorderStyleParsed = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderStyle: 'dashed',
+    borderWidth: '10px',
+    borderColor: '#f2f2f2'
+  }
+}
+
+export const treeBorderColor = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderColor: '#f2f2f2',
+  },
+  children: [
+    {
+      _beagleComponent_: 'type-border',
+      style: {
+        borderColor: '#f2f2f2',
+        borderStyle: 'dashed'
+      },
+    }
+  ]
+}
+
+export const treeBorderColorParsed = {
+  id: 'Border',
+  _beagleComponent_: 'type-border',
+  style: {
+    borderStyle: 'solid',
+    borderColor: '#f2f2f2'
+  },
+  children: [
+    {
+      _beagleComponent_: 'type-border',
+      style: {
+        borderColor: '#f2f2f2',
+        borderStyle: 'dashed'
+      },
+    }
+  ]
 }

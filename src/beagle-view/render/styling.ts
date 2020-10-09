@@ -20,15 +20,17 @@ import { BeagleUIElement } from 'beagle-tree/types'
 type CSS = Record<string, any>
 
 interface BeagleStyle {
-  size?: Record<string, any> | string,
+  size?: Record<string, any>,
   position?: Record<string, any> | string,
   flex?: Record<string, any> | string,
-  cornerRadius?: Record<string, any> | string,
+  cornerRadius?: Record<string, any>,
   margin?: Record<string, any> | string,
   padding?: Record<string, any> | string,
   positionType?: string,
   display?: string,
   backgroundColor?: string,
+  borderWidth?: number,
+  borderColor?: string,
 }
 
 interface HeightDataFormat {
@@ -51,6 +53,8 @@ const BEAGLE_STYLE_KEYS = [
   'positionType',
   'display',
   'backgroundColor',
+  'borderWidth',
+  'borderColor',
 ]
 
 const UNITY_TYPE: Record<string, string> = {
@@ -63,6 +67,7 @@ const SINGLE_ATTRIBUTES: Record<string, string> = {
   'positionType': 'position',
   'backgroundColor': 'backgroundColor',
   'display': 'display',
+  'borderColor': 'borderColor',
 }
 
 const EDGE_SPECIAL_VALUES: Record<string, string[]> = {
@@ -139,7 +144,7 @@ function formatSizeProperty(size: BeagleStyle['size']) {
 
   const keys = Object.keys(size)
   let heightData = {} as HeightDataFormat
-  let valueAspectRatio = null 
+  let valueAspectRatio = null
 
   keys.forEach((key) => {
     if (typeof size[key] === 'string') return
@@ -152,7 +157,7 @@ function formatSizeProperty(size: BeagleStyle['size']) {
       valueAspectRatio = size[key]
     }
   })
-  
+
   return { ...css, ...handleAspectRatio(valueAspectRatio, heightData) }
 }
 
@@ -230,6 +235,16 @@ function handleSpecialEdge(
   }, {})
 }
 
+function formatBorderStyle(style: BeagleStyle) {
+  if (style.borderColor || style.borderWidth && !style.hasOwnProperty('borderStyle'))
+    return { borderStyle: 'solid' }
+}
+
+function formatBorderWidthAttributes(style: BeagleStyle['borderWidth']) {
+  if (style)
+    return { borderWidth: `${style}px` }
+}
+
 function formatEdgeAttributes(style: BeagleStyle, edgeType: 'margin' | 'padding') {
   let css: CSS = {}
   const edge = style[edgeType]
@@ -276,6 +291,8 @@ function convertToCSS(style: BeagleStyle) {
   }
 
   let css = formatSizeProperty(style.size)
+  css = { ...css, ...formatBorderWidthAttributes(style.borderWidth) }
+  css = { ...css, ...formatBorderStyle(style) }
   css = { ...css, ...formatPositionProperty(style.position) }
   css = { ...css, ...formatFlexAttributes(style.flex) }
   css = { ...css, ...formatCornerRadiusAttributes(style.cornerRadius) }
@@ -283,7 +300,6 @@ function convertToCSS(style: BeagleStyle) {
   css = { ...css, ...formatEdgeAttributes(style, 'padding') }
   css = { ...css, ...formatSingleAttributes(style) }
   css = { ...css, ...formatNonBeagleProperties(style) }
-
   return css
 }
 
