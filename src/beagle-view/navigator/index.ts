@@ -28,6 +28,7 @@ import {
   NavigationType,
   NavigationListener,
   NavigationController,
+  HistoryState,
 } from './types'
 
 const createBeagleNavigator = (
@@ -51,7 +52,7 @@ const createBeagleNavigator = (
 
   function subscribe(listener: NavigationListener) {
     listeners.push(listener)
-    
+
     return () => {
       const index = listeners.indexOf(listener)
       if (index !== -1) listeners.splice(index, 1)
@@ -72,6 +73,11 @@ const createBeagleNavigator = (
     return stack
   }
 
+  function getCurrentController(){
+    const currentController = getCurrentStack().controllerId
+    return getNavigationController(currentController)
+  }
+
   function getPreviousStack() {
     const stack = nth(navigation, -2)
     if (!stack) throw new BeagleNavigationError('Only one navigation stack! Can\'t get previous!')
@@ -80,7 +86,7 @@ const createBeagleNavigator = (
 
   function getPreviousRoute() {
     const currentStack = getCurrentStack()
-    const route = currentStack.routes.length >  1
+    const route = currentStack.routes.length > 1
       ? nth(currentStack.routes, -2)
       : last(getPreviousStack().routes)
 
@@ -99,6 +105,7 @@ const createBeagleNavigator = (
     route?: Route | string,
     controllerId?: string,
   ) {
+
     const handlers: Record<NavigationType, () => Promise<void>> = {
       pushStack: async () => {
         if (!route || typeof route === 'string') {
@@ -111,7 +118,7 @@ const createBeagleNavigator = (
 
       popStack: async () => {
         if (isSingleStack()) {
-          throw new BeagleNavigationError('It was not possible to pop a stack because Beagle Navigator has not than one recorded stack.')
+          throw new BeagleNavigationError('It was not possible to pop a stack because Beagle Navigator has only one recorded stack.')
         }
 
         const route = last(getPreviousStack().routes)!
@@ -123,7 +130,7 @@ const createBeagleNavigator = (
         if (!route || typeof route === 'string') {
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
-  
+
         await runListeners(route)
         if (navigation.length === 0) navigation.push({ routes: [] })
         getCurrentStack().routes.push(route)
@@ -188,6 +195,24 @@ const createBeagleNavigator = (
     }
   }
 
+  window.onpopstate = (ev: PopStateEvent) => {
+    if (!ev.state) {
+      if (!isSingleRoute()) {
+        navigate('popView')
+      }
+    } else {
+      const currentRoutes = getCurrentStack().routes
+      const { route, controller } = ev.state as HistoryState
+      const routeIndex = findIndex(currentRoutes, route)
+      if (routeIndex === -1) {
+        navigate('pushView', route, controller)
+      } else {
+        navigate('popView')
+      }
+    }
+
+  }
+
   function get() {
     return cloneDeep(navigation)
   }
@@ -211,6 +236,7 @@ const createBeagleNavigator = (
     resetApplication: (route, controllerId) => (
       navigate('resetApplication', route, controllerId)
     ),
+    getCurrentController: () => getCurrentController(),
     subscribe,
     get,
     navigate,
@@ -218,6 +244,8 @@ const createBeagleNavigator = (
     destroy,
   }
 }
+
+
 
 export default {
   create: createBeagleNavigator,

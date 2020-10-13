@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Strategy } from 'service/network/view-client/types'
 import { BeagleUIElement } from 'beagle-tree/types'
 
 export type NavigationType = (
@@ -49,6 +48,11 @@ export interface Stack {
   controllerId?: string,
 }
 
+export interface HistoryState {
+  route?: Route | string,
+  controller?: string,
+}
+
 export interface NavigationController {
   /**
    * If true, uses this as the default navigation controller.
@@ -70,6 +74,10 @@ export interface NavigationController {
    * A custom error component to use. The default value is "beagle:error"
    */
   errorComponent?: string,
+  /**
+  * Wether to use the Browser History or not. False by default.
+  */
+  useBrowserHistory?: boolean,
 }
 
 export interface BeagleNavigator {
@@ -157,6 +165,12 @@ export interface BeagleNavigator {
     route?: Route | string,
     controllerId?: string,
   ) => Promise<void>,
+  /**
+   * Gets the Navigation controller for the current View
+   * 
+   * @returns a NavigationController
+   */
+  getCurrentController: () => NavigationController,
   /**
    * Gets a copy of the navigation history.
    * 

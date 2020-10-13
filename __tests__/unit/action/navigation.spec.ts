@@ -45,7 +45,7 @@ describe('Action: navigation', () => {
 
     beforeEach(() => {
       // @ts-ignore
-      window = { open: jest.fn(() => {}), location: { origin: 'origin', href: '' } }
+      window = { open: jest.fn(() => {}), location: { origin: 'origin', href: '' }, history:{scrollRestoration:'auto', length: 1, state : null} }
     })
 
     afterEach(() => {
@@ -128,6 +128,26 @@ describe('Action: navigation', () => {
     it('should popToView', async () => {
       const navigator = await callAction({ _beagleAction_: 'beagle:popToView', route: '/home' })
       expect(navigator.navigate).toHaveBeenCalledWith('popToView', '/home', undefined)
+    })
+
+    it('should push view to history State pushView', async () => {
+      const navigator = await callAction({
+        _beagleAction_: 'beagle:pushView',
+        route: { url: '/test' },
+        controllerId:'myReference'
+      })
+
+      // const expectedHistory ={
+      //   length: 2,
+      //   scrollRestoration: 'auto',
+      //   state: {
+      //     route: {url: '/test'},
+      //     controllerId:'myReference'
+      //   }
+      // }
+
+      // expect(window.history).toEqual(expectedHistory)
+      expect(navigator.navigate).toHaveBeenCalledWith('pushView', { url: '/test' }, 'myReference')
     })
 
     it('should be case-insensitive regarding the action name', async () => {
