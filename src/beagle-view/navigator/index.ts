@@ -73,8 +73,8 @@ const createBeagleNavigator = (
     return stack
   }
 
-  function getCurrentController(){
-    const currentController = getCurrentStack().controllerId
+  function getCurrentController() {
+    const currentController = navigation.length ? getCurrentStack().controllerId : undefined
     return getNavigationController(currentController)
   }
 
@@ -95,9 +95,19 @@ const createBeagleNavigator = (
   }
 
   function runListeners(route: Route) {
-    const controllerId = navigation.length ? getCurrentStack().controllerId : undefined
-    const navigationController = getNavigationController(controllerId)
+    const navigationController = getCurrentController()
     return Promise.all(listeners.map(l => l(route, navigationController)))
+  }
+
+  function registerHistoryState(route?: Route) {
+    if (getCurrentController().useBrowserHistory && window) {
+      const historyState: HistoryState = {
+        routeState: route || getPreviousRoute(),
+        stackState: getCurrentStack(),
+        navigationState: navigation,
+      }
+      window.history.pushState(historyState, 'Beagle History State')
+    }
   }
 
   async function navigate(
@@ -113,6 +123,7 @@ const createBeagleNavigator = (
         }
 
         await runListeners(route)
+        registerHistoryState(route)
         navigation.push({ routes: [route], controllerId })
       },
 
@@ -123,6 +134,7 @@ const createBeagleNavigator = (
 
         const route = last(getPreviousStack().routes)!
         await runListeners(route)
+        registerHistoryState(route)
         navigation.pop()
       },
 
@@ -132,6 +144,7 @@ const createBeagleNavigator = (
         }
 
         await runListeners(route)
+        registerHistoryState(route)
         if (navigation.length === 0) navigation.push({ routes: [] })
         getCurrentStack().routes.push(route)
       },
@@ -142,6 +155,7 @@ const createBeagleNavigator = (
         }
 
         await runListeners(getPreviousRoute())
+        registerHistoryState()
         const currentStack = getCurrentStack()
         currentStack.routes.pop()
         if (currentStack.routes.length <= 0) navigation.pop()
@@ -156,6 +170,7 @@ const createBeagleNavigator = (
         const index = findIndex(currentStack.routes, { url: route })
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
         await runListeners(currentStack.routes[index])
+        registerHistoryState()
         currentStack.routes.splice(index + 1)
       },
 
@@ -195,23 +210,26 @@ const createBeagleNavigator = (
     }
   }
 
-  window.onpopstate = (ev: PopStateEvent) => {
-    if (!ev.state) {
-      if (!isSingleRoute()) {
-        navigate('popView')
-      }
-    } else {
-      const currentRoutes = getCurrentStack().routes
-      const { route, controller } = ev.state as HistoryState
-      const routeIndex = findIndex(currentRoutes, route)
-      if (routeIndex === -1) {
-        navigate('pushView', route, controller)
-      } else {
-        navigate('popView')
+  if (window)
+    window.onpopstate = async (ev: PopStateEvent) => {
+      const { routeState, stackState, navigationState } = ev.state as HistoryState
+
+      if (ev.state) {
+        if (routeState) {
+          await runListeners(routeState)
+        } else {
+          await runListeners(getPreviousRoute())
+        }
+
+        let updateStack = getCurrentStack()
+
+        if (stackState)
+          updateStack = stackState
+
+        if (navigationState)
+          navigation = navigationState
       }
     }
-
-  }
 
   function get() {
     return cloneDeep(navigation)

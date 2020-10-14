@@ -49,8 +49,9 @@ export interface Stack {
 }
 
 export interface HistoryState {
-  route?: Route | string,
-  controller?: string,
+  routeState?: Route,
+  stackState?: Stack,
+  navigationState?: Stack[],
 }
 
 export interface NavigationController {

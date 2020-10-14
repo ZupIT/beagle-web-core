@@ -15,7 +15,7 @@
  */
 
 import { ActionHandler } from 'action/types'
-import { HistoryState, NavigationController, NavigationType } from 'beagle-view/navigator/types'
+import { NavigationType } from 'beagle-view/navigator/types'
 import UrlUtils from 'utils/url'
 import StringUtils from 'utils/string'
 import ObjectUtils from 'utils/object'
@@ -54,18 +54,7 @@ const navigateBeagleView: ActionHandler<GenericNavigationAction> = async ({
   )
   const navigationType = actionName.replace(/^beagle:/, '') as NavigationType
   try {
-    const navigator = beagleView.getNavigator()
-    const currentController: NavigationController = navigator.getCurrentController()
-    await navigator.navigate(navigationType, action.route, action.controllerId)
-
-    if (currentController.useBrowserHistory) {
-      const historyState: HistoryState = {
-        route: action.route,
-        controller: action.controllerId,
-      }
-      window.history.pushState(historyState, 'Beagle History State')
-    }
-
+    await beagleView.getNavigator().navigate(navigationType, action.route, action.controllerId)
   } catch (error) {
     logger.error(error.message || error)
   }
