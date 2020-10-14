@@ -38,7 +38,11 @@ export interface RemoteView {
 }
 
 export interface LocalView {
-  screen: BeagleUIElement,
+  screen: Screen,
+}
+
+interface Screen extends BeagleUIElement{
+  identifier?: string,
 }
 
 export type Route = LocalView | RemoteView

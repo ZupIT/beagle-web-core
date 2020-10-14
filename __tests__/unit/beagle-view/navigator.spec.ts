@@ -382,6 +382,90 @@ describe('Beagle View: Navigator', () => {
       expect(error!.message).toMatch('navigation error')
       expect(navigator.get()).toEqual(anotherHistory)
     })
+
+    it('should pop to a local view', async () => {
+      const mockStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-B' } },
+            { url: 'stack-C' }
+          ]
+        }
+      ]
+
+      const expectedStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-B' } },
+          ]
+        }
+      ]
+
+      const navigator = Navigator.create(undefined, mockStack)
+      await navigator.popToView('stack-B')
+      expect(navigator.get()).toEqual(expectedStack)
+    })
+
+    it('should pop to first view matching the route (URL)', async () => {
+      const mockStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { url: 'stack-C' },
+            { url: 'stack-D' }
+          ]
+        }
+      ]
+
+      const expectedStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { url: 'stack-C' }
+          ]
+        }
+      ]
+
+      const navigator = Navigator.create(undefined, mockStack)
+      await navigator.popToView('stack-C')
+      expect(navigator.get()).toEqual(expectedStack)
+    })
+
+    it('should pop to first view matching the route (ScreenComponent)', async () => {
+      const mockStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { url: 'stack-C' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { url: 'stack-D' }
+          ]
+        }
+      ]
+
+      const expectedStack = [
+        {
+          routes: [
+            { url: 'stack-A' },
+            { url: 'stack-B' },
+            { url: 'stack-C' },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } }
+          ]
+        }
+      ]
+
+      const navigator = Navigator.create(undefined, mockStack)
+      await navigator.popToView('stack-C')
+      expect(navigator.get()).toEqual(expectedStack)
+    })
+
   })
 
   describe('generic navigation function', () => {
