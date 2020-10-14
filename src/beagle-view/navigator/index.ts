@@ -101,15 +101,24 @@ const createBeagleNavigator = (
 
   function registerHistoryState(route?: Route) {
     if (getCurrentController().useBrowserHistory && window) {
+      let routeState = route
+      if (!routeState) {
+        try {
+          routeState = getPreviousRoute()
+        } catch { }
+      }
+
       const historyState: HistoryState = {
-        routeState: route || getPreviousRoute(),
+        routeState: routeState,
         stackState: getCurrentStack(),
         navigationState: navigation,
       }
-      window.history.pushState(historyState, 'Beagle History State')
+
+      if (routeState)
+        window.history.pushState(historyState, 'Beagle History State')
     }
   }
-  
+
   function isRouteIdentifiedBy(route: Route, id: string) {
     return ('url' in route && route.url === id) ||
       ('screen' in route && route.screen.identifier === id)
@@ -215,27 +224,6 @@ const createBeagleNavigator = (
     }
   }
 
-  if (window)
-    window.onpopstate = async (ev: PopStateEvent) => {
-      const { routeState, stackState, navigationState } = ev.state as HistoryState
-
-      if (ev.state) {
-        if (routeState) {
-          await runListeners(routeState)
-        } else {
-          await runListeners(getPreviousRoute())
-        }
-
-        let updateStack = getCurrentStack()
-
-        if (stackState)
-          updateStack = stackState
-
-        if (navigationState)
-          navigation = navigationState
-      }
-    }
-
   function get() {
     return cloneDeep(navigation)
   }
@@ -249,6 +237,29 @@ const createBeagleNavigator = (
     return numberOfRoutes === 0
   }
 
+  if (typeof window !== 'undefined'){
+    window.onpopstate = async (ev: PopStateEvent) => {
+
+      if (ev.state) {
+        const { routeState, stackState, navigationState } = ev.state as HistoryState
+        if (routeState) {
+          await runListeners(routeState)
+        } else {
+          await runListeners(getPreviousRoute())
+        }
+
+        let updateStack = getCurrentStack()
+
+        if (stackState)
+          updateStack = stackState
+
+        if (navigationState)
+          navigation = navigationState
+
+      }
+    }
+  }
+
   return {
     pushStack: (route, controllerId) => navigate('pushStack', route, controllerId),
     popStack: () => navigate('popStack'),
@@ -259,13 +270,13 @@ const createBeagleNavigator = (
     resetApplication: (route, controllerId) => (
       navigate('resetApplication', route, controllerId)
     ),
-    getCurrentController: () => getCurrentController(),
     subscribe,
     get,
     navigate,
     isEmpty,
     destroy,
   }
+
 }
 
 

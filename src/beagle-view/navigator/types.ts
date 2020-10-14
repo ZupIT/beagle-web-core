@@ -171,12 +171,6 @@ export interface BeagleNavigator {
     controllerId?: string,
   ) => Promise<void>,
   /**
-   * Gets the Navigation controller for the current View
-   * 
-   * @returns a NavigationController
-   */
-  getCurrentController: () => NavigationController,
-  /**
    * Gets a copy of the navigation history.
    * 
    * @returns a copy of all navigation stacks

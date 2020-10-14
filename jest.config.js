@@ -31,7 +31,7 @@ module.exports = {
       diagnostics: false,
       tsConfig: 'tsconfig.spec.json',
     },
-    window: true
+    window: {}
   },
   preset: 'ts-jest',
   setupFiles: ['./jest.setup.ts'],

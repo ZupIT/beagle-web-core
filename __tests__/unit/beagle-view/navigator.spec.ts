@@ -24,6 +24,54 @@ describe('Beagle View: Navigator', () => {
     { routes: [{ url: 'stack2-view1' }, { url: 'stack2-view2' }] },
   ]
 
+  const historyState: HistoryState[] = [
+    {
+      navigationState: [
+        {
+          controllerId: 'history',
+          routes: [{ "url": "/history" }, { "url": "/history-B" }]
+        }
+      ],
+      routeState: {
+        url: '/history-B'
+      },
+      stackState: {
+        controllerId: 'history',
+        routes: [{ "url": "/history" }, { "url": "/history-B" }]
+      },
+    },
+    {
+      navigationState: [
+        {
+          controllerId: 'history',
+          routes: [{ "url": "/history" }]
+        }
+      ],
+      routeState: {
+        url: '/history'
+      },
+      stackState: {
+        controllerId: 'history',
+        routes: [{ "url": "/history" }]
+      },
+    },
+    {
+      navigationState: [
+        {
+          controllerId: 'history',
+          routes: [{ "url": "/history" },{ "url": "/history" }]
+        }
+      ],
+      routeState: {
+        url: '/history'
+      },
+      stackState: {
+        controllerId: 'history',
+        routes: [{ "url": "/history" },{ "url": "/history" }]
+      },
+    }
+  ]
+
   beforeEach(() => {
     window = {
       // @ts-ignore
@@ -562,24 +610,41 @@ describe('Beagle View: Navigator', () => {
       navigator.subscribe(listener)
       await navigator.pushView({ url: '/history' })
 
-      const expectedHistory: HistoryState = {
-        navigationState: [
-          {
-            controllerId: 'history',
-            routes: [{ "url": "/history" }]
-          }
-        ],
-        routeState: {
-          url: '/history'
-        },
-        stackState: {
-          controllerId: 'history',
-          routes: [{ "url": "/history" }]
-        },
-      }
+      expect(window.history.pushState).toHaveBeenCalledWith(historyState[1], 'Beagle History State')
+      expect(window.history.state).toEqual(historyState[1])
+    })
 
-      expect(window.history.pushState).toHaveBeenCalledWith(expectedHistory, 'Beagle History State')
-      expect(window.history.state).toEqual(expectedHistory)
+    it('should update state for back action', async () => {
+
+      const navigator = Navigator.create(controllers, [{ routes: [], controllerId: 'history' }])
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+      //@ts-ignore
+      window = { history: { ...window.history, back: jest.fn(() => navigator.popView()) } }
+      await navigator.pushView({ url: '/history' })
+      await navigator.pushView({ url: '/history-B' })
+
+      expect(window.history.state).toEqual(historyState[0])
+      await window.history.back()
+      expect(window.history.state).toEqual(historyState[1])
+
+    })
+
+    it('should update state for forward action', async () => {
+
+      const navigator = Navigator.create(controllers, [{ routes: [], controllerId: 'history' }])
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+      //@ts-ignore
+      window = { history: { ...window.history, back: jest.fn(() => navigator.popView()), forward: jest.fn(() => navigator.pushView({ url: '/history' })) } }
+      await navigator.pushView({ url: '/history' })
+      await navigator.pushView({ url: '/history-B' })
+
+      expect(window.history.state).toEqual(historyState[0])
+      await window.history.back()
+      expect(window.history.state).toEqual(historyState[1])
+      await window.history.forward()
+      expect(window.history.state).toEqual(historyState[2])
     })
 
     it('should use default controller', async () => {
