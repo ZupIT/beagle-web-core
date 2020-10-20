@@ -18,10 +18,10 @@ import logger from 'logger'
 import get from 'lodash/get'
 import { BeagleAction } from 'action/types'
 import { DataContext, BeagleUIElement } from 'beagle-tree/types'
-import Operation from 'operation'
 import Automaton from 'utils/automaton'
 import BeagleNotFoundError from 'error/BeagleNotFoundError'
 import BeagleParseError from 'error/BeagleParseError'
+import { Operation } from 'service/beagle-service/types'
 import Context from './context'
 
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
@@ -91,21 +91,21 @@ function parseParameters(parameterString: string) {
   return parameters
 }
 
-function getOperationValue(operation: string, contextHierarchy: DataContext[]) {
+function getOperationValue(operation: string, contextHierarchy: DataContext[], operationHandlers: Record<string, Operation>) {
   const match = operation.match(/^(\w+)\((.*)\)$/)
   if (!match) {
     throw new BeagleParseError(`invalid operation in expression: ${operation}`)
   }
-  const operationName = match[1] as keyof typeof Operation
+  const operationName = match[1] as keyof typeof operationHandlers
   const paramString = match[2]
-  if (!Operation[operationName]) {
+  if (!operationHandlers[operationName]) {
     throw new BeagleNotFoundError(`operation with name "${operationName}" doesn't exist.`)
   }
   const params = parseParameters(paramString)
   // eslint-disable-next-line
-  const resolvedParams: any[] = params.map(param => evaluateExpression(param, contextHierarchy))
+  const resolvedParams: any[] = params.map(param => evaluateExpression(param, contextHierarchy, operationHandlers))
 
-  const fn = Operation[operationName] as (...args: any) => any
+  const fn = operationHandlers[operationName] as (...args: any) => any
   return fn(...resolvedParams)
 }
 
@@ -124,22 +124,22 @@ function getLiteralValue(literal: string) {
   }
 }
 
-function evaluateExpression(expression: string, contextHierarchy: DataContext[]) {
+function evaluateExpression(expression: string, contextHierarchy: DataContext[], operationHandlers?: Record<string, Operation>) {
   const literalValue = getLiteralValue(expression)
   if (literalValue !== undefined) return literalValue
 
   const isOperation = expression.includes('(')
-  if (isOperation) return getOperationValue(expression, contextHierarchy)
+  if (isOperation && operationHandlers) return getOperationValue(expression, contextHierarchy, operationHandlers)
 
   // otherwise, it's a context binding
   return getContextBindingValue(expression, contextHierarchy)
 }
 
-function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]) {
+function resolveExpressionsInString(str: string, contextHierarchy: DataContext[], operationHandlers?: Record<string, Operation>) {
   const fullMatch = str.match(fullExpressionRegex)
   if (fullMatch) {
     try {
-      const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy)
+      const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy, operationHandlers)
       return bindingValue === undefined ? str : bindingValue
     } catch (error) {
       logger.warn(error)
@@ -152,7 +152,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
     if (isBindingScaped) return `${scapedSlashes.replace(/\\$/, '')}@{${path}}`
     let bindingValue: string | undefined
     try {
-      bindingValue = evaluateExpression(path, contextHierarchy)
+      bindingValue = evaluateExpression(path, contextHierarchy, operationHandlers)
     } catch (error) {
       logger.warn(error)
     }
@@ -186,11 +186,12 @@ export function resolve<T extends any>(
   data: T,
   contextHierarchy: DataContext[],
   shouldIgnore?: (value: any, key: string) => boolean,
+  operationHandlers?: Record<string, Operation>,
 ): T {
-  if (typeof data === 'string') return resolveExpressionsInString(data, contextHierarchy)
+  if (typeof data === 'string') return resolveExpressionsInString(data, contextHierarchy, operationHandlers)
 
   if (Array.isArray(data)) {
-    return data.map((item: any) => resolve(item, contextHierarchy, shouldIgnore)) as T
+    return data.map((item: any) => resolve(item, contextHierarchy, shouldIgnore, operationHandlers)) as T
   }
 
   if (data && typeof data === 'object') {
@@ -199,7 +200,7 @@ export function resolve<T extends any>(
       const value = map[key]
       return (shouldIgnore && shouldIgnore(value, key))
         ? { ...result, [key]: value }
-        : { ...result, [key]: resolve(value, contextHierarchy, shouldIgnore) }
+        : { ...result, [key]: resolve(value, contextHierarchy, shouldIgnore, operationHandlers) }
     }, {}) as T
   }
 
@@ -244,14 +245,14 @@ function isActionOrActionList(data: any) {
 function resolveForComponent<T extends BeagleUIElement>(
   component: T,
   contextHierarchy: DataContext[],
+  operationHandlers: Record<string, Operation>
 ) {
   const shouldIgnore = (value: any, key: string) => (
     isComponentOrComponentList(value)
     || isActionOrActionList(value)
     || IGNORE_COMPONENT_KEYS.includes(key)
   )
-
-  return resolve(component, contextHierarchy, shouldIgnore)
+  return resolve(component, contextHierarchy, shouldIgnore, operationHandlers)
 }
 
 /**

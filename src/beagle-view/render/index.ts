@@ -17,7 +17,7 @@
 import Tree from 'beagle-tree'
 import { ActionHandler } from 'action/types'
 import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
-import { ExecutionMode, Lifecycle, LifecycleHookMap } from 'service/beagle-service/types'
+import { ExecutionMode, Lifecycle, LifecycleHookMap, Operation } from 'service/beagle-service/types'
 import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
 import BeagleParseError from 'error/BeagleParseError'
@@ -39,6 +39,7 @@ interface Params {
   childrenMetadata: ChildrenMetadataMap,
   executionMode: ExecutionMode,
   actionHandlers: Record<string, ActionHandler>,
+  operationHandlers: Record<string, Operation>,
 }
 
 function createRenderer({
@@ -50,6 +51,7 @@ function createRenderer({
   childrenMetadata,
   executionMode,
   actionHandlers,
+  operationHandlers,
 }: Params): Renderer {
   const { urlBuilder, viewClient, globalContext } = beagleView.getBeagleService()
 
@@ -122,7 +124,7 @@ function createRenderer({
         actionHandlers,
         beagleView,
       })
-      const resolved = Expression.resolveForComponent(component, contextMap[component.id])
+      const resolved = Expression.resolveForComponent(component, contextMap[component.id], operationHandlers)
       Styling.convert(resolved)
 
       return resolved

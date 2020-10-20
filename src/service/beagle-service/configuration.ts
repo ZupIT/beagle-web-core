@@ -20,7 +20,10 @@ import ComponentMetadata from 'metadata/parser'
 import { ExtractedMetadata } from 'metadata/types'
 import { updateMiddlewaresInConfiguration } from 'legacy/middlewares'
 import BeagleError from 'error/BeagleError'
-import { BeagleConfig, LifecycleHookMap } from './types'
+import defaultOperation from 'operation'
+import logger from 'logger'
+import { BeagleConfig, LifecycleHookMap, Operation } from './types'
+
 
 function checkPrefix(items: Record<string, any>) {
   mapKeys(items, (value, key: string) => {
@@ -56,6 +59,21 @@ function getLifecycleHookMap(
   }
 }
 
+function checkOperationNames(operations?: Record<string, Operation>) {
+  if (!operations) return
+  Object.keys(operations).forEach((key: string) => {
+    if (defaultOperation[key as keyof typeof defaultOperation])
+      logger.warn(`You are overriding a default operation "${key}"`)
+
+    const match = key.match(/^[A-Za-z]{1}$|^[a-zA-Z0-9_]*[A-Za-z_]{1,}[0-9_]*$/)
+    if (!match) {
+      delete operations[key]
+      logger.warn(`Please, make sure your operation names contain only letters, numbers and the symbol "_" , 
+      any operation not following this rule will be ignored "${key}"`)
+    }
+  })
+}
+
 function update(config: BeagleConfig<any>) {
   // todo: remove with version 2.0
   updateMiddlewaresInConfiguration(config)
@@ -63,15 +81,16 @@ function update(config: BeagleConfig<any>) {
 
 function validate(config: BeagleConfig<any>) {
   checkPrefix(config.components)
+  checkOperationNames(config.customOperations)
   config.customActions && checkPrefix(config.customActions)
 }
 
 function process(config: BeagleConfig<any>) {
   const actionHandlers = { ...defaultActionHandlers, ...config.customActions }
+  const operationHandlers = { ...defaultOperation, ...config.customOperations }
   const componentMetadata = ComponentMetadata.extract(config.components)
   const lifecycleHooks = getLifecycleHookMap(config.lifecycles, componentMetadata.lifecycles)
-
-  return { actionHandlers, lifecycleHooks, childrenMetadata: componentMetadata.children }
+  return { actionHandlers, lifecycleHooks, childrenMetadata: componentMetadata.children, operationHandlers }
 }
 
 export default {
