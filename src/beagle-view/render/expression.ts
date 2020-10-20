@@ -23,6 +23,7 @@ import BeagleNotFoundError from 'error/BeagleNotFoundError'
 import BeagleParseError from 'error/BeagleParseError'
 import { Operation } from 'service/beagle-service/types'
 import Context from './context'
+import defaultOperations from 'operation'
 
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
@@ -90,12 +91,16 @@ function parseParameters(parameterString: string) {
 
   return parameters
 }
-
+let c = 0
 function getOperationValue(operation: string, contextHierarchy: DataContext[], operationHandlers: Record<string, Operation>) {
   const match = operation.match(/^(\w+)\((.*)\)$/)
   if (!match) {
     throw new BeagleParseError(`invalid operation in expression: ${operation}`)
   }
+  
+  if (!operationHandlers)
+    operationHandlers = defaultOperations
+
   const operationName = match[1] as keyof typeof operationHandlers
   const paramString = match[2]
   if (!operationHandlers[operationName]) {
@@ -280,7 +285,7 @@ function resolveForAction(action: BeagleAction, contextHierarchy: DataContext[])
     || isActionOrActionList(value)
   )
 
-  return resolve(action, contextHierarchy, {}, shouldIgnore)
+  return resolve(action, contextHierarchy, defaultOperations, shouldIgnore)
 }
 
 export default {
