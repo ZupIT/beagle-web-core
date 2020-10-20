@@ -185,13 +185,13 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
 export function resolve<T extends any>(
   data: T,
   contextHierarchy: DataContext[],
+  operationHandlers: Record<string, Operation>,
   shouldIgnore?: (value: any, key: string) => boolean,
-  operationHandlers?: Record<string, Operation>,
 ): T {
   if (typeof data === 'string') return resolveExpressionsInString(data, contextHierarchy, operationHandlers)
 
   if (Array.isArray(data)) {
-    return data.map((item: any) => resolve(item, contextHierarchy, shouldIgnore, operationHandlers)) as T
+    return data.map((item: any) => resolve(item, contextHierarchy, operationHandlers, shouldIgnore)) as T
   }
 
   if (data && typeof data === 'object') {
@@ -200,7 +200,7 @@ export function resolve<T extends any>(
       const value = map[key]
       return (shouldIgnore && shouldIgnore(value, key))
         ? { ...result, [key]: value }
-        : { ...result, [key]: resolve(value, contextHierarchy, shouldIgnore, operationHandlers) }
+        : { ...result, [key]: resolve(value, contextHierarchy, operationHandlers, shouldIgnore) }
     }, {}) as T
   }
 
@@ -252,7 +252,7 @@ function resolveForComponent<T extends BeagleUIElement>(
     || isActionOrActionList(value)
     || IGNORE_COMPONENT_KEYS.includes(key)
   )
-  return resolve(component, contextHierarchy, shouldIgnore, operationHandlers)
+  return resolve(component, contextHierarchy, operationHandlers, shouldIgnore)
 }
 
 /**
@@ -280,7 +280,7 @@ function resolveForAction(action: BeagleAction, contextHierarchy: DataContext[])
     || isActionOrActionList(value)
   )
 
-  return resolve(action, contextHierarchy, shouldIgnore)
+  return resolve(action, contextHierarchy, {}, shouldIgnore)
 }
 
 export default {

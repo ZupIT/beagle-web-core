@@ -40,6 +40,7 @@ export function createRenderer(params: Partial<Parameters<typeof Renderer.create
     setTree,
     lifecycleHooks: params.lifecycleHooks || lifecycleHooks,
     actionHandlers: params.actionHandlers || {},
+    operationHandlers: params.operationHandlers || {},
     childrenMetadata: params.childrenMetadata || {},
     executionMode: params.executionMode || 'development',
     renderToScreen: params.renderToScreen || jest.fn(),
