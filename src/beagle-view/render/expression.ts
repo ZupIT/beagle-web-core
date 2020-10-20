@@ -22,8 +22,9 @@ import Automaton from 'utils/automaton'
 import BeagleNotFoundError from 'error/BeagleNotFoundError'
 import BeagleParseError from 'error/BeagleParseError'
 import { Operation } from 'service/beagle-service/types'
-import Context from './context'
 import defaultOperations from 'operation'
+import Context from './context'
+
 
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
@@ -91,7 +92,7 @@ function parseParameters(parameterString: string) {
 
   return parameters
 }
-let c = 0
+
 function getOperationValue(operation: string, contextHierarchy: DataContext[], operationHandlers: Record<string, Operation>) {
   const match = operation.match(/^(\w+)\((.*)\)$/)
   if (!match) {
