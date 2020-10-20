@@ -98,9 +98,6 @@ function getOperationValue(operation: string, contextHierarchy: DataContext[], o
   if (!match) {
     throw new BeagleParseError(`invalid operation in expression: ${operation}`)
   }
-  
-  if (!operationHandlers)
-    operationHandlers = defaultOperations
 
   const operationName = match[1] as keyof typeof operationHandlers
   const paramString = match[2]

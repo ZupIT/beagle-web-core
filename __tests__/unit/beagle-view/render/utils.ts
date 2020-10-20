@@ -19,6 +19,7 @@ import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { LifecycleHookMap } from 'service/beagle-service/types'
 import { createBeagleViewMock } from '../../old-structure/utils/test-utils'
+import defaultOperations from 'operation'
 
 export function createRenderer(params: Partial<Parameters<typeof Renderer.create>[0]> = {}) {
   let currentTree: IdentifiableBeagleUIElement
@@ -40,7 +41,7 @@ export function createRenderer(params: Partial<Parameters<typeof Renderer.create
     setTree,
     lifecycleHooks: params.lifecycleHooks || lifecycleHooks,
     actionHandlers: params.actionHandlers || {},
-    operationHandlers: params.operationHandlers || {},
+    operationHandlers: params.operationHandlers || defaultOperations,
     childrenMetadata: params.childrenMetadata || {},
     executionMode: params.executionMode || 'development',
     renderToScreen: params.renderToScreen || jest.fn(),
