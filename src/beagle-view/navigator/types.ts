@@ -41,11 +41,18 @@ export interface LocalView {
   screen: Screen,
 }
 
-interface Screen extends BeagleUIElement{
+interface Screen extends BeagleUIElement {
   identifier?: string,
 }
 
 export type Route = LocalView | RemoteView
+
+export interface HistoryState {
+  isBeagleState?: boolean,
+  route?: Route,
+  controllerId?: string,
+  stack?: number,
+}
 
 export interface Stack {
   routes: Route[],

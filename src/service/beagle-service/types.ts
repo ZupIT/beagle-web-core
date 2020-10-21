@@ -130,6 +130,11 @@ export interface BeagleConfig<Schema> {
    * options, use `default: true`.
    */
   navigationControllers?: Record<string, NavigationController>,
+  /**
+     * Wether or not to use the browser history
+  */
+  useHistory: boolean,
+
 }
 
 export type BeagleService = Readonly<{

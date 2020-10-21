@@ -22,7 +22,8 @@ import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
-import BeagleNavigator from './navigator'
+import BeagleInternalNavigator from './navigator/internal-navigator'
+import BeagleBrowserNavigator from './navigator/browser-navigator'
 import { LocalView, RemoteView } from './navigator/types'
 import {
   BeagleView,
@@ -41,11 +42,13 @@ function createBeagleView(
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
-  const { navigationControllers } = beagleService.getConfig()
+  const { navigationControllers, useHistory } = beagleService.getConfig()
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
-  let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
+  let navigator = !useHistory ?
+    BeagleInternalNavigator.create(navigationControllers, initialNavigationHistory) :
+    BeagleBrowserNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
-  let unsubscribeFromGlobalContext = () => {}
+  let unsubscribeFromGlobalContext = () => { }
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -94,10 +97,13 @@ function createBeagleView(
     // if this is equivalent to a first navigation, reflect it in the navigator
     if (navigator.isEmpty() && !elementId && mode === 'replaceComponent') {
       const initialNavigationHistory = [
-        { routes: [{ url: path }],
-        controllerId: initialControllerId,
-      }]
-      navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
+        {
+          routes: [{ url: path }],
+          controllerId: initialControllerId,
+        }]
+      navigator = !useHistory ?
+        BeagleInternalNavigator.create(navigationControllers, initialNavigationHistory) :
+        BeagleBrowserNavigator.create(navigationControllers, initialNavigationHistory)
       // eslint-disable-next-line
       setupNavigation()
     }
@@ -222,18 +228,18 @@ function createBeagleView(
       const { urlBuilder, viewClient } = beagleService
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
-  
+
       if (screen) return renderer.doFullRender(screen)
-  
+
       if (shouldPrefetch) {
         const path = StringUtils.addPrefix(url, '/')
         const baseUrl = urlBuilder.build(path)
         try {
           const cachedTree = await viewClient.loadFromCache(baseUrl, 'get')
           return renderer.doFullRender(cachedTree)
-        } catch {}
+        } catch { }
       }
-      
+
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
     })
   }
@@ -247,7 +253,7 @@ function createBeagleView(
   createRenderer()
   setupNavigation()
   setupGlobalContext()
-  
+
   return beagleView
 }
 

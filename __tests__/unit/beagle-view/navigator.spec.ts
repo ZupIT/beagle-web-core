@@ -15,7 +15,7 @@
  */
 
 import cloneDeep from 'lodash/cloneDeep'
-import Navigator from 'beagle-view/navigator'
+import Navigator from 'beagle-view/navigator/internal-navigator'
 import { BeagleNavigator, NavigationType, NavigationController } from 'beagle-view/navigator/types'
 
 describe('Beagle View: Navigator', () => {
