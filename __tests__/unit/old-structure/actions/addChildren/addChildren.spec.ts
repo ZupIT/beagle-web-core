@@ -134,4 +134,28 @@ describe('Actions: addChildren', () => {
     expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
     expect(beagleView.getRenderer().doFullRender).not.toHaveBeenCalled()
   })
+
+  it('should complete action even if mode is in UpperCase', () => {
+    const mock = createSimpleMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+    const newContent = { _beagleComponent_: 'text', id: 'text', value: 'Hello World! '}
+    const expected = Tree.clone(mock)
+    const content = Tree.findById(expected, 'content')!
+    content.children!.unshift(newContent)
+  
+    addChildren({
+      action: {
+        _beagleAction_: 'beagle:addChildren',
+        //@ts-ignore
+        mode: 'PREPEND',
+        componentId: 'content',
+        value: [newContent],
+      },
+      beagleView,
+      element: Tree.findById(mock, 'button')!,
+      executeAction: jest.fn(),
+    })
+
+    expect(beagleView.getRenderer().doFullRender).toHaveBeenCalledWith(content, content.id)
+  })
 })
