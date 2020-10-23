@@ -18,10 +18,11 @@ import Configuration from 'service/beagle-service/configuration'
 import ComponentMetadata from 'metadata/parser'
 import { BeagleConfig } from 'service/beagle-service/types'
 import { mockMetadataParsing } from './configuration.mock'
+import BeagleError from 'error/BeagleError'
 
 describe('Beagle Service: configuration', () => {
   describe('Beagle Service: configuration: validate', () => {
-    it('should log warn if overriding default operations', () => {
+    it('should throw error if overriding default operations', () => {
       const mockConfig: BeagleConfig<any> = {
         baseUrl: 'url.com',
         components: {},
@@ -32,31 +33,16 @@ describe('Beagle Service: configuration', () => {
       expect(globalMocks.log).toHaveBeenLastCalledWith('warn', "You are overriding a default operation \"sum\"")
     })
 
-    it('should log warn when invalid operation names', () => {
+    it('should throw error when invalid operation names', () => {
       const mockConfig: BeagleConfig<any> = {
         baseUrl: 'url.com',
         components: {},
         customOperations: { 'sum': ((variable: string) => variable), 'myFunc*-': ((variable: number) => variable) }
       }
 
-      Configuration.validate(mockConfig)
-      expect(globalMocks.log).toHaveBeenLastCalledWith('warn', `Please, make sure your operation names contain only letters, numbers and the symbol "_" , 
-      any operation not following this rule will be ignored "myFunc*-"`)
+      expect(() => Configuration.validate(mockConfig)).toThrow(expect.any(BeagleError))
     })
 
-    it('should remove operation with invalid names from the operations object', () => {
-      const mockConfig: BeagleConfig<any> = {
-        baseUrl: 'url.com',
-        components: {},
-        customOperations: { 'sum': ((variable: string) => variable), 'myFunc*-': ((variable: number) => variable) }
-      }
-
-      Configuration.validate(mockConfig)
-
-      expect(Object.keys({ ...mockConfig.customOperations })).toEqual(['sum'])
-      expect(Object.keys({ ...mockConfig.customOperations }).length).toEqual(1)
-
-    })
 
     it('should keep two operations with the same name (case-insensitive)', () => {
       const mockConfig: BeagleConfig<any> = {

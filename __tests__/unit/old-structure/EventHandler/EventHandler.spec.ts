@@ -25,6 +25,7 @@ import Expression from 'beagle-view/render/expression'
 import Action from 'beagle-view/render/action'
 import Tree from 'beagle-tree'
 import defaultActionHandlers from 'action'
+import defaultOperationHandlers from 'operation'
 import { ActionHandlerParams, BeagleAction } from 'action/types'
 import BeagleService from 'service/beagle-service'
 import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
@@ -65,6 +66,7 @@ function interpretEventsInTree(tree: IdentifiableBeagleUIElement, beagleView: Be
       contextHierarchy: contexts[component.id],
       beagleView,
       actionHandlers: defaultActionHandlers,
+      operationHandlers: defaultOperationHandlers
     })
   })
 }
@@ -189,6 +191,7 @@ describe('EventHandler', () => {
     expect(Expression.resolveForAction).toHaveBeenCalledWith(
       action,
       [{ id: 'onInit', value: event }],
+      defaultOperationHandlers
     )
 
     Expression.resolveForAction = originalResolve

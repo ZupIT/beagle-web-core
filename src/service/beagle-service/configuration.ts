@@ -20,7 +20,7 @@ import ComponentMetadata from 'metadata/parser'
 import { ExtractedMetadata } from 'metadata/types'
 import { updateMiddlewaresInConfiguration } from 'legacy/middlewares'
 import BeagleError from 'error/BeagleError'
-import defaultOperation from 'operation'
+import defaultOperations from 'operation'
 import logger from 'logger'
 import { BeagleConfig, LifecycleHookMap, Operation } from './types'
 
@@ -62,15 +62,15 @@ function getLifecycleHookMap(
 function checkOperationNames(operations?: Record<string, Operation>) {
   if (!operations) return
   Object.keys(operations).forEach((key: string) => {
-    if (defaultOperation[key as keyof typeof defaultOperation])
+    if (defaultOperations[key as keyof typeof defaultOperations])
       logger.warn(`You are overriding a default operation "${key}"`)
 
-    const match = key.match(/^[A-Za-z]{1}$|^[a-zA-Z0-9_]*[A-Za-z_]{1,}[0-9_]*$/)
-    if (!match) {
-      delete operations[key]
-      logger.warn(`Please, make sure your operation names contain only letters, numbers and the symbol "_" , 
-      any operation not following this rule will be ignored "${key}"`)
-    }
+    const match = key.match(/^\w*[A-z_]+\w*$/)
+    if (!match)
+      throw new BeagleError(`Operation names must have only letters, numbers and the character _. 
+      An operation name must have at least one character 
+      and must never be comprised of only numbers. "${key}"`)
+
   })
 }
 
@@ -87,7 +87,7 @@ function validate(config: BeagleConfig<any>) {
 
 function process(config: BeagleConfig<any>) {
   const actionHandlers = { ...defaultActionHandlers, ...config.customActions }
-  const operationHandlers = { ...defaultOperation, ...config.customOperations }
+  const operationHandlers = { ...defaultOperations, ...config.customOperations }
   const componentMetadata = ComponentMetadata.extract(config.components)
   const lifecycleHooks = getLifecycleHookMap(config.lifecycles, componentMetadata.lifecycles)
   return { actionHandlers, lifecycleHooks, childrenMetadata: componentMetadata.children, operationHandlers }

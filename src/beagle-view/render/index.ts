@@ -122,6 +122,7 @@ function createRenderer({
         component,
         contextHierarchy: contextMap[component.id],
         actionHandlers,
+        operationHandlers,
         beagleView,
       })
       const resolved = Expression.resolveForComponent(component, contextMap[component.id], operationHandlers)

@@ -22,7 +22,6 @@ import Automaton from 'utils/automaton'
 import BeagleNotFoundError from 'error/BeagleNotFoundError'
 import BeagleParseError from 'error/BeagleParseError'
 import { Operation } from 'service/beagle-service/types'
-import defaultOperations from 'operation'
 import Context from './context'
 
 
@@ -108,7 +107,7 @@ function getOperationValue(operation: string, contextHierarchy: DataContext[], o
   // eslint-disable-next-line
   const resolvedParams: any[] = params.map(param => evaluateExpression(param, contextHierarchy, operationHandlers))
 
-  const fn = operationHandlers[operationName] as (...args: any) => any
+  const fn = operationHandlers[operationName] as Operation
   return fn(...resolvedParams)
 }
 
@@ -127,18 +126,18 @@ function getLiteralValue(literal: string) {
   }
 }
 
-function evaluateExpression(expression: string, contextHierarchy: DataContext[], operationHandlers?: Record<string, Operation>) {
+function evaluateExpression(expression: string, contextHierarchy: DataContext[], operationHandlers: Record<string, Operation>) {
   const literalValue = getLiteralValue(expression)
   if (literalValue !== undefined) return literalValue
 
   const isOperation = expression.includes('(')
-  if (isOperation && operationHandlers) return getOperationValue(expression, contextHierarchy, operationHandlers)
+  if (isOperation) return getOperationValue(expression, contextHierarchy, operationHandlers)
 
   // otherwise, it's a context binding
   return getContextBindingValue(expression, contextHierarchy)
 }
 
-function resolveExpressionsInString(str: string, contextHierarchy: DataContext[], operationHandlers?: Record<string, Operation>) {
+function resolveExpressionsInString(str: string, contextHierarchy: DataContext[], operationHandlers: Record<string, Operation>) {
   const fullMatch = str.match(fullExpressionRegex)
   if (fullMatch) {
     try {
@@ -277,13 +276,13 @@ function resolveForComponent<T extends BeagleUIElement>(
  * @param contextHierarchy the data source to search for the values of the expressions
  * @returns the action with all its expressions replaced by their corresponding values
  */
-function resolveForAction(action: BeagleAction, contextHierarchy: DataContext[]) {
+function resolveForAction(action: BeagleAction, contextHierarchy: DataContext[], operationHandlers: Record<string, Operation>) {
   const shouldIgnore = (value: any) => (
     isComponentOrComponentList(value)
     || isActionOrActionList(value)
   )
 
-  return resolve(action, contextHierarchy, defaultOperations, shouldIgnore)
+  return resolve(action, contextHierarchy, operationHandlers, shouldIgnore)
 }
 
 export default {
