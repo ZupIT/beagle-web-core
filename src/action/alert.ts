@@ -17,9 +17,10 @@
 import { ActionHandler, AlertAction } from './types'
 
 const alert: ActionHandler<AlertAction> = ({ action, executeAction }) => {
-  let { message, onPressOk } = action
+  let { message } = action
+  const { onPressOk } = action
 
-  if(typeof message != 'string'){
+  if (typeof message != 'string') {
     message = JSON.stringify(message)
   }
   window.alert(message)
