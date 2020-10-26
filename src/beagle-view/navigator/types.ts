@@ -47,7 +47,7 @@ interface Screen extends BeagleUIElement {
  *  todo: remove screenComponent.identifier with the release of v2.0.0"
  */
   identifier?: string,
-  id?: string
+  id?: string,
 }
 
 export type Route = LocalView | RemoteView
