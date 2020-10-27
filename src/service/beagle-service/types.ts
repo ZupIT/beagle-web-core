@@ -133,7 +133,7 @@ export interface BeagleConfig<Schema> {
   /**
      * Wether or not to use the browser history
   */
-  useHistory: boolean,
+  useHistory?: boolean,
 
 }
 

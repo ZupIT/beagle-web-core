@@ -40,6 +40,7 @@ const createBeagleBrowserNavigator = (
   const history = window.history
   const defaultNavigationController = find(navigationControllers, { default: true }) || {}
   const listeners: NavigationListener[] = []
+  const popped: any[] = []
 
   function getNavigationController(controllerId?: string) {
     if (!controllerId) return defaultNavigationController
@@ -70,6 +71,13 @@ const createBeagleBrowserNavigator = (
       ('screen' in route && route.screen.identifier === id)
   }
 
+  async function back() {
+    setTimeout(async () => {
+      popped.unshift(history.state)
+      history.back()
+    }, 10);
+  }
+
   async function navigate(
     type: NavigationType,
     route?: Route | string,
@@ -95,20 +103,17 @@ const createBeagleBrowserNavigator = (
 
       popStack: async () => {
         const stackToRemove = history.state.stack
-        const popped: any[] = []
+
         if (stackToRemove === 0) {
           throw new BeagleNavigationError('It was not possible to pop a stack because Beagle Navigator has not more than one recorded stack.')
         }
 
-        const back = () => setTimeout(() => {
-          if (history.state.isBeagleState && history.state.stack === stackToRemove) {
-            popped.unshift(history.state)
-            history.back()
-            back()
-          }
-        }, 10)
+        const findStackToPop = async () => {
+          if (history.state.isBeagleState && history.state.stack === stackToRemove)
+            await back()
+        }
 
-        back()
+        await findStackToPop()
 
         if (!history.state.isBeagleState) {
           popped.forEach(state => history.pushState(state, ''))
@@ -222,17 +227,19 @@ const createBeagleBrowserNavigator = (
   }
 
   function get() {
-     return []
+    return []
   }
 
   function setupEventListener() {
-    const initialState: HistoryState = {
-      isBeagleState: true,
-      route: navigation[0].routes[0],
-      controllerId: navigation[0].controllerId,
-      stack: history.length || 0,
+    if (!history.state) {
+      const initialState: HistoryState = {
+        isBeagleState: true,
+        route: navigation[0].routes[0],
+        controllerId: navigation[0].controllerId,
+        stack: history.length || 0,
+      }
+      history.pushState(initialState, '')
     }
-    history.pushState(initialState, '')
 
     function popStateHandler(event: PopStateEvent) {
       if (isEqual(event.state.route, history.state)) return
