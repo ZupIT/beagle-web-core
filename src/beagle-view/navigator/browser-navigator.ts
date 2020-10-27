@@ -78,7 +78,7 @@ const createBeagleBrowserNavigator = (
         await history.back()
       } catch { }
 
-    }, 10);
+    }, 10)
   }
 
   async function navigate(
