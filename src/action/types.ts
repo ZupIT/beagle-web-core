@@ -46,7 +46,7 @@ export interface SetContextAction {
 
 export interface AlertAction {
   _beagleAction_: 'beagle:alert',
-  message: string | Record<any, any>,
+  message: any,
   onPressOk?: BeagleAction | BeagleAction[],
 }
 
