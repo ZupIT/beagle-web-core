@@ -74,7 +74,10 @@ const createBeagleBrowserNavigator = (
   async function back() {
     setTimeout(async () => {
       popped.unshift(history.state)
-      history.back()
+      try {
+        await history.back()
+      } catch { }
+
     }, 10);
   }
 
@@ -163,15 +166,14 @@ const createBeagleBrowserNavigator = (
         const popped: any[] = []
         const currentStack = history.state.stack
 
-        const back = () => setTimeout(() => {
-          if (history.state.isBeagleState && currentStack === history.state.stack && !isRouteIdentifiedBy(history.state.route, route)) {
-            popped.unshift(history.state)
-            history.back()
-            back()
-          }
-        }, 10)
 
-        back()
+        const findViewToPop = async () => {
+          if (history.state.isBeagleState && currentStack === history.state.stack && !isRouteIdentifiedBy(history.state.route, route))
+            await back()
+        }
+
+        await findViewToPop()
+
 
         if (!history.state.isBeagleState) {
           popped.forEach(state => history.pushState(state, ''))
@@ -189,9 +191,21 @@ const createBeagleBrowserNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
-        // navigation.pop()
-        // navigation.push({ routes: [route], controllerId })
+        const currentStack = history.state.stack
+
+        const historyState: HistoryState = {
+          isBeagleState: true,
+          route: route,
+          controllerId: controllerId,
+          stack: currentStack,
+        }
+
+        const findStackToReset = async () => {
+          if (history.state.stack < currentStack)
+            await back()
+        }
+        await findStackToReset()
+        history.pushState(historyState, '')
       },
 
       resetApplication: async () => {
@@ -199,13 +213,18 @@ const createBeagleBrowserNavigator = (
           throw new BeagleNavigationError(`Invalid route for resetApplication. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
         const historyState: HistoryState = {
           isBeagleState: true,
           route: route,
           controllerId: controllerId,
-          stack: history.state.stack || 0,
+          stack: 0,
         }
+
+        const findViewToReset = async () => {
+          if (!history.state.isBeagleState)
+            await back()
+        }
+        await findViewToReset()
         history.replaceState(historyState, '')
       },
     }
@@ -258,8 +277,6 @@ const createBeagleBrowserNavigator = (
   }
 
   function isEmpty() {
-    // const numberOfRoutes = navigation.reduce((result, stack) => result + stack.routes.length, 0)
-    // return numberOfRoutes === 0
     return history.state
   }
 
