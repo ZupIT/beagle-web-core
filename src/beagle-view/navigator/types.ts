@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement } from 'beagle-tree/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
 
 export type NavigationType = (
   | 'pushStack'
@@ -41,13 +41,12 @@ export interface LocalView {
   screen: Screen,
 }
 
-interface Screen extends BeagleUIElement {
+interface Screen extends IdentifiableBeagleUIElement {
   /**
- *  @deprecated since v1.4.0, please use id instead
- *  todo: remove screenComponent.identifier with the release of v2.0.0"
- */
+  * @deprecated since v1.5.0, please use id instead
+  * todo: remove screenComponent.identifier with the release of v2.0.0"
+  */
   identifier?: string,
-  id?: string,
 }
 
 export type Route = LocalView | RemoteView
