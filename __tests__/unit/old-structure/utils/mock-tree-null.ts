@@ -279,7 +279,7 @@ export const cleanedTreeC: BeagleUIElement = {
 
 export const treeDWithNull: BeagleUIElement = {
   "_beagleComponent_": "beagle:screenComponent",
-  "identifier": null,
+  "id": null,
   "safeArea": null,
   "navigationBar": {
     "title": "Beagle Text",
@@ -352,7 +352,7 @@ export const cleanedTreeD: BeagleUIElement = {
 
 export const treeEWithNull: BeagleUIElement = {
   "_beagleComponent_": "beagle:screenComponent",
-  "identifier": null,
+  "id": null,
   "safeArea": null,
   "navigationBar": {
     "title": "Beagle Text",

@@ -41,8 +41,13 @@ export interface LocalView {
   screen: Screen,
 }
 
-interface Screen extends BeagleUIElement{
+interface Screen extends BeagleUIElement {
+  /**
+  * @deprecated since v1.5.0, please use id instead
+  */
+  // todo: remove screenComponent.identifier with the release of v2.0.0"
   identifier?: string,
+  id?: string,
 }
 
 export type Route = LocalView | RemoteView

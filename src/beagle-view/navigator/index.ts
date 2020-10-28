@@ -20,7 +20,7 @@ import nth from 'lodash/nth'
 import find from 'lodash/find'
 import BeagleNavigationError from 'error/BeagleNavigationError'
 import logger from 'logger'
-import  findLastIndex  from 'lodash/findLastIndex'
+import findLastIndex from 'lodash/findLastIndex'
 import {
   BeagleNavigator,
   Route,
@@ -96,7 +96,8 @@ const createBeagleNavigator = (
 
   function isRouteIdentifiedBy(route: Route, id: string) {
     return ('url' in route && route.url === id) ||
-      ('screen' in route && route.screen.identifier === id)
+      // todo: remove screenComponent.identifier with the release of v2.0.0"
+      ('screen' in route && (route.screen.identifier === id || route.screen.id === id))
   }
 
   async function navigate(
