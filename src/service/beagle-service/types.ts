@@ -134,7 +134,7 @@ export interface BeagleConfig<Schema> {
   navigationControllers?: Record<string, NavigationController>,
   /**
    * The map of custom operations that can be used to extend the capability of the Beagle expressions and are called like functions, 
-   * e.g. @{sum(1, 2)}.
+   * e.g. `@{sum(1, 2)}`.
    * The keys of this object represent the operation name and the values must be the functions themselves. 
    * An operation name must contain only letters, numbers and the character _, 
    * it also must contain at least one letter or _.

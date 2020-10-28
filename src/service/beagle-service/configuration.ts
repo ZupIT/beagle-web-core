@@ -67,9 +67,7 @@ function checkOperationNames(operations?: Record<string, Operation>) {
 
     const match = key.match(/^\w*[A-z_]+\w*$/)
     if (!match)
-      throw new BeagleError(`Operation names must have only letters, numbers and the character _. 
-      An operation name must have at least one character 
-      and must never be comprised of only numbers. "${key}"`)
+      throw new BeagleError(`Operation names must have only letters, numbers and the character _. An operation name must have at least one character and must never be comprised of only numbers. "${key}"`)
 
   })
 }
