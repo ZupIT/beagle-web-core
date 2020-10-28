@@ -246,16 +246,18 @@ const createBeagleBrowserNavigator = (
   }
 
   function get() {
-    return []
+    return history.state.route
   }
 
   function setupEventListener() {
+    if (!window || !history && history === undefined) return
+
     if (!history.state) {
       const initialState: HistoryState = {
         isBeagleState: true,
         route: navigation[0].routes[0],
         controllerId: navigation[0].controllerId,
-        stack: history.length || 0,
+        stack: 0,
       }
       history.pushState(initialState, '')
     }
@@ -277,7 +279,7 @@ const createBeagleBrowserNavigator = (
   }
 
   function isEmpty() {
-    return history.state
+    return !history.state || history.state.stack === 0 || !history.state.route
   }
 
   setupEventListener()
