@@ -219,7 +219,7 @@ function createBeagleView(
 
   function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
-      const { urlBuilder, viewClient } = beagleService
+      const { urlBuilder, preFetchService } = beagleService
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
   
@@ -227,11 +227,9 @@ function createBeagleView(
   
       if (shouldPrefetch) {
         const path = StringUtils.addPrefix(url, '/')
-        const baseUrl = urlBuilder.build(path)
-        try {
-          const cachedTree = await viewClient.loadFromCache(baseUrl, 'get')
-          return renderer.doFullRender(cachedTree)
-        } catch {}
+        const preFetchedUrl = urlBuilder.build(path)
+        const preFetchedView = preFetchService.recover(preFetchedUrl)
+        if (preFetchedView) return renderer.doFullRender(preFetchedView)
       }
       
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })

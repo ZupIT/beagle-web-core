@@ -24,6 +24,7 @@ import { DefaultHeaders } from 'service/network/default-headers/types'
 import { RemoteCache } from 'service/network/remote-cache/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
+import { PreFetchService } from 'service/network/pre-fetch/types'
 import { HttpClient } from 'service/network/types'
 
 export function createLocalStorageMock(storage: Record<string, string> = {}): Storage {
@@ -126,18 +127,20 @@ export function createDefaultHeadersMock(): DefaultHeaders {
   }
 }
 
-export function createUrlBuilderMock(): URLBuilder {
+export function createUrlBuilderMock(custom: Partial<URLBuilder> = {}): URLBuilder {
   return {
     build: jest.fn(url => url),
+    ...custom,
   }
 }
 
-export function createViewClientMock(): ViewClient {
+export function createViewClientMock(custom: Partial<ViewClient> = {}): ViewClient {
   return {
     load: jest.fn(),
     loadFromCache: jest.fn(),
     loadFromCacheCheckingTTL: jest.fn(),
     loadFromServer: jest.fn(),
+    ...custom,
   }
 }
 
@@ -191,7 +194,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     },
     remoteCache: custom.remoteCache || createRemoteCacheMock(),
     storage: custom.storage || createLocalStorageMock(),
-    viewContentManagerMap:  custom.viewContentManagerMap || {
+    viewContentManagerMap: custom.viewContentManagerMap || {
       get: jest.fn(),
       register: jest.fn(),
       unregister: jest.fn(),
@@ -206,6 +209,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
       loadFromCacheCheckingTTL: jest.fn(),
       loadFromServer: jest.fn(),
     },
+    preFetchService: custom.preFetchService || createPreFetchServiceMock(),
   }
 }
 
@@ -246,5 +250,12 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
     // @ts-ignore
     getBeagleService: custom.getBeagleService || jest.fn(() => beagleService),
     destroy: jest.fn(),
+  }
+}
+
+export function createPreFetchServiceMock(custom: Partial<PreFetchService> = {}): PreFetchService {
+  return {
+    fetch: custom.fetch || jest.fn(),
+    recover: custom.recover || jest.fn(() => null),
   }
 }
