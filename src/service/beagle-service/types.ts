@@ -48,6 +48,8 @@ export type BeagleMiddleware<Schema = DefaultSchema> = (uiTree: BeagleUIElement<
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
+export type Operation = ((...args: any[]) => any)
+
 export interface ClickEvent {
   category: string,
   label?: string,
@@ -130,6 +132,15 @@ export interface BeagleConfig<Schema> {
    * options, use `default: true`.
    */
   navigationControllers?: Record<string, NavigationController>,
+  /**
+   * The map of custom operations that can be used to extend the capability of the Beagle expressions and are called like functions, 
+   * e.g. `@{sum(1, 2)}`.
+   * The keys of this object represent the operation name and the values must be the functions themselves. 
+   * An operation name must contain only letters, numbers and the character _, 
+   * it also must contain at least one letter or _.
+   * Note: If you create custom operations using the same name of a default from Beagle, the default will be overwritten by the custom one
+   */
+  customOperations?: Record<string, Operation>,
 }
 
 export type BeagleService = Readonly<{
@@ -147,6 +158,7 @@ export type BeagleService = Readonly<{
   actionHandlers: Record<string, ActionHandler>,
   lifecycleHooks: LifecycleHookMap,
   childrenMetadata: ChildrenMetadataMap,
+  operationHandlers: Record<string, Operation>,
   // services
   storage: Storage,
   httpClient: HttpClient,

@@ -33,6 +33,7 @@ import {
   componentWithOnlyImplicitContexts,
   componentWithExplicitAndImplicitContexts,
 } from './mocks'
+import defaultOperation from 'operation'
 
 describe('Binding expressions: replacing with calculated contexts', () => {
   beforeEach(() => {
@@ -46,7 +47,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
 
     const treeWithValues = Tree.replaceEach(
       mock,
-      component => Expression.resolveForComponent(component, contexts[component.id]),
+      component => Expression.resolveForComponent(component, contexts[component.id], defaultOperation),
     )
 
     const profile = Tree.findById(treeWithValues, 'profile')!
@@ -77,7 +78,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
 
     const treeWithValues = Tree.replaceEach(
       mock,
-      component => Expression.resolveForComponent(component, contexts[component.id]),
+      component => Expression.resolveForComponent(component, contexts[component.id], defaultOperation),
     )
 
     const text = Tree.findByType(treeWithValues, 'text')[0]
@@ -93,7 +94,7 @@ describe('Binding expressions: replacing with calculated contexts', () => {
 
       const treeWithValues = Tree.replaceEach(
         mock,
-        component => Expression.resolveForComponent(component, contexts[component.id]),
+        component => Expression.resolveForComponent(component, contexts[component.id], defaultOperation),
       )
 
       const postWithWrongContext = Tree.findById(treeWithValues, 'postWithWrongContext')!
