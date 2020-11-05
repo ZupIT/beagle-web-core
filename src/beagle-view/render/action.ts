@@ -30,7 +30,7 @@ interface Parameters {
   actionHandlers: Record<string, ActionHandler>,
 }
 
-type ActionOrActionList = BeagleAction | BeagleAction[]
+export type ActionOrActionList = BeagleAction | BeagleAction[]
 
 function isBeagleAction(data: any) {
   return (
@@ -46,7 +46,8 @@ function deserializeAction(
   params: Parameters,
 ) {
   const actionList = Array.isArray(actionOrActionList) ? actionOrActionList : [actionOrActionList]
-
+  const beagleService = params.beagleView.getBeagleService()
+  
   return function (event: any) {
     const hierarchy = event !== undefined
       ? [...params.contextHierarchy, { id: eventName, value: event }]
@@ -82,6 +83,9 @@ function deserializeAction(
         element: params.component,
         executeAction: executeSubAction,
       })
+
+      const platform = beagleService.getConfig().platform
+      beagleService.analyticsService.createActionRecord(action, eventName, params.component, platform)
     })
   }
 }

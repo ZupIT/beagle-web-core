@@ -31,6 +31,7 @@ import { GlobalContext } from 'service/global-context/types'
 import { ViewContentManagerMap } from 'service/view-content-manager/types'
 import { ChildrenMetadataMap } from 'metadata/types'
 import { HttpClient } from 'service/network/types'
+import { AnalyticsProvider, AnalyticsService } from 'service/analytics/types'
 
 export type Lifecycle = 'beforeStart' | 'beforeViewSnapshot' | 'afterViewSnapshot' | 'beforeRender'
 
@@ -130,6 +131,16 @@ export interface BeagleConfig<Schema> {
    * options, use `default: true`.
    */
   navigationControllers?: Record<string, NavigationController>,
+  /**
+  * Accepts a custom API that implements the provided interface `AnalyticsProvider` to handle the event tracking through the application. 
+  * If not analytics provider is registered, no analytics will be generated
+  */
+  analyticsProvider?: AnalyticsProvider,
+  /**
+    * The current platform running the project
+    */
+  platform?: string,
+
 }
 
 export type BeagleService = Readonly<{
@@ -157,4 +168,5 @@ export type BeagleService = Readonly<{
   defaultHeaders: DefaultHeaders,
   globalContext: GlobalContext,
   viewContentManagerMap: ViewContentManagerMap,
+  analyticsService: AnalyticsService,
 }>

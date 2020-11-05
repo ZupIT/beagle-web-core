@@ -57,6 +57,7 @@ export * from 'service/network/default-headers/types'
 export * from 'service/network/remote-cache/types'
 export * from 'service/network/url-builder/types'
 export { Strategy, ViewClient } from 'service/network/view-client/types'
+export { AnalyticsProvider, AnalyticsRecord, AnalyticsConfig } from 'service/analytics/types'
 
 // general types
 

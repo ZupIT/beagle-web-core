@@ -14,56 +14,57 @@
  * limitations under the License.
  */
 
+import { BaseAction } from 'action/types'
 import { Route } from 'beagle-view/navigator/types'
 
-export interface OpenExternalURLAction {
+export interface OpenExternalURLAction extends BaseAction {
   _beagleAction_: 'beagle:openExternalURL',
   url: string,
 }
 
-export interface OpenNativeRouteAction {
+export interface OpenNativeRouteAction extends BaseAction {
   _beagleAction_: 'beagle:openNativeRoute',
   route: string,
   data?: Record<string, any>,
 }
 
-export interface PushStackAction {
+export interface PushStackAction extends BaseAction {
   _beagleAction_: 'beagle:pushStack',
   route: Route,
 }
 
-export interface PopStackAction {
+export interface PopStackAction extends BaseAction {
   _beagleAction_: 'beagle:popStack',
 }
 
-export interface PushViewAction {
+export interface PushViewAction extends BaseAction {
   _beagleAction_: 'beagle:pushView',
   route: Route,
   controllerId?: string,
 }
 
-export interface PopViewAction {
+export interface PopViewAction extends BaseAction {
   _beagleAction_: 'beagle:popView',
 }
 
-export interface PopToViewAction {
+export interface PopToViewAction extends BaseAction {
   _beagleAction_: 'beagle:popToView',
   route: string,
 }
 
-export interface ResetStackAction {
+export interface ResetStackAction extends BaseAction {
   _beagleAction_: 'beagle:resetStack',
   route: Route,
   controllerId?: string,
 }
 
-export interface ResetApplicationAction {
+export interface ResetApplicationAction extends BaseAction {
   _beagleAction_: 'beagle:resetApplication',
   route: Route,
   controllerId?: string,
 }
 
-export interface GenericNavigationAction {
+export interface GenericNavigationAction extends BaseAction {
   _beagleAction_: string,
   route?: Route | string,
   controllerId?: string,

@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
+import { ActionAnalyticsConfig } from 'service/analytics/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
 import { HttpMethod } from 'service/network/types'
 import { BeagleNavigationAction } from './navigation/types'
 
-export interface SendRequestAction {
+export interface BaseAction {
+  _beagleAction_: string,
+  analytics?: ActionAnalyticsConfig,
+}
+
+export interface SendRequestAction extends BaseAction {
   _beagleAction_: 'beagle:sendRequest',
   url: string,
   method?: HttpMethod,
@@ -30,48 +36,48 @@ export interface SendRequestAction {
   onFinish?: BeagleAction | BeagleAction[],
 }
 
-export interface AddChildrenAction {
+export interface AddChildrenAction extends BaseAction {
   _beagleAction_: 'beagle:addChildren',
   componentId: string,
   value: IdentifiableBeagleUIElement[],
   mode?: 'append' | 'prepend' | 'replace',
 }
 
-export interface SetContextAction {
+export interface SetContextAction extends BaseAction {
   _beagleAction_: 'beagle:setContext',
   contextId?: string,
   path?: string,
   value: any,
 }
 
-export interface AlertAction {
+export interface AlertAction extends BaseAction {
   _beagleAction_: 'beagle:alert',
   message: string,
   onPressOk?: BeagleAction | BeagleAction[],
 }
 
-export interface ConfirmAction {
+export interface ConfirmAction extends BaseAction {
   _beagleAction_: 'beagle:confirm',
   message: string,
   onPressOk?: BeagleAction | BeagleAction[],
   onPressCancel?: BeagleAction | BeagleAction[],
 }
 
-export interface SubmitFormAction {
+export interface SubmitFormAction extends BaseAction {
   _beagleAction_: 'beagle:submitForm',
 }
 
-export interface ConditionAction {
+export interface ConditionAction extends BaseAction {
   _beagleAction_: 'beagle:condition',
   condition: boolean,
   onTrue?: BeagleAction | BeagleAction[],
   onFalse?: BeagleAction | BeagleAction[],
 }
 
-export interface CustomAction {
-  _beagleAction_: string,
+export interface CustomAction extends BaseAction {
   [key: string]: any,
 }
+
 
 export type BeagleDefaultAction = (
   SendRequestAction

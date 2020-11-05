@@ -20,6 +20,7 @@ import String from 'utils/string'
 import StringUtils from 'utils/string'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
+import analyticsUtils from '../service/analytics/utils'
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
 import BeagleNavigator from './navigator'
@@ -45,7 +46,7 @@ function createBeagleView(
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
   let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
-  let unsubscribeFromGlobalContext = () => {}
+  let unsubscribeFromGlobalContext = () => { }
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -94,9 +95,10 @@ function createBeagleView(
     // if this is equivalent to a first navigation, reflect it in the navigator
     if (navigator.isEmpty() && !elementId && mode === 'replaceComponent') {
       const initialNavigationHistory = [
-        { routes: [{ url: path }],
-        controllerId: initialControllerId,
-      }]
+        {
+          routes: [{ url: path }],
+          controllerId: initialControllerId,
+        }]
       navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
       // eslint-disable-next-line
       setupNavigation()
@@ -219,22 +221,25 @@ function createBeagleView(
 
   function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
-      const { urlBuilder, viewClient } = beagleService
+      const { urlBuilder, viewClient, analyticsService } = beagleService
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
-  
+
       if (screen) return renderer.doFullRender(screen)
-  
+
       if (shouldPrefetch) {
         const path = StringUtils.addPrefix(url, '/')
         const baseUrl = urlBuilder.build(path)
         try {
           const cachedTree = await viewClient.loadFromCache(baseUrl, 'get')
           return renderer.doFullRender(cachedTree)
-        } catch {}
+        } catch { }
       }
-      
+
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
+      const platform = beagleService.getConfig().platform
+      analyticsUtils.setCurrentRoute(route)
+      analyticsService.createScreenRecord(route, platform)
     })
   }
 
@@ -247,7 +252,7 @@ function createBeagleView(
   createRenderer()
   setupNavigation()
   setupGlobalContext()
-  
+
   return beagleView
 }
 

@@ -21,6 +21,7 @@ import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
 import GlobalContext from 'service/global-context'
 import ViewContentManagerMap from 'service/view-content-manager'
+import AnalyticsProvider from 'service/analytics/analytics-service'
 import { BeagleConfig } from './types'
 
 export function createServices(config: BeagleConfig<any>) {
@@ -41,6 +42,7 @@ export function createServices(config: BeagleConfig<any>) {
   )
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
+  const analyticsService = AnalyticsProvider.create(config.analyticsProvider)
 
   return {
     storage,
@@ -52,5 +54,6 @@ export function createServices(config: BeagleConfig<any>) {
     defaultHeaders,
     globalContext,
     viewContentManagerMap,
+    analyticsService,
   }
 }
