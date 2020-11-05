@@ -24,10 +24,9 @@ function createPreFetcher(viewClient: ViewClient): PreFetcher {
 
   async function fetch(url: string) {
     let view: BeagleUIElement | null = null
-    const onChangeTree = (v: BeagleUIElement) => view = v
     try {
       await viewClient.load({
-        onChangeTree,
+        onChangeTree: (v: BeagleUIElement) => view = v,
         url,
         retry: () => {},
       })

@@ -65,7 +65,7 @@ function preFetchViews(
       const path = StringUtils.addPrefix(action.route.url, '/')
       const url = urlBuilder.build(path)
       preFetcher.fetch(url)
-    }0
+    }
   })
 }
 
