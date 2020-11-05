@@ -24,7 +24,7 @@ import { DefaultHeaders } from 'service/network/default-headers/types'
 import { RemoteCache } from 'service/network/remote-cache/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
-import { PreFetchService } from 'service/network/pre-fetch/types'
+import { PreFetcher } from 'service/network/pre-fetcher/types'
 import { HttpClient } from 'service/network/types'
 
 export function createLocalStorageMock(storage: Record<string, string> = {}): Storage {
@@ -209,7 +209,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
       loadFromCacheCheckingTTL: jest.fn(),
       loadFromServer: jest.fn(),
     },
-    preFetchService: custom.preFetchService || createPreFetchServiceMock(),
+    preFetcher: custom.preFetcher || createPreFetcherMock(),
   }
 }
 
@@ -253,7 +253,7 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
   }
 }
 
-export function createPreFetchServiceMock(custom: Partial<PreFetchService> = {}): PreFetchService {
+export function createPreFetcherMock(custom: Partial<PreFetcher> = {}): PreFetcher {
   return {
     fetch: custom.fetch || jest.fn(),
     recover: custom.recover || jest.fn(() => null),

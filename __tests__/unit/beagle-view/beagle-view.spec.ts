@@ -21,7 +21,7 @@ import { BeagleService, BeagleConfig } from 'service/beagle-service/types'
 import {
   createViewClientMock,
   createUrlBuilderMock,
-  createPreFetchServiceMock,
+  createPreFetcherMock,
   createBeagleServiceMock,
 } from '../old-structure/utils/test-utils'
 
@@ -64,13 +64,13 @@ describe('Beagle View', () => {
       const urlBuilder = createUrlBuilderMock({
         build: jest.fn(url => `base${url}`)
       })
-      const preFetchService = createPreFetchServiceMock({
+      const preFetcher = createPreFetcherMock({
         recover: jest.fn(url => url === 'base/home' ? mock : null),
       })
       beagleService = createBeagleServiceMock({
         viewClient,
         urlBuilder,
-        preFetchService,
+        preFetcher,
         getConfig: () => ({ navigationControllers } as BeagleConfig<any>),
       })
       beagleView = BeagleView.create(beagleService)
@@ -125,7 +125,7 @@ describe('Beagle View', () => {
         shouldPrefetch: true,
       })
       expect(beagleService.viewClient.load).not.toHaveBeenCalled()
-      expect(beagleService.preFetchService.recover).toHaveBeenCalledWith('base/home')
+      expect(beagleService.preFetcher.recover).toHaveBeenCalledWith('base/home')
       expect(doFullRender).toHaveBeenCalledWith(mock)
     })
 
@@ -138,7 +138,7 @@ describe('Beagle View', () => {
     })
 
     it('should fallback to network if pre-fetched recovery failed', async () => {
-      beagleService.preFetchService.recover = () => null
+      beagleService.preFetcher.recover = () => null
 
       await beagleView.getNavigator().pushView({
         url: '/profile',

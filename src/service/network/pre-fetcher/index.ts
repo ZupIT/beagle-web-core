@@ -17,9 +17,9 @@
 import { BeagleUIElement } from 'beagle-tree/types'
 import logger from 'logger'
 import { ViewClient } from '../view-client/types'
-import { PreFetchService } from './types'
+import { PreFetcher } from './types'
 
-function createPreFetchService(viewClient: ViewClient): PreFetchService {
+function createPreFetcher(viewClient: ViewClient): PreFetcher {
   const views: Record<string, BeagleUIElement> = {}
 
   async function fetch(url: string) {
@@ -48,5 +48,5 @@ function createPreFetchService(viewClient: ViewClient): PreFetchService {
 }
 
 export default {
-  create: createPreFetchService,
+  create: createPreFetcher,
 }

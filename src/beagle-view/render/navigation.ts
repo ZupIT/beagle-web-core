@@ -20,7 +20,7 @@ import NavigationActions from 'action/navigation'
 import { BeagleNavigationAction } from 'action/navigation/types'
 import StringUtils from 'utils/string'
 import { URLBuilder } from 'service/network/url-builder/types'
-import { PreFetchService } from 'service/network/pre-fetch/types'
+import { PreFetcher } from 'service/network/pre-fetcher/types'
 import logger from 'logger'
 
 const lowerCaseNavigationActions = Object.keys(NavigationActions).map(key => key.toLowerCase())
@@ -54,7 +54,7 @@ function validateUrl(url?: string) {
 function preFetchViews(
   component: BeagleUIElement,
   urlBuilder: URLBuilder,
-  preFetchService: PreFetchService,
+  preFetcher: PreFetcher,
 ) {
   const navigationActions = findNavigationActions(component, false)
 
@@ -64,7 +64,7 @@ function preFetchViews(
     if (shouldPrefetch && isUrlValid) {
       const path = StringUtils.addPrefix(action.route.url, '/')
       const url = urlBuilder.build(path)
-      preFetchService.fetch(url)
+      preFetcher.fetch(url)
     }0
   })
 }

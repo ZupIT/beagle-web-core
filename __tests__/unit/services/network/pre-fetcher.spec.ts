@@ -15,7 +15,7 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
-import PreFetchService from 'service/network/pre-fetch'
+import PreFetcher from 'service/network/pre-fetcher'
 import { ViewClient } from 'service/network/view-client/types'
 import { createViewClientMock } from '../../old-structure/utils/test-utils'
 
@@ -40,8 +40,8 @@ describe('Pre fetch service', () => {
 
   it('should pre-fetch view', async () => {
     const vc = createViewClient()
-    const preFetchService = PreFetchService.create(vc)
-    await preFetchService.fetch(successUrl)
+    const preFetcher = PreFetcher.create(vc)
+    await preFetcher.fetch(successUrl)
     expect(vc.load).toHaveBeenCalledWith(expect.objectContaining({
       url: successUrl,
       onChangeTree: expect.any(Function),
@@ -51,28 +51,28 @@ describe('Pre fetch service', () => {
   it('should log warning when pre-fetch fails', async () => {
     const error = new Error()
     const vc = createViewClient()
-    const preFetchService = PreFetchService.create(vc)
-    await preFetchService.fetch(errorUrl)
+    const preFetcher = PreFetcher.create(vc)
+    await preFetcher.fetch(errorUrl)
     expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String), error)
   })
 
   it('should recover pre-fetched view', async () => {
     const vc = createViewClient()
-    const preFetchService = PreFetchService.create(vc)
-    await preFetchService.fetch(successUrl)
-    expect(preFetchService.recover(successUrl)).toEqual(view)
+    const preFetcher = PreFetcher.create(vc)
+    await preFetcher.fetch(successUrl)
+    expect(preFetcher.recover(successUrl)).toEqual(view)
   })
 
   it('should get null when trying to recover view that was not pre-fetched', () => {
     const vc = createViewClient()
-    const preFetchService = PreFetchService.create(vc)
-    expect(preFetchService.recover('/my-view')).toBe(null)
+    const preFetcher = PreFetcher.create(vc)
+    expect(preFetcher.recover('/my-view')).toBe(null)
   })
 
   it('should get null when trying to recover view that failed to pre-fetch', async () => {
     const vc = createViewClient()
-    const preFetchService = PreFetchService.create(vc)
-    await preFetchService.fetch(errorUrl)
-    expect(preFetchService.recover(errorUrl)).toBe(null)
+    const preFetcher = PreFetcher.create(vc)
+    await preFetcher.fetch(errorUrl)
+    expect(preFetcher.recover(errorUrl)).toBe(null)
   })
 })

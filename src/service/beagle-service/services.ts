@@ -19,7 +19,7 @@ import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
-import PreFetchService from 'service/network/pre-fetch'
+import PreFetcher from 'service/network/pre-fetcher'
 import GlobalContext from 'service/global-context'
 import ViewContentManagerMap from 'service/view-content-manager'
 import { BeagleConfig } from './types'
@@ -40,7 +40,7 @@ export function createServices(config: BeagleConfig<any>) {
     httpClient,
     config.strategy,
   )
-  const preFetchService = PreFetchService.create(viewClient)
+  const preFetcher = PreFetcher.create(viewClient)
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
 
@@ -52,7 +52,7 @@ export function createServices(config: BeagleConfig<any>) {
     remoteCache,
     viewClient,
     defaultHeaders,
-    preFetchService,
+    preFetcher,
     globalContext,
     viewContentManagerMap,
   }

@@ -16,7 +16,7 @@
 
 import { BeagleUIElement } from 'beagle-tree/types'
 
-export interface PreFetchService {
+export interface PreFetcher {
   /**
    * Pre-fetches the view for future use. If the request fails a warning is logged, but no error is
    * thrown.
