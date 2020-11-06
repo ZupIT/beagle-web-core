@@ -229,8 +229,10 @@ function createBeagleView(
       if (shouldPrefetch) {
         const path = StringUtils.addPrefix(url, '/')
         const preFetchedUrl = urlBuilder.build(path)
-        const preFetchedView = preFetcher.recover(preFetchedUrl)
-        if (preFetchedView) return renderer.doFullRender(preFetchedView)
+        try {
+          const preFetchedView = await preFetcher.recover(preFetchedUrl)
+          return renderer.doFullRender(preFetchedView)
+        } catch {}
       }
       
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })

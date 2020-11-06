@@ -65,7 +65,7 @@ describe('Beagle View', () => {
         build: jest.fn(url => `base${url}`)
       })
       const preFetcher = createPreFetcherMock({
-        recover: jest.fn(url => url === 'base/home' ? mock : null),
+        recover: jest.fn(url => url === 'base/home' ? Promise.resolve(mock) : Promise.reject()),
       })
       beagleService = createBeagleServiceMock({
         viewClient,
@@ -138,7 +138,7 @@ describe('Beagle View', () => {
     })
 
     it('should fallback to network if pre-fetched recovery failed', async () => {
-      beagleService.preFetcher.recover = () => null
+      beagleService.preFetcher.recover = () => Promise.reject()
 
       await beagleView.getNavigator().pushView({
         url: '/profile',

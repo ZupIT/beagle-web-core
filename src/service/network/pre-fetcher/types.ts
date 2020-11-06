@@ -18,8 +18,7 @@ import { BeagleUIElement } from 'beagle-tree/types'
 
 export interface PreFetcher {
   /**
-   * Pre-fetches the view for future use. If the request fails a warning is logged, but no error is
-   * thrown.
+   * Pre-fetches the view for future use. If the request fails the promise returned is rejected.
    * 
    * @param url the URL of the view to pre-fetch (GET)
    * @returns a promise that resolves when the pre-fetch finishes.
@@ -27,10 +26,14 @@ export interface PreFetcher {
   fetch: (url: string) => Promise<void>,
   /**
    * Recovers the view that has been previously pre-fetched. If there's no pre-fetched view for the
-   * URL, null is returned.
+   * URL, the promise will be rejected.
    * 
-   * @param the URL of the view to recover
-   * @returns the pre-fetched view or null if no pre-fetched view exists for the given url.
+   * This method returns a promise because it is not guaranteed to run after the fetch for the given
+   * URL has finished.
+   * 
+   * @param url the URL of the view to recover (GET)
+   * @returns a promise that resolves to the pre-fetched view. The promise is rejected if the view
+   * is not pre-fetched.
    */
-  recover: (url: string) => BeagleUIElement | null,
+  recover: (url: string) => Promise<BeagleUIElement>,
 }

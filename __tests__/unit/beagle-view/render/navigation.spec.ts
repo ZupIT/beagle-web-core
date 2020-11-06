@@ -40,6 +40,7 @@ describe('Beagle View: render: navigation', () => {
     urlBuilder = createUrlBuilderMock()
     viewClient = createViewClientMock()
     preFetcher = createPreFetcherMock()
+    globalMocks.fetch.mockClear()
   })
 
   it('should pre-fetch', () => {
@@ -50,6 +51,17 @@ describe('Beagle View: render: navigation', () => {
 
     Navigation.preFetchViews(component, urlBuilder, preFetcher)
     expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
+  })
+
+  it('should log warning when pre-fetch fails', async () => {
+    const component = {
+      _beagleComponent_: 'beagle:button',
+      onPress: navigationAction,
+    }
+    const error = new Error('Error')
+    preFetcher.fetch = jest.fn(() => Promise.reject(error))
+    await Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', error)
   })
 
   it('should use the urlBuilder to build the url', () => {

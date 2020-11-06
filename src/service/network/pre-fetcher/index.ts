@@ -15,29 +15,36 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
-import logger from 'logger'
+import BeagleError from 'error/BeagleError'
 import { ViewClient } from '../view-client/types'
 import { PreFetcher } from './types'
 
 function createPreFetcher(viewClient: ViewClient): PreFetcher {
-  const views: Record<string, BeagleUIElement> = {}
+  const views: Record<string, Promise<BeagleUIElement>> = {}
 
   async function fetch(url: string) {
-    let view: BeagleUIElement | null = null
-    try {
-      await viewClient.load({
-        onChangeTree: (v: BeagleUIElement) => view = v,
-        url,
-        retry: () => {},
-      })
-      if (view) views[url] = view
-    } catch (errors) {
-      logger.warn(`Failed to pre-fetch view ${url}.`, ...errors)
-    }
+    const error = new BeagleError(`Failed to pre-fetch view ${url}.`)
+
+    views[url] = new Promise<BeagleUIElement>(async (resolve, reject) => {
+      let view: BeagleUIElement | null = null
+      try {
+        await viewClient.load({
+          onChangeTree: (v: BeagleUIElement) => view = v,
+          url,
+          retry: () => {},
+        })
+        if (view) resolve(view)
+        else reject(error)
+      } catch (errors) {
+        reject(error)
+      }
+    })
+
+    await views[url]
   }
 
   function recover(url: string) {
-    return views[url] || null
+    return views[url] || Promise.reject(new BeagleError(`The view "${url}" is not pre-fetched.`))
   }
 
   return {

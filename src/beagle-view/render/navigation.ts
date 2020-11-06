@@ -51,12 +51,21 @@ function validateUrl(url?: string) {
   return !isDynamic
 }
 
-function preFetchViews(
+async function preFetchWithWarning(preFetcher: PreFetcher, url: string) {
+  try {
+    await preFetcher.fetch(url)
+  } catch (error) {
+    logger.warn(error)
+  }
+}
+
+async function preFetchViews(
   component: BeagleUIElement,
   urlBuilder: URLBuilder,
   preFetcher: PreFetcher,
 ) {
   const navigationActions = findNavigationActions(component, false)
+  const promises: Promise<void>[] = []
 
   navigationActions.forEach((action: any) => {
     const shouldPrefetch = action.route && action.route.shouldPrefetch
@@ -64,9 +73,11 @@ function preFetchViews(
     if (shouldPrefetch && isUrlValid) {
       const path = StringUtils.addPrefix(action.route.url, '/')
       const url = urlBuilder.build(path)
-      preFetcher.fetch(url)
+      promises.push(preFetchWithWarning(preFetcher, url))
     }
   })
+
+  await Promise.all(promises)
 }
 
 export default {

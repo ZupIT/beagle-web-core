@@ -48,31 +48,83 @@ describe('Pre fetch service', () => {
     }))
   })
 
-  it('should log warning when pre-fetch fails', async () => {
-    const error = new Error()
+  it('should reject promise when pre-fetch fails', () => {
     const vc = createViewClient()
     const preFetcher = PreFetcher.create(vc)
-    await preFetcher.fetch(errorUrl)
-    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String), error)
+    expect(preFetcher.fetch(errorUrl)).rejects.toEqual(expect.any(Error))
   })
 
   it('should recover pre-fetched view', async () => {
     const vc = createViewClient()
     const preFetcher = PreFetcher.create(vc)
     await preFetcher.fetch(successUrl)
-    expect(preFetcher.recover(successUrl)).toEqual(view)
+    const preFetchedView = await preFetcher.recover(successUrl)
+    expect(preFetchedView).toEqual(view)
   })
 
-  it('should get null when trying to recover view that was not pre-fetched', () => {
+  it('should reject promise when trying to recover view that has not pre-fetched', () => {
     const vc = createViewClient()
     const preFetcher = PreFetcher.create(vc)
-    expect(preFetcher.recover('/my-view')).toBe(null)
+    expect(preFetcher.recover('/my-view')).rejects.toEqual(expect.any(Error))
   })
 
-  it('should get null when trying to recover view that failed to pre-fetch', async () => {
+  it('should reject promise when trying to recover view that failed to pre-fetch', async () => {
     const vc = createViewClient()
     const preFetcher = PreFetcher.create(vc)
-    await preFetcher.fetch(errorUrl)
-    expect(preFetcher.recover(errorUrl)).toBe(null)
+    let fetchError: Error | null = null
+    let recoverError: Error | null = null
+
+    try {
+      await preFetcher.fetch(errorUrl)
+    } catch (e) {
+      fetchError = e
+    }
+
+    try {
+      await preFetcher.recover(errorUrl)
+    } catch (e) {
+      recoverError = e
+    }
+
+    expect(recoverError).not.toBe(null)
+    expect(recoverError).toBe(fetchError)
+  })
+
+  it('should wait corresponding fetch to finish while recovering a view', async () => {
+    const vc = createViewClientMock({
+      load: jest.fn(({ onChangeTree }) => {
+        return new Promise(resolve => setTimeout(() => {
+          onChangeTree(view)
+          resolve()
+        }, 50))
+      })
+    })
+
+    const preFetcher = PreFetcher.create(vc)
+    preFetcher.fetch('/my-view')
+    const recoveredView = await preFetcher.recover('/my-view')
+    expect(recoveredView).toBe(view)
+  })
+
+  it('should not use previous pre-fetch result when pre-fetch fails', async () => {
+    const vc = createViewClient()
+    const preFetcher = PreFetcher.create(vc)
+    let view: BeagleUIElement | null = null 
+
+    // successful pre-fetch
+    await preFetcher.fetch(successUrl)
+
+    // unsuccessful pre-fetch
+    vc.load = () => Promise.reject(error)
+    try {
+      await preFetcher.fetch(successUrl)
+    } catch {}
+
+    // should not use the result of the previous successful pre-fetch
+    try {
+      view = await preFetcher.recover(successUrl)
+    } catch {}
+
+    expect(view).toBe(null)
   })
 })
