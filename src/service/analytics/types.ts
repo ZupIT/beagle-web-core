@@ -98,8 +98,20 @@ export interface ActionAnalyticsConfig {
 }
 
 export interface AnalyticsService {
-
+  /**
+     * Creates a screen record with the given parameters
+     * @param route the route to be recorded
+     * @param platform the platform in which the project is currently running
+     */
   createScreenRecord: (route: LocalView | RemoteView, platform?: string) => void,
+
+  /**
+   * Creates an action record with the given parameters
+   * @param action the `BeagleAction` action to be recorded
+   * @param eventName the name of the event that triggered the action
+   * @param component the Beagle Component
+   * @param platform the platform in which the project is currently running
+   */
   createActionRecord: (action: BeagleAction, eventName: string, component: IdentifiableBeagleUIElement, platform?: string) => void,
 
 }

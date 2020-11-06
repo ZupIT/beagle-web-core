@@ -1,14 +1,30 @@
 import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { LocalView, RemoteView } from 'beagle-view/navigator/types'
+import { findIndex } from 'lodash'
 import get from 'lodash/get'
 import { AnalyticsConfig, AnalyticsRecord } from './types'
 
 function analyticsUtils() {
   let currentRoute: LocalView | RemoteView
 
+  function getPath(previousPath: string, element: any): string {
+    if (element.id === 'root') {
+      return 'ROOT/' + previousPath
+    }
+    const siblings: Element[] = Array.from(element.parentNode.childNodes)
+    const elementIndex = findIndex(siblings, element)
+    const currentNode = siblings[elementIndex]
+    previousPath = `${currentNode.tagName}${elementIndex > 0 ? `[${elementIndex}]` : ''}/${previousPath}`
+    return getPath(previousPath, currentNode.parentNode)
+  }
+
+  function getElement(elementId: string) {
+    return document.querySelector(`[data-beagle-id="${elementId}"]`)
+  }
+
   function getElementPosition(elementId: string) {
-    const element = document.querySelector(`[data-beagle-id="${elementId}"]`)
+    const element = getElement(elementId)
     if (!element) return
     return {
       x: element.getBoundingClientRect().left,
@@ -44,7 +60,6 @@ function analyticsUtils() {
     component: IdentifiableBeagleUIElement,
     platform?: string
   ): AnalyticsRecord {
-
     const record: AnalyticsRecord = {
       type: 'action',
       platform: `WEB ${platform}`,
@@ -54,7 +69,7 @@ function analyticsUtils() {
         type: component && component._beagleComponent_,
         id: component && component.id,
         position: getElementPosition(component.id),
-        xPath: '//html/body/app-root/beagle-remote-view/app-container/app-form/form/app-container/app-button[2]/button', // xPath in html (only for web)
+        xPath: getPath('', getElement(component.id)),
       },
       beagleAction: action._beagleAction_,
       additionalEntries: action.analytics && action.analytics.additionalEntries,

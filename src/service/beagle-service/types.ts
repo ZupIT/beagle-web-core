@@ -137,7 +137,7 @@ export interface BeagleConfig<Schema> {
   */
   analyticsProvider?: AnalyticsProvider,
   /**
-    * The current platform running the project
+    * the platform in which the project is currently running
     */
   platform?: string,
 
