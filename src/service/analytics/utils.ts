@@ -8,15 +8,17 @@ import { AnalyticsConfig, AnalyticsRecord } from './types'
 function analyticsUtils() {
   let currentRoute: LocalView | RemoteView
 
-  function getPath(previousPath: string, element: any): string {
-    if (element.id === 'root') {
-      return 'ROOT/' + previousPath
+  function getPath(previous: string, element: Node): any {
+    if (!element || !element.parentNode) return
+    if (element.nodeName === 'BODY') {
+      return 'BODY/' + previous;
     }
-    const siblings: Element[] = Array.from(element.parentNode.childNodes)
+
+    let siblings: ChildNode[] = Array.from(element.parentNode.childNodes);
     const elementIndex = findIndex(siblings, element)
-    const currentNode = siblings[elementIndex]
-    previousPath = `${currentNode.tagName}${elementIndex > 0 ? `[${elementIndex}]` : ''}/${previousPath}`
-    return getPath(previousPath, currentNode.parentNode)
+    let currentNode = siblings[elementIndex]
+    previous = `${currentNode.nodeName}${elementIndex > 0 ? `[${elementIndex}]` : ''}/${previous}`
+    return currentNode.parentNode && getPath(previous, currentNode.parentNode)
   }
 
   function getElement(elementId: string) {
@@ -57,6 +59,10 @@ function analyticsUtils() {
     component: IdentifiableBeagleUIElement,
     platform?: string
   ): AnalyticsRecord {
+    const position = getElementPosition(component.id)
+    const element = getElement(component.id)
+    const xPath = element && getPath('', element)
+
     const record: AnalyticsRecord = {
       type: 'action',
       platform: `WEB ${platform}`,
@@ -65,8 +71,8 @@ function analyticsUtils() {
       component: {
         type: component && component._beagleComponent_,
         id: component && component.id,
-        position: getElementPosition(component.id),
-        xPath: getPath('', getElement(component.id)),
+        position: position,
+        xPath: xPath,
       },
       beagleAction: action._beagleAction_,
       additionalEntries: action.analytics && action.analytics.additionalEntries,
