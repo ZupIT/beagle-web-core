@@ -26,6 +26,7 @@ import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
 import { PreFetcher } from 'service/network/pre-fetcher/types'
 import { HttpClient } from 'service/network/types'
+import defaultOperations from 'operation'
 
 export function createLocalStorageMock(storage: Record<string, string> = {}): Storage {
   return {
@@ -179,6 +180,7 @@ export function createHttpClientMock(): HttpClient {
 export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): BeagleService {
   return {
     actionHandlers: custom.actionHandlers || {},
+    operationHandlers: custom.operationHandlers || defaultOperations,
     childrenMetadata: custom.childrenMetadata || {},
     // @ts-ignore
     createView: custom.createView || (() => null),
