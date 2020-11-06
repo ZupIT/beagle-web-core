@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { LocalView, RemoteView } from 'beagle-view/navigator/types'
@@ -11,12 +27,12 @@ function analyticsUtils() {
   function getPath(previous: string, element: Node): any {
     if (!element || !element.parentNode) return
     if (element.nodeName === 'BODY') {
-      return 'BODY/' + previous;
+      return 'BODY/' + previous
     }
 
-    let siblings: ChildNode[] = Array.from(element.parentNode.childNodes);
+    const siblings: ChildNode[] = Array.from(element.parentNode.childNodes)
     const elementIndex = findIndex(siblings, element)
-    let currentNode = siblings[elementIndex]
+    const currentNode = siblings[elementIndex]
     previous = `${currentNode.nodeName}${elementIndex > 0 ? `[${elementIndex}]` : ''}/${previous}`
     return currentNode.parentNode && getPath(previous, currentNode.parentNode)
   }
