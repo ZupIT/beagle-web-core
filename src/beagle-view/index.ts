@@ -210,6 +210,7 @@ function createBeagleView(
     renderer = Renderer.create({
       beagleView,
       actionHandlers: beagleService.actionHandlers,
+      operationHandlers: beagleService.operationHandlers,
       childrenMetadata: beagleService.childrenMetadata,
       executionMode: 'development',
       lifecycleHooks: beagleService.lifecycleHooks,

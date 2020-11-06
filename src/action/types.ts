@@ -52,7 +52,7 @@ export interface SetContextAction extends BaseAction {
 
 export interface AlertAction extends BaseAction {
   _beagleAction_: 'beagle:alert',
-  message: string,
+  message: any,
   onPressOk?: BeagleAction | BeagleAction[],
 }
 
