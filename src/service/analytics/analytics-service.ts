@@ -23,11 +23,9 @@ import analyticsUtils from './utils'
 function createAnalyticsService(provider?: AnalyticsProvider) {
   let sessionPromise: Promise<void>
   let configPromise: Promise<AnalyticsConfig>
-  console.log('CREATING ANALYTICS SERVICE')
 
   async function createScreenRecord(route: LocalView | RemoteView, platform?: string) {
     if (!provider) return
-    console.log('CREATING ANALYTICS SCREEN RECORD')
     await sessionPromise
     const config = await configPromise
     if (!config.enableScreenAnalytics) return
@@ -54,13 +52,10 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       const record = analyticsUtils.formatActionRecord(action, eventName, config, component, platform)
       provider.createRecord(record)
     }
-    console.log(action)
-
   }
 
   async function start() {
     if (!provider) return
-    console.log('STARTING ANALYTICS SERVICE')
     sessionPromise = provider.startSession()
     configPromise = provider.getConfig()
   }

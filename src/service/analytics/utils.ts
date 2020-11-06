@@ -47,9 +47,6 @@ function analyticsUtils() {
       attributes = configActions
 
     attributes.forEach(attribute => customRecords[attribute] = get(action, attribute))
-
-    console.log(attributes)
-    console.log(customRecords)
     return customRecords
   }
 
@@ -75,8 +72,6 @@ function analyticsUtils() {
       additionalEntries: action.analytics && action.analytics.additionalEntries,
       ...addCustomActionAttributes(action, config.actions[action._beagleAction_]),
     }
-    console.log('RETURN RECORDS', record)
-    console.log('COMPONENT', component)
     return record
   }
 
