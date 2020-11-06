@@ -61,7 +61,7 @@ export function mockSystemDialogs(result = false) {
     alert: jest.fn(() => result),
     confirm: jest.fn(() => result),
   }
-  
+
   return () => {
     globalScope.window = original
   }
@@ -178,6 +178,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
   return {
     actionHandlers: custom.actionHandlers || {},
     operationHandlers: custom.operationHandlers || defaultOperations,
+    analyticsService: { createActionRecord: jest.fn(), createScreenRecord: jest.fn() },
     childrenMetadata: custom.childrenMetadata || {},
     // @ts-ignore
     createView: custom.createView || (() => null),
@@ -193,7 +194,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     },
     remoteCache: custom.remoteCache || createRemoteCacheMock(),
     storage: custom.storage || createLocalStorageMock(),
-    viewContentManagerMap:  custom.viewContentManagerMap || {
+    viewContentManagerMap: custom.viewContentManagerMap || {
       get: jest.fn(),
       register: jest.fn(),
       unregister: jest.fn(),

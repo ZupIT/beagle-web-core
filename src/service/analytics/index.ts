@@ -46,8 +46,8 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     if (!provider) return
     await sessionPromise
     const config = await configPromise
-    const shouldRecordThisAction = config.actions[action._beagleAction_] && action.analytics?.enable !== false
-    const isActionAnalyticsEnabled = action.analytics?.enable
+    const shouldRecordThisAction = config.actions[action._beagleAction_] && action.analytics && action.analytics.enable !== false
+    const isActionAnalyticsEnabled = action.analytics && action.analytics.enable
     if (isActionAnalyticsEnabled || shouldRecordThisAction) {
       const record = analyticsUtils.formatActionRecord(action, eventName, config, component, platform)
       provider.createRecord(record)

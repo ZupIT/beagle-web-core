@@ -21,7 +21,7 @@ import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
 import GlobalContext from 'service/global-context'
 import ViewContentManagerMap from 'service/view-content-manager'
-import AnalyticsService from 'service/analytics/analytics-service'
+import AnalyticsService from 'service/analytics'
 import { BeagleConfig } from './types'
 
 export function createServices(config: BeagleConfig<any>) {
