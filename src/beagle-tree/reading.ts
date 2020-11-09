@@ -16,13 +16,6 @@
 
 import { BeagleUIElement, IdentifiableBeagleUIElement } from './types'
 
-/**
- * Finds a node by its id. If no node is found, null is returned.
- * 
- * @param tree the tree where to search the node
- * @param id the id of the node to find
- * @returns the node with the given id or null if `tree` has no node with id `id`.
- */
 export function findById<Schema>(
   tree: IdentifiableBeagleUIElement<Schema>,
   id: string,
@@ -39,18 +32,6 @@ export function findById<Schema>(
   return component
 }
 
-/**
- * Finds every node in a tree where the value of `attributeName` is `attributeValue`. When
- * `attributeValue` is omitted, all nodes with a parameter called `attributeName` will be returned.
- * If no node is found, an empty array is returned.
- * 
- * @param tree the tree where to search the nodes
- * @param attributeName the attribute name to look for
- * @param attributeValue optional. The value of `attributeName` to look for. If not specified, any
- * value is accepted, i.e. a node, to be found, will only need to have a parameter `attributeName`,
- * no matter the value of it.
- * @returns an array with all nodes found
- */
 export function findByAttribute<T extends BeagleUIElement<any>>(
   tree: T,
   attributeName: string,
@@ -73,14 +54,6 @@ export function findByAttribute<T extends BeagleUIElement<any>>(
   return components
 }
 
-/**
- * Finds all nodes with a given type. The type of a node is defined by the property
- * `_beagleComponent_`. If no node is found, an empty array is returned.
- * 
- * @param tree the tree where to search the nodes
- * @param type the type to look for
- * @returns an array with all nodes found
- */
 export function findByType<T extends BeagleUIElement<any>>(
   tree: T,
   type: string,
@@ -88,14 +61,6 @@ export function findByType<T extends BeagleUIElement<any>>(
   return findByAttribute(tree, '_beagleComponent_', type)
 }
 
-/**
- * Looks for a node with id `childId` and returns its parent. If no node is found, null is returned.
- * 
- * @param tree the tree where to search the node
- * @param childId the id the child node to find
- * @returns the parent node of `childId` or null if no node with id `childId` exists or if `childId`
- * is the root node.
- */
 export function findParentByChildId<Schema>(
   tree: IdentifiableBeagleUIElement<Schema>,
   childId: string,
@@ -112,14 +77,6 @@ export function findParentByChildId<Schema>(
   return parent
 }
 
-/**
- * Finds the position of the child with the given id in the array of children of a node. If no node
- * is found, -1 is returned.
- * 
- * @param node the node where to look for the child
- * @param childId the id of the child to look for
- * @returns the position of the child in the array of children or -1 if such node doesn't exist.
- */
 export function indexOf(
   node: BeagleUIElement<any>,
   childId: string,
