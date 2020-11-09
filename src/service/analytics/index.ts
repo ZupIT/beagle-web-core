@@ -16,8 +16,7 @@
 
 import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
-import { LocalView, RemoteView } from 'beagle-view/navigator/types'
-import { BeagleView } from 'beagle-view/types'
+import { LocalView, RemoteView, Route } from 'beagle-view/navigator/types'
 import formatActionRecord from './actions'
 import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord } from './types'
 
@@ -46,7 +45,8 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     action: BeagleAction,
     eventName: string,
     component: IdentifiableBeagleUIElement,
-    beagleView: BeagleView) {
+    platform: string,
+    route: Route) {
 
     if (!provider) return
     await sessionPromise
@@ -55,10 +55,10 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     const isActionDisabled = action.analytics && action.analytics.enable === false
     const isActionEnabled = action.analytics && action.analytics.enable === true
     const isActionEnabledInConfig = config.actions[action._beagleAction_]
-    const shouldGenerateAnalytics = provider && (isActionEnabled || (!isActionDisabled && isActionEnabledInConfig))
+    const shouldGenerateAnalytics = (isActionEnabled || (!isActionDisabled && isActionEnabledInConfig))
 
     if (shouldGenerateAnalytics) {
-      const record = formatActionRecord(action, eventName, config, component, beagleView)
+      const record = formatActionRecord(action, eventName, config, component, platform, route)
       provider.createRecord(record)
     }
   }

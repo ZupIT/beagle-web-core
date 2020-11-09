@@ -183,7 +183,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     // @ts-ignore
     createView: custom.createView || (() => null),
     defaultHeaders: custom.defaultHeaders || createDefaultHeadersMock(),
-    getConfig: custom.getConfig || (() => ({ baseUrl: '', components: {} })),
+    getConfig: custom.getConfig || (() => ({ baseUrl: '', components: {}, platform: 'Test' })),
     globalContext: custom.globalContext || createGlobalContextMock(),
     httpClient: custom.httpClient || createHttpClientMock(),
     lifecycleHooks: custom.lifecycleHooks || {

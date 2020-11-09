@@ -75,7 +75,6 @@ const createBeagleNavigator = (
   function getCurrentRoute() {
     const stack = getCurrentStack()
     const currentRoute = last(stack.routes)
-    if (!currentRoute) return
     return currentRoute
   }
 

@@ -16,8 +16,7 @@
 
 import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
-import { LocalView, RemoteView } from 'beagle-view/navigator/types'
-import { BeagleView } from 'beagle-view/types'
+import { LocalView, RemoteView, Route } from 'beagle-view/navigator/types'
 
 export interface AnalyticsConfig {
   /**
@@ -113,5 +112,10 @@ export interface AnalyticsService {
    * @param component the `IdentifiableBeagleUIElement`
    * @param beagleView the current `BeagleView`
    */
-  createActionRecord: (action: BeagleAction, eventName: string, component: IdentifiableBeagleUIElement, beagleView: BeagleView) => void,
+  createActionRecord: (
+    action: BeagleAction, 
+    eventName: string, 
+    component: IdentifiableBeagleUIElement, 
+    platform: string, 
+    route: Route) => void,
 }

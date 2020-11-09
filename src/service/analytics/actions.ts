@@ -17,9 +17,9 @@
 import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import get from 'lodash/get'
-import { BeagleView } from 'beagle-view/types'
+import { Route } from 'beagle-view/navigator/types'
+import htmlHelpers from '../../utils/html'
 import { AnalyticsConfig, AnalyticsRecord } from './types'
-import { getElement, getElementPosition, getPath } from './html'
 
 
 /**
@@ -29,13 +29,13 @@ import { getElement, getElementPosition, getPath } from './html'
   * @param whiteListedAttributesInConfig the list of attributes passed through the `AnalyticsProvider` config
   * @returns the Record of white listed attributes from the `AnalyticsProvider` or the action itself
   */
-function createActionsAttribute(action: BeagleAction, whiteListedAttributesInConfig: string[]) {
+function createActionAttributes(action: BeagleAction, whiteListedAttributesInConfig: string[]) {
 
   const whiteListedAttributesInAction = action && action.analytics && action.analytics.attributes
   const attributes = whiteListedAttributesInAction || whiteListedAttributesInConfig
 
   if (attributes)
-  return attributes.reduce((result, attribute) => ({ ...result, [attribute]: get(action, attribute) }), {})
+    return attributes.reduce((result, attribute) => ({ ...result, [attribute]: get(action, attribute) }), {})
 
 }
 
@@ -53,17 +53,16 @@ function formatActionRecord(
   eventName: string,
   config: AnalyticsConfig,
   component: IdentifiableBeagleUIElement,
-  beagleView: BeagleView
+  currentPlatform: string,
+  route: Route
 ): AnalyticsRecord {
-  const beagleService = beagleView.getBeagleService()
-  const navigator = beagleView.getNavigator()
-  const currentRoute = navigator.getCurrentRoute()
-  const platform = beagleService.getConfig().platform
-  const position = getElementPosition(component.id)
-  const element = getElement(component.id)
-  const xPath = element && getPath(element)
+  const currentRoute = route
+  const platform = currentPlatform
+  const element = htmlHelpers.getElementByBeagleId(component.id)
+  const position = element && htmlHelpers.getElementPosition(element)
+  const xPath = element && htmlHelpers.getPath(element)
 
-  const record: AnalyticsRecord = {
+  let record: AnalyticsRecord = {
     type: 'action',
     platform: `WEB ${platform}`,
     event: eventName,
@@ -74,11 +73,11 @@ function formatActionRecord(
       xPath: xPath,
     },
     beagleAction: action._beagleAction_,
-    ...createActionsAttribute(action, config.actions[action._beagleAction_]),
+    ...createActionAttributes(action, config.actions[action._beagleAction_]),
   }
 
   if (action.analytics && action.analytics.additionalEntries)
-    record.additionalEntries = action.analytics.additionalEntries
+    record = { ...record, ...action.analytics.additionalEntries }
 
   if (currentRoute) {
     if ('screen' in currentRoute) record.screenId = currentRoute.screen.identifier || currentRoute.screen.id

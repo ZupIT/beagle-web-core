@@ -47,8 +47,7 @@ function deserializeAction(
 ) {
   const actionList = Array.isArray(actionOrActionList) ? actionOrActionList : [actionOrActionList]
   const beagleService = params.beagleView.getBeagleService()
-  
-  
+
   return function (event: any) {
     const hierarchy = event !== undefined
       ? [...params.contextHierarchy, { id: eventName, value: event }]
@@ -84,8 +83,11 @@ function deserializeAction(
         element: params.component,
         executeAction: executeSubAction,
       })
-      
-      beagleService.analyticsService.createActionRecord(action, eventName, params.component, params.beagleView)
+
+      const route = params.beagleView.getNavigator().getCurrentRoute()
+      const platform = beagleService.getConfig().platform || ''
+      if (route)
+        beagleService.analyticsService.createActionRecord(action, eventName, params.component, platform, route)
     })
   }
 }

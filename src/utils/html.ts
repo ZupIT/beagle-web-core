@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-import { findIndex } from 'lodash'
+import findIndex from 'lodash/findIndex'
 
 /**
-  * Given an element of interface `Node` tracks recursively and
-  * returns the xPath for that element
+  * Calculates the xPath for the given HTML element
   * @param element the element for which to start the building of the xPath
-  * @param accumulator the string that is incremented over each iteration, can be left out for the first call 
-  * in case you do not need to add anything to the final xPath string
   * @returns the xPath of the given element
   */
-function getPath(element: Node, accumulator?: string): any {
-  if (!element || !element.parentNode) return
-  if (!accumulator)
-    accumulator = ''
+function getPath(element: Node): any {
 
-  if (element.nodeName === 'BODY') {
-    return 'BODY/' + accumulator
+  function getPathRecursively(element: Node, accumulator?: string): string | undefined | null {
+    if (!element.parentNode) return
+    if (element.nodeName === 'BODY') {
+      return 'BODY/' + accumulator
+    }
+
+    const siblings: ChildNode[] = Array.from(element.parentNode.childNodes)
+    const elementIndex = findIndex(siblings, element)
+    const currentNode = siblings[elementIndex]
+    accumulator = `${currentNode.nodeName}${elementIndex > 0 ? `[${elementIndex}]` : ''}/${accumulator}`
+    return currentNode.parentNode && getPathRecursively(currentNode.parentNode, accumulator)
+
   }
 
-  const siblings: ChildNode[] = Array.from(element.parentNode.childNodes)
-  const elementIndex = findIndex(siblings, element)
-  const currentNode = siblings[elementIndex]
-  accumulator = `${currentNode.nodeName}${elementIndex > 0 ? `[${elementIndex}]` : ''}/${accumulator}`
-  return currentNode.parentNode && getPath(currentNode.parentNode, accumulator)
+  return getPathRecursively(element, '')
 }
 
 /**
@@ -45,18 +45,17 @@ function getPath(element: Node, accumulator?: string): any {
   * @param elementId the beagle element id
   * @returns the element of the given Id
   */
-function getElement(elementId: string) {
-  if (!document.querySelector) return
+function getElementByBeagleId(elementId: string) {
+  if (!document || !document.querySelector) return
   return document.querySelector(`[data-beagle-id="${elementId}"]`)
 }
 
 /**
-  * Finds the position of the given Beagle element Id
+  * Finds the position of the given `Element`
   * @param elementId the beagle element id
   * @returns Returns the position of the element `{ x, y }`
   */
-function getElementPosition(elementId: string) {
-  const element = getElement(elementId)
+function getElementPosition(element: Element) {
   if (!element) return
   return {
     x: element.getBoundingClientRect().left,
@@ -64,4 +63,10 @@ function getElementPosition(elementId: string) {
   }
 }
 
-export { getPath, getElement, getElementPosition }
+const exportFunctions = {
+  getPath,
+  getElementByBeagleId,
+  getElementPosition,
+}
+
+export default exportFunctions
