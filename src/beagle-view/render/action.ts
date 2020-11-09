@@ -16,7 +16,7 @@
 
 import logger from 'logger'
 import { IdentifiableBeagleUIElement, DataContext } from 'beagle-tree/types'
-import { BeagleAction, ActionHandler } from 'action/types'
+import { ActionHandler, ActionOrActionList } from 'action/types'
 import ObjectUtils from 'utils/object'
 import { BeagleView } from 'beagle-view/types'
 import { Operation } from 'service/beagle-service/types'
@@ -31,8 +31,6 @@ interface Parameters {
   actionHandlers: Record<string, ActionHandler>,
   operationHandlers: Record<string, Operation>,
 }
-
-export type ActionOrActionList = BeagleAction | BeagleAction[]
 
 function isBeagleAction(data: any) {
   return (
@@ -49,6 +47,7 @@ function deserializeAction(
 ) {
   const actionList = Array.isArray(actionOrActionList) ? actionOrActionList : [actionOrActionList]
   const beagleService = params.beagleView.getBeagleService()
+  
   
   return function (event: any) {
     const hierarchy = event !== undefined
@@ -85,9 +84,8 @@ function deserializeAction(
         element: params.component,
         executeAction: executeSubAction,
       })
-
-      const platform = beagleService.getConfig().platform
-      beagleService.analyticsService.createActionRecord(action, eventName, params.component, platform)
+      
+      beagleService.analyticsService.createActionRecord(action, eventName, params.component, params.beagleView)
     })
   }
 }

@@ -134,22 +134,22 @@ export interface BeagleConfig<Schema> {
    */
   navigationControllers?: Record<string, NavigationController>,
   /**
-  * Accepts a custom API that implements the provided interface `AnalyticsProvider` to handle the event tracking through the application. 
-  * If not analytics provider is registered, no analytics will be generated
-  */
+   * Accepts a custom API that implements the provided interface `AnalyticsProvider` to handle the event tracking through the application. 
+   * If not analytics provider is registered, no analytics will be generated
+   */
   analyticsProvider?: AnalyticsProvider,
   /**
-    * the platform in which the project is currently running
-    */
+   * the platform in which the project is currently running
+   */
   platform?: string,
   /**
-     * The map of custom operations that can be used to extend the capability of the Beagle expressions and are called like functions, 
-     * e.g. `@{sum(1, 2)}`.
-     * The keys of this object represent the operation name and the values must be the functions themselves. 
-     * An operation name must contain only letters, numbers and the character _, 
-     * it also must contain at least one letter or _.
-     * Note: If you create custom operations using the same name of a default from Beagle, the default will be overwritten by the custom one
-     */
+   * The map of custom operations that can be used to extend the capability of the Beagle expressions and are called like functions, 
+   * e.g. `@{sum(1, 2)}`.
+   * The keys of this object represent the operation name and the values must be the functions themselves. 
+   * An operation name must contain only letters, numbers and the character _, 
+   * it also must contain at least one letter or _.
+   * Note: If you create custom operations using the same name of a default from Beagle, the default will be overwritten by the custom one
+   */
   customOperations?: Record<string, Operation>,
 }
 

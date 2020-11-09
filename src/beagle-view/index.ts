@@ -20,7 +20,6 @@ import String from 'utils/string'
 import StringUtils from 'utils/string'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
-import analyticsUtils from '../service/analytics/utils'
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
 import BeagleNavigator from './navigator'
@@ -239,7 +238,6 @@ function createBeagleView(
 
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       const platform = beagleService.getConfig().platform
-      analyticsUtils.setCurrentRoute(route)
       analyticsService.createScreenRecord(route, platform)
     })
   }

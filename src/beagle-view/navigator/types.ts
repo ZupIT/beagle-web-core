@@ -181,4 +181,8 @@ export interface BeagleNavigator {
    * Destroys the navigator.
    */
   destroy: () => void,
+  /**
+   * Returns the current route
+   */
+  getCurrentRoute: () => Route | undefined,
 }

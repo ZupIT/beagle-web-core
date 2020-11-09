@@ -17,6 +17,7 @@
 import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { LocalView, RemoteView } from 'beagle-view/navigator/types'
+import { BeagleView } from 'beagle-view/types'
 
 export interface AnalyticsConfig {
   /**
@@ -109,15 +110,8 @@ export interface AnalyticsService {
    * Creates an action record with the given parameters
    * @param action the `BeagleAction` action to be recorded
    * @param eventName the name of the event that triggered the action
-   * @param component the Beagle Component
-   * @param platform the platform in which the project is currently running
+   * @param component the `IdentifiableBeagleUIElement`
+   * @param beagleView the current `BeagleView`
    */
-  createActionRecord: (action: BeagleAction, eventName: string, component: IdentifiableBeagleUIElement, platform?: string) => void,
-
-}
-
-export interface ActionParams {
-  eventName: string,
-  component: IdentifiableBeagleUIElement,
-  config: AnalyticsConfig,
+  createActionRecord: (action: BeagleAction, eventName: string, component: IdentifiableBeagleUIElement, beagleView: BeagleView) => void,
 }

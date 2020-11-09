@@ -72,6 +72,13 @@ const createBeagleNavigator = (
     return stack
   }
 
+  function getCurrentRoute() {
+    const stack = getCurrentStack()
+    const currentRoute = last(stack.routes)
+    if (!currentRoute) return
+    return currentRoute
+  }
+
   function getPreviousStack() {
     const stack = nth(navigation, -2)
     if (!stack) throw new BeagleNavigationError('Only one navigation stack! Can\'t get previous!')
@@ -222,6 +229,7 @@ const createBeagleNavigator = (
     navigate,
     isEmpty,
     destroy,
+    getCurrentRoute,
   }
 }
 
