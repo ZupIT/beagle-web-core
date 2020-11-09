@@ -77,7 +77,6 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   }
 }
 
-
 export default {
   create: createAnalyticsService,
 }
