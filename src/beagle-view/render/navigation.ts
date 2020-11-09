@@ -20,7 +20,7 @@ import NavigationActions from 'action/navigation'
 import { BeagleNavigationAction } from 'action/navigation/types'
 import StringUtils from 'utils/string'
 import { URLBuilder } from 'service/network/url-builder/types'
-import { ViewClient } from 'service/network/view-client/types'
+import { PreFetcher } from 'service/network/pre-fetcher/types'
 import logger from 'logger'
 
 const lowerCaseNavigationActions = Object.keys(NavigationActions).map(key => key.toLowerCase())
@@ -51,8 +51,21 @@ function validateUrl(url?: string) {
   return !isDynamic
 }
 
-function preFetchViews(component: BeagleUIElement, urlBuilder: URLBuilder, viewClient: ViewClient) {
+async function preFetchWithWarning(preFetcher: PreFetcher, url: string) {
+  try {
+    await preFetcher.fetch(url)
+  } catch (error) {
+    logger.warn(error)
+  }
+}
+
+async function preFetchViews(
+  component: BeagleUIElement,
+  urlBuilder: URLBuilder,
+  preFetcher: PreFetcher,
+) {
   const navigationActions = findNavigationActions(component, false)
+  const promises: Promise<void>[] = []
 
   navigationActions.forEach((action: any) => {
     const shouldPrefetch = action.route && action.route.shouldPrefetch
@@ -60,9 +73,11 @@ function preFetchViews(component: BeagleUIElement, urlBuilder: URLBuilder, viewC
     if (shouldPrefetch && isUrlValid) {
       const path = StringUtils.addPrefix(action.route.url, '/')
       const url = urlBuilder.build(path)
-      viewClient.loadFromServer(url)
+      promises.push(preFetchWithWarning(preFetcher, url))
     }
   })
+
+  await Promise.all(promises)
 }
 
 export default {

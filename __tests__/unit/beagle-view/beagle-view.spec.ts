@@ -17,7 +17,13 @@
 import BeagleView from 'beagle-view'
 import { BeagleView as BeagleViewType, NetworkOptions } from 'beagle-view/types'
 import { NavigationController } from 'beagle-view/navigator/types'
-import { createBeagleServiceMock } from '../old-structure/utils/test-utils'
+import { BeagleService, BeagleConfig } from 'service/beagle-service/types'
+import {
+  createViewClientMock,
+  createUrlBuilderMock,
+  createPreFetcherMock,
+  createBeagleServiceMock,
+} from '../old-structure/utils/test-utils'
 
 describe('Beagle View', () => {
   describe('general behavior', () => {
@@ -37,7 +43,7 @@ describe('Beagle View', () => {
   })
 
   describe('navigation', () => {
-    const beagleService = createBeagleServiceMock()
+    let beagleService: BeagleService
     const doFullRender = jest.fn()
     const mock = { _beagleComponent_: 'beagle:container' }
     const navigationControllers: Record<string, NavigationController> = {
@@ -51,14 +57,22 @@ describe('Beagle View', () => {
     let beagleView: BeagleViewType
 
     beforeEach(() => {
-      // @ts-ignore
-      beagleService.viewClient.load = jest.fn(({ onChangeTree }) => onChangeTree(mock))
-      // @ts-ignore
-      beagleService.viewClient.loadFromCache = jest.fn(() => Promise.resolve(mock))
-      // @ts-ignore
-      beagleService.urlBuilder.build = jest.fn(url => `base${url}`)
-      // @ts-ignore
-      beagleService.getConfig = () => ({ navigationControllers })
+      const viewClient = createViewClientMock({
+        load: jest.fn(async ({ onChangeTree }) => onChangeTree(mock)),
+        loadFromCache: jest.fn(() => Promise.resolve(mock)),
+      })
+      const urlBuilder = createUrlBuilderMock({
+        build: jest.fn(url => `base${url}`)
+      })
+      const preFetcher = createPreFetcherMock({
+        recover: jest.fn(url => url === 'base/home' ? Promise.resolve(mock) : Promise.reject()),
+      })
+      beagleService = createBeagleServiceMock({
+        viewClient,
+        urlBuilder,
+        preFetcher,
+        getConfig: () => ({ navigationControllers } as BeagleConfig<any>),
+      })
       beagleView = BeagleView.create(beagleService)
       beagleView.getRenderer().doFullRender = doFullRender
     })
@@ -111,7 +125,7 @@ describe('Beagle View', () => {
         shouldPrefetch: true,
       })
       expect(beagleService.viewClient.load).not.toHaveBeenCalled()
-      expect(beagleService.viewClient.loadFromCache).toHaveBeenCalledWith('base/home', 'get')
+      expect(beagleService.preFetcher.recover).toHaveBeenCalledWith('base/home')
       expect(doFullRender).toHaveBeenCalledWith(mock)
     })
 
@@ -124,17 +138,15 @@ describe('Beagle View', () => {
     })
 
     it('should fallback to network if pre-fetched recovery failed', async () => {
-      beagleService.viewClient.loadFromCache = () => {
-        throw new Error()
-      }
+      beagleService.preFetcher.recover = () => Promise.reject()
 
       await beagleView.getNavigator().pushView({
-        url: '/home',
+        url: '/profile',
         shouldPrefetch: true,
       })
 
       expect(beagleService.viewClient.load).toHaveBeenCalledWith(expect.objectContaining({
-        url: 'base/home',
+        url: 'base/profile',
       }))
       expect(doFullRender).toHaveBeenCalledWith(mock, undefined, 'replaceComponent')
     })
