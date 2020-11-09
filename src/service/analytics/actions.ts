@@ -33,7 +33,7 @@ function createActionsAttribute(action: BeagleAction, whiteListedAttributesInCon
   const whiteListedAttributesInAction = action && action.analytics && action.analytics.attributes
   const attributes = whiteListedAttributesInAction || whiteListedAttributesInConfig
 
-  if(attributes)
+  if (attributes)
   return attributes.reduce((result, attribute) => ({ ...result, [attribute]: get(action, attribute) }), {})
 
 }
