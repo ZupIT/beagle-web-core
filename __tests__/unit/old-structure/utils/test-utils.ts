@@ -231,6 +231,7 @@ export function createNavigatorMock(): BeagleNavigator {
     resetStack: jest.fn(),
     subscribe: jest.fn(),
     isEmpty: jest.fn(),
+    getCurrentRoute: jest.fn()
   }
 }
 
