@@ -100,10 +100,10 @@ export interface ActionAnalyticsConfig {
 
 export interface AnalyticsService {
   /**
-     * Creates a screen record with the given parameters
-     * @param route the route to be recorded
-     * @param platform the platform in which the project is currently running
-     */
+   * Creates a screen record with the given parameters
+   * @param route the route to be recorded
+   * @param platform the platform in which the project is currently running
+   */
   createScreenRecord: (route: LocalView | RemoteView, platform?: string) => void,
 
   /**
