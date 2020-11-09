@@ -41,7 +41,8 @@ function getPath(element: Node): any {
 }
 
 /**
-  * Get the element of the given Beagle Id
+  * Get the element of the given Beagle Id,
+  * if the environment is other than Web this function returns undefined
   * @param elementId the beagle element id
   * @returns the element of the given Id
   */
