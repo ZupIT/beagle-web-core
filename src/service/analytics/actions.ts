@@ -23,10 +23,11 @@ import { getElement, getElementPosition, getPath } from './html'
 
 
 /**
-  * This function generates and return a new `Record<string, any>` with the attributes that were passed along
+  * This function generates a new `Record<string, any>` with the attributes that were passed along
   * with the analytics provider configuration or the ones from the actions
   * @param action the `BeagleAction` to which try to extract the analytics config
   * @param whiteListedAttributesInConfig the list of attributes passed through the `AnalyticsProvider` config
+  * @returns the Record of white listed attributes from the `AnalyticsProvider` or the action itself
   */
 function createActionsAttribute(action: BeagleAction, whiteListedAttributesInConfig: string[]) {
 
@@ -39,12 +40,13 @@ function createActionsAttribute(action: BeagleAction, whiteListedAttributesInCon
 }
 
 /**
-  * This function formats and returns an Action Record
+  * This function formats Action Record
   * @param action the `BeagleAction` to use in the record
   * @param eventName the event that triggered the action
   * @param config the `AnalyticsConfig` from the `AnalyticsProvider`
   * @param component the `IdentifiableBeagleUIElement` to which the action belongs to
   * @param beagleView the `BeagleView` to use in the record
+  * @returns the formatted `AnalyticsRecord`
   */
 function formatActionRecord(
   action: BeagleAction,

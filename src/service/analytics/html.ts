@@ -22,6 +22,7 @@ import { findIndex } from 'lodash'
   * @param element the element for which to start the building of the xPath
   * @param accumulator the string that is incremented over each iteration, can be left out for the first call 
   * in case you do not need to add anything to the final xPath string
+  * @returns the xPath of the given element
   */
 function getPath(element: Node, accumulator?: string): any {
   if (!element || !element.parentNode) return
@@ -40,8 +41,9 @@ function getPath(element: Node, accumulator?: string): any {
 }
 
 /**
-  * Returns the element of the given Beagle Id
+  * Get the element of the given Beagle Id
   * @param elementId the beagle element id
+  * @returns the element of the given Id
   */
 function getElement(elementId: string) {
   if (!document.querySelector) return
@@ -49,8 +51,9 @@ function getElement(elementId: string) {
 }
 
 /**
-  * Returns the positions `{ x, y }` of the given Beagle element Id
+  * Finds the position of the given Beagle element Id
   * @param elementId the beagle element id
+  * @returns Returns the position of the element `{ x, y }`
   */
 function getElementPosition(elementId: string) {
   const element = getElement(elementId)
