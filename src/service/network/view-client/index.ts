@@ -112,10 +112,12 @@ function createViewClient(
   ) {
     let response: Response
     const requestTime = Date.now()
+    const defaultHeaders = await defaultHeadersService.get(url, method)
+    const allHeaders = { ...headers, ...defaultHeaders }
     try {
       response = await httpClient.fetch(
         url,
-        { method, headers }
+        { method, headers: allHeaders }
       )
     } catch (error) {
       throw new BeagleNetworkError(url, error.message)
@@ -169,12 +171,10 @@ function createViewClient(
       if (shouldShowLoading && !hasPreviousSuccess) {
         onChangeTree({ _beagleComponent_: loadingComponent })
       }
-      const defaultHeaders = await defaultHeadersService.get(url, method)
-      const requestHeaders = { ...headers, ...defaultHeaders }
       const tree = await loadFromServer(
         url,
         method,
-        requestHeaders,
+        headers,
         strategy !== 'network-only',
         useBeagleCacheProtocol,
       )

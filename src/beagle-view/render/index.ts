@@ -53,7 +53,7 @@ function createRenderer({
   actionHandlers,
   operationHandlers,
 }: Params): Renderer {
-  const { urlBuilder, viewClient, globalContext } = beagleView.getBeagleService()
+  const { urlBuilder, preFetcher, globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree
@@ -90,7 +90,7 @@ function createRenderer({
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
       Component.assignId(component)
       Component.eraseNullProperties(component)
-      Navigation.preFetchViews(component, urlBuilder, viewClient)
+      Navigation.preFetchViews(component, urlBuilder, preFetcher)
     })
 
     return viewTree as IdentifiableBeagleUIElement

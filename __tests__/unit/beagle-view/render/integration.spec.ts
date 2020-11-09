@@ -48,7 +48,7 @@ describe('Beagle View: render: integration', () => {
 
   it('should pre-process', () => {
     expect(setTree).toHaveBeenCalledWith(preProcessed)
-    expect(beagleView.getBeagleService().viewClient.loadFromServer)
+    expect(beagleView.getBeagleService().preFetcher.fetch)
       .toHaveBeenCalledWith('/render.integration.spec')
   })
 
