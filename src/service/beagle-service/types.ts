@@ -27,6 +27,7 @@ import { RemoteCache } from 'service/network/remote-cache/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient, Strategy } from 'service/network/view-client/types'
+import { PreFetcher } from 'service/network/pre-fetcher/types'
 import { GlobalContext } from 'service/global-context/types'
 import { ViewContentManagerMap } from 'service/view-content-manager/types'
 import { ChildrenMetadataMap } from 'metadata/types'
@@ -177,6 +178,7 @@ export type BeagleService = Readonly<{
   remoteCache: RemoteCache,
   viewClient: ViewClient,
   defaultHeaders: DefaultHeaders,
+  preFetcher: PreFetcher,
   globalContext: GlobalContext,
   viewContentManagerMap: ViewContentManagerMap,
   analyticsService: AnalyticsService,

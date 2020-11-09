@@ -17,7 +17,12 @@
 import Navigation from 'beagle-view/render/navigation'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
-import { createUrlBuilderMock, createViewClientMock } from '../../old-structure/utils/test-utils'
+import { PreFetcher } from 'service/network/pre-fetcher/types'
+import {
+  createUrlBuilderMock,
+  createViewClientMock,
+  createPreFetcherMock,
+} from '../../old-structure/utils/test-utils'
 
 describe('Beagle View: render: navigation', () => {
   const navigationAction = {
@@ -29,10 +34,13 @@ describe('Beagle View: render: navigation', () => {
   }
   let urlBuilder: URLBuilder
   let viewClient: ViewClient
+  let preFetcher: PreFetcher
   
   beforeEach(() => {
     urlBuilder = createUrlBuilderMock()
     viewClient = createViewClientMock()
+    preFetcher = createPreFetcherMock()
+    globalMocks.fetch.mockClear()
   })
 
   it('should pre-fetch', () => {
@@ -41,8 +49,19 @@ describe('Beagle View: render: navigation', () => {
       onPress: navigationAction,
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith(navigationAction.route.url)
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
+  })
+
+  it('should log warning when pre-fetch fails', async () => {
+    const component = {
+      _beagleComponent_: 'beagle:button',
+      onPress: navigationAction,
+    }
+    const error = new Error('Error')
+    preFetcher.fetch = jest.fn(() => Promise.reject(error))
+    await Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', error)
   })
 
   it('should use the urlBuilder to build the url', () => {
@@ -51,7 +70,7 @@ describe('Beagle View: render: navigation', () => {
       onPress: navigationAction,
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
     expect(urlBuilder.build).toHaveBeenCalledWith(navigationAction.route.url)
   })
 
@@ -61,8 +80,8 @@ describe('Beagle View: render: navigation', () => {
       onPress: [navigationAction],
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith(navigationAction.route.url)
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
   })
 
   it('should identify multiple routes to pre-fetch in a single event', () => {
@@ -80,10 +99,10 @@ describe('Beagle View: render: navigation', () => {
       ]
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).toHaveBeenCalledTimes(2)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith(navigationAction.route.url)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith('/test2')
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).toHaveBeenCalledTimes(2)
+    expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
+    expect(preFetcher.fetch).toHaveBeenCalledWith('/test2')
   })
 
   it('should identify multiple routes to pre-fetch in multiple events', () => {
@@ -117,12 +136,12 @@ describe('Beagle View: render: navigation', () => {
       ]
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).toHaveBeenCalledTimes(4)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith(navigationAction.route.url)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith('/test2')
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith('/test3')
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith('/test4')
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).toHaveBeenCalledTimes(4)
+    expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
+    expect(preFetcher.fetch).toHaveBeenCalledWith('/test2')
+    expect(preFetcher.fetch).toHaveBeenCalledWith('/test3')
+    expect(preFetcher.fetch).toHaveBeenCalledWith('/test4')
   })
 
   it('should identify route to pre-fetch in the second level of the component\'s tree.', () => {
@@ -133,8 +152,8 @@ describe('Beagle View: render: navigation', () => {
       }
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith(navigationAction.route.url)
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
   })
 
   it('should identify route to pre-fetch inside a sub-action', () => {
@@ -147,8 +166,8 @@ describe('Beagle View: render: navigation', () => {
       }],
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith(navigationAction.route.url)
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
   })
 
   it('should ignore case when looking for navigation actions', () => {
@@ -160,8 +179,8 @@ describe('Beagle View: render: navigation', () => {
       }],
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).toHaveBeenCalledWith(navigationAction.route.url)
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).toHaveBeenCalledWith(navigationAction.route.url)
   })
 
   it('should not prefetch navigation actions inside sub-components', () => {
@@ -173,8 +192,8 @@ describe('Beagle View: render: navigation', () => {
       }]
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).not.toHaveBeenCalled()
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).not.toHaveBeenCalled()
   })
 
   it('should not prefetch if shouldPrefetch is not true', () => {
@@ -188,8 +207,8 @@ describe('Beagle View: render: navigation', () => {
       }]
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).not.toHaveBeenCalled()
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).not.toHaveBeenCalled()
   })
 
   it('should not prefetch if the url is dynamic, i.e. if it\'s an expression', () => {
@@ -204,8 +223,8 @@ describe('Beagle View: render: navigation', () => {
       }],
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
-    expect(viewClient.loadFromServer).not.toHaveBeenCalled()
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
+    expect(preFetcher.fetch).not.toHaveBeenCalled()
   })
 
   it('should log warning for dynamic urls', () => {
@@ -220,7 +239,7 @@ describe('Beagle View: render: navigation', () => {
       }],
     }
 
-    Navigation.preFetchViews(component, urlBuilder, viewClient)
+    Navigation.preFetchViews(component, urlBuilder, preFetcher)
     expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })
 })
