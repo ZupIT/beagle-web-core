@@ -23,12 +23,12 @@ import { AnalyticsConfig, AnalyticsRecord } from './types'
 
 
 /**
-  * This function generates a new `Record<string, any>` with the attributes that were passed along
-  * with the analytics provider configuration or the ones from the actions
-  * @param action the `BeagleAction` to which try to extract the analytics config
-  * @param whiteListedAttributesInConfig the list of attributes passed through the `AnalyticsProvider` config
-  * @returns the Record of white listed attributes from the `AnalyticsProvider` or the action itself
-  */
+ * This function generates a new `Record<string, any>` with the attributes that were passed along
+ * with the analytics provider configuration or the ones from the actions
+ * @param action the `BeagleAction` to which try to extract the analytics config
+ * @param whiteListedAttributesInConfig the list of attributes passed through the `AnalyticsProvider` config
+ * @returns the Record of white listed attributes from the `AnalyticsProvider` or the action itself
+ */
 function createActionAttributes(action: BeagleAction, whiteListedAttributesInConfig: string[]) {
 
   const whiteListedAttributesInAction = action && action.analytics && action.analytics.attributes
@@ -40,14 +40,14 @@ function createActionAttributes(action: BeagleAction, whiteListedAttributesInCon
 }
 
 /**
-  * This function formats Action Record
-  * @param action the `BeagleAction` to use in the record
-  * @param eventName the event that triggered the action
-  * @param config the `AnalyticsConfig` from the `AnalyticsProvider`
-  * @param component the `IdentifiableBeagleUIElement` to which the action belongs to
-  * @param beagleView the `BeagleView` to use in the record
-  * @returns the formatted `AnalyticsRecord`
-  */
+ * This function formats Action Record
+ * @param action the `BeagleAction` to use in the record
+ * @param eventName the event that triggered the action
+ * @param config the `AnalyticsConfig` from the `AnalyticsProvider`
+ * @param component the `IdentifiableBeagleUIElement` to which the action belongs to
+ * @param beagleView the `BeagleView` to use in the record
+ * @returns the formatted `AnalyticsRecord`
+ */
 function formatActionRecord(
   action: BeagleAction,
   eventName: string,
