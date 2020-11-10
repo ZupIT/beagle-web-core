@@ -63,7 +63,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     }
   }
 
-  async function start() {
+  function start() {
     if (!provider) return
     sessionPromise = provider.startSession()
     configPromise = provider.getConfig()

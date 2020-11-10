@@ -28,16 +28,17 @@ function getPath(element: Node): any {
     if (element.nodeName === 'BODY') {
       return 'BODY/' + accumulator
     }
-
+    
     const siblings: ChildNode[] = Array.from(element.parentNode.childNodes)
     const elementIndex = findIndex(siblings, element)
     const currentNode = siblings[elementIndex]
     accumulator = `${currentNode.nodeName}${elementIndex > 0 ? `[${elementIndex}]` : ''}/${accumulator}`
+
     return currentNode.parentNode && getPathRecursively(currentNode.parentNode, accumulator)
 
   }
 
-  return getPathRecursively(element, '')
+  return getPathRecursively(element, element.nodeName)
 }
 
 /**

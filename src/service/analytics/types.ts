@@ -103,7 +103,7 @@ export interface AnalyticsService {
    * @param route the route to be recorded
    * @param platform the platform in which the project is currently running
    */
-  createScreenRecord: (route: LocalView | RemoteView, platform?: string) => void,
+  createScreenRecord: (route: LocalView | RemoteView, platform?: string) => Promise<void>,
 
   /**
    * Creates an action record with the given parameters
@@ -117,5 +117,5 @@ export interface AnalyticsService {
     eventName: string, 
     component: IdentifiableBeagleUIElement, 
     platform: string, 
-    route: Route) => void,
+    route: Route) => Promise<void>,
 }
