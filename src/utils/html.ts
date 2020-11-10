@@ -23,7 +23,7 @@ import findIndex from 'lodash/findIndex'
   */
 function getPath(element: Node): any {
 
-  function getPathRecursively(element: Node, accumulator?: string): string | undefined | null {
+  function getPathRecursively(element: Node, accumulator: string): string | undefined | null {
     if (!element.parentNode) return
     if (element.nodeName === 'BODY') {
       return 'BODY/' + accumulator
