@@ -31,21 +31,18 @@ describe('Actions Analytics Service', () => {
     const root = document.createElement('root')
     const divA = document.createElement('div')
     const divB = document.createElement('div')
-    const p = document.createElement('p')
     const buttonA = document.createElement('button')
     const buttonB = document.createElement('button')
 
     root.setAttribute('id', 'root')
     divA.setAttribute('data-beagle-id', '_beagle_2')
     divB.setAttribute('data-beagle-id', '_beagle_3')
-    p.setAttribute('data-beagle-id', '_beagle_4')
     buttonA.innerHTML = 'Push Stack'
     buttonA.setAttribute('data-beagle-id', '_beagle_5')
     buttonB.setAttribute('data-beagle-id', '_beagle_6')
 
     root.appendChild(divA)
     divA.appendChild(divB)
-    divB.appendChild(p)
     divB.appendChild(buttonA)
     divB.appendChild(buttonB)
 
@@ -60,7 +57,7 @@ describe('Actions Analytics Service', () => {
   })
 
   it('should getPath', () => {
-    const expectedXPath = 'BODY/ROOT/DIV/DIV/P/BUTTON'
+    const expectedXPath = 'BODY/ROOT/DIV/DIV/BUTTON/'
     //@ts-ignore
     const result: Element = htmlHelpers.getElementByBeagleId("_beagle_5")
     const xPath = htmlHelpers.getPath(result)

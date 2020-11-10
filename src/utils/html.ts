@@ -22,13 +22,13 @@ import findIndex from 'lodash/findIndex'
   * @returns the xPath of the given element
   */
 function getPath(element: Node): any {
-
+  
   function getPathRecursively(element: Node, accumulator: string): string | undefined | null {
     if (!element.parentNode) return
     if (element.nodeName === 'BODY') {
       return 'BODY/' + accumulator
     }
-    
+
     const siblings: ChildNode[] = Array.from(element.parentNode.childNodes)
     const elementIndex = findIndex(siblings, element)
     const currentNode = siblings[elementIndex]
@@ -38,7 +38,7 @@ function getPath(element: Node): any {
 
   }
 
-  return getPathRecursively(element, element.nodeName)
+  return getPathRecursively(element, '')
 }
 
 /**
