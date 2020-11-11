@@ -27,6 +27,7 @@ import { RemoteCache } from 'service/network/remote-cache/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient, Strategy } from 'service/network/view-client/types'
+import { PreFetcher } from 'service/network/pre-fetcher/types'
 import { GlobalContext } from 'service/global-context/types'
 import { ViewContentManagerMap } from 'service/view-content-manager/types'
 import { ChildrenMetadataMap } from 'metadata/types'
@@ -47,6 +48,8 @@ export type BeagleMiddleware<Schema = DefaultSchema> = (uiTree: BeagleUIElement<
   BeagleUIElement<Schema>
 
 export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
+
+export type Operation = ((...args: any[]) => any)
 
 export interface ClickEvent {
   category: string,
@@ -131,10 +134,18 @@ export interface BeagleConfig<Schema> {
    */
   navigationControllers?: Record<string, NavigationController>,
   /**
-     * Wether or not to use the browser history
-  */
+   * Wether or not to use the browser history
+   */
   useHistory?: boolean,
-
+  /**
+   * The map of custom operations that can be used to extend the capability of the Beagle expressions and are called like functions, 
+   * e.g. `@{sum(1, 2)}`.
+   * The keys of this object represent the operation name and the values must be the functions themselves. 
+   * An operation name must contain only letters, numbers and the character _, 
+   * it also must contain at least one letter or _.
+   * Note: If you create custom operations using the same name of a default from Beagle, the default will be overwritten by the custom one
+   */
+  customOperations?: Record<string, Operation>,
 }
 
 export type BeagleService = Readonly<{
@@ -152,6 +163,7 @@ export type BeagleService = Readonly<{
   actionHandlers: Record<string, ActionHandler>,
   lifecycleHooks: LifecycleHookMap,
   childrenMetadata: ChildrenMetadataMap,
+  operationHandlers: Record<string, Operation>,
   // services
   storage: Storage,
   httpClient: HttpClient,
@@ -160,6 +172,7 @@ export type BeagleService = Readonly<{
   remoteCache: RemoteCache,
   viewClient: ViewClient,
   defaultHeaders: DefaultHeaders,
+  preFetcher: PreFetcher,
   globalContext: GlobalContext,
   viewContentManagerMap: ViewContentManagerMap,
 }>

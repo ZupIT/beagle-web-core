@@ -35,6 +35,26 @@ describe('Actions: alert', () => {
     expect(window.alert).toHaveBeenCalledWith('Hello World!')
     unmockDialogs()
   })
+  
+  it('should show alert message as string for object', () => {
+    const mock = { _beagleComponent_: 'container', id: 'container' }
+    const unmockDialogs = mockSystemDialogs()
+    const message = {hello:'Hello World!'}
+
+    alert({
+      action: {
+        _beagleAction_: 'beagle:alert',
+        message,
+      },
+      beagleView: createBeagleViewMock({ getTree: () => mock }),
+      element: mock,
+      executeAction: jest.fn(),
+    })
+
+    expect(window.alert).toHaveBeenCalledWith(JSON.stringify(message))
+    unmockDialogs()
+  })
+
 
   it('should run onPressOk', () => {
     const mock = { _beagleComponent_: 'container', id: 'container' }

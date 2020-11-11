@@ -29,9 +29,9 @@ const addChildren: ActionHandler<AddChildrenAction> = ({ action, beagleView }) =
   }
 
   const currentChildren = component.children || []
-  if (mode === 'append') component.children = [...currentChildren, ...value]
-  if (mode === 'prepend') component.children = [...value, ...currentChildren]
-  if (mode === 'replace') component.children = value
+  if (mode.toLowerCase() === 'append') component.children = [...currentChildren, ...value]
+  if (mode.toLowerCase() === 'prepend') component.children = [...value, ...currentChildren]
+  if (mode.toLowerCase() === 'replace') component.children = value
 
   beagleView.getRenderer().doFullRender(component, component.id)
 }

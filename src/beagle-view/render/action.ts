@@ -19,6 +19,7 @@ import { IdentifiableBeagleUIElement, DataContext } from 'beagle-tree/types'
 import { BeagleAction, ActionHandler } from 'action/types'
 import ObjectUtils from 'utils/object'
 import { BeagleView } from 'beagle-view/types'
+import { Operation } from 'service/beagle-service/types'
 import Expression from './expression'
 
 const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
@@ -28,6 +29,7 @@ interface Parameters {
   contextHierarchy: DataContext[],
   beagleView: BeagleView,
   actionHandlers: Record<string, ActionHandler>,
+  operationHandlers: Record<string, Operation>,
 }
 
 type ActionOrActionList = BeagleAction | BeagleAction[]
@@ -77,11 +79,12 @@ function deserializeAction(
       }
 
       handler({
-        action: Expression.resolveForAction(action, hierarchy),
+        action: Expression.resolveForAction(action, hierarchy, params.operationHandlers),
         beagleView: params.beagleView,
         element: params.component,
         executeAction: executeSubAction,
       })
+
     })
   }
 }

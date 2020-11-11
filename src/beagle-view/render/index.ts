@@ -17,7 +17,7 @@
 import Tree from 'beagle-tree'
 import { ActionHandler } from 'action/types'
 import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
-import { ExecutionMode, Lifecycle, LifecycleHookMap } from 'service/beagle-service/types'
+import { ExecutionMode, Lifecycle, LifecycleHookMap, Operation } from 'service/beagle-service/types'
 import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
 import BeagleParseError from 'error/BeagleParseError'
@@ -39,6 +39,7 @@ interface Params {
   childrenMetadata: ChildrenMetadataMap,
   executionMode: ExecutionMode,
   actionHandlers: Record<string, ActionHandler>,
+  operationHandlers: Record<string, Operation>,
 }
 
 function createRenderer({
@@ -50,8 +51,9 @@ function createRenderer({
   childrenMetadata,
   executionMode,
   actionHandlers,
+  operationHandlers,
 }: Params): Renderer {
-  const { urlBuilder, viewClient, globalContext } = beagleView.getBeagleService()
+  const { urlBuilder, preFetcher, globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree
@@ -88,7 +90,7 @@ function createRenderer({
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
       Component.assignId(component)
       Component.eraseNullProperties(component)
-      Navigation.preFetchViews(component, urlBuilder, viewClient)
+      Navigation.preFetchViews(component, urlBuilder, preFetcher)
     })
 
     return viewTree as IdentifiableBeagleUIElement
@@ -120,9 +122,10 @@ function createRenderer({
         component,
         contextHierarchy: contextMap[component.id],
         actionHandlers,
+        operationHandlers,
         beagleView,
       })
-      const resolved = Expression.resolveForComponent(component, contextMap[component.id])
+      const resolved = Expression.resolveForComponent(component, contextMap[component.id], operationHandlers)
       Styling.convert(resolved)
 
       return resolved

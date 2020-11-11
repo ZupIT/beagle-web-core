@@ -379,7 +379,7 @@ describe('Beagle View: Navigator', () => {
         {
           routes: [
             { url: 'stack-A' },
-            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-B' } },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', id: 'stack-B' } },
             { url: 'stack-C' }
           ]
         }
@@ -389,7 +389,7 @@ describe('Beagle View: Navigator', () => {
         {
           routes: [
             { url: 'stack-A' },
-            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-B' } },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', id: 'stack-B' } },
           ]
         }
       ]
@@ -405,7 +405,7 @@ describe('Beagle View: Navigator', () => {
           routes: [
             { url: 'stack-A' },
             { url: 'stack-B' },
-            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', id: 'stack-C' } },
             { url: 'stack-C' },
             { url: 'stack-D' }
           ]
@@ -417,7 +417,7 @@ describe('Beagle View: Navigator', () => {
           routes: [
             { url: 'stack-A' },
             { url: 'stack-B' },
-            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', id: 'stack-C' } },
             { url: 'stack-C' }
           ]
         }
@@ -435,7 +435,7 @@ describe('Beagle View: Navigator', () => {
             { url: 'stack-A' },
             { url: 'stack-B' },
             { url: 'stack-C' },
-            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } },
+            { screen: { _beagleComponent_: 'beagle:screencomponent', id: 'stack-C' } },
             { url: 'stack-D' }
           ]
         }
@@ -447,7 +447,7 @@ describe('Beagle View: Navigator', () => {
             { url: 'stack-A' },
             { url: 'stack-B' },
             { url: 'stack-C' },
-            { screen: { _beagleComponent_: 'beagle:screencomponent', identifier: 'stack-C' } }
+            { screen: { _beagleComponent_: 'beagle:screencomponent', id: 'stack-C' } }
           ]
         }
       ]
