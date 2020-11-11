@@ -44,9 +44,10 @@ function createBeagleView(
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers, useHistory } = beagleService.getConfig()
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
-  let navigator = !useHistory ?
-    BeagleInternalNavigator.create(navigationControllers, initialNavigationHistory) :
-    BeagleBrowserNavigator.create(navigationControllers, initialNavigationHistory)
+  let navigator = useHistory ?
+    BeagleBrowserNavigator.create(navigationControllers, initialNavigationHistory) :
+    BeagleInternalNavigator.create(navigationControllers, initialNavigationHistory)
+
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => { }
 
@@ -238,7 +239,7 @@ function createBeagleView(
         try {
           const preFetchedView = await preFetcher.recover(preFetchedUrl)
           return renderer.doFullRender(preFetchedView)
-        } catch {}
+        } catch { }
       }
 
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })

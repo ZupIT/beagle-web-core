@@ -33,7 +33,6 @@ const createBeagleBrowserNavigator = (
   navigationControllers?: Record<string, NavigationController>,
   initialValue?: Stack[],
 ): BeagleNavigator => {
-  const navigation: Stack[] = initialValue ? cloneDeep(initialValue) : []
   let isNavigationInProgress = false
   let isDestroyed = false
   let popStateListener: any
@@ -75,9 +74,8 @@ const createBeagleBrowserNavigator = (
     setTimeout(async () => {
       popped.unshift(history.state)
       try {
-        await history.back()
+        history.back()
       } catch { }
-
     }, 10)
   }
 
@@ -132,8 +130,8 @@ const createBeagleBrowserNavigator = (
         await runListeners(route)
         const historyState: HistoryState = {
           isBeagleState: true,
-          route: route,
-          controllerId: controllerId,
+          route,
+          controllerId,
           stack: history.state.stack || 0,
         }
 
@@ -250,13 +248,11 @@ const createBeagleBrowserNavigator = (
   }
 
   function setupEventListener() {
-    if (!window || !history && history === undefined) return
+    if (!window || !history) return
 
     if (!history.state) {
       const initialState: HistoryState = {
         isBeagleState: true,
-        route: navigation[0].routes[0],
-        controllerId: navigation[0].controllerId,
         stack: 0,
       }
       history.pushState(initialState, '')
