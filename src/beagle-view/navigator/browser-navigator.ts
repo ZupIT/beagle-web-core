@@ -15,7 +15,7 @@
  */
 
 import BeagleNavigationError from 'error/BeagleNavigationError'
-import { debounce, isEqual } from 'lodash'
+import { debounce, find, isEqual } from 'lodash'
 import {
   BeagleNavigator,
   Route,
@@ -25,7 +25,8 @@ import {
   NavigationController,
   HistoryState,
 } from './types'
-import { isRouteIdentifiedBy, runListeners } from './navigator.commons'
+import { isRouteIdentifiedBy } from './navigator.commons'
+import logger from 'logger'
 
 const createBeagleBrowserNavigator = (
   navigationControllers?: Record<string, NavigationController>,
@@ -34,6 +35,7 @@ const createBeagleBrowserNavigator = (
   let isNavigationInProgress = false
   let isDestroyed = false
   let popStateListener: any
+  const defaultNavigationController = find(navigationControllers, { default: true }) || {}
   const history = window.history
   const listeners: NavigationListener[] = []
 
@@ -56,11 +58,27 @@ const createBeagleBrowserNavigator = (
     })
   }
 
+  function getNavigationController(controllerId?: string,) {
+
+    if (!controllerId) return defaultNavigationController
+    if (!navigationControllers || !navigationControllers[controllerId]) {
+      logger.warn(`No navigation controller with id ${controllerId} has been found. Using the default navigation controller.`)
+      return defaultNavigationController
+    }
+    return navigationControllers[controllerId]
+  }
+
+  function runListeners(route: Route) {
+    const controllerId = history.state && history.state.controllerId || undefined
+    const navigationController = getNavigationController(controllerId)
+    return Promise.all(listeners.map(l => l(route, navigationController)))
+  }
+
   function initInitialValues() {
     if (!initialValue) return
     initialValue.forEach((stack: Stack, index: number) => {
       stack.routes.forEach(async (route: Route) => {
-        await runListeners(route, listeners, stack.controllerId, navigationControllers)
+        await runListeners(route)
         const historyState: HistoryState = {
           isBeagleState: true,
           route,
@@ -91,8 +109,8 @@ const createBeagleBrowserNavigator = (
           stack: history.state && history.state.stack++,
         }
 
-        await runListeners(route, listeners, controllerId, navigationControllers)
-        
+        await runListeners(route)
+
         history.pushState(historyState, '')
       },
 
@@ -120,7 +138,7 @@ const createBeagleBrowserNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route, listeners, controllerId, navigationControllers)
+        await runListeners(route)
 
         const historyState: HistoryState = {
           isBeagleState: true,
@@ -190,7 +208,7 @@ const createBeagleBrowserNavigator = (
             await back()
         }
         await findStackToReset()
-        await runListeners(route, listeners, controllerId, navigationControllers)
+        await runListeners(route)
         history.pushState(historyState, '')
       },
 
@@ -212,7 +230,7 @@ const createBeagleBrowserNavigator = (
         }
 
         await findViewToReset()
-        await runListeners(route, listeners, controllerId, navigationControllers)
+        await runListeners(route)
         history.replaceState(historyState, '')
       },
     }
@@ -242,7 +260,7 @@ const createBeagleBrowserNavigator = (
 
     function popStateHandler(event: PopStateEvent) {
       if (isEqual(event.state.route, history && history.state)) return
-      runListeners(event.state.route, listeners, event.state.controllerId, navigationControllers)
+      runListeners(event.state.route)
     }
 
     popStateListener = debounce(popStateHandler, 500)

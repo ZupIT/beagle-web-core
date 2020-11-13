@@ -14,30 +14,7 @@
  * limitations under the License.
  */
 
-import find from 'lodash/find'
-import logger from 'logger'
-import { NavigationController, NavigationListener, Route } from './types'
-
-
-export function getNavigationController(navigationControllers?: Record<string, NavigationController>, controllerId?: string,) {
-  const defaultNavigationController = find(navigationControllers, { default: true }) || {}
-  if (!controllerId) return defaultNavigationController
-  if (!navigationControllers || !navigationControllers[controllerId]) {
-    logger.warn(`No navigation controller with id ${controllerId} has been found. Using the default navigation controller.`)
-    return defaultNavigationController
-  }
-  return navigationControllers[controllerId]
-}
-
-export function runListeners(
-  route: Route, 
-  listeners: NavigationListener[], 
-  controllerId?: string, 
-  navigationControllers?: Record<string, NavigationController>) {
-
-  const navigationController = getNavigationController(navigationControllers, controllerId)
-  return Promise.all(listeners.map(l => l(route, navigationController)))
-}
+import {  Route } from './types'
 
 
 export function isRouteIdentifiedBy(route: Route, id: string) {
