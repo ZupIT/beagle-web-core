@@ -83,7 +83,7 @@ const createBeagleBrowserNavigator = (
           isBeagleState: true,
           route,
           controllerId: stack.controllerId,
-          stack: index,
+          stack: index || 0,
         }
         history.pushState(historyState, '')
       })
@@ -106,7 +106,7 @@ const createBeagleBrowserNavigator = (
           isBeagleState: true,
           route,
           controllerId,
-          stack: history.state && history.state.stack++,
+          stack: history.state && history.state.stack++ || 0,
         }
 
         await runListeners(route)

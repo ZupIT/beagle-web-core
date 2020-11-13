@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import cloneDeep from 'lodash/cloneDeep'
 import BrowserNavigator from 'beagle-view/navigator/browser-navigator'
-import { BeagleNavigator, NavigationType, NavigationController, HistoryState } from 'beagle-view/navigator/types'
+import { HistoryState, Stack } from 'beagle-view/navigator/types'
 
 /**
  * @jest-environment jsdom
@@ -128,22 +127,6 @@ describe('Browser Navigator', () => {
     expect(error).toBeDefined()
     expect(error!.message).toMatch('navigation error')
   })
-
-
-  it('should start with initial navigation state if state undefined', () => {
-    const initialState: HistoryState = {
-      isBeagleState: true,
-      route: { url: '/test' },
-      controllerId: undefined,
-      stack: 0,
-    }
-    //@ts-ignore
-    window.history.state = undefined
-    const navigator = BrowserNavigator.create({}, [{ routes: [{ url: '/test' }] }])
-    expect(window.history.pushState).toHaveBeenCalledWith(initialState, "")
-  })
-
-
 
   it('should throw error when trying to popView on empty navigation history', async () => {
     const navigator = BrowserNavigator.create({}, [{ routes: [] }])
