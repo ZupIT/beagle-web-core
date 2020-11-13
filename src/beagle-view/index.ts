@@ -44,6 +44,7 @@ function createBeagleView(
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers, useHistory } = beagleService.getConfig()
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
+
   let navigator = useHistory ?
     BeagleBrowserNavigator.create(navigationControllers, initialNavigationHistory) :
     BeagleInternalNavigator.create(navigationControllers, initialNavigationHistory)
@@ -102,9 +103,9 @@ function createBeagleView(
           routes: [{ url: path }],
           controllerId: initialControllerId,
         }]
-      navigator = !useHistory ?
-        BeagleInternalNavigator.create(navigationControllers, initialNavigationHistory) :
-        BeagleBrowserNavigator.create(navigationControllers, initialNavigationHistory)
+      navigator = useHistory ?
+        BeagleBrowserNavigator.create(navigationControllers, initialNavigationHistory) :
+        BeagleInternalNavigator.create(navigationControllers, initialNavigationHistory)
       // eslint-disable-next-line
       setupNavigation()
     }

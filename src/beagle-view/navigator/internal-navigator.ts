@@ -17,9 +17,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 import last from 'lodash/last'
 import nth from 'lodash/nth'
-import find from 'lodash/find'
 import BeagleNavigationError from 'error/BeagleNavigationError'
-import logger from 'logger'
 import findLastIndex from 'lodash/findLastIndex'
 import {
   BeagleNavigator,
@@ -29,6 +27,7 @@ import {
   NavigationListener,
   NavigationController,
 } from './types'
+import { isRouteIdentifiedBy, runListeners } from './navigator.commons'
 
 const createBeagleNavigator = (
   navigationControllers?: Record<string, NavigationController>,
@@ -37,17 +36,7 @@ const createBeagleNavigator = (
   let navigation: Stack[] = initialValue ? cloneDeep(initialValue) : []
   let isNavigationInProgress = false
   let isDestroyed = false
-  const defaultNavigationController = find(navigationControllers, { default: true }) || {}
   const listeners: NavigationListener[] = []
-
-  function getNavigationController(controllerId?: string) {
-    if (!controllerId) return defaultNavigationController
-    if (!navigationControllers || !navigationControllers[controllerId]) {
-      logger.warn(`No navigation controller with id ${controllerId} has been found. Using the default navigation controller.`)
-      return defaultNavigationController
-    }
-    return navigationControllers[controllerId]
-  }
 
   function subscribe(listener: NavigationListener) {
     listeners.push(listener)
@@ -88,18 +77,6 @@ const createBeagleNavigator = (
     return route
   }
 
-  function runListeners(route: Route) {
-    const controllerId = navigation.length ? getCurrentStack().controllerId : undefined
-    const navigationController = getNavigationController(controllerId)
-    return Promise.all(listeners.map(l => l(route, navigationController)))
-  }
-
-  function isRouteIdentifiedBy(route: Route, id: string) {
-    return ('url' in route && route.url === id) ||
-      // todo: remove screenComponent.identifier with the release of v2.0.0"
-      ('screen' in route && (route.screen.identifier === id || route.screen.id === id))
-  }
-
   async function navigate(
     type: NavigationType,
     route?: Route | string,
@@ -111,7 +88,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushStack. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
+        await runListeners(route, listeners, controllerId, navigationControllers)
         navigation.push({ routes: [route], controllerId })
       },
 
@@ -121,7 +98,7 @@ const createBeagleNavigator = (
         }
 
         const route = last(getPreviousStack().routes)!
-        await runListeners(route)
+        await runListeners(route, listeners, controllerId, navigationControllers)
         navigation.pop()
       },
 
@@ -130,7 +107,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
+        await runListeners(route, listeners, controllerId, navigationControllers)
         if (navigation.length === 0) navigation.push({ routes: [] })
         getCurrentStack().routes.push(route)
       },
@@ -140,7 +117,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError('It was not possible to pop a view because Beagle Navigator has not more than one recorded route')
         }
 
-        await runListeners(getPreviousRoute())
+        await runListeners(getPreviousRoute(), listeners, controllerId, navigationControllers)
         const currentStack = getCurrentStack()
         currentStack.routes.pop()
         if (currentStack.routes.length <= 0) navigation.pop()
@@ -154,7 +131,7 @@ const createBeagleNavigator = (
         const currentStack = getCurrentStack()
         const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
-        await runListeners(currentStack.routes[index])
+        await runListeners(currentStack.routes[index], listeners, controllerId, navigationControllers)
         currentStack.routes.splice(index + 1)
       },
 
@@ -163,7 +140,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
+        await runListeners(route, listeners, controllerId, navigationControllers)
         navigation.pop()
         navigation.push({ routes: [route], controllerId })
       },
@@ -173,7 +150,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for resetApplication. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
+        await runListeners(route, listeners, controllerId, navigationControllers)
         navigation = [{ routes: [route], controllerId }]
       },
     }
