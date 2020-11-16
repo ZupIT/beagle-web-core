@@ -22,7 +22,7 @@
  * @jest-environment jsdom
  */
 
-import htmlHelpers from 'utils/html'
+import * as htmlHelpers from 'utils/html'
 
 describe('Actions Analytics Service', () => {
 

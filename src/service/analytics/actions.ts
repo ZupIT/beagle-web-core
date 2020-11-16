@@ -18,7 +18,7 @@ import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import get from 'lodash/get'
 import { Route } from 'beagle-view/navigator/types'
-import htmlHelpers from '../../utils/html'
+import { getElementByBeagleId, getElementPosition, getPath } from 'utils/html'
 import { AnalyticsConfig, AnalyticsRecord } from './types'
 
 
@@ -58,9 +58,9 @@ function formatActionRecord(
 ): AnalyticsRecord {
   const currentRoute = route
   const platform = currentPlatform
-  const element = htmlHelpers.getElementByBeagleId(component.id)
-  const position = element && htmlHelpers.getElementPosition(element)
-  const xPath = element && htmlHelpers.getPath(element)
+  const element = getElementByBeagleId(component.id)
+  const position = element && getElementPosition(element)
+  const xPath = element && getPath(element)
 
   let record: AnalyticsRecord = {
     type: 'action',

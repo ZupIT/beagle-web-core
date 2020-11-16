@@ -21,7 +21,7 @@ import findIndex from 'lodash/findIndex'
   * @param element the element for which to start the building of the xPath
   * @returns the xPath of the given element
   */
-function getPath(element: Node): any {
+export function getPath(element: Node): any {
   
   function getPathRecursively(element: Node, accumulator: string): string | undefined | null {
     if (!element.parentNode) return
@@ -47,7 +47,7 @@ function getPath(element: Node): any {
   * @param elementId the beagle element id
   * @returns the element of the given Id
   */
-function getElementByBeagleId(elementId: string) {
+export function getElementByBeagleId(elementId: string) {
   if (!document || !document.querySelector) return
   return document.querySelector(`[data-beagle-id="${elementId}"]`)
 }
@@ -57,18 +57,10 @@ function getElementByBeagleId(elementId: string) {
   * @param elementId the beagle element id
   * @returns Returns the position of the element `{ x, y }`
   */
-function getElementPosition(element: Element) {
+export function getElementPosition(element: Element) {
   if (!element) return
   return {
     x: element.getBoundingClientRect().left,
     y: element.getBoundingClientRect().top,
   }
 }
-
-const exportFunctions = {
-  getPath,
-  getElementByBeagleId,
-  getElementPosition,
-}
-
-export default exportFunctions

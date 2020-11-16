@@ -20,7 +20,7 @@
 
 import { AnalyticsConfig, BeagleAction, IdentifiableBeagleUIElement, Route } from 'index'
 import formatActionRecord from 'service/analytics/actions'
-import htmlHelpers from 'utils/html'
+import * as htmlHelpers from 'utils/html'
 
 
 
@@ -45,8 +45,11 @@ describe('Actions Analytics Service', () => {
   }
 
   beforeEach(() => {
+    //@ts-ignore
     htmlHelpers.getElementPosition = jest.fn().mockReturnValue({ x: 10, y: 10 })
+    //@ts-ignore
     htmlHelpers.getElementByBeagleId = jest.fn().mockReturnValue('<div>button</div>')
+    //@ts-ignore
     htmlHelpers.getPath = jest.fn().mockReturnValue('BODY/ROOT/DIV[3]/DIV/BUTTON')
   })
 

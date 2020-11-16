@@ -25,7 +25,7 @@
 import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction, IdentifiableBeagleUIElement, Route } from 'index'
 import { AnalyticsService } from 'service/analytics/types'
 import analyticsService from '../../../../src/service/analytics'
-import htmlHelpers from 'utils/html'
+import * as htmlHelpers from 'utils/html'
 
 describe('Actions Analytics Service', () => {
 
@@ -80,8 +80,11 @@ describe('Actions Analytics Service', () => {
   let analyticsServiceMock: AnalyticsService
 
   beforeAll(() => {
+    //@ts-ignore
     htmlHelpers.getElementPosition = jest.fn().mockReturnValue({ x: 10, y: 10 })
+    //@ts-ignore
     htmlHelpers.getElementByBeagleId = jest.fn().mockReturnValue('<div>button</div>')
+    //@ts-ignore
     htmlHelpers.getPath = jest.fn().mockReturnValue('BODY/ROOT/DIV[3]/DIV/BUTTON')
   })
 
