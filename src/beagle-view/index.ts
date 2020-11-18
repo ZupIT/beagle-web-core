@@ -45,7 +45,7 @@ function createBeagleView(
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
   let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
-  let unsubscribeFromGlobalContext = () => {}
+  let unsubscribeFromGlobalContext = () => { }
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -94,9 +94,10 @@ function createBeagleView(
     // if this is equivalent to a first navigation, reflect it in the navigator
     if (navigator.isEmpty() && !elementId && mode === 'replaceComponent') {
       const initialNavigationHistory = [
-        { routes: [{ url: path }],
-        controllerId: initialControllerId,
-      }]
+        {
+          routes: [{ url: path }],
+          controllerId: initialControllerId,
+        }]
       navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
       // eslint-disable-next-line
       setupNavigation()
@@ -220,12 +221,12 @@ function createBeagleView(
 
   function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
-      const { urlBuilder, preFetcher } = beagleService
+      const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
-  
+
       if (screen) return renderer.doFullRender(screen)
-  
+
       if (shouldPrefetch) {
         const path = StringUtils.addPrefix(url, '/')
         const preFetchedUrl = urlBuilder.build(path)
@@ -234,8 +235,10 @@ function createBeagleView(
           return renderer.doFullRender(preFetchedView)
         } catch {}
       }
-      
+
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
+      const platform = beagleService.getConfig().platform
+      analyticsService.createScreenRecord(route, platform)
     })
   }
 
@@ -248,7 +251,7 @@ function createBeagleView(
   createRenderer()
   setupNavigation()
   setupGlobalContext()
-  
+
   return beagleView
 }
 

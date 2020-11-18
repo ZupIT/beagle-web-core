@@ -22,6 +22,7 @@ import ViewClient from 'service/network/view-client'
 import PreFetcher from 'service/network/pre-fetcher'
 import GlobalContext from 'service/global-context'
 import ViewContentManagerMap from 'service/view-content-manager'
+import AnalyticsService from 'service/analytics'
 import { BeagleConfig } from './types'
 
 export function createServices(config: BeagleConfig<any>) {
@@ -43,6 +44,7 @@ export function createServices(config: BeagleConfig<any>) {
   const preFetcher = PreFetcher.create(viewClient)
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
+  const analyticsService = AnalyticsService.create(config.analyticsProvider)
 
   return {
     storage,
@@ -55,5 +57,6 @@ export function createServices(config: BeagleConfig<any>) {
     preFetcher,
     globalContext,
     viewContentManagerMap,
+    analyticsService,
   }
 }

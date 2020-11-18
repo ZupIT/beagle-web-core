@@ -62,7 +62,7 @@ export function mockSystemDialogs(result = false) {
     alert: jest.fn(() => result),
     confirm: jest.fn(() => result),
   }
-  
+
   return () => {
     globalScope.window = original
   }
@@ -181,11 +181,12 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
   return {
     actionHandlers: custom.actionHandlers || {},
     operationHandlers: custom.operationHandlers || defaultOperations,
+    analyticsService: { createActionRecord: jest.fn(), createScreenRecord: jest.fn() },
     childrenMetadata: custom.childrenMetadata || {},
     // @ts-ignore
     createView: custom.createView || (() => null),
     defaultHeaders: custom.defaultHeaders || createDefaultHeadersMock(),
-    getConfig: custom.getConfig || (() => ({ baseUrl: '', components: {} })),
+    getConfig: custom.getConfig || (() => ({ baseUrl: '', components: {}, platform: 'Test' })),
     globalContext: custom.globalContext || createGlobalContextMock(),
     httpClient: custom.httpClient || createHttpClientMock(),
     lifecycleHooks: custom.lifecycleHooks || {
@@ -234,6 +235,7 @@ export function createNavigatorMock(): BeagleNavigator {
     resetStack: jest.fn(),
     subscribe: jest.fn(),
     isEmpty: jest.fn(),
+    getCurrentRoute: jest.fn()
   }
 }
 
