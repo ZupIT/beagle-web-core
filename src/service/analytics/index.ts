@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import logger from 'logger'
 import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { LocalView, RemoteView, Route } from 'beagle-view/navigator/types'
 import formatActionRecord from './actions'
 import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord } from './types'
+import { StaticPromise, createStaticPromise } from './../../utils/promise'
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
   let sessionPromise: Promise<void>
   let configPromise: Promise<AnalyticsConfig>
+  const queue: StaticPromise<AnalyticsConfig>[] = [] 
 
   async function createScreenRecord(route: LocalView | RemoteView, platform?: string) {
     if (!provider) return
@@ -41,6 +43,23 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     provider.createRecord(record)
   }
 
+  function getConfig(){
+    const staticPromise = createStaticPromise<AnalyticsConfig>()
+    Promise.all([sessionPromise, configPromise]).then(([_, config]) => staticPromise.resolve(config))
+    return staticPromise
+  }
+
+  async function enqueueAndGetConfig(){
+    if(queue.length >= 100){
+      logger.warn('teste')
+      const oldest = queue.shift()
+      oldest?.reject('size exceeded')
+    }
+    const configPromise = getConfig()
+    queue.push(configPromise)
+    return await configPromise.promise
+  }  
+
   async function createActionRecord(
     action: BeagleAction,
     eventName: string,
@@ -49,8 +68,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     route: Route) {
 
     if (!provider) return
-    await sessionPromise
-    const config = await configPromise
+    const config = await enqueueAndGetConfig()
 
     const isActionDisabled = action.analytics && action.analytics.enable === false
     const isActionEnabled = action.analytics && action.analytics.enable === true
