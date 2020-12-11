@@ -75,6 +75,10 @@ export interface AnalyticsProvider {
    * 
    * @param record the record to create
    */
+
+  getMaximumItemsInQueue?: () => number,  
+
+
   createRecord: (record: AnalyticsRecord) => void,
 }
 

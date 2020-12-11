@@ -76,7 +76,35 @@ describe('Actions Analytics Service', () => {
     }
   }
 
-  const provider: AnalyticsProvider = analytics()
+  function analytyticsWithDelay(): AnalyticsProvider {
+    
+    function getConfig() {
+      return new Promise<AnalyticsConfig>((resolve, reject) => {
+        resolve({
+          enableScreenAnalytics: true,
+          actions: { 'beagle:pushView': ['route.screen'] }
+        })
+      })
+    }
+
+    function createRecord(record: AnalyticsRecord) {
+    }
+
+    function startSession() {
+      return new Promise<void>((resolve, reject) => {
+        resolve() 
+      })
+    }
+
+    return {
+      getConfig,
+      createRecord,
+      startSession
+    }
+
+  }
+
+  let provider: AnalyticsProvider = analytics()
   let analyticsServiceMock: AnalyticsService
 
   beforeAll(() => {
@@ -211,5 +239,30 @@ describe('Actions Analytics Service', () => {
     expect(provider.createRecord).toHaveBeenCalledTimes(0)
 
   })
+
+  it('should pass a value for queue size', async () => {
+    
+
+  })
+
+  // it('should NOT pass a value for queue size', async () => {
+    
+
+  // })
+
+  // it('shold check if items are being added in queue', async () => {
+    
+
+  // })
+
+  // it('Should show warning when exceeding queue max capacity ', async () => {
+    
+
+  // })
+
+  // it('Should verify if last item has been removed from the queue while waiting for config promises', async () => {
+    
+
+  // })
 
 })
