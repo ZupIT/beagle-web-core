@@ -41,10 +41,10 @@ yarn add @zup-it/beagle-web
 ```
 
 ## How does it work?
-This library is responsible for fetching and parsing a view from a Beagle backend, managing loading
-and error feedbacks, updates to the view and also navigation. The entry point for all these features
-is the BeagleService, which can be created through the function `createBeagleService`. See the
-example below:
+This library is responsible for fetching views, parsing them and updating the UI according to
+the results. These views are obtained from a Beagle backend service once a navigation is
+performed by the application. The entry point for all these features is the BeagleService,
+which can be created through the function `createBeagleService`. See the example below:
 
 ```typescript
 import createBeagleService from '@zup-it/beagle-web'
@@ -69,8 +69,9 @@ Component. In Angular, the values of this map would be classes.
 ### Creating a view
 After creating the Beagle Service, you can start to create Beagle Views, which are the main entity
 of your server-driven UIs. To create a Beagle View, you should use the `createView` method of the
-Beagle Service. A Beagle View must be observed and it also must fetch something for it to have an
-effect. In the example below we fetch the view `home` and we log it to the console.
+Beagle Service. A Beagle View must be observed and it will show some content as soon as a
+navigation is performed. In the example below we create a view and navigate it to `home`, logging 
+he result to the console.
 
 ```typescript
 const myView = beagleService.createView()
@@ -79,7 +80,7 @@ myView.subscribe((view) => {
   console.log(view)
 })
 
-myView.fetch({ path: '/home' })
+myView.getNavigator().pushView({ url: '/home' })
 ```
 
 Your main loop is the function passed as parameter to `subscribe`. This function is called everytime
@@ -115,7 +116,7 @@ and if you're using those, you should be using these libraries instead:
 
 The properties of a component can be strings, numbers, booleans, maps, arrays or even functions. A
 button, for example, can have `text`, `disabled` and `onPress`, where the first is its text, the
-second tells if it's clickable or not and the third is a function that must be called when its
+second tells if it's clickable or not and the third is a function that must be called when it's
 pressed. Taking again React as an example, we could have implemented this component in the following
 way:
 
