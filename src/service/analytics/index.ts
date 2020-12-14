@@ -25,13 +25,16 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   let sessionPromise: Promise<void>
   let configPromise: Promise<AnalyticsConfig>
   let maximumItemsInQueue: number
-  let isResolved: boolean
+  let isResolved: boolean = false
   const queue: StaticPromise<AnalyticsConfig>[] = [] 
+
+  
 
   async function createScreenRecord(route: LocalView | RemoteView, platform?: string) {
     if (!provider) return
     await sessionPromise
     const config = await configPromise
+
     if (!config.enableScreenAnalytics) return
 
     const record: AnalyticsRecord = {
@@ -53,7 +56,9 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
 
   async function enqueueAndGetConfig(){
     if (queue.length >= maximumItemsInQueue){
-      logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
+      if(!isResolved){
+        logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
+      }
       const oldest = queue.shift()
       oldest && oldest.reject('size exceeded')
     }
@@ -71,6 +76,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
 
     if (!provider) return
     const config = await enqueueAndGetConfig()
+    isResolved = true  
   
     const isActionDisabled = action.analytics && action.analytics.enable === false
     const isActionEnabled = action.analytics && action.analytics.enable === true
@@ -87,7 +93,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     if (!provider) return
     sessionPromise = provider.startSession()
     configPromise = provider.getConfig()
-    maximumItemsInQueue = (provider.getMaximumItemsInQueue && provider.getMaximumItemsInQueue()) || 5
+    maximumItemsInQueue = (provider.getMaximumItemsInQueue && provider.getMaximumItemsInQueue()) || 3
   }
 
   start()

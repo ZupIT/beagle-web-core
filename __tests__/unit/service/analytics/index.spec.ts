@@ -76,35 +76,41 @@ describe('Actions Analytics Service', () => {
     }
   }
 
-  function analytyticsWithDelay(): AnalyticsProvider {
-    
+  function analyticsWithDelay(): AnalyticsProvider {
+
     function getConfig() {
-      return new Promise<AnalyticsConfig>((resolve, reject) => {
-        resolve({
+      console.log('config resolvido')
+      return new Promise<AnalyticsConfig>(resolve => setTimeout(() => { resolve({
           enableScreenAnalytics: true,
           actions: { 'beagle:pushView': ['route.screen'] }
         })
-      })
-    }
-
-    function createRecord(record: AnalyticsRecord) {
-    }
+      },5000)
+    )}    
+    function createRecord(record: AnalyticsRecord) {console.log(record)}
 
     function startSession() {
-      return new Promise<void>((resolve, reject) => {
-        resolve() 
-      })
+      console.log('session resolvido')
+      return new Promise<void> (resolve => setTimeout(() => {
+        console.log('session resolvido')
+        resolve()
+      },5000)  
+    )}
+
+
+    function getMaximumItemsInQueue() {
+      return 5
     }
 
     return {
       getConfig,
       createRecord,
-      startSession
+      startSession,
+      getMaximumItemsInQueue
     }
-
   }
 
   let provider: AnalyticsProvider = analytics()
+  let providerWithDelay: AnalyticsProvider = analyticsWithDelay()
   let analyticsServiceMock: AnalyticsService
 
   beforeAll(() => {
@@ -116,8 +122,9 @@ describe('Actions Analytics Service', () => {
     htmlHelpers.getPath = jest.fn().mockReturnValue('BODY/ROOT/DIV[3]/DIV/BUTTON')
   })
 
-  beforeEach(()=>{
+  beforeEach(() => {
     spyOn(provider, 'createRecord').and.callThrough()
+    spyOn(providerWithDelay, 'createRecord').and.callThrough()
   })
 
   it('should call create Record for Action', async () => {
@@ -162,7 +169,7 @@ describe('Actions Analytics Service', () => {
     beagleActionMock = {
       _beagleAction_: 'beagle:pushView',
       route: { screen: { id: 'screenMock' } },
-      analytics:{
+      analytics: {
         enable: true
       }
     }
@@ -194,9 +201,9 @@ describe('Actions Analytics Service', () => {
     beagleActionMock = {
       _beagleAction_: 'beagle:pushView',
       route: { screen: { id: 'screenMock' } },
-      analytics:{
+      analytics: {
         enable: true,
-        additionalEntries:{extra: 'test extra info'}
+        additionalEntries: { extra: 'test extra info' }
       }
     }
 
@@ -222,7 +229,7 @@ describe('Actions Analytics Service', () => {
 
     provider.getConfig = (async () => analyticsConfigMock)
     analyticsServiceMock = analyticsService.create(provider)
-    await analyticsServiceMock.createScreenRecord(routeMock,'Jest')
+    await analyticsServiceMock.createScreenRecord(routeMock, 'Jest')
     expect(provider.createRecord).toHaveBeenCalledWith(expectedRecord)
 
   })
@@ -235,33 +242,48 @@ describe('Actions Analytics Service', () => {
 
     provider.getConfig = (async () => analyticsConfigMock)
     analyticsServiceMock = analyticsService.create(provider)
-    await analyticsServiceMock.createScreenRecord(routeMock,'Jest')
+    await analyticsServiceMock.createScreenRecord(routeMock, 'Jest')
     expect(provider.createRecord).toHaveBeenCalledTimes(0)
 
   })
 
-  it('should pass a value for queue size', async () => {
-    
+  it('should show warning when exceeding queue max capacity ', async () => {
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: { 'beagle:pushStack': [] }
+    }
+    beagleActionMock = {
+      _beagleAction_: 'beagle:pushView',
+      route: { screen: { id: 'screenMock' } },
+      analytics: {
+        enable: true
+      }
+    }
+
+    providerWithDelay.getConfig = (async () => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(providerWithDelay)
+
+    for (let i = 0; i < 5; i++){
+      await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
+    }
+
+    expect(providerWithDelay.createRecord).toHaveBeenCalled()
 
   })
 
-  // it('should NOT pass a value for queue size', async () => {
-    
+  // it('Should not show warning when NOT exceeding queue max capacity', async () => {
 
   // })
 
   // it('shold check if items are being added in queue', async () => {
-    
+
 
   // })
 
-  // it('Should show warning when exceeding queue max capacity ', async () => {
-    
+  
 
-  // })
+  // it('should verify if last item has been removed from the queue while waiting for config promises', async () => {
 
-  // it('Should verify if last item has been removed from the queue while waiting for config promises', async () => {
-    
 
   // })
 
