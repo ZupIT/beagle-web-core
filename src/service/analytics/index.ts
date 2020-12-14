@@ -25,7 +25,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   let sessionPromise: Promise<void>
   let configPromise: Promise<AnalyticsConfig>
   let maximumItemsInQueue: number
-  let isResolved: boolean = false
+  let isResolved = false
   const queue: StaticPromise<AnalyticsConfig>[] = [] 
 
   
@@ -56,7 +56,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
 
   async function enqueueAndGetConfig(){
     if (queue.length >= maximumItemsInQueue){
-      if(!isResolved){
+      if (!isResolved){
         logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
       }
       const oldest = queue.shift()

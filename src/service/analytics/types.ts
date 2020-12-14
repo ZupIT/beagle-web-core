@@ -80,7 +80,7 @@ export interface AnalyticsProvider {
   /**
 
   */
-  getMaximumItemsInQueue?: () => number
+  getMaximumItemsInQueue?: () => number,
 }
 
 export interface ActionAnalyticsConfig {
