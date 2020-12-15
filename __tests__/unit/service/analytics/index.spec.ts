@@ -26,8 +26,6 @@ import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction, Iden
 import { AnalyticsService } from 'service/analytics/types'
 import analyticsService from '../../../../src/service/analytics'
 import * as htmlHelpers from 'utils/html'
-import logger from 'logger'
-
 
 describe('Actions Analytics Service', () => {
 
@@ -35,6 +33,7 @@ describe('Actions Analytics Service', () => {
   let beagleActionMock: BeagleAction
   let componentMock: IdentifiableBeagleUIElement
   let routeMock: Route
+  const promiseArray = [1, 2, 3]
 
   const eventName = 'OnPress'
   beagleActionMock = {
@@ -81,33 +80,28 @@ describe('Actions Analytics Service', () => {
   function analyticsWithDelay(): AnalyticsProvider {
 
     function getConfig() {
-      console.log('config resolvido')
-      return new Promise<AnalyticsConfig>(resolve => setTimeout(() => { resolve({
+      return new Promise<AnalyticsConfig>(resolve => setTimeout(() => {
+        resolve({
           enableScreenAnalytics: true,
           actions: { 'beagle:pushView': ['route.screen'] }
         })
-      },4000)
-    )}
+      }, 4000)
+      )
+    }
 
-    function createRecord(record: AnalyticsRecord) {console.log(record)}
+    function createRecord(record: AnalyticsRecord) { }
 
     function startSession() {
-      console.log('session resolvido')
-      return new Promise<void> (resolve => setTimeout(() => {
-        console.log('session resolvido')
+      return new Promise<void>(resolve => setTimeout(() => {
         resolve()
-      },2000)  
-    )}
-
-      // function getMaximumItemsInQueue(){
-      //   return 5
-      // }
+      }, 2000)
+      )
+    }
 
     return {
       getConfig,
       createRecord,
-      startSession,
-      //getMaximumItemsInQueue
+      startSession
     }
   }
 
@@ -125,131 +119,155 @@ describe('Actions Analytics Service', () => {
   })
 
   beforeEach(() => {
+    globalMocks.log.mockClear()
     spyOn(provider, 'createRecord').and.callThrough()
     spyOn(providerWithDelay, 'createRecord').and.callThrough()
   })
 
-  // it('should call create Record for Action', async () => {
-  //   analyticsServiceMock = analyticsService.create(provider)
-  //   const expectedRecord = {
-  //     type: 'action',
-  //     platform: 'WEB Jest',
-  //     event: 'OnPress',
-  //     component: {
-  //       type: 'beagle:button',
-  //       id: 'beagle_mock',
-  //       position: { x: 10, y: 10 },
-  //       xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
-  //     },
-  //     beagleAction: 'beagle:pushView',
-  //     'route.screen': { id: 'screenMock' },
-  //     url: 'text.action.payload'
-  //   }
-  //   await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
-  //   expect(provider.createRecord).toHaveBeenCalledWith(expectedRecord)
+  it('should call create Record for Action', async () => {
+    analyticsServiceMock = analyticsService.create(provider)
+    const expectedRecord = {
+      type: 'action',
+      platform: 'WEB Jest',
+      event: 'OnPress',
+      component: {
+        type: 'beagle:button',
+        id: 'beagle_mock',
+        position: { x: 10, y: 10 },
+        xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
+      },
+      beagleAction: 'beagle:pushView',
+      'route.screen': { id: 'screenMock' },
+      url: 'text.action.payload'
+    }
+    await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
+    expect(provider.createRecord).toHaveBeenCalledWith(expectedRecord)
 
-  // })
+  })
 
-  // it('should NOT call create Record for Action', async () => {
-  //   analyticsConfigMock = {
-  //     enableScreenAnalytics: true,
-  //     actions: { 'beagle:pushStack': [] }
-  //   }
+  it('should NOT call create Record for Action', async () => {
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: { 'beagle:pushStack': [] }
+    }
 
-  //   provider.getConfig = (async () => analyticsConfigMock)
-  //   analyticsServiceMock = analyticsService.create(provider)
-  //   await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
-  //   expect(provider.createRecord).toHaveBeenCalledTimes(0)
+    provider.getConfig = (async () => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
+    expect(provider.createRecord).toHaveBeenCalledTimes(0)
 
-  // })
+  })
 
-  // it('should call create Record if Action has Analytics enabled', async () => {
-  //   analyticsConfigMock = {
-  //     enableScreenAnalytics: true,
-  //     actions: { 'beagle:pushStack': [] }
-  //   }
-  //   beagleActionMock = {
-  //     _beagleAction_: 'beagle:pushView',
-  //     route: { screen: { id: 'screenMock' } },
-  //     analytics: {
-  //       enable: true
-  //     }
-  //   }
+  it('should call create Record if Action has Analytics enabled', async () => {
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: { 'beagle:pushStack': [] }
+    }
+    beagleActionMock = {
+      _beagleAction_: 'beagle:pushView',
+      route: { screen: { id: 'screenMock' } },
+      analytics: {
+        enable: true
+      }
+    }
 
-  //   provider.getConfig = (async () => analyticsConfigMock)
-  //   analyticsServiceMock = analyticsService.create(provider)
-  //   await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
-  //   expect(provider.createRecord).toHaveBeenCalled()
+    provider.getConfig = (async () => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
+    expect(provider.createRecord).toHaveBeenCalled()
 
-  // })
+  })
 
-  // it('should call create Record for Action with additional entries', async () => {
-  //   analyticsServiceMock = analyticsService.create(provider)
-  //   const expectedRecord = {
-  //     type: 'action',
-  //     platform: 'WEB Jest',
-  //     event: 'OnPress',
-  //     component: {
-  //       type: 'beagle:button',
-  //       id: 'beagle_mock',
-  //       position: { x: 10, y: 10 },
-  //       xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
-  //     },
-  //     beagleAction: 'beagle:pushView',
-  //     url: 'text.action.payload',
-  //     extra: 'test extra info'
-  //   }
+  it('should call create Record for Action with additional entries', async () => {
+    analyticsServiceMock = analyticsService.create(provider)
+    const expectedRecord = {
+      type: 'action',
+      platform: 'WEB Jest',
+      event: 'OnPress',
+      component: {
+        type: 'beagle:button',
+        id: 'beagle_mock',
+        position: { x: 10, y: 10 },
+        xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
+      },
+      beagleAction: 'beagle:pushView',
+      url: 'text.action.payload',
+      extra: 'test extra info'
+    }
 
-  //   beagleActionMock = {
-  //     _beagleAction_: 'beagle:pushView',
-  //     route: { screen: { id: 'screenMock' } },
-  //     analytics: {
-  //       enable: true,
-  //       additionalEntries: { extra: 'test extra info' }
-  //     }
-  //   }
+    beagleActionMock = {
+      _beagleAction_: 'beagle:pushView',
+      route: { screen: { id: 'screenMock' } },
+      analytics: {
+        enable: true,
+        additionalEntries: { extra: 'test extra info' }
+      }
+    }
 
-  //   analyticsConfigMock = {
-  //     enableScreenAnalytics: true,
-  //     actions: { 'beagle:pushView': [] }
-  //   }
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: { 'beagle:pushView': [] }
+    }
 
-  //   provider.getConfig = (async () => analyticsConfigMock)
-  //   analyticsServiceMock = analyticsService.create(provider)
-  //   await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
-  //   expect(provider.createRecord).toHaveBeenCalledWith(expectedRecord)
+    provider.getConfig = (async () => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
+    expect(provider.createRecord).toHaveBeenCalledWith(expectedRecord)
 
-  // })
+  })
 
-  // it('should call create Record for Screen', async () => {
-  //   const expectedRecord = { type: 'screen', platform: 'WEB Jest', url: 'text.action.payload' }
+  it('should call create Record for Screen', async () => {
+    const expectedRecord = { type: 'screen', platform: 'WEB Jest', url: 'text.action.payload' }
 
-  //   analyticsConfigMock = {
-  //     enableScreenAnalytics: true,
-  //     actions: { 'beagle:pushStack': [] }
-  //   }
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: { 'beagle:pushStack': [] }
+    }
 
-  //   provider.getConfig = (async () => analyticsConfigMock)
-  //   analyticsServiceMock = analyticsService.create(provider)
-  //   await analyticsServiceMock.createScreenRecord(routeMock, 'Jest')
-  //   expect(provider.createRecord).toHaveBeenCalledWith(expectedRecord)
+    provider.getConfig = (async () => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    await analyticsServiceMock.createScreenRecord(routeMock, 'Jest')
+    expect(provider.createRecord).toHaveBeenCalledWith(expectedRecord)
 
-  // })
+  })
 
-  // it('should NOT call create Record for Screen', async () => {
-  //   analyticsConfigMock = {
-  //     enableScreenAnalytics: false,
-  //     actions: { 'beagle:pushStack': [] }
-  //   }
+  it('should NOT call create Record for Screen', async () => {
+    analyticsConfigMock = {
+      enableScreenAnalytics: false,
+      actions: { 'beagle:pushStack': [] }
+    }
 
-  //   provider.getConfig = (async () => analyticsConfigMock)
-  //   analyticsServiceMock = analyticsService.create(provider)
-  //   await analyticsServiceMock.createScreenRecord(routeMock, 'Jest')
-  //   expect(provider.createRecord).toHaveBeenCalledTimes(0)
+    provider.getConfig = (async () => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    await analyticsServiceMock.createScreenRecord(routeMock, 'Jest')
+    expect(provider.createRecord).toHaveBeenCalledTimes(0)
 
-  // })
+  })
 
-  it('should show warning when exceeding queue max capacity ', async () => {
+  it('should show warning when exceeding queue max capacity', async () => {
+    beagleActionMock = {
+      _beagleAction_: 'beagle:pushView',
+      route: { screen: { id: 'screenMock' } },
+      analytics: {
+        enable: true
+      }
+    }
+
+    providerWithDelay.getMaximumItemsInQueue = () => 2
+    analyticsServiceMock = analyticsService.create(providerWithDelay)
+
+    const promises = promiseArray.map(async (id) => {
+      try {
+        await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
+        return id
+      } catch { }
+    })
+    await Promise.all(promises)
+    expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(2)
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', '2 analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.')
+  })
+
+  it('Should not show warning when NOT exceeding queue max capacity', async () => {
 
     beagleActionMock = {
       _beagleAction_: 'beagle:pushView',
@@ -258,42 +276,19 @@ describe('Actions Analytics Service', () => {
         enable: true
       }
     }
-    
+
     providerWithDelay.getMaximumItemsInQueue = () => 5
     analyticsServiceMock = analyticsService.create(providerWithDelay)
 
-    for (let i = 0; i < 6; i++){
-      await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
-    }
+    const promises = promiseArray.map(async (id) => {
+      try {
+        await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
+        return id
+      } catch { }
+    })
+    await Promise.all(promises)
 
-    expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(6)
-    
-    expect(globalMocks.log).toHaveBeenCalledWith('warn', '5 analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.')
+    expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(3)
+    expect(globalMocks.log).not.toHaveBeenCalled()
   })
-
-  // it('Should not show warning when NOT exceeding queue max capacity', async () => {
-
-  //   beagleActionMock = {
-  //     _beagleAction_: 'beagle:pushView',
-  //     route: { screen: { id: 'screenMock' } },
-  //     analytics: {
-  //       enable: true
-  //     }
-  //   }
-
-  //   providerWithDelay.getMaximumItemsInQueue = () => 10
-  //   analyticsServiceMock = analyticsService.create(providerWithDelay)
-    
-  //   for (let i = 0; i < 5; i++){
-  //     await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
-  //   }
-
-  //   expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(5)
-  //   expect(globalMocks.log).not.toHaveBeenCalled()
-  // })
-
-
-  // it('shold check if items are being added in queue', async () => {})
-  // it('should verify if last item has been removed from the queue while waiting for config promises', async () => {})
-
 })

@@ -26,9 +26,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   let configPromise: Promise<AnalyticsConfig>
   let maximumItemsInQueue: number
   let isResolved = false
-  const queue: StaticPromise<AnalyticsConfig>[] = [] 
-
-  
+  const queue: StaticPromise<AnalyticsConfig>[] = []
 
   async function createScreenRecord(route: LocalView | RemoteView, platform?: string) {
     if (!provider) return
@@ -48,28 +46,24 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     provider.createRecord(record)
   }
 
-  function getConfig(){
+  function getConfig() {
     const staticPromise = createStaticPromise<AnalyticsConfig>()
-    Promise.all([sessionPromise, configPromise]).then(([_, config]) =>staticPromise.resolve(config))
+    Promise.all([sessionPromise, configPromise]).then(([_, config]) => staticPromise.resolve(config))
     return staticPromise
   }
 
-  async function enqueueAndGetConfig(){
-    
-    console.log('Tamanho da fila', queue.length)
-    console.log(maximumItemsInQueue)
-    console.log(isResolved)
-
-    if (queue.length >= maximumItemsInQueue){
-     
-      logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
+  async function enqueueAndGetConfig() {
+    if (queue.length >= maximumItemsInQueue) {
+      if (!isResolved) {
+        logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
+      }
       const oldest = queue.shift()
       oldest && oldest.reject('size exceeded')
     }
     const configPromise = getConfig()
     queue.push(configPromise)
     return await configPromise.promise
-  }  
+  }
 
   async function createActionRecord(
     action: BeagleAction,
@@ -77,11 +71,11 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     component: IdentifiableBeagleUIElement,
     platform: string,
     route: Route) {
-     
+
     if (!provider) return
     const config = await enqueueAndGetConfig()
-    isResolved = true  
-  
+    isResolved = true
+
     const isActionDisabled = action.analytics && action.analytics.enable === false
     const isActionEnabled = action.analytics && action.analytics.enable === true
     const isActionEnabledInConfig = config.actions[action._beagleAction_]
