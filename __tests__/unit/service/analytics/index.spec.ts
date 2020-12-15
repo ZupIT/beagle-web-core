@@ -26,6 +26,8 @@ import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction, Iden
 import { AnalyticsService } from 'service/analytics/types'
 import analyticsService from '../../../../src/service/analytics'
 import * as htmlHelpers from 'utils/html'
+import logger from 'logger'
+
 
 describe('Actions Analytics Service', () => {
 
@@ -84,8 +86,9 @@ describe('Actions Analytics Service', () => {
           enableScreenAnalytics: true,
           actions: { 'beagle:pushView': ['route.screen'] }
         })
-      },10000)
-    )}    
+      },4000)
+    )}
+
     function createRecord(record: AnalyticsRecord) {console.log(record)}
 
     function startSession() {
@@ -93,13 +96,18 @@ describe('Actions Analytics Service', () => {
       return new Promise<void> (resolve => setTimeout(() => {
         console.log('session resolvido')
         resolve()
-      },5000)  
+      },2000)  
     )}
+
+      // function getMaximumItemsInQueue(){
+      //   return 5
+      // }
 
     return {
       getConfig,
       createRecord,
-      startSession
+      startSession,
+      //getMaximumItemsInQueue
     }
   }
 
@@ -242,6 +250,7 @@ describe('Actions Analytics Service', () => {
   // })
 
   it('should show warning when exceeding queue max capacity ', async () => {
+
     beagleActionMock = {
       _beagleAction_: 'beagle:pushView',
       route: { screen: { id: 'screenMock' } },
@@ -249,7 +258,7 @@ describe('Actions Analytics Service', () => {
         enable: true
       }
     }
-
+    
     providerWithDelay.getMaximumItemsInQueue = () => 5
     analyticsServiceMock = analyticsService.create(providerWithDelay)
 
@@ -258,11 +267,12 @@ describe('Actions Analytics Service', () => {
     }
 
     expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(6)
-  
-    //expect(globalMocks.log).toHaveBeenCalledWith('warn', '10 analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.')
+    
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', '5 analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.')
   })
 
   // it('Should not show warning when NOT exceeding queue max capacity', async () => {
+
   //   beagleActionMock = {
   //     _beagleAction_: 'beagle:pushView',
   //     route: { screen: { id: 'screenMock' } },
@@ -273,12 +283,12 @@ describe('Actions Analytics Service', () => {
 
   //   providerWithDelay.getMaximumItemsInQueue = () => 10
   //   analyticsServiceMock = analyticsService.create(providerWithDelay)
-
+    
   //   for (let i = 0; i < 5; i++){
   //     await analyticsServiceMock.createActionRecord(beagleActionMock, eventName, componentMock, 'Jest', routeMock)
   //   }
 
-  //   expect(providerWithDelay.createRecord).toHaveBeenCalled()
+  //   expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(5)
   //   expect(globalMocks.log).not.toHaveBeenCalled()
   // })
 

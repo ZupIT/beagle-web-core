@@ -55,10 +55,14 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   }
 
   async function enqueueAndGetConfig(){
+    
+    console.log('Tamanho da fila', queue.length)
+    console.log(maximumItemsInQueue)
+    console.log(isResolved)
+
     if (queue.length >= maximumItemsInQueue){
-      if (!isResolved){
-        logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
-      }
+     
+      logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
       const oldest = queue.shift()
       oldest && oldest.reject('size exceeded')
     }
@@ -73,7 +77,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     component: IdentifiableBeagleUIElement,
     platform: string,
     route: Route) {
-
+     
     if (!provider) return
     const config = await enqueueAndGetConfig()
     isResolved = true  
