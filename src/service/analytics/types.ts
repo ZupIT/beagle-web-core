@@ -78,7 +78,10 @@ export interface AnalyticsProvider {
   createRecord: (record: AnalyticsRecord) => void,
 
   /**
+   *This method implements the size of an analytics queue. The size can be specified or not.
 
+   *When not specified, the maximum number of items in the queue will be 100. This is the queue to hold 
+   *the records while getConfig() and startSession() are not finished.
   */
   getMaximumItemsInQueue?: () => number,
 }
