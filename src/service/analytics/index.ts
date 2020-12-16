@@ -91,7 +91,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     if (!provider) return
     sessionPromise = provider.startSession()
     configPromise = provider.getConfig()
-    maximumItemsInQueue = (provider.getMaximumItemsInQueue && provider.getMaximumItemsInQueue()) || 3
+    maximumItemsInQueue = (provider.getMaximumItemsInQueue && provider.getMaximumItemsInQueue()) || 100
   }
 
   start()
