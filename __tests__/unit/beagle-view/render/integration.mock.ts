@@ -158,10 +158,20 @@ function createReadyToRenderElements() {
   return elements
 }
 
+function createElementsWithoutCss() {
+  const elements = createPreProcessedElements()
+
+  elements.buttonR1C1.onPress = expect.any(Function)
+  elements.number.text = 'result: 20'
+
+  return elements
+}
+
 export function createTree() {
   const original = createElements().root
   const preProcessed = createPreProcessedElements().root
   const readyToRender = createReadyToRenderElements().root
+  const withoutCss = createElementsWithoutCss().root
 
-  return { original, preProcessed, readyToRender }
+  return { original, preProcessed, readyToRender, withoutCss }
 }

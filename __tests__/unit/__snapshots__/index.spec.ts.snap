@@ -19,6 +19,7 @@ Object {
     "assignId": [Function],
     "eraseNullProperties": [Function],
     "formatChildrenProperty": [Function],
+    "resetIdCounter": [Function],
   },
   "ObjectUtils": Object {
     "getOriginalKeyByCaseInsensitiveKey": [Function],
