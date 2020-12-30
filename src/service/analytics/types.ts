@@ -42,6 +42,7 @@ export interface AnalyticsRecord {
   [key: string]: any,
 }
 
+
 export interface AnalyticsProvider {
   /**
    * Returns the configuration for the analytics. In general, this configuration will be made
@@ -105,13 +106,21 @@ export interface ActionAnalyticsConfig {
   additionalEntries?: Record<string, any>,
 }
 
+export interface ActionRecordParams {
+  action: BeagleAction,
+  eventName: string,
+  component: IdentifiableBeagleUIElement,
+  platform: string,
+  route: Route,
+}
+
 export interface AnalyticsService {
   /**
    * Creates a screen record with the given parameters
    * @param route the route to be recorded
    * @param platform the platform in which the project is currently running
    */
-  createScreenRecord: (route: LocalView | RemoteView, platform?: string) => Promise<void>,
+  createScreenRecord: (params: ActionRecordParams) => Promise<void>,
 
   /**
    * Creates an action record with the given parameters
@@ -120,10 +129,5 @@ export interface AnalyticsService {
    * @param component the `IdentifiableBeagleUIElement`
    * @param beagleView the current `BeagleView`
    */
-  createActionRecord: (
-    action: BeagleAction, 
-    eventName: string, 
-    component: IdentifiableBeagleUIElement, 
-    platform: string, 
-    route: Route) => Promise<void>,
+  createActionRecord: (params: ActionRecordParams) => Promise<void>,
 }

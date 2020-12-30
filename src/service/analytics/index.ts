@@ -18,21 +18,22 @@ import { BeagleAction } from 'action/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { LocalView, RemoteView, Route } from 'beagle-view/navigator/types'
 import formatActionRecord from './actions'
-import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord } from './types'
-import { StaticPromise, createStaticPromise } from './../../utils/promise'
+import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord ,ActionRecordParams} from './types'
+
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
-  let sessionPromise: Promise<void>
+  let hasStarted = false
   let configPromise: Promise<AnalyticsConfig>
-  let maximumItemsInQueue: number
-  let isResolved = false
-  const queue: StaticPromise<AnalyticsConfig>[] = []
+  let sessionPromise: Promise<void>
 
-  async function createScreenRecord(route: LocalView | RemoteView, platform?: string) {
+  async function createScreenRecord(params: ActionRecordParams) {
+   
+    if(!hasStarted) return addToQueue({ type: 'action', params })
+    const { action, eventName, component, platform, route } = params
+    
     if (!provider) return
     await sessionPromise
     const config = await configPromise
-
     if (!config.enableScreenAnalytics) return
 
     const record: AnalyticsRecord = {
@@ -46,35 +47,36 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     provider.createRecord(record)
   }
 
-  function getConfig() {
-    const staticPromise = createStaticPromise<AnalyticsConfig>()
-    Promise.all([sessionPromise, configPromise]).then(([_, config]) => staticPromise.resolve(config))
-    return staticPromise
+  function addToQueue(record) {
+
+  }
+  
+  function createAnalyticsRecordsInQueue(){
+    
   }
 
-  async function enqueueAndGetConfig() {
-    if (queue.length >= maximumItemsInQueue) {
-      if (!isResolved) {
-        logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
-      }
-      const oldest = queue.shift()
-      oldest && oldest.reject('size exceeded')
-    }
-    const configPromise = getConfig()
-    queue.push(configPromise)
-    return await configPromise.promise
-  }
 
-  async function createActionRecord(
-    action: BeagleAction,
-    eventName: string,
-    component: IdentifiableBeagleUIElement,
-    platform: string,
-    route: Route) {
+  // async function enqueueAndGetConfig() {
+  //   if (queue.length >= maximumItemsInQueue) {
+  //     if (!isResolved) {
+  //       logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
+  //     }
+  //     const oldest = queue.shift()
+  //     oldest && oldest.reject('size exceeded')
+  //   }
+  //   const configPromise = getConfig()
+  //   queue.push(configPromise)
+  //   return await configPromise.promise
+  // }
 
+  async function createActionRecord(params: ActionRecordParams) {
+    
+    if(!hasStarted) return addToQueue({ type: 'action', params })
+    const { action, eventName, component, platform, route } = params
+    
     if (!provider) return
-    const config = await enqueueAndGetConfig()
-    isResolved = true
+    await sessionPromise
+    const config = await configPromise
 
     const isActionDisabled = action.analytics && action.analytics.enable === false
     const isActionEnabled = action.analytics && action.analytics.enable === true
@@ -87,11 +89,12 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     }
   }
 
-  function start() {
+  async function start() {
     if (!provider) return
-    sessionPromise = provider.startSession()
-    configPromise = provider.getConfig()
-    maximumItemsInQueue = (provider.getMaximumItemsInQueue && provider.getMaximumItemsInQueue()) || 100
+    const startupResult = await Promise.all([provider.startSession(), provider.getConfig()])
+    config = startupResult[1]
+    hasStarted = true
+    createAnalyticsRecordsInQueue()
   }
 
   start()
