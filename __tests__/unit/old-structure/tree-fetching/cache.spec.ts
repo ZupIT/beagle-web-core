@@ -21,12 +21,13 @@ import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../mocks'
 import { createLocalStorageMock } from '../utils/test-utils'
+import { BeagleStorage } from 'service/beagle-service/types'
 
 const url = 'http://my-app/my-view'
 
 describe('Utils: tree fetching (cache)', () => {
   const httpClient = { fetch }
-  let storage: Storage
+  let storage: BeagleStorage
   let viewClient: ViewClientType
   const initialStorageValues = {
     [`${namespace}/${url}/get`]: JSON.stringify(treeA),

@@ -42,7 +42,7 @@ export function whenCalledTimes(
   const interval = 20
   let attempts = 0
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const id = setInterval(() => {
       if (fn.mock.calls.length >= times) {
         clearInterval(id)

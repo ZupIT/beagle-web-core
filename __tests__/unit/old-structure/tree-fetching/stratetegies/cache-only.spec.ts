@@ -21,6 +21,7 @@ import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../../mocks'
 import { createLocalStorageMock } from '../../utils/test-utils'
+import { BeagleStorage } from 'service/beagle-service/types'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -30,7 +31,7 @@ describe('Utils: tree fetching (load: cache-only)', () => {
   const strategy: Strategy = 'cache-only'
   const httpClient = { fetch }
   const retry = jest.fn()
-  let storage: Storage
+  let storage: BeagleStorage
   let viewClient: ViewClientType
 
   beforeEach(() => {
