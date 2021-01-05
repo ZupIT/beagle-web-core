@@ -22,6 +22,7 @@ import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
 import { HttpClient, HttpMethod } from 'service/network/types'
 import { RemoteCache, CacheMetadata } from 'service/network/remote-cache/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
+import { BeagleStorage } from 'service/beagle-service/types'
 import { ViewClient, Strategy, StrategyType, StrategyArrays, ViewClientLoadParams } from './types'
 
 export const namespace = '@beagle-web/cache'
@@ -39,7 +40,7 @@ const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
 }
 
 function createViewClient(
-  storage: Storage,
+  storage: BeagleStorage,
   defaultHeadersService: DefaultHeaders,
   remoteCache: RemoteCache,
   httpClient: HttpClient,
@@ -113,7 +114,7 @@ function createViewClient(
     let response: Response
     const requestTime = Date.now()
     const defaultHeaders = await defaultHeadersService.get(url, method)
-    const allHeaders = { ...headers, ...defaultHeaders }
+    const allHeaders: Record<string, any> = { ...headers, ...defaultHeaders }
     try {
       response = await httpClient.fetch(
         url,
