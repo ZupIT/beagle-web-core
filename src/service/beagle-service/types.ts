@@ -152,6 +152,10 @@ export interface BeagleConfig<Schema> {
    * Note: If you create custom operations using the same name of a default from Beagle, the default will be overwritten by the custom one
    */
   customOperations?: Record<string, Operation>,
+  /**
+   * Disables the default style conversion to CSS in a Beagle tree.
+   */
+  disableCssTransformation?: boolean,
 }
 
 export type BeagleService = Readonly<{

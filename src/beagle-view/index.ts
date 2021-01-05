@@ -216,6 +216,7 @@ function createBeagleView(
       renderToScreen: runListeners,
       setTree,
       typesMetadata: {},
+      disableCssTransformation: !!beagleService.getConfig().disableCssTransformation,
     })
   }
 
