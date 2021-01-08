@@ -82,6 +82,8 @@ function formatActionRecord(
   if (currentRoute) {
     if ('screen' in currentRoute) record.screenId = currentRoute.screen.identifier || currentRoute.screen.id
     else record.url = currentRoute.url
+
+    //record.screen
   }
 
   return record

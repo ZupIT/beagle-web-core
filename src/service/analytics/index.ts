@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
@@ -14,21 +15,27 @@
  * limitations under the License.
  */
 import logger from 'logger'
-import { BeagleAction } from 'action/types'
-import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
-import { LocalView, RemoteView, Route } from 'beagle-view/navigator/types'
+// import { BeagleAction } from 'action/types'
+// import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
+// import { LocalView, RemoteView, Route } from 'beagle-view/navigator/types'
 import formatActionRecord from './actions'
-import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord ,ActionRecordParams} from './types'
-
+import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, ActionRecordParams } from './types'
+import { StaticPromise } from './../../utils/promise';
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
   let hasStarted = false
   let configPromise: Promise<AnalyticsConfig>
   let sessionPromise: Promise<void>
+  const queue: StaticPromise<AnalyticsConfig>[] = [] 
+
+
+  function addToQueue(record) {
+
+  }
 
   async function createScreenRecord(params: ActionRecordParams) {
    
-    if(!hasStarted) return addToQueue({ type: 'action', params })
+    if (!hasStarted) return addToQueue({ type: 'action', params })
     const { action, eventName, component, platform, route } = params
     
     if (!provider) return
@@ -47,14 +54,9 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     provider.createRecord(record)
   }
 
-  function addToQueue(record) {
-
-  }
-  
   function createAnalyticsRecordsInQueue(){
     
   }
-
 
   // async function enqueueAndGetConfig() {
   //   if (queue.length >= maximumItemsInQueue) {
@@ -71,7 +73,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
 
   async function createActionRecord(params: ActionRecordParams) {
     
-    if(!hasStarted) return addToQueue({ type: 'action', params })
+    if (!hasStarted) return addToQueue({ type: 'action', params })
     const { action, eventName, component, platform, route } = params
     
     if (!provider) return
