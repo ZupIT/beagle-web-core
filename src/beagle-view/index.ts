@@ -218,8 +218,7 @@ function createBeagleView(
       typesMetadata: {},
     })
   }
-
-  function setupNavigation() {
+function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
@@ -232,11 +231,12 @@ function createBeagleView(
         const preFetchedUrl = urlBuilder.build(path)
         try {
           const preFetchedView = await preFetcher.recover(preFetchedUrl)
-          return renderer.doFullRender(preFetchedView)
-        } catch {}
+          renderer.doFullRender(preFetchedView)
+        } catch { }
+      } else {
+        await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       }
 
-      await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       const platform = beagleService.getConfig().platform
       analyticsService.createScreenRecord(route, platform)
     })
