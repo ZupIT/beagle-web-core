@@ -238,7 +238,10 @@ function createBeagleView(
 
       await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       const platform = beagleService.getConfig().platform
-      analyticsService.createScreenRecord(route, platform)
+      analyticsService.createScreenRecord({
+        route: route, 
+        platform: platform,
+      })
     })
   }
 

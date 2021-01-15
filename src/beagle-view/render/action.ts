@@ -86,8 +86,14 @@ function deserializeAction(
 
       const route = params.beagleView.getNavigator().getCurrentRoute()
       const platform = beagleService.getConfig().platform || ''
-      if (route)
-        beagleService.analyticsService.createActionRecord(action, eventName, params.component, platform, route)
+      if (route) 
+        beagleService.analyticsService.createActionRecord({
+          action: action,
+          eventName: eventName, 
+          component: params.component, 
+          platform: platform, 
+          route: route,
+        })
     })
   }
 }

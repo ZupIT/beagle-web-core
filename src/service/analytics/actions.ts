@@ -15,12 +15,9 @@
  */
 
 import { BeagleAction } from 'action/types'
-import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import get from 'lodash/get'
-import { Route } from 'beagle-view/navigator/types'
 import { getElementByBeagleId, getElementPosition, getPath } from 'utils/html'
-import { AnalyticsConfig, AnalyticsRecord } from './types'
-
+import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig } from './types'
 
 /**
  * This function generates a new `Record<string, any>` with the attributes that were passed along
@@ -48,20 +45,13 @@ function createActionAttributes(action: BeagleAction, whiteListedAttributesInCon
  * @param beagleView the `BeagleView` to use in the record
  * @returns the formatted `AnalyticsRecord`
  */
-function formatActionRecord(
-  action: BeagleAction,
-  eventName: string,
-  config: AnalyticsConfig,
-  component: IdentifiableBeagleUIElement,
-  currentPlatform: string,
-  route: Route
-): AnalyticsRecord {
+function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig): AnalyticsRecord {
+  const { action, eventName, component, platform, route } = params
   const currentRoute = route
-  const platform = currentPlatform
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
   const xPath = element && getPath(element)
-
+  
   let record: AnalyticsRecord = {
     type: 'action',
     platform: `WEB ${platform}`,
@@ -81,9 +71,7 @@ function formatActionRecord(
 
   if (currentRoute) {
     if ('screen' in currentRoute) record.screenId = currentRoute.screen.identifier || currentRoute.screen.id
-    else record.url = currentRoute.url
-
-    //record.screen
+    else record.screen = currentRoute.url
   }
 
   return record

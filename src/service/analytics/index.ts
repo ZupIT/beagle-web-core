@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
@@ -14,81 +13,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import logger from 'logger'
-// import { BeagleAction } from 'action/types'
-// import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
-// import { LocalView, RemoteView, Route } from 'beagle-view/navigator/types'
 import formatActionRecord from './actions'
-import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, ActionRecordParams } from './types'
-import { StaticPromise } from './../../utils/promise';
+import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, ActionRecordParams, ScreenRecordParams } from './types'
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
+  const defaultMaxItems = 100
   let hasStarted = false
-  let configPromise: Promise<AnalyticsConfig>
-  let sessionPromise: Promise<void>
-  const queue: StaticPromise<AnalyticsConfig>[] = [] 
-
-
-  function addToQueue(record) {
-
+  let config: AnalyticsConfig
+  let queue: (ActionRecordParams | ScreenRecordParams)[] = []
+ 
+  function addToQueue(record: any) {
+    const maxItemsInQueue = (provider && provider.getMaximumItemsInQueue)  ? provider.getMaximumItemsInQueue() : defaultMaxItems
+    if (queue.length >= maxItemsInQueue) {
+      if (!hasStarted) {
+        logger.warn(`${maxItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
+      }
+      logger.error('size exceeded')
+      queue.shift()
+    }
+    queue.push(record)
   }
 
-  async function createScreenRecord(params: ActionRecordParams) {
-   
-    if (!hasStarted) return addToQueue({ type: 'action', params })
-    const { action, eventName, component, platform, route } = params
-    
+  async function createScreenRecord(params: ScreenRecordParams) {
     if (!provider) return
-    await sessionPromise
-    const config = await configPromise
-    if (!config.enableScreenAnalytics) return
+    if (!hasStarted) return addToQueue({ type: 'action', params })
+    const { platform, route } = params
 
+    if (!config.enableScreenAnalytics) return
     const record: AnalyticsRecord = {
       type: 'screen',
       platform: `WEB ${platform}`,
     }
 
     if ('screen' in route) record.screenId = route.screen.identifier || route.screen.id
-    else record.url = route.url
+    else record.screen = route.url
 
     provider.createRecord(record)
   }
 
-  function createAnalyticsRecordsInQueue(){
-    
-  }
-
-  // async function enqueueAndGetConfig() {
-  //   if (queue.length >= maximumItemsInQueue) {
-  //     if (!isResolved) {
-  //       logger.warn(`${maximumItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.`)
-  //     }
-  //     const oldest = queue.shift()
-  //     oldest && oldest.reject('size exceeded')
-  //   }
-  //   const configPromise = getConfig()
-  //   queue.push(configPromise)
-  //   return await configPromise.promise
-  // }
-
   async function createActionRecord(params: ActionRecordParams) {
-    
+    if (!provider) return
     if (!hasStarted) return addToQueue({ type: 'action', params })
     const { action, eventName, component, platform, route } = params
-    
-    if (!provider) return
-    await sessionPromise
-    const config = await configPromise
-
     const isActionDisabled = action.analytics && action.analytics.enable === false
     const isActionEnabled = action.analytics && action.analytics.enable === true
     const isActionEnabledInConfig = config.actions[action._beagleAction_]
     const shouldGenerateAnalytics = (isActionEnabled || (!isActionDisabled && isActionEnabledInConfig))
 
     if (shouldGenerateAnalytics) {
-      const record = formatActionRecord(action, eventName, config, component, platform, route)
+      const record = formatActionRecord({
+        action,
+        eventName,
+        component,
+        platform,
+        route,
+      }, config)
       provider.createRecord(record)
     }
+  }
+
+  async function createAnalyticsRecordsInQueue() {
+    const promisesList: Promise<void>[] = []
+    queue.forEach(item => {
+      const actionRecord = (item as ActionRecordParams).action
+      if (actionRecord){
+        promisesList.push(createActionRecord(item as ActionRecordParams))
+      } else {
+        promisesList.push(createScreenRecord(item as ScreenRecordParams))
+      }
+    })
+    await Promise.all(promisesList)
+    queue = []
   }
 
   async function start() {
