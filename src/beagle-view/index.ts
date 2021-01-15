@@ -236,7 +236,6 @@ function setupNavigation() {
       } else {
         await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       }
-
       const platform = beagleService.getConfig().platform
       analyticsService.createScreenRecord(route, platform)
     })
