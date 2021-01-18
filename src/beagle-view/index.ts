@@ -223,6 +223,7 @@ function setupNavigation() {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
+      let isDone = false
 
       if (screen) return renderer.doFullRender(screen)
 
@@ -232,8 +233,10 @@ function setupNavigation() {
         try {
           const preFetchedView = await preFetcher.recover(preFetchedUrl)
           renderer.doFullRender(preFetchedView)
+          isDone = true
         } catch { }
-      } else {
+      }
+      if(!isDone){  
         await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       }
       const platform = beagleService.getConfig().platform
