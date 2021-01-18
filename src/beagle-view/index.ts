@@ -236,7 +236,7 @@ function setupNavigation() {
           isDone = true
         } catch { }
       }
-      if(!isDone){  
+      if (!isDone){  
         await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       }
       const platform = beagleService.getConfig().platform
