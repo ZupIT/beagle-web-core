@@ -46,6 +46,7 @@ export function createRenderer(params: Partial<Parameters<typeof Renderer.create
     executionMode: params.executionMode || 'development',
     renderToScreen: params.renderToScreen || jest.fn(),
     typesMetadata: params.typesMetadata || {},
+    disableCssTransformation: params.disableCssTransformation || false,
   })
 
   return renderer

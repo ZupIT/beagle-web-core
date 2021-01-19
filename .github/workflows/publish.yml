@@ -31,12 +31,12 @@ jobs:
       # get the version in package.json
 
       - name: get current version
-        run: echo ::set-env name=PACKAGE_VERSION::$(node bin/publish/get-version)
+        run: echo PACKAGE_VERSION=$(node bin/publish/get-version) >> $GITHUB_ENV
       
       # check if the version in package.json is greater than the version in NPM
   
       - name: check if this version should be published
-        run: echo ::set-env name=SHOULD_PUBLISH::$(node bin/publish/should-publish)
+        run: echo SHOULD_PUBLISH=$(node bin/publish/should-publish) >> $GITHUB_ENV
 
       # if it's a new version, create a new release
 

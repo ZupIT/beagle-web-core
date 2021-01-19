@@ -16,6 +16,7 @@
 
 import Tree from 'beagle-tree'
 import { ChildrenMetadata } from 'metadata/types'
+import Component from 'beagle-view/render/component'
 import { createRenderer } from './utils'
 import { createTree } from './integration.mock'
 import { createBeagleViewMock } from '../../old-structure/utils/test-utils'
@@ -34,7 +35,7 @@ import { createBeagleViewMock } from '../../old-structure/utils/test-utils'
  */
 
 describe('Beagle View: render: integration', () => {
-  const { original, preProcessed, readyToRender } = createTree()
+  const { original, preProcessed, readyToRender, withoutCss } = createTree()
   const setTree = jest.fn()
   const renderToScreen = jest.fn()
   const beagleView = createBeagleViewMock()
@@ -54,5 +55,18 @@ describe('Beagle View: render: integration', () => {
 
   it('should be ready to render', () => {
     expect(renderToScreen).toHaveBeenCalledWith(readyToRender)
+  })
+
+  it('should not convert style to css', () => {
+    Component.resetIdCounter()
+    const renderer = createRenderer({
+      setTree,
+      renderToScreen,
+      beagleView,
+      childrenMetadata,
+      disableCssTransformation: true,
+    })
+    renderer.doFullRender(Tree.clone(original))
+    expect(renderToScreen).toHaveBeenCalledWith(withoutCss)
   })
 })

@@ -40,6 +40,7 @@ interface Params {
   executionMode: ExecutionMode,
   actionHandlers: Record<string, ActionHandler>,
   operationHandlers: Record<string, Operation>,
+  disableCssTransformation: boolean,
 }
 
 function createRenderer({
@@ -52,6 +53,7 @@ function createRenderer({
   executionMode,
   actionHandlers,
   operationHandlers,
+  disableCssTransformation,
 }: Params): Renderer {
   const { urlBuilder, preFetcher, globalContext } = beagleView.getBeagleService()
 
@@ -126,7 +128,7 @@ function createRenderer({
         beagleView,
       })
       const resolved = Expression.resolveForComponent(component, contextMap[component.id], operationHandlers)
-      Styling.convert(resolved)
+      if (!disableCssTransformation) Styling.convert(resolved)
 
       return resolved
     })
