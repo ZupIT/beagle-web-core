@@ -34,9 +34,26 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       queue.shift()
     }
     queue.push(record)
-    console.log('tamanho da fila ->', queue.length)
+    //console.log('tamanho da fila ->', queue.length)
   }
 
+  async function createAnalyticsRecordsInQueue() {
+    const promisesList: Promise<void>[] = []
+    hasStarted = true
+    if (!provider) return
+    queue.forEach(item => {
+      const actionRecord = (item as ActionRecordParams).action
+      if (actionRecord){
+        promisesList.push(createActionRecord(item as ActionRecordParams))
+      } else {
+        promisesList.push(createScreenRecord(item as ScreenRecordParams))
+      }
+    })
+    await Promise.all(promisesList)
+    hasStarted = false
+    queue = []
+  }
+  
   async function createScreenRecord(params: ScreenRecordParams) {
     if (!provider) return
     if (config == null) return addToQueue({ type: 'screen', params })
@@ -80,7 +97,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   // }
 
  async function createActionRecord (params: ActionRecordParams) {
-    if(!provider) return
+    if (!provider) return
     const { action, eventName, component, platform, route } = params
     config = provider.getConfig()
 
@@ -105,22 +122,6 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     }
   }
 
-  async function createAnalyticsRecordsInQueue() {
-    const promisesList: Promise<void>[] = []
-    hasStarted = true
-    if(!provider) return
-    queue.forEach(item => {
-      const actionRecord = (item as ActionRecordParams).action
-      if (actionRecord){
-        promisesList.push(createActionRecord(item as ActionRecordParams))
-      } else {
-        promisesList.push(createScreenRecord(item as ScreenRecordParams))
-      }
-    })
-    await Promise.all(promisesList)
-    hasStarted = false
-    queue = []
-  }
 
   function start() {
     if (!provider) return

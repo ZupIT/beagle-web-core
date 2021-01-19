@@ -54,7 +54,7 @@ export interface AnalyticsProvider {
    * 
    * @return a promise that resolves with the configuration
    */
-  getConfig: () => (AnalyticsConfig | null)
+  getConfig: () => (AnalyticsConfig | null),
   
    /** 
    * This function will be called every time Beagle needs to create a record. If you don't want
@@ -89,7 +89,7 @@ export interface ActionAnalyticsConfig {
 export interface ScreenRecordParams {
   route: LocalView | RemoteView,
   platform?: string,
-  timestamp?: Date
+  timestamp?: Date,
 }
 
 export interface ActionRecordParams {
@@ -98,7 +98,7 @@ export interface ActionRecordParams {
   component: IdentifiableBeagleUIElement,
   platform?: string,
   route: Route,
-  timestamp?: Date
+  timestamp?: Date,
 }
 
 export interface AnalyticsService {
