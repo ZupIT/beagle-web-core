@@ -21,7 +21,7 @@ import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, ActionRecordParams
 function createAnalyticsService(provider?: AnalyticsProvider) {
   const defaultMaxItems = 100
   let hasStarted = false
-  let config: AnalyticsConfig
+  let config: AnalyticsConfig | null
   let queue: (ActionRecordParams | ScreenRecordParams)[] = []
  
   function addToQueue(record: any) {
@@ -34,14 +34,15 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       queue.shift()
     }
     queue.push(record)
+    console.log('tamanho da fila ->', queue.length)
   }
 
   async function createScreenRecord(params: ScreenRecordParams) {
     if (!provider) return
-    if (!hasStarted) return addToQueue({ type: 'action', params })
+    if (config == null) return addToQueue({ type: 'screen', params })
     const { platform, route } = params
 
-    if (!config.enableScreenAnalytics) return
+    if (config && !config.enableScreenAnalytics) return
     const record: AnalyticsRecord = {
       type: 'screen',
       platform: `WEB ${platform}`,
@@ -51,18 +52,44 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     else record.screen = route.url
 
     provider.createRecord(record)
+
+    if (!hasStarted && queue.length > 0){
+      createAnalyticsRecordsInQueue()
+    }
   }
 
-  async function createActionRecord(params: ActionRecordParams) {
-    if (!provider) return
-    if (!hasStarted) return addToQueue({ type: 'action', params })
-    const { action, eventName, component, platform, route } = params
-    const isActionDisabled = action.analytics && action.analytics.enable === false
-    const isActionEnabled = action.analytics && action.analytics.enable === true
-    const isActionEnabledInConfig = config.actions[action._beagleAction_]
-    const shouldGenerateAnalytics = (isActionEnabled || (!isActionDisabled && isActionEnabledInConfig))
+  // async function createActionRecord(params: ActionRecordParams) {
+  //   if (!provider) return
+  //   if (!hasStarted) return addToQueue({ type: 'action', params })
+  //   const { action, eventName, component, platform, route } = params
+  //   const isActionDisabled = action.analytics && action.analytics.enable === false
+  //   const isActionEnabled = action.analytics && action.analytics.enable === true
+  //   const isActionEnabledInConfig =config && config.actions[action._beagleAction_]
+  //   const shouldGenerateAnalytics = (isActionEnabled || (!isActionDisabled && isActionEnabledInConfig))
 
-    if (shouldGenerateAnalytics) {
+  //   if (shouldGenerateAnalytics) {
+  //     const record = formatActionRecord({
+  //       action,
+  //       eventName,
+  //       component,
+  //       platform,
+  //       route,
+  //     }, config)
+  //     provider.createRecord(record)
+  //   }
+  // }
+
+ async function createActionRecord (params: ActionRecordParams) {
+    if(!provider) return
+    const { action, eventName, component, platform, route } = params
+    config = provider.getConfig()
+
+    if (config == null) return addToQueue({ type: 'action', params })
+    const isActionEnabledInPayload = action.analytics
+    const isActionEnabledInConfig = config && config.actions[action._beagleAction_]
+    const shouldGenerateAnalytics = (isActionEnabledInPayload || isActionEnabledInConfig)
+ 
+    if (shouldGenerateAnalytics && config) {
       const record = formatActionRecord({
         action,
         eventName,
@@ -72,10 +99,16 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       }, config)
       provider.createRecord(record)
     }
+
+    if (!hasStarted && queue.length > 0){
+      createAnalyticsRecordsInQueue()
+    }
   }
 
   async function createAnalyticsRecordsInQueue() {
     const promisesList: Promise<void>[] = []
+    hasStarted = true
+    if(!provider) return
     queue.forEach(item => {
       const actionRecord = (item as ActionRecordParams).action
       if (actionRecord){
@@ -85,15 +118,14 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       }
     })
     await Promise.all(promisesList)
+    hasStarted = false
     queue = []
   }
 
-  async function start() {
+  function start() {
     if (!provider) return
-    const startupResult = await Promise.all([provider.startSession(), provider.getConfig()])
-    config = startupResult[1]
-    hasStarted = true
-    createAnalyticsRecordsInQueue()
+    const startupResult = provider.getConfig()
+    config = startupResult
   }
 
   start()
