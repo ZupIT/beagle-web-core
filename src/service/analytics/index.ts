@@ -36,7 +36,6 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       queue.shift()
     }
     queue.push(record)
-    console.log('tamanho da fila ->', queue.length)
   }
 
   async function createAnalyticsRecordsInQueue() {
