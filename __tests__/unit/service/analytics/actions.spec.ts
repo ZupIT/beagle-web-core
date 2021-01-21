@@ -20,6 +20,7 @@
 
 import { AnalyticsConfig, BeagleAction, IdentifiableBeagleUIElement, Route } from 'index'
 import formatActionRecord from 'service/analytics/actions'
+import { ActionRecordParams } from 'service/analytics/types'
 import * as htmlHelpers from 'utils/html'
 
 describe('Actions Analytics Service', () => {
@@ -30,14 +31,16 @@ describe('Actions Analytics Service', () => {
     route: { screen: { id: 'screenMock' } }
   }
 
-  const recordBase ={
+  const button = {
+    _beagleComponent_: 'beagle:button',
+    id: 'beagle_mock',
+    onPress: actionMock
+  }
+
+  const recordBase: ActionRecordParams = {
     eventName: 'OnPress',
     platform: 'Jest',
-    component: {
-      _beagleComponent_: 'beagle:button',
-      id: 'beagle_mock',
-      onPress: actionMock
-    },
+    component: button,
     action: actionMock,
     route: {
       url: 'text.action.payload'
@@ -95,6 +98,49 @@ describe('Actions Analytics Service', () => {
     actionMock.analytics = {additionalEntries: {test:'additionalEntries'}, attributes: ['route.screen']}
     const result = formatActionRecord({...recordBase, action: actionMock}, analyticsConfigMock)
     
+    expect(result).toEqual(expected)
+  })
+
+  it('should resolve expressions', () => {
+    const container = {
+      _beagleComponent_: 'beagle:container',
+      id: 'someId',
+      children: [button],
+      context: {
+        id: 'context',
+        value: {
+          query: 'test'
+        }
+      }
+    }
+
+    const condition = {
+      _beagleAction_: "beagle:condition",
+      analytics: {
+          attributes: ["condition"],
+          enable: true
+      },
+      condition: "@{eq(context.query, 'test')}",
+    }
+
+    const record = {...recordBase,
+      component: container,
+      action: condition
+    }
+
+    const expected = {
+      ...expectedBase,
+      beagleAction : "beagle:condition",
+      condition : true,
+      component: {
+        ...expectedBase.component,
+        id: 'someId',
+        type: 'beagle:container'
+      }
+    }
+
+    const result = formatActionRecord(record, analyticsConfigMock)
+
     expect(result).toEqual(expected)
   })
 })
