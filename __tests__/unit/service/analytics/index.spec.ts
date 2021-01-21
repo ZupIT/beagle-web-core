@@ -119,7 +119,7 @@ describe('Actions Analytics Service', () => {
       return delayedConfig
     }
 
-    function createRecord(record: AnalyticsRecord) {}
+    function createRecord(record: AnalyticsRecord) { }
 
     return {
       getConfig,
@@ -149,6 +149,8 @@ describe('Actions Analytics Service', () => {
 
   it('should call create Record for Action', () => {
     analyticsServiceMock = analyticsService.create(provider)
+    actionMock = { ...actionMock, analytics: true }
+    recordBase = { ...recordBase, action: actionMock }
 
     analyticsServiceMock.createActionRecord(recordBase)
 
@@ -159,6 +161,9 @@ describe('Actions Analytics Service', () => {
   it('should NOT call create Record for Action', () => {
 
     provider.getConfig = (() => analyticsConfigMock)
+    actionMock = { ...actionMock, analytics: false }
+    recordBase = { ...recordBase, action: actionMock }
+    
     analyticsServiceMock = analyticsService.create(provider)
     analyticsServiceMock.createActionRecord(recordBase)
     expect(provider.createRecord).toHaveBeenCalledTimes(0)
