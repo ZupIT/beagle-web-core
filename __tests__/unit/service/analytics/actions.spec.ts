@@ -64,9 +64,11 @@ describe('Actions Analytics Service', () => {
     },
     beagleAction: 'beagle:pushView',
     screen: "text.action.payload",
+    timestamp: 10
   }
 
   beforeEach(() => {
+    spyOn(Date, 'now').and.returnValue(10000)
     //@ts-ignore
     htmlHelpers.getElementPosition = jest.fn().mockReturnValue({ x: 10, y: 10 })
     //@ts-ignore
@@ -101,46 +103,4 @@ describe('Actions Analytics Service', () => {
     expect(result).toEqual(expected)
   })
 
-  it('should resolve expressions', () => {
-    const container = {
-      _beagleComponent_: 'beagle:container',
-      id: 'someId',
-      children: [button],
-      context: {
-        id: 'context',
-        value: {
-          query: 'test'
-        }
-      }
-    }
-
-    const condition = {
-      _beagleAction_: "beagle:condition",
-      analytics: {
-          attributes: ["condition"],
-          enable: true
-      },
-      condition: "@{eq(context.query, 'test')}",
-    }
-
-    const record = {...recordBase,
-      component: container,
-      action: condition
-    }
-
-    const expected = {
-      ...expectedBase,
-      beagleAction : "beagle:condition",
-      condition : true,
-      component: {
-        ...expectedBase.component,
-        id: 'someId',
-        type: 'beagle:container'
-      }
-    }
-
-    const result = formatActionRecord(record, analyticsConfigMock)
-
-    expect(result).toEqual(expected)
-  })
 })

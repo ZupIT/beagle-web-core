@@ -27,7 +27,7 @@ import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig, ActionAnalyticsCo
  * @returns the Record of white listed attributes from the `AnalyticsProvider` or the action itself
  */
 function createActionAttributes(action: BeagleAction, whiteListedAttributesInConfig: string[]) {
-  const actionConfig = action.analytics as ActionAnalyticsConfig 
+  const actionConfig = action.analytics as ActionAnalyticsConfig
   const whiteListedAttributesInAction = action && action.analytics && actionConfig.attributes
   const attributes = whiteListedAttributesInAction || whiteListedAttributesInConfig
 
@@ -51,7 +51,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
   const xPath = element && getPath(element)
-  const actionConfig = action.analytics as ActionAnalyticsConfig  
+  const actionConfig = action.analytics as ActionAnalyticsConfig
 
   let record: AnalyticsRecord = {
     type: 'action',
@@ -65,9 +65,10 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     },
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
+    timestamp: Math.round(Date.now() / 1000),
   }
- 
-  if (action.analytics && actionConfig.additionalEntries){
+
+  if (action.analytics && actionConfig.additionalEntries) {
     record = { ...record, ...actionConfig.additionalEntries }
   }
   if (currentRoute) {

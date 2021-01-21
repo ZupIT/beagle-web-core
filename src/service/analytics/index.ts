@@ -65,6 +65,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     const record: AnalyticsRecord = {
       type: 'screen',
       platform: `WEB ${platform}`,
+      timestamp: Math.round(Date.now() / 1000),
     }
 
     if (route && 'screen' in route) record.screenId = route.screen.identifier || route.screen.id

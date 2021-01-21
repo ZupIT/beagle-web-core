@@ -40,6 +40,7 @@ export interface AnalyticsRecord {
   type: string,
   platform: string,
   [key: string]: any,
+  timestamp: number,
 }
 
 export interface AnalyticsProvider {
@@ -89,7 +90,6 @@ export interface ActionAnalyticsConfig {
 export interface ScreenRecordParams {
   route: LocalView | RemoteView,
   platform?: string,
-  timestamp?: Date,
 }
 
 export interface ActionRecordParams {
@@ -98,7 +98,6 @@ export interface ActionRecordParams {
   component: IdentifiableBeagleUIElement,
   platform?: string,
   route: Route,
-  timestamp?: Date,
 }
 
 export interface AnalyticsService {
