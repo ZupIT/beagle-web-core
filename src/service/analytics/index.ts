@@ -23,8 +23,10 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   let hasStarted = false
   let config: AnalyticsConfig | null
   let queue: (ActionRecordParams | ScreenRecordParams)[] = []
- 
-  function addToQueue(record: any) {
+  let createActionRecord: ((params: ActionRecordParams) => Promise<void>) // eslint-disable-line prefer-const
+  let createScreenRecord: ((params: ScreenRecordParams) => Promise<void>) // eslint-disable-line prefer-const
+  
+  function addToQueue(record: ActionRecordParams | ScreenRecordParams) {
     const maxItemsInQueue = (provider && provider.getMaximumItemsInQueue)  ? provider.getMaximumItemsInQueue() : defaultMaxItems
     if (queue.length >= maxItemsInQueue) {
       if (!hasStarted) {
@@ -34,19 +36,19 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       queue.shift()
     }
     queue.push(record)
-    //console.log('tamanho da fila ->', queue.length)
   }
 
   async function createAnalyticsRecordsInQueue() {
     const promisesList: Promise<void>[] = []
-    hasStarted = true
     if (!provider) return
+    hasStarted = true
     queue.forEach(item => {
       const actionRecord = (item as ActionRecordParams).action
       if (actionRecord){
         promisesList.push(createActionRecord(item as ActionRecordParams))
+        
       } else {
-        promisesList.push(createScreenRecord(item as ScreenRecordParams))
+       promisesList.push(createScreenRecord(item as ScreenRecordParams))
       }
     })
     await Promise.all(promisesList)
@@ -54,9 +56,9 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     queue = []
   }
   
-  async function createScreenRecord(params: ScreenRecordParams) {
+  createScreenRecord = async function (params: ScreenRecordParams) {
     if (!provider) return
-    if (config == null) return addToQueue({ type: 'screen', params })
+    if (config == null) return addToQueue(params)
     const { platform, route } = params
 
     if (config && !config.enableScreenAnalytics) return
@@ -65,7 +67,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       platform: `WEB ${platform}`,
     }
 
-    if ('screen' in route) record.screenId = route.screen.identifier || route.screen.id
+    if (route && 'screen' in route) record.screenId = route.screen.identifier || route.screen.id
     else record.screen = route.url
 
     provider.createRecord(record)
@@ -75,33 +77,12 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     }
   }
 
-  // async function createActionRecord(params: ActionRecordParams) {
-  //   if (!provider) return
-  //   if (!hasStarted) return addToQueue({ type: 'action', params })
-  //   const { action, eventName, component, platform, route } = params
-  //   const isActionDisabled = action.analytics && action.analytics.enable === false
-  //   const isActionEnabled = action.analytics && action.analytics.enable === true
-  //   const isActionEnabledInConfig =config && config.actions[action._beagleAction_]
-  //   const shouldGenerateAnalytics = (isActionEnabled || (!isActionDisabled && isActionEnabledInConfig))
-
-  //   if (shouldGenerateAnalytics) {
-  //     const record = formatActionRecord({
-  //       action,
-  //       eventName,
-  //       component,
-  //       platform,
-  //       route,
-  //     }, config)
-  //     provider.createRecord(record)
-  //   }
-  // }
-
- async function createActionRecord (params: ActionRecordParams) {
+  createActionRecord = async function (params: ActionRecordParams) {
     if (!provider) return
     const { action, eventName, component, platform, route } = params
     config = provider.getConfig()
 
-    if (config == null) return addToQueue({ type: 'action', params })
+    if (config == null) return addToQueue(params)
     const isActionEnabledInPayload = action.analytics
     const isActionEnabledInConfig = config && config.actions[action._beagleAction_]
     const shouldGenerateAnalytics = (isActionEnabledInPayload || isActionEnabledInConfig)
