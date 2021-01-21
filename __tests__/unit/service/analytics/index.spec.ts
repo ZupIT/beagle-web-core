@@ -119,10 +119,7 @@ describe('Actions Analytics Service', () => {
       return delayedConfig
     }
 
-    function createRecord(record: AnalyticsRecord) {
-
-      console.log('FORMATTED', record)
-    }
+    function createRecord(record: AnalyticsRecord) {}
 
     return {
       getConfig,
