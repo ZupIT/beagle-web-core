@@ -47,13 +47,13 @@ export interface AnalyticsProvider {
   /**
    * Returns the configuration for the analytics. In general, this configuration will be made
    * available by the backend. So, generally speaking, this function will make an HTTP request,
-   * parse the result and return it as a promise. 
+   * parse the result and return it. 
    * 
    * Although this will be the general behavior, it is up to the end-developer to decide how the
    * configuration is retrieved, if he/she wants to use a configuration stored locally, there's
    * no problem.
    * 
-   * @return a promise that resolves with the configuration
+   * @return an AnalyticsConfig
    */
   getConfig: () => (AnalyticsConfig | null),
   
@@ -103,17 +103,13 @@ export interface ActionRecordParams {
 export interface AnalyticsService {
   /**
    * Creates a screen record with the given parameters
-   * @param route the route to be recorded
-   * @param platform the platform in which the project is currently running
+   * @param params an object of type ScreenRecordParams
    */
   createScreenRecord: (params: ScreenRecordParams) => Promise<void>,
 
   /**
    * Creates an action record with the given parameters
-   * @param action the `BeagleAction` action to be recorded
-   * @param eventName the name of the event that triggered the action
-   * @param component the `IdentifiableBeagleUIElement`
-   * @param beagleView the current `BeagleView`
+   * @param params an object of type ActionRecordParams
    */
   createActionRecord: (params: ActionRecordParams) => Promise<void>,
 }

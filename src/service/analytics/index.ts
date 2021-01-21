@@ -86,7 +86,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     if (config == null) return addToQueue(params)
     const isActionEnabledInPayload = action.analytics
     const isActionEnabledInConfig = config && config.actions[action._beagleAction_]
-    const shouldGenerateAnalytics = (isActionEnabledInPayload || isActionEnabledInConfig)
+    const shouldGenerateAnalytics = isActionEnabledInPayload && (isActionEnabledInPayload || isActionEnabledInConfig)
  
     if (shouldGenerateAnalytics && config) {
       const record = formatActionRecord({
