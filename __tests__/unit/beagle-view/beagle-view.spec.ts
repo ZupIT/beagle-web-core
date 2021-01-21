@@ -77,7 +77,7 @@ describe('Beagle View', () => {
       beagleView.getRenderer().doFullRender = doFullRender
 
       const createScreenRecordMock = beagleService.analyticsService.createScreenRecord as jest.Mock
-      createScreenRecordMock .mockClear()
+      createScreenRecordMock.mockClear()
     })
 
     it('should apply initial navigation controller', () => {
