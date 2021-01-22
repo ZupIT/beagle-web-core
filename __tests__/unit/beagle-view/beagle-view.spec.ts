@@ -18,6 +18,7 @@ import BeagleView from 'beagle-view'
 import { BeagleView as BeagleViewType, NetworkOptions } from 'beagle-view/types'
 import { NavigationController } from 'beagle-view/navigator/types'
 import { BeagleService, BeagleConfig } from 'service/beagle-service/types'
+import * as Renderer from 'beagle-view/render'
 import {
   createViewClientMock,
   createUrlBuilderMock,
@@ -39,6 +40,24 @@ describe('Beagle View', () => {
       const beagleService = createBeagleServiceMock()
       const beagleView = BeagleView.create(beagleService)
       expect(beagleView.getNetworkOptions()).toBeUndefined()
+    })
+
+    it('should disable css on renderer', () => {
+      const originalCreateRenderer = Renderer.default.create
+      Renderer.default.create = jest.fn()
+      const beagleService = createBeagleServiceMock({
+        getConfig: () => ({
+          baseUrl: '',
+          components: {},
+          platform: 'Test',
+          disableCssTransformation: true,
+        }),
+      })
+      BeagleView.create(beagleService)
+      expect(Renderer.default.create).toHaveBeenCalledWith(
+        expect.objectContaining({ disableCssTransformation: true }),
+      )
+      Renderer.default.create = originalCreateRenderer
     })
   })
 

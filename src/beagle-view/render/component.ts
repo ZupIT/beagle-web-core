@@ -63,6 +63,14 @@ function assignId(component: BeagleUIElement) {
 }
 
 /**
+ * Resets the id counter. Use with caution, by calling this function the ids won't be guaranteed
+ * to be unique anymore. Useful for creating test case scenarios.
+ */
+function resetIdCounter() {
+  nextId = 1
+}
+
+/**
  * Removes every property in `component` that has the value `null`. Ignores properties inside
  * `children`.
  * 
@@ -92,5 +100,6 @@ function eraseNullProperties(component: BeagleUIElement) {
 export default {
   formatChildrenProperty,
   assignId,
+  resetIdCounter,
   eraseNullProperties,
 }
