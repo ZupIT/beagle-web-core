@@ -94,6 +94,9 @@ describe('Beagle View', () => {
       })
       beagleView = BeagleView.create(beagleService)
       beagleView.getRenderer().doFullRender = doFullRender
+
+      const createScreenRecordMock = beagleService.analyticsService.createScreenRecord as jest.Mock
+      createScreenRecordMock.mockClear()
     })
 
     it('should apply initial navigation controller', () => {
@@ -178,5 +181,14 @@ describe('Beagle View', () => {
       expect(beagleService.viewClient.load)
         .toHaveBeenLastCalledWith(expect.objectContaining(navigationControllers.secured))
     })
+
+    it('should create analytics when pre-fetch is true', async () => {
+      await beagleView.getNavigator().pushView({
+        url: '/home',
+        shouldPrefetch: true,
+      })
+      expect(beagleService.analyticsService.createScreenRecord).toHaveBeenCalled()
+    })
+
   })
 })

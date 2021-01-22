@@ -219,12 +219,12 @@ function createBeagleView(
       disableCssTransformation: !!beagleService.getConfig().disableCssTransformation,
     })
   }
-
-  function setupNavigation() {
+function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
+      let isDone = false
 
       if (screen) return renderer.doFullRender(screen)
 
@@ -233,11 +233,13 @@ function createBeagleView(
         const preFetchedUrl = urlBuilder.build(path)
         try {
           const preFetchedView = await preFetcher.recover(preFetchedUrl)
-          return renderer.doFullRender(preFetchedView)
-        } catch {}
+          renderer.doFullRender(preFetchedView)
+          isDone = true
+        } catch { }
       }
-
-      await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
+      if (!isDone){  
+        await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
+      }
       const platform = beagleService.getConfig().platform
       analyticsService.createScreenRecord(route, platform)
     })
