@@ -65,7 +65,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     },
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
-    timestamp: Math.round(Date.now() / 1000),
+    timestamp: Date.now(),
   }
 
   if (action.analytics && actionConfig.additionalEntries) {

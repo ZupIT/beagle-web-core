@@ -68,7 +68,7 @@ describe('Actions Analytics Service', () => {
   }
 
   beforeEach(() => {
-    spyOn(Date, 'now').and.returnValue(10000)
+    spyOn(Date, 'now').and.returnValue(10)
     //@ts-ignore
     htmlHelpers.getElementPosition = jest.fn().mockReturnValue({ x: 10, y: 10 })
     //@ts-ignore

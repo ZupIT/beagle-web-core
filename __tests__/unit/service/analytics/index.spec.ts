@@ -31,8 +31,6 @@ import action from 'beagle-view/render/action'
 describe('Actions Analytics Service', () => {
 
   let analyticsConfigMock: AnalyticsConfig
-  let componentMock: IdentifiableBeagleUIElement
-  let routeMock: Route
   let actionMock: BeagleAction
   let expectedRecordBase: any
   let recordBase: ActionRecordParams
@@ -142,7 +140,7 @@ describe('Actions Analytics Service', () => {
 
   beforeEach(() => {
     globalMocks.log.mockClear()
-    spyOn(Date, 'now').and.returnValue(10000)
+    spyOn(Date, 'now').and.returnValue(10)
     spyOn(provider, 'createRecord').and.callThrough()
     spyOn(providerWithDelay, 'createRecord').and.callThrough()
   })
@@ -150,9 +148,9 @@ describe('Actions Analytics Service', () => {
   it('should call create Record for Action', () => {
     analyticsServiceMock = analyticsService.create(provider)
     actionMock = { ...actionMock, analytics: true }
-    recordBase = { ...recordBase, action: actionMock }
+    let recordMock = { ...recordBase, action: actionMock }
 
-    analyticsServiceMock.createActionRecord(recordBase)
+    analyticsServiceMock.createActionRecord(recordMock)
 
     expect(provider.createRecord).toHaveBeenCalledWith(expectedRecordBase)
 
@@ -162,10 +160,10 @@ describe('Actions Analytics Service', () => {
 
     provider.getConfig = (() => analyticsConfigMock)
     actionMock = { ...actionMock, analytics: false }
-    recordBase = { ...recordBase, action: actionMock }
+    let recordMock = { ...recordBase, action: actionMock }
     
     analyticsServiceMock = analyticsService.create(provider)
-    analyticsServiceMock.createActionRecord(recordBase)
+    analyticsServiceMock.createActionRecord(recordMock)
     expect(provider.createRecord).toHaveBeenCalledTimes(0)
 
   })
@@ -189,7 +187,7 @@ describe('Actions Analytics Service', () => {
       actions: { 'beagle:pushView': ['route.screen'] }
     }
 
-    recordBase = {
+    let recordMock = {
       ...recordBase,
       component: { ...recordBase.component, onPress: actionMock },
       action: actionMock
@@ -197,7 +195,7 @@ describe('Actions Analytics Service', () => {
 
     provider.getConfig = (() => analyticsConfigMock)
     analyticsServiceMock = analyticsService.create(provider)
-    analyticsServiceMock.createActionRecord(recordBase)
+    analyticsServiceMock.createActionRecord(recordMock)
     expect(provider.createRecord).toHaveBeenCalledWith(expectedRecordBase)
 
   })
@@ -250,7 +248,7 @@ describe('Actions Analytics Service', () => {
     expect(globalMocks.log).toHaveBeenCalledWith('warn', '2 analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.')
   })
 
-  it('Should NOT show warning when NOT exceeding queue max capacity', async () => {
+  it('should NOT show warning when NOT exceeding queue max capacity', async () => {
 
     providerWithDelay.getMaximumItemsInQueue = () => 5
     analyticsServiceMock = analyticsService.create(providerWithDelay)
@@ -283,4 +281,15 @@ describe('Actions Analytics Service', () => {
       expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(3)
     }, 5000);
   })
+
+  it('should NOT createRecord when analytics False and Provider True', async () => {
+    
+    provider.getConfig = (() => analyticsConfigMock)
+    actionMock = { ...actionMock, analytics: false }
+    let recordMock = { ...recordBase, action: actionMock }
+    analyticsServiceMock = analyticsService.create(provider)
+    analyticsServiceMock.createActionRecord(recordMock)
+    expect(provider.createRecord).toHaveBeenCalledTimes(0)
+  })
+
 })

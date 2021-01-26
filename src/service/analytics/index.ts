@@ -65,7 +65,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     const record: AnalyticsRecord = {
       type: 'screen',
       platform: `WEB ${platform}`,
-      timestamp: Math.round(Date.now() / 1000),
+      timestamp: Date.now(),
     }
 
     if (route && 'screen' in route) record.screenId = route.screen.identifier || route.screen.id
@@ -84,10 +84,11 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     config = provider.getConfig()
 
     if (config == null) return addToQueue(params)
-    const isActionEnabledInPayload = action.analytics
-    const isActionEnabledInConfig = config && config.actions[action._beagleAction_]
-    const shouldGenerateAnalytics = isActionEnabledInPayload && (isActionEnabledInPayload || isActionEnabledInConfig)
- 
+    const isActionEnabledInPayload = !!action.analytics
+    const isActionDisabledInPayload = action.analytics === false
+    const isActionEnabledInConfig = config.actions[action._beagleAction_]
+    const shouldGenerateAnalytics = (isActionEnabledInPayload || (!isActionDisabledInPayload && isActionEnabledInConfig))
+    
     if (shouldGenerateAnalytics && config) {
       const record = formatActionRecord({
         action,
