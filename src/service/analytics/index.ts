@@ -30,9 +30,10 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     const maxItemsInQueue = (provider && provider.getMaximumItemsInQueue)  ? provider.getMaximumItemsInQueue() : defaultMaxItems
     if (queue.length >= maxItemsInQueue) {
       if (!hasStarted) {
-        logger.warn(`${maxItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude. 
-        This is probably an error within your analytics provider. Why is getConfig() still returning null? From now on, some analytics records will be lost. 
-        If you need to increase the maximum number of items the queue can support, implement getMaximumItemsInQueue() in your AnalyticsProvider.`)
+        logger.warn(`${maxItemsInQueue} analytics records are queued and waiting for the initial 
+        configuration of the AnalyticsProvider to conclude.  This is probably an error within your analytics provider. 
+        Why is getConfig() still returning null? From now on, some analytics records will be lost. If you need to increase the 
+        maximum number of items the queue can support, implement getMaximumItemsInQueue() in your AnalyticsProvider.`)
       }
       logger.error('size exceeded')
       queue.shift()
