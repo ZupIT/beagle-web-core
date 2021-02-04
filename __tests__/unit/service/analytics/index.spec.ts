@@ -161,7 +161,7 @@ describe('Actions Analytics Service', () => {
     provider.getConfig = (() => analyticsConfigMock)
     actionMock = { ...actionMock, analytics: false }
     let recordMock = { ...recordBase, action: actionMock }
-    
+
     analyticsServiceMock = analyticsService.create(provider)
     analyticsServiceMock.createActionRecord(recordMock)
     expect(provider.createRecord).toHaveBeenCalledTimes(0)
@@ -245,7 +245,7 @@ describe('Actions Analytics Service', () => {
       } catch { }
     })
 
-    expect(globalMocks.log).toHaveBeenCalledWith('warn', '2 analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude.')
+    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })
 
   it('should NOT show warning when NOT exceeding queue max capacity', async () => {
@@ -283,7 +283,7 @@ describe('Actions Analytics Service', () => {
   })
 
   it('should NOT createRecord when analytics False and Provider True', async () => {
-    
+
     provider.getConfig = (() => analyticsConfigMock)
     actionMock = { ...actionMock, analytics: false }
     let recordMock = { ...recordBase, action: actionMock }

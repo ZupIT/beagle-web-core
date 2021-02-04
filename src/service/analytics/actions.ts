@@ -17,7 +17,7 @@
 import { BeagleAction } from 'action/types'
 import get from 'lodash/get'
 import { getElementByBeagleId, getElementPosition, getPath } from 'utils/html'
-import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig, ActionAnalyticsConfig } from './types'
+import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig } from './types'
 
 /**
  * This function generates a new `Record<string, any>` with the attributes that were passed along
@@ -27,8 +27,7 @@ import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig, ActionAnalyticsCo
  * @returns the Record of white listed attributes from the `AnalyticsProvider` or the action itself
  */
 function createActionAttributes(action: BeagleAction, whiteListedAttributesInConfig: string[]) {
-  const actionConfig = action.analytics as ActionAnalyticsConfig
-  const whiteListedAttributesInAction = action && action.analytics && actionConfig.attributes
+  const whiteListedAttributesInAction = typeof action.analytics === 'object' && action.analytics.attributes
   const attributes = whiteListedAttributesInAction || whiteListedAttributesInConfig
 
   if (attributes)
@@ -51,7 +50,6 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
   const xPath = element && getPath(element)
-  const actionConfig = action.analytics as ActionAnalyticsConfig
 
   let record: AnalyticsRecord = {
     type: 'action',
@@ -68,8 +66,8 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     timestamp: Date.now(),
   }
 
-  if (action.analytics && actionConfig.additionalEntries) {
-    record = { ...record, ...actionConfig.additionalEntries }
+  if (typeof action.analytics === 'object' && action.analytics.additionalEntries){
+    record = { ...record, ...action.analytics.additionalEntries }
   }
   if (currentRoute) {
     if ('screen' in currentRoute) record.screenId = currentRoute.screen.identifier || currentRoute.screen.id
