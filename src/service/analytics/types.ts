@@ -44,16 +44,14 @@ export interface AnalyticsRecord {
 }
 
 export interface AnalyticsProvider {
-  /**
-   * Returns the configuration for the analytics. In general, this configuration will be made
-   * available by the backend. So, generally speaking, this function will make an HTTP request,
-   * parse the result and return it. 
+   /**
+   * Beagle uses this configuration to know how to handle analytics events. In order to access the
+   * most updated global analytics config, this method is called whenever an event is triggered. It
+   * can return an `AnalyticsConfig` or `null`. When `null`, the record is temporarily stored in a
+   * queue. The enqueued records are processed when `getConfig()` returns a value different than
+   * null.
    * 
-   * Although this will be the general behavior, it is up to the end-developer to decide how the
-   * configuration is retrieved, if he/she wants to use a configuration stored locally, there's
-   * no problem.
-   * 
-   * @return an AnalyticsConfig
+   * @return an AnalyticsConfig or null
    */
   getConfig: () => (AnalyticsConfig | null),
   
@@ -66,12 +64,12 @@ export interface AnalyticsProvider {
    */
   createRecord: (record: AnalyticsRecord) => void,
 
-  /**
-   *This method implements the size of an analytics queue. The size can be specified or not.
-
-   *When not specified, the maximum number of items in the queue will be 100. This is the queue to hold 
-   *the records while getConfig() and startSession() are not finished.
-  */
+   /**
+   * Represents how many records will be temporarily stored in a queue while `getConfig()` is `null`.
+   * Defaults to `100`
+   * 
+   * @returns the maximum number of records in the queue
+   */
   getMaximumItemsInQueue?: () => number,
 }
 
