@@ -24,6 +24,7 @@ import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA, treeB } from '../../mocks'
 import { createLocalStorageMock } from '../../utils/test-utils'
+import { BeagleStorage } from 'service/beagle-service/types'
 
 const basePath = 'http://teste.com'
 const path = '/myview'
@@ -35,7 +36,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
   const cacheKey = `${beagleCacheNamespace}/${url}/get`
   const treeKey = `${namespace}/${url}/get`
   const retry = jest.fn()
-  let storage: Storage
+  let storage: BeagleStorage
   let viewClient: ViewClientType
 
   beforeEach(() => {

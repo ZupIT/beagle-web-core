@@ -15,11 +15,12 @@
  */
 
 import { HttpMethod } from 'service/network/types'
+import { BeagleStorage } from 'service/beagle-service/types'
 import { RemoteCache, CacheMetadata } from './types'
 
 export const beagleCacheNamespace = '@beagle-web/beagle-cache'
 
-function createRemoteCache(storage: Storage): RemoteCache {
+function createRemoteCache(storage: BeagleStorage): RemoteCache {
   async function getMetadata(url: string, method: HttpMethod) {
     const cacheMetadataFromStorage = (
       await storage.getItem(`${beagleCacheNamespace}/${url}/${method}`)  

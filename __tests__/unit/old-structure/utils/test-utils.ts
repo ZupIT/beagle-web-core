@@ -18,7 +18,7 @@ import { BeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
 import { Renderer } from 'beagle-view/render/types'
 import { BeagleNavigator } from 'beagle-view/navigator/types'
-import { BeagleService } from 'service/beagle-service/types'
+import { BeagleService, BeagleStorage } from 'service/beagle-service/types'
 import { GlobalContext } from 'service/global-context/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
 import { RemoteCache } from 'service/network/remote-cache/types'
@@ -28,7 +28,7 @@ import { PreFetcher } from 'service/network/pre-fetcher/types'
 import { HttpClient } from 'service/network/types'
 import defaultOperations from 'operation'
 
-export function createLocalStorageMock(storage: Record<string, string> = {}): Storage {
+export function createLocalStorageMock(storage: Record<string, string> = {}): BeagleStorage {
   return {
     getItem: jest.fn(key => storage[key] || null),
     setItem: jest.fn((key, value) => storage[key] = value),
@@ -36,8 +36,6 @@ export function createLocalStorageMock(storage: Record<string, string> = {}): St
       const keys = Object.keys(storage)
       keys.forEach(k => delete storage[k])
     }),
-    key: jest.fn(),
-    length: 0,
     removeItem: jest.fn(key => delete storage[key]),
   }
 }

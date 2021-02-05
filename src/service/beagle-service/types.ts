@@ -68,6 +68,22 @@ export interface Analytics {
   trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
 }
 
+export interface SynchronousStorage {
+  getItem: (key: string) => string | null,
+  setItem: (key: string, value: string) => void,
+  clear: () => void,
+  removeItem: (key: string) => void,
+}
+
+export interface AsynchronousStorage {
+  getItem: (key: string) => Promise<string | null>,
+  setItem: (key: string, value: string) => Promise<void>,
+  clear: () => Promise<void>,
+  removeItem: (key: string) => Promise<void>,
+}
+
+export type BeagleStorage = SynchronousStorage | AsynchronousStorage
+
 export interface BeagleConfig<Schema> {
   /**
    * URL to the backend providing the views (JSON) for Beagle. 
@@ -124,7 +140,7 @@ export interface BeagleConfig<Schema> {
   /**
    * The custom storage. By default, uses the browser's `localStorage`.
    */
-  customStorage?: Storage,
+  customStorage?: BeagleStorage,
   /**
    * Wether or not to send specific beagle headers in the requests to fetch a view. Default is true.
    */
@@ -175,7 +191,7 @@ export type BeagleService = Readonly<{
   childrenMetadata: ChildrenMetadataMap,
   operationHandlers: Record<string, Operation>,
   // services
-  storage: Storage,
+  storage: BeagleStorage,
   httpClient: HttpClient,
   urlBuilder: URLBuilder,
   analytics?: Analytics,
