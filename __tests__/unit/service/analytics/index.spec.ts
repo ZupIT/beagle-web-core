@@ -74,7 +74,7 @@ describe('Actions Analytics Service', () => {
       xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
     },
     beagleAction: 'beagle:pushView',
-    'route.screen': { id: 'screenMock' },
+    attributes:{'route.screen': { id: 'screenMock' }},
     screen: 'text.action.payload',
     timestamp: 10
   }
@@ -172,7 +172,7 @@ describe('Actions Analytics Service', () => {
 
     expectedRecordBase = {
       ...expectedRecordBase,
-      extra: 'test extra info'
+      additionalEntries: { extra: 'test extra info' }
     }
 
     actionMock = {

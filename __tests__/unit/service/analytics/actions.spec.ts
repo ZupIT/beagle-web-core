@@ -62,6 +62,7 @@ describe('Actions Analytics Service', () => {
       position: { x: 10, y: 10 },
       xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
     },
+    attributes:{},
     beagleAction: 'beagle:pushView',
     screen: "text.action.payload",
     timestamp: 10
@@ -79,27 +80,27 @@ describe('Actions Analytics Service', () => {
 
   it('should format the Action', () => {
 
-    const expected = {...expectedBase}
-    const result = formatActionRecord({...recordBase}, analyticsConfigMock)
+    const expected = { ...expectedBase }
+    const result = formatActionRecord({ ...recordBase }, analyticsConfigMock)
 
     expect(result).toEqual(expected)
   })
 
   it('should format the Action adding additional attributes from CONFIG', () => {
 
-    const expected = {...expectedBase, 'route.screen': { id: 'screenMock' }}
+    const expected = { ...expectedBase, attributes: { 'route.screen': { id: 'screenMock' } } }
     analyticsConfigMock.actions = { 'beagle:pushView': ['route.screen'] }
-    const result = formatActionRecord({...recordBase}, analyticsConfigMock)
+    const result = formatActionRecord({ ...recordBase }, analyticsConfigMock)
 
     expect(result).toEqual(expected)
   })
 
   it('should format the Action adding additional attributes from ACTION', () => {
 
-    const expected = {...expectedBase, test: 'additionalEntries', 'route.screen': { id: 'screenMock' }}
-    actionMock.analytics = {additionalEntries: {test:'additionalEntries'}, attributes: ['route.screen']}
-    const result = formatActionRecord({...recordBase, action: actionMock}, analyticsConfigMock)
-    
+    const expected = { ...expectedBase, additionalEntries: { test: 'additionalEntries' }, attributes: { 'route.screen': { id: 'screenMock' } } }
+    actionMock.analytics = { additionalEntries: { test: 'additionalEntries' }, attributes: ['route.screen'] }
+    const result = formatActionRecord({ ...recordBase, action: actionMock }, analyticsConfigMock)
+
     expect(result).toEqual(expected)
   })
 

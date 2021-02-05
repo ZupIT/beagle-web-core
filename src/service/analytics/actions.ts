@@ -69,7 +69,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   if (typeof action.analytics === 'object' && action.analytics.additionalEntries) {
     record = {
       ...record,
-      additionEntries: { ...action.analytics.additionalEntries },
+      additionalEntries: { ...action.analytics.additionalEntries },
     }
   }
 
