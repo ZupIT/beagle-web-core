@@ -31,7 +31,7 @@ function createActionAttributes(action: BeagleAction, whiteListedAttributesInCon
   const attributes = whiteListedAttributesInAction || whiteListedAttributesInConfig
 
   if (attributes)
-    return attributes.reduce((result, attribute) => ({ ...result, [attribute]: get(action, attribute) }), {})
+    return { attributes: attributes.reduce((result, attribute) => ({ ...result, [attribute]: get(action, attribute) }), {}) }
 
 }
 
@@ -66,9 +66,13 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     timestamp: Date.now(),
   }
 
-  if (typeof action.analytics === 'object' && action.analytics.additionalEntries){
-    record = { ...record, ...action.analytics.additionalEntries }
+  if (typeof action.analytics === 'object' && action.analytics.additionalEntries) {
+    record = {
+      ...record,
+      additionEntries: { ...action.analytics.additionalEntries },
+    }
   }
+
   if (currentRoute) {
     if ('screen' in currentRoute) record.screenId = currentRoute.screen.identifier || currentRoute.screen.id
     else record.screen = currentRoute.url
