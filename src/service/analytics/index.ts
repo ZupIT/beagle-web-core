@@ -54,7 +54,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   
   createScreenRecord = async function (params: ScreenRecordParams) {
     if (!provider) return
-    const config = provider && provider.getConfig()
+    const config = provider.getConfig()
 
     if (!config) return addToQueue(params)
     const { platform, route } = params

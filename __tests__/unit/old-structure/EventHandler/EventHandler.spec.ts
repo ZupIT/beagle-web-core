@@ -61,7 +61,6 @@ function expectActionHandlerToHaveBeenCalled({
 function interpretEventsInTree(tree: IdentifiableBeagleUIElement, beagleView: BeagleView) {
   const contexts = Context.evaluate(tree)
   Tree.forEach(tree, (component) => {
-    console.log('component', component)
     Action.deserialize({
       component,
       contextHierarchy: contexts[component.id],
