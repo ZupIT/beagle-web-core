@@ -22,11 +22,10 @@
  * @jest-environment jsdom
  */
 
-import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction, IdentifiableBeagleUIElement, Route } from 'index'
+import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction } from 'index'
 import { ActionRecordParams, AnalyticsService, ScreenRecordParams } from 'service/analytics/types'
 import analyticsService from '../../../../src/service/analytics'
 import * as htmlHelpers from 'utils/html'
-import action from 'beagle-view/render/action'
 
 describe('Actions Analytics Service', () => {
 
@@ -125,7 +124,7 @@ describe('Actions Analytics Service', () => {
     }
   }
 
-  let provider: AnalyticsProvider = analytics()
+  let provider: AnalyticsProvider
   let providerWithDelay: AnalyticsProvider = analyticsWithDelay()
   let analyticsServiceMock: AnalyticsService
 
@@ -139,6 +138,7 @@ describe('Actions Analytics Service', () => {
   })
 
   beforeEach(() => {
+    provider = analytics()
     globalMocks.log.mockClear()
     spyOn(Date, 'now').and.returnValue(10)
     spyOn(provider, 'createRecord').and.callThrough()
@@ -168,6 +168,19 @@ describe('Actions Analytics Service', () => {
 
   })
 
+  it('should NOT create Record if provider is unavailable', async () => {
+    //@ts-ignore
+    provider = undefined
+    actionMock = { ...actionMock, analytics: false }
+    let recordMock = { ...recordBase, action: actionMock }
+
+    analyticsServiceMock = analyticsService.create(provider)
+    analyticsServiceMock.createActionRecord(recordMock).then((returnValue)=>{
+      expect(returnValue).toBe(undefined)
+    })
+
+  })
+
   it('should call create Record for Action with additional entries', () => {
 
     expectedRecordBase = {
@@ -185,6 +198,34 @@ describe('Actions Analytics Service', () => {
     analyticsConfigMock = {
       enableScreenAnalytics: true,
       actions: { 'beagle:pushView': ['route.screen'] }
+    }
+
+    let recordMock = {
+      ...recordBase,
+      component: { ...recordBase.component, onPress: actionMock },
+      action: actionMock
+    }
+
+    provider.getConfig = (() => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    analyticsServiceMock.createActionRecord(recordMock)
+    expect(provider.createRecord).toHaveBeenCalledWith(expectedRecordBase)
+
+  })
+
+  it('should call create Record for Action with additional entries and exposed attributes (action)', () => {
+
+    expectedRecordBase = {
+      ...expectedRecordBase,
+      additionalEntries: { extra: 'test extra info' }
+    }
+
+    actionMock = {
+      ...actionMock,
+      analytics: {
+        additionalEntries: { extra: 'test extra info' },
+        attributes:["route.screen"]
+      }
     }
 
     let recordMock = {
