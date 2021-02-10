@@ -73,7 +73,7 @@ describe('Actions Analytics Service', () => {
       xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
     },
     beagleAction: 'beagle:pushView',
-    attributes:{'route.screen': { id: 'screenMock' }},
+    attributes: { 'route.screen': { id: 'screenMock' } },
     screen: 'text.action.payload',
     timestamp: 10
   }
@@ -175,7 +175,7 @@ describe('Actions Analytics Service', () => {
     let recordMock = { ...recordBase, action: actionMock }
 
     analyticsServiceMock = analyticsService.create(provider)
-    analyticsServiceMock.createActionRecord(recordMock).then((returnValue)=>{
+    analyticsServiceMock.createActionRecord(recordMock).then((returnValue) => {
       expect(returnValue).toBe(undefined)
     })
 
@@ -224,8 +224,41 @@ describe('Actions Analytics Service', () => {
       ...actionMock,
       analytics: {
         additionalEntries: { extra: 'test extra info' },
-        attributes:["route.screen"]
+        attributes: ["route.screen"]
       }
+    }
+
+    let recordMock = {
+      ...recordBase,
+      component: { ...recordBase.component, onPress: actionMock },
+      action: actionMock
+    }
+
+    provider.getConfig = (() => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    analyticsServiceMock.createActionRecord(recordMock)
+    expect(provider.createRecord).toHaveBeenCalledWith(expectedRecordBase)
+
+  })
+
+  it('Should create action record when it is disabled in the config, but enabled in the action itself', () => {
+
+    expectedRecordBase = {
+      ...expectedRecordBase,
+      additionalEntries: { extra: 'test extra info' },
+    }
+
+    actionMock = {
+      ...actionMock,
+      analytics: {
+        additionalEntries: { extra: 'test extra info' },
+        attributes: ["route.screen"]
+      }
+    }
+
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: {}
     }
 
     let recordMock = {
