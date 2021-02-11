@@ -62,7 +62,7 @@ export interface AnalyticsProvider {
    * 
    * @param record the record to create
    */
-  createRecord: (record: AnalyticsRecord) => void
+  createRecord: (record: AnalyticsRecord) => void,
 }
 
 export interface ActionAnalyticsConfig {
