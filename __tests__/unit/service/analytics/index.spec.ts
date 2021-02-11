@@ -241,11 +241,41 @@ describe('Actions Analytics Service', () => {
 
   })
 
+  it('Should interpret analytics object in action as if analytics is enabled.', () => {
+
+    let mockRecord = expectedRecordBase
+    delete mockRecord['additionalEntries']
+    delete mockRecord['attributes']
+
+    actionMock = {
+      ...actionMock,
+      analytics: {}
+    }
+
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: {}
+    }
+
+    let recordMock = {
+      ...recordBase,
+      component: { ...recordBase.component, onPress: actionMock },
+      action: actionMock
+    }
+
+    provider.getConfig = (() => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    analyticsServiceMock.createActionRecord(recordMock)
+    expect(provider.createRecord).toHaveBeenCalledWith(mockRecord)
+
+  })
+
   it('Should create action record when it is disabled in the config, but enabled in the action itself', () => {
 
     expectedRecordBase = {
       ...expectedRecordBase,
       additionalEntries: { extra: 'test extra info' },
+      attributes: { 'route.screen': { id: 'screenMock' } }
     }
 
     actionMock = {
