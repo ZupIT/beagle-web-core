@@ -243,7 +243,7 @@ describe('Actions Analytics Service', () => {
 
   it('Should interpret analytics object in action as if analytics is enabled.', () => {
 
-    let mockRecord = expectedRecordBase
+    let mockRecord = {...expectedRecordBase}
     delete mockRecord['additionalEntries']
     delete mockRecord['attributes']
 
@@ -274,8 +274,7 @@ describe('Actions Analytics Service', () => {
 
     expectedRecordBase = {
       ...expectedRecordBase,
-      additionalEntries: { extra: 'test extra info' },
-      attributes: { 'route.screen': { id: 'screenMock' } }
+      additionalEntries: { extra: 'test extra info' }
     }
 
     actionMock = {

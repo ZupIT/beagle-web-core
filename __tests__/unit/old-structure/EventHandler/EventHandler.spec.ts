@@ -85,6 +85,81 @@ describe('EventHandler', () => {
     expect(typeof mock.onInit).toBe('function')
   })
 
+  it('Should NOT resolve expressions in sub-actions when creating action record with expressions', () => {
+    const beagleView = createBeagleViewMock()
+    beagleView.getNavigator().getCurrentRoute = (() => { return { url: 'test' } })
+    const beagleAnalytics = beagleView.getBeagleService().analyticsService
+    spyOn(beagleAnalytics, 'createActionRecord').and.callThrough()
+
+    const beagleComponent: IdentifiableBeagleUIElement = {
+      _beagleComponent_: 'beagle:button',
+      id: 'someId',
+      context: {
+        id: 'context',
+        value: {
+          query: 'test',
+          message: 'message'
+        }
+      },
+      onPress: {
+        _beagleAction_: "beagle:sendRequest",
+        onSuccess: [
+          {
+            _beagleAction_: "beagle:alert",
+            message: " @{eq(context.query, 'test')}"
+          }
+        ],
+        analytics: {
+          attributes: ["condition"]
+        },
+        condition: "@{eq(context.query, 'test')}"
+      }
+    }
+
+    const resolvedComponent = {
+      action: {
+        _beagleAction_: "beagle:sendRequest",
+        analytics: {
+          attributes: [
+            "condition",
+          ],
+        },
+        condition: true,
+        onSuccess: [
+          {
+            _beagleAction_: "beagle:alert",
+            message: " @{eq(context.query, 'test')}",
+          },
+        ],
+
+      },
+      component: {
+        _beagleComponent_: "beagle:button",
+        context: {
+          id: "context",
+          value: {
+            query: "test",
+            message: "message"
+          },
+        },
+        id: "someId",
+        onPress: expect.any(Function),
+      },
+      eventName: "onPress",
+      platform: "Test",
+      route: {
+        url: "test",
+      }
+    }
+
+    interpretEventsInTree(beagleComponent, beagleView)
+    beagleComponent.onPress()
+
+    expect(beagleAnalytics.createActionRecord).toBeCalledWith(resolvedComponent)
+
+
+  })
+
   it('should resolve expressions and call analytics', () => {
     const beagleView = createBeagleViewMock()
     beagleView.getNavigator().getCurrentRoute = (() => { return { url: 'test' } })
