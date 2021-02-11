@@ -77,8 +77,10 @@ function deserializeAction(
         return
       }
 
+      const resolvedAction = Expression.resolveForAction(action, hierarchy, params.operationHandlers)
+
       handler({
-        action: Expression.resolveForAction(action, hierarchy, params.operationHandlers),
+        action: resolvedAction,
         beagleView: params.beagleView,
         element: params.component,
         executeAction: executeSubAction,
@@ -87,7 +89,15 @@ function deserializeAction(
       const route = params.beagleView.getNavigator().getCurrentRoute()
       const platform = beagleService.getConfig().platform || ''
       if (route)
-        beagleService.analyticsService.createActionRecord(action, eventName, params.component, platform, route)
+
+        beagleService.analyticsService.createActionRecord({
+          action: resolvedAction,
+          eventName: eventName,
+          component: params.component,
+          platform: platform,
+          route: route,
+        })
+        
     })
   }
 }

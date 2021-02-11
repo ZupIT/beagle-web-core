@@ -15,12 +15,9 @@
  */
 
 import { BeagleAction } from 'action/types'
-import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import get from 'lodash/get'
-import { Route } from 'beagle-view/navigator/types'
 import { getElementByBeagleId, getElementPosition, getPath } from 'utils/html'
-import { AnalyticsConfig, AnalyticsRecord } from './types'
-
+import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig } from './types'
 
 /**
  * This function generates a new `Record<string, any>` with the attributes that were passed along
@@ -30,12 +27,11 @@ import { AnalyticsConfig, AnalyticsRecord } from './types'
  * @returns the Record of white listed attributes from the `AnalyticsProvider` or the action itself
  */
 function createActionAttributes(action: BeagleAction, whiteListedAttributesInConfig: string[]) {
-
-  const whiteListedAttributesInAction = action && action.analytics && action.analytics.attributes
+  const whiteListedAttributesInAction = typeof action.analytics === 'object' && action.analytics.attributes
   const attributes = whiteListedAttributesInAction || whiteListedAttributesInConfig
 
   if (attributes)
-    return attributes.reduce((result, attribute) => ({ ...result, [attribute]: get(action, attribute) }), {})
+    return { attributes: attributes.reduce((result, attribute) => ({ ...result, [attribute]: get(action, attribute) }), {}) }
 
 }
 
@@ -48,16 +44,9 @@ function createActionAttributes(action: BeagleAction, whiteListedAttributesInCon
  * @param beagleView the `BeagleView` to use in the record
  * @returns the formatted `AnalyticsRecord`
  */
-function formatActionRecord(
-  action: BeagleAction,
-  eventName: string,
-  config: AnalyticsConfig,
-  component: IdentifiableBeagleUIElement,
-  currentPlatform: string,
-  route: Route
-): AnalyticsRecord {
+function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig): AnalyticsRecord {
+  const { action, eventName, component, platform, route } = params
   const currentRoute = route
-  const platform = currentPlatform
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
   const xPath = element && getPath(element)
@@ -74,14 +63,19 @@ function formatActionRecord(
     },
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
+    timestamp: Date.now(),
   }
 
-  if (action.analytics && action.analytics.additionalEntries)
-    record = { ...record, ...action.analytics.additionalEntries }
+  if (typeof action.analytics === 'object' && action.analytics.additionalEntries) {
+    record = {
+      ...record,
+      additionalEntries: { ...action.analytics.additionalEntries },
+    }
+  }
 
   if (currentRoute) {
     if ('screen' in currentRoute) record.screenId = currentRoute.screen.identifier || currentRoute.screen.id
-    else record.url = currentRoute.url
+    else record.screen = currentRoute.url
   }
 
   return record

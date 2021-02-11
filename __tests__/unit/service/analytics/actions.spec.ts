@@ -20,16 +20,38 @@
 
 import { AnalyticsConfig, BeagleAction, IdentifiableBeagleUIElement, Route } from 'index'
 import formatActionRecord from 'service/analytics/actions'
+import { ActionRecordParams } from 'service/analytics/types'
 import * as htmlHelpers from 'utils/html'
-
-
 
 describe('Actions Analytics Service', () => {
 
   let analyticsConfigMock: AnalyticsConfig
-  let beagleActionMock: BeagleAction
-  let componentMock: IdentifiableBeagleUIElement
-  let routeMock: Route
+  let actionMock: BeagleAction = {
+    _beagleAction_: 'beagle:pushView',
+    route: { screen: { id: 'screenMock' } }
+  }
+
+  const button = {
+    _beagleComponent_: 'beagle:button',
+    id: 'beagle_mock',
+    onPress: actionMock
+  }
+
+  const recordBase: ActionRecordParams = {
+    eventName: 'OnPress',
+    platform: 'Jest',
+    component: button,
+    action: actionMock,
+    route: {
+      url: 'text.action.payload'
+    }
+  }
+
+  analyticsConfigMock = {
+    enableScreenAnalytics: true,
+    actions: { 'beagle:pushView': [] }
+  }
+
   const expectedBase = {
     type: 'action',
     platform: 'WEB Jest',
@@ -40,11 +62,14 @@ describe('Actions Analytics Service', () => {
       position: { x: 10, y: 10 },
       xPath: 'BODY/ROOT/DIV[3]/DIV/BUTTON'
     },
+    attributes:{},
     beagleAction: 'beagle:pushView',
-    url: "text.action.payload",
+    screen: "text.action.payload",
+    timestamp: 10
   }
 
   beforeEach(() => {
+    spyOn(Date, 'now').and.returnValue(10)
     //@ts-ignore
     htmlHelpers.getElementPosition = jest.fn().mockReturnValue({ x: 10, y: 10 })
     //@ts-ignore
@@ -55,88 +80,28 @@ describe('Actions Analytics Service', () => {
 
   it('should format the Action', () => {
 
-    const eventName = 'OnPress'
-    analyticsConfigMock = {
-      enableScreenAnalytics: true,
-      actions: { 'beagle:pushView': [] }
-    }
-    beagleActionMock = {
-      _beagleAction_: 'beagle:pushView',
-      route: { screen: { id: 'screenMock' } }
-    }
-    componentMock = {
-      _beagleComponent_: 'beagle:button',
-      id: 'beagle_mock',
-      onPress: beagleActionMock
-    }
-    routeMock = {
-      url: 'text.action.payload'
-    }
-
-    const expected = {...expectedBase}
-
-    const result = formatActionRecord(beagleActionMock, eventName, analyticsConfigMock, componentMock, 'Jest', routeMock)
+    const expected = { ...expectedBase }
+    const result = formatActionRecord({ ...recordBase }, analyticsConfigMock)
 
     expect(result).toEqual(expected)
   })
 
   it('should format the Action adding additional attributes from CONFIG', () => {
 
-    const expected = {...expectedBase, 'route.screen': { id: 'screenMock' }}
-
-    const eventName = 'OnPress'
-    analyticsConfigMock = {
-      enableScreenAnalytics: true,
-      actions: { 'beagle:pushView': ['route.screen'] }
-    }
-    beagleActionMock = {
-      _beagleAction_: 'beagle:pushView',
-      route: { screen: { id: 'screenMock' } }
-    }
-    componentMock = {
-      _beagleComponent_: 'beagle:button',
-      id: 'beagle_mock',
-      onPress: beagleActionMock
-    }
-    routeMock = {
-      url: 'text.action.payload'
-    }
-
-
-    const result = formatActionRecord(beagleActionMock, eventName, analyticsConfigMock, componentMock, 'Jest', routeMock)
+    const expected = { ...expectedBase, attributes: { 'route.screen': { id: 'screenMock' } } }
+    analyticsConfigMock.actions = { 'beagle:pushView': ['route.screen'] }
+    const result = formatActionRecord({ ...recordBase }, analyticsConfigMock)
 
     expect(result).toEqual(expected)
   })
 
   it('should format the Action adding additional attributes from ACTION', () => {
 
-    const expected = {...expectedBase, test: 'additionalEntries', 'route.screen': { id: 'screenMock' }}
-
-    const eventName = 'OnPress'
-    analyticsConfigMock = {
-      enableScreenAnalytics: true,
-      actions: { 'beagle:pushView': [] }
-    }
-    beagleActionMock = {
-      _beagleAction_: 'beagle:pushView',
-      route: { screen: { id: 'screenMock' } },
-      analytics:{
-        additionalEntries: {test:'additionalEntries'},
-        attributes: ['route.screen']
-      }
-    }
-    componentMock = {
-      _beagleComponent_: 'beagle:button',
-      id: 'beagle_mock',
-      onPress: beagleActionMock
-    }
-    routeMock = {
-      url: 'text.action.payload'
-    }
-
-
-    const result = formatActionRecord(beagleActionMock, eventName, analyticsConfigMock, componentMock, 'Jest', routeMock)
+    const expected = { ...expectedBase, additionalEntries: { test: 'additionalEntries' }, attributes: { 'route.screen': { id: 'screenMock' } } }
+    actionMock.analytics = { additionalEntries: { test: 'additionalEntries' }, attributes: ['route.screen'] }
+    const result = formatActionRecord({ ...recordBase, action: actionMock }, analyticsConfigMock)
 
     expect(result).toEqual(expected)
   })
+
 })

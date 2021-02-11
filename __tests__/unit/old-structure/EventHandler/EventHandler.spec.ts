@@ -85,6 +85,141 @@ describe('EventHandler', () => {
     expect(typeof mock.onInit).toBe('function')
   })
 
+  it('Should NOT resolve expressions in sub-actions when creating action record with expressions', () => {
+    const beagleView = createBeagleViewMock()
+    beagleView.getNavigator().getCurrentRoute = (() => { return { url: 'test' } })
+    const beagleAnalytics = beagleView.getBeagleService().analyticsService
+    spyOn(beagleAnalytics, 'createActionRecord').and.callThrough()
+
+    const beagleComponent: IdentifiableBeagleUIElement = {
+      _beagleComponent_: 'beagle:button',
+      id: 'someId',
+      context: {
+        id: 'context',
+        value: {
+          query: 'test',
+          message: 'message'
+        }
+      },
+      onPress: {
+        _beagleAction_: "beagle:sendRequest",
+        onSuccess: [
+          {
+            _beagleAction_: "beagle:alert",
+            message: " @{eq(context.query, 'test')}"
+          }
+        ],
+        analytics: {
+          attributes: ["condition"]
+        },
+        condition: "@{eq(context.query, 'test')}"
+      }
+    }
+
+    const resolvedComponent = {
+      action: {
+        _beagleAction_: "beagle:sendRequest",
+        analytics: {
+          attributes: [
+            "condition",
+          ],
+        },
+        condition: true,
+        onSuccess: [
+          {
+            _beagleAction_: "beagle:alert",
+            message: " @{eq(context.query, 'test')}",
+          },
+        ],
+
+      },
+      component: {
+        _beagleComponent_: "beagle:button",
+        context: {
+          id: "context",
+          value: {
+            query: "test",
+            message: "message"
+          },
+        },
+        id: "someId",
+        onPress: expect.any(Function),
+      },
+      eventName: "onPress",
+      platform: "Test",
+      route: {
+        url: "test",
+      }
+    }
+
+    interpretEventsInTree(beagleComponent, beagleView)
+    beagleComponent.onPress()
+
+    expect(beagleAnalytics.createActionRecord).toBeCalledWith(resolvedComponent)
+
+
+  })
+
+  it('should resolve expressions and call analytics', () => {
+    const beagleView = createBeagleViewMock()
+    beagleView.getNavigator().getCurrentRoute = (() => { return { url: 'test' } })
+    const beagleAnalytics = beagleView.getBeagleService().analyticsService
+    spyOn(beagleAnalytics, 'createActionRecord').and.callThrough()
+
+    const beagleComponent: IdentifiableBeagleUIElement = {
+      _beagleComponent_: 'beagle:button',
+      id: 'someId',
+      context: {
+        id: 'context',
+        value: {
+          query: 'test'
+        }
+      },
+      onPress: {
+        _beagleAction_: "beagle:condition",
+        analytics: {
+          attributes: ["condition"]
+        },
+        condition: "@{eq(context.query, 'test')}"
+      }
+    }
+
+    const resolvedComponent = {
+      action: {
+        _beagleAction_: "beagle:condition",
+        analytics: {
+          attributes: [
+            "condition",
+          ],
+        },
+        condition: true,
+      },
+      component: {
+        _beagleComponent_: "beagle:button",
+        context: {
+          id: "context",
+          value: {
+            query: "test",
+          },
+        },
+        id: "someId",
+        onPress: expect.any(Function),
+      },
+      eventName: "onPress",
+      platform: "Test",
+      route: {
+        url: "test",
+      }
+    }
+
+    interpretEventsInTree(beagleComponent, beagleView)
+    beagleComponent.onPress()
+
+    expect(beagleAnalytics.createActionRecord).toBeCalledWith(resolvedComponent)
+
+
+  })
+
   it('should not deserialize action if received data is a component', () => {
     const beagleView = createBeagleViewMock()
     const mock = listViewWithAction
@@ -134,9 +269,9 @@ describe('EventHandler', () => {
     ]
     const mock = createContainerWithAction('onInit', actions)
     interpretEventsInTree(mock, beagleView)
-  
+
     mock.onInit()
-  
+
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
     expectActionHandlerToHaveBeenCalled({
       handler: alert,
@@ -177,7 +312,7 @@ describe('EventHandler', () => {
   it('should create implicit context when function is called passing a parameter', () => {
     const originalResolve = Expression.resolveForAction
     Expression.resolveForAction = jest.fn()
-    
+
     const beagleView = createBeagleViewMock()
     const action = {
       _beagleAction_: 'beagle:alert',
@@ -187,7 +322,7 @@ describe('EventHandler', () => {
     interpretEventsInTree(mock, beagleView)
     const event = { name: 'Beagle', lastName: 'Mockerson' }
     mock.onInit(event)
-  
+
     expect(Expression.resolveForAction).toHaveBeenCalledWith(
       action,
       [{ id: 'onInit', value: event }],
@@ -196,7 +331,7 @@ describe('EventHandler', () => {
 
     Expression.resolveForAction = originalResolve
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
-    
+
     alert.mockClear()
   })
 
@@ -206,7 +341,7 @@ describe('EventHandler', () => {
     const mock = createContainerWithAction('onInit', action)
     mock.context = { id: 'test', value: 'Hello World!' }
     interpretEventsInTree(mock, beagleView)
-    
+
     mock.onInit()
 
     const alert = defaultActionHandlers['beagle:alert'] as jest.Mock
@@ -234,13 +369,13 @@ describe('EventHandler', () => {
     const action = { _beagleAction_: 'custom:myAction', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     await new Promise((resolve) => {
-      beagleView.subscribe(view =>  {
+      beagleView.subscribe(view => {
         view.onInit()
         resolve()
       })
       beagleView.getRenderer().doFullRender(mock)
     })
-    
+
     expect(myActionHandler).toHaveBeenCalledWith(
       expect.objectContaining({ action })
     )
@@ -253,7 +388,7 @@ describe('EventHandler', () => {
     const action = { _beagleAction_: 'blah', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     interpretEventsInTree(mock, beagleView)
-  
+
     mock.onInit()
     expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
   })

@@ -22,7 +22,7 @@ import { BeagleNavigationAction } from './navigation/types'
 
 export interface BaseAction {
   _beagleAction_: string,
-  analytics?: ActionAnalyticsConfig,
+  analytics?: ActionAnalyticsConfig | boolean,
 }
 
 export interface SendRequestAction extends BaseAction {
