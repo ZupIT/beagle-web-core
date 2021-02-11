@@ -62,15 +62,7 @@ export interface AnalyticsProvider {
    * 
    * @param record the record to create
    */
-  createRecord: (record: AnalyticsRecord) => void,
-
-   /**
-   * Represents how many records will be temporarily stored in a queue while `getConfig()` is `null`.
-   * Defaults to `100`
-   * 
-   * @returns the maximum number of records in the queue
-   */
-  getMaximumItemsInQueue?: () => number,
+  createRecord: (record: AnalyticsRecord) => void
 }
 
 export interface ActionAnalyticsConfig {
