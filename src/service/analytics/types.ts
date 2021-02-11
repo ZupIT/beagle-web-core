@@ -53,7 +53,7 @@ export interface AnalyticsProvider {
    * 
    * @return an AnalyticsConfig or null
    */
-  getConfig: () => (AnalyticsConfig | null),
+  getConfig: () => (AnalyticsConfig),
   
    /** 
    * This function will be called every time Beagle needs to create a record. If you don't want

@@ -34,7 +34,6 @@ describe('Actions Analytics Service', () => {
   let expectedRecordBase: any
   let recordBase: ActionRecordParams
   let screenBase: ScreenRecordParams
-  const promiseArray = [1, 2, 3]
 
   screenBase = {
     route: {
@@ -102,30 +101,7 @@ describe('Actions Analytics Service', () => {
     }
   }
 
-  function analyticsWithDelay(): AnalyticsProvider {
-
-    let delayedConfig: AnalyticsConfig | null = null
-
-    function getConfig() {
-      setTimeout(() => {
-        delayedConfig = {
-          enableScreenAnalytics: true,
-          actions: { 'beagle:pushView': ['route.screen'] }
-        }
-      }, 4000);
-      return delayedConfig
-    }
-
-    function createRecord(record: AnalyticsRecord) { }
-
-    return {
-      getConfig,
-      createRecord,
-    }
-  }
-
   let provider: AnalyticsProvider
-  let providerWithDelay: AnalyticsProvider = analyticsWithDelay()
   let analyticsServiceMock: AnalyticsService
 
   beforeAll(() => {
@@ -142,7 +118,6 @@ describe('Actions Analytics Service', () => {
     globalMocks.log.mockClear()
     spyOn(Date, 'now').and.returnValue(10)
     spyOn(provider, 'createRecord').and.callThrough()
-    spyOn(providerWithDelay, 'createRecord').and.callThrough()
   })
 
   it('should call create Record for Action', () => {
@@ -334,55 +309,6 @@ describe('Actions Analytics Service', () => {
     await analyticsServiceMock.createScreenRecord(screenBase)
     expect(provider.createRecord).toHaveBeenCalledTimes(0)
 
-  })
-
-  it('should show warning when exceeding queue max capacity', async () => {
-
-    providerWithDelay.getMaximumItemsInQueue = () => 2
-    analyticsServiceMock = analyticsService.create(providerWithDelay)
-
-    promiseArray.map(async (id) => {
-      try {
-        await analyticsServiceMock.createActionRecord(recordBase)
-        return id
-      } catch { }
-    })
-
-    expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
-  })
-
-  it('should NOT show warning when NOT exceeding queue max capacity', async () => {
-
-    providerWithDelay.getMaximumItemsInQueue = () => 5
-    analyticsServiceMock = analyticsService.create(providerWithDelay)
-
-    promiseArray.map(async (id) => {
-      try {
-        await analyticsServiceMock.createActionRecord(recordBase)
-        return id
-      } catch { }
-    })
-
-    expect(globalMocks.log).not.toHaveBeenCalled()
-
-  })
-
-  it('should empty queue when analytics config available', async () => {
-
-    providerWithDelay.getMaximumItemsInQueue = () => 2
-    analyticsServiceMock = analyticsService.create(providerWithDelay)
-
-    promiseArray.map(async (id) => {
-      try {
-        await analyticsServiceMock.createActionRecord(recordBase)
-        return id
-      } catch { }
-    })
-
-    setTimeout(async () => {
-      await analyticsServiceMock.createActionRecord(recordBase)
-      expect(providerWithDelay.createRecord).toHaveBeenCalledTimes(3)
-    }, 5000);
   })
 
   it('should NOT createRecord when analytics False and Provider True', async () => {
