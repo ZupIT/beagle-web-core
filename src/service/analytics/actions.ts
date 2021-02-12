@@ -65,7 +65,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     timestamp: Date.now(),
   }
 
-  if(position)
+  if (position)
   record.component.position = position
 
   if (typeof action.analytics === 'object' && action.analytics.additionalEntries) {

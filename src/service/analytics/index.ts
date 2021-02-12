@@ -66,7 +66,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       timestamp: Date.now(),
     }
     
-    if(route){
+    if (route){
       record.screen = 'screen' in route 
       ? route.screen.identifier || route.screen.id
       : route.url
