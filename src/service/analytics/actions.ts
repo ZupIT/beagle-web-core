@@ -17,7 +17,7 @@
 import { BeagleAction } from 'action/types'
 import get from 'lodash/get'
 import { getElementByBeagleId, getElementPosition, getPath } from 'utils/html'
-import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig, ActionAnalyticsRecord } from './types'
+import { ActionRecordParams, AnalyticsConfig, ActionAnalyticsRecord } from './types'
 
 /**
  * This function generates a new `Record<string, any>` with the attributes that were passed along
