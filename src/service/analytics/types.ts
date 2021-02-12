@@ -45,7 +45,12 @@ export interface AnalyticsRecord {
 
 export interface ActionAnalyticsRecord extends AnalyticsRecord {
   event: string,
-  component: Record<string, (string | Record<string, number>)>,
+  component: {
+    type: string,
+    id: string,
+    xPath: string,
+    position?: { x: number, y: number },
+  },
   beagleAction: string,
   additionalEntries?: Record<string, string>,
   attributes?: Record<string, string>,
