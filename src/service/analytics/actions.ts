@@ -66,7 +66,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   }
 
   if (position)
-  record.component.position = position
+    record.component.position = position
 
   if (typeof action.analytics === 'object' && action.analytics.additionalEntries) {
     record = {
