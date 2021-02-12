@@ -58,13 +58,15 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     component: {
       type: component && component._beagleComponent_,
       id: component && component.id,
-      position: position,
       xPath: xPath,
     },
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
     timestamp: Date.now(),
   }
+
+  if(position)
+  record.component.position = position
 
   if (typeof action.analytics === 'object' && action.analytics.additionalEntries) {
     record = {
@@ -74,8 +76,9 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   }
 
   if (currentRoute) {
-    if ('screen' in currentRoute) record.screen = currentRoute.screen.identifier || currentRoute.screen.id
-    else record.screen = currentRoute.url
+    record.screen = 'screen' in currentRoute
+      ? currentRoute.screen.identifier || currentRoute.screen.id
+      : currentRoute.url
   }
 
   return record
