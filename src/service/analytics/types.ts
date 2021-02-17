@@ -39,8 +39,21 @@ export interface AnalyticsConfig {
 export interface AnalyticsRecord {
   type: string,
   platform: string,
-  [key: string]: any,
   timestamp: number,
+  screen?: string,
+}
+
+export interface ActionAnalyticsRecord extends AnalyticsRecord {
+  event: string,
+  component: {
+    type: string,
+    id: string,
+    xPath: string,
+    position?: { x: number, y: number },
+  },
+  beagleAction: string,
+  additionalEntries?: Record<string, string>,
+  attributes?: Record<string, string>,
 }
 
 export interface AnalyticsProvider {

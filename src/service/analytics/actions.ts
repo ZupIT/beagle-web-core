@@ -17,7 +17,7 @@
 import { BeagleAction } from 'action/types'
 import get from 'lodash/get'
 import { getElementByBeagleId, getElementPosition, getPath } from 'utils/html'
-import { ActionRecordParams, AnalyticsRecord, AnalyticsConfig } from './types'
+import { ActionRecordParams, AnalyticsConfig, ActionAnalyticsRecord } from './types'
 
 /**
  * This function generates a new `Record<string, any>` with the attributes that were passed along
@@ -44,27 +44,29 @@ function createActionAttributes(action: BeagleAction, whiteListedAttributesInCon
  * @param beagleView the `BeagleView` to use in the record
  * @returns the formatted `AnalyticsRecord`
  */
-function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig): AnalyticsRecord {
+function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig): ActionAnalyticsRecord {
   const { action, eventName, component, platform, route } = params
   const currentRoute = route
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
   const xPath = element && getPath(element)
 
-  let record: AnalyticsRecord = {
+  let record: ActionAnalyticsRecord = {
     type: 'action',
     platform: `WEB ${platform}`,
     event: eventName,
     component: {
       type: component && component._beagleComponent_,
       id: component && component.id,
-      position: position,
       xPath: xPath,
     },
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
     timestamp: Date.now(),
   }
+
+  if (position)
+    record.component.position = position
 
   if (typeof action.analytics === 'object' && action.analytics.additionalEntries) {
     record = {
@@ -74,8 +76,9 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   }
 
   if (currentRoute) {
-    if ('screen' in currentRoute) record.screenId = currentRoute.screen.identifier || currentRoute.screen.id
-    else record.screen = currentRoute.url
+    record.screen = 'screen' in currentRoute
+      ? currentRoute.screen.identifier || currentRoute.screen.id
+      : currentRoute.url
   }
 
   return record
