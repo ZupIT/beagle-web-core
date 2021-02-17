@@ -60,11 +60,9 @@ export interface AnalyticsProvider {
    /**
    * Beagle uses this configuration to know how to handle analytics events. In order to access the
    * most updated global analytics config, this method is called whenever an event is triggered. It
-   * can return an `AnalyticsConfig` or `null`. When `null`, the record is temporarily stored in a
-   * queue. The enqueued records are processed when `getConfig()` returns a value different than
-   * null.
+   * should always return an `AnalyticsConfig`
    * 
-   * @return an AnalyticsConfig or null
+   * @return an AnalyticsConfig
    */
   getConfig: () => (AnalyticsConfig),
   

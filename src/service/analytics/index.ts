@@ -22,8 +22,6 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   async function createScreenRecord (params: ScreenRecordParams) {
     if (!provider) return
     const config = provider.getConfig()
-
-    if (!config) return
     const { platform, route } = params
 
     if (config && !config.enableScreenAnalytics) return
@@ -49,7 +47,6 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     const { action, eventName, component, platform, route } = params
     const config = provider.getConfig()
 
-    if (!config) return
     const isActionEnabledInPayload = !!action.analytics
     const isActionDisabledInPayload = action.analytics === false
     const isActionEnabledInConfig = config.actions[action._beagleAction_]
