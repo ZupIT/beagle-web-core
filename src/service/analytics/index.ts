@@ -14,49 +14,14 @@
  * limitations under the License.
  */
 
-import logger from 'logger'
 import formatActionRecord from './actions'
 import { AnalyticsProvider, AnalyticsRecord, ActionRecordParams, ScreenRecordParams } from './types'
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
-  const defaultMaxItems = 100
-  let isConsumingQueue = false
-  let queue: (ActionRecordParams | ScreenRecordParams)[] = []
-  //eslint is disabled in the next lines because the typescript is not recognizing the variable attribution correctly
-  let createActionRecord: ((params: ActionRecordParams) => Promise<void>) // eslint-disable-line prefer-const
-  let createScreenRecord: ((params: ScreenRecordParams) => Promise<void>) // eslint-disable-line prefer-const
   
-  function addToQueue(record: ActionRecordParams | ScreenRecordParams) {
-    const maxItemsInQueue = (provider && provider.getMaximumItemsInQueue)  ? provider.getMaximumItemsInQueue() : defaultMaxItems
-    if (queue.length >= maxItemsInQueue) {
-      if (!isConsumingQueue) {
-        logger.warn(`${maxItemsInQueue} analytics records are queued and waiting for the initial configuration of the AnalyticsProvider to conclude. 
-        This is probably an error within your analytics provider. Why is getConfig() still returning null? From now on, some analytics records will 
-        be lost. If you need to increase the maximum number of items the queue can support, implement getMaximumItemsInQueue() in your 
-        AnalyticsProvider.`)
-      }
-      logger.error('size exceeded')
-      queue.shift()
-    }
-    queue.push(record)
-  }
-
-  async function createAnalyticsRecordsInQueue() {
-    if (!provider) return
-    isConsumingQueue = true
-
-    const promisesList = queue.map(item => 'action' in item ? createActionRecord(item) : createScreenRecord(item))
-
-    await Promise.all(promisesList)
-    isConsumingQueue = false
-    queue = []
-  }
-  
-  createScreenRecord = async function (params: ScreenRecordParams) {
+  async function createScreenRecord (params: ScreenRecordParams) {
     if (!provider) return
     const config = provider.getConfig()
-
-    if (!config) return addToQueue(params)
     const { platform, route } = params
 
     if (config && !config.enableScreenAnalytics) return
@@ -75,17 +40,13 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
 
     provider.createRecord(record)
 
-    if (!isConsumingQueue && queue.length > 0){
-      createAnalyticsRecordsInQueue()
-    }
   }
 
-  createActionRecord = async function (params: ActionRecordParams) {
+  async function createActionRecord (params: ActionRecordParams) {
     if (!provider) return
     const { action, eventName, component, platform, route } = params
     const config = provider.getConfig()
 
-    if (!config) return addToQueue(params)
     const isActionEnabledInPayload = !!action.analytics
     const isActionDisabledInPayload = action.analytics === false
     const isActionEnabledInConfig = config.actions[action._beagleAction_]
@@ -100,10 +61,6 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
         route,
       }, config)
       provider.createRecord(record)
-    }
-
-    if (!isConsumingQueue && queue.length > 0){
-      createAnalyticsRecordsInQueue()
     }
   }
 
