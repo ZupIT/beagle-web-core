@@ -16,7 +16,6 @@
 
 import setContext from 'action/set-context'
 import Tree from 'beagle-tree'
-import Context from 'beagle-view/render/context'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { createBeagleViewMock } from '../../utils/test-utils'
 import {
