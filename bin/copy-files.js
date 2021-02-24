@@ -19,7 +19,7 @@ const { copyFileSync } = require('fs')
 
 const filesToCopy = [
   { src: 'package.json', dest: './dist/package.json' },
-  { src: 'readme.md', dest: './dist/readme.md' }
+  { src: 'README.md', dest: './dist/readme.md' }
 ]
 
 filesToCopy.forEach(({ src, dest }) => copyFileSync(src, dest))
