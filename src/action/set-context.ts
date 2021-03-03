@@ -26,14 +26,14 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   const uiTree = beagleView.getTree()
   const globalContexts = [globalContext.getAsDataContext()]
   const contextHierarchy = Context.evaluate(uiTree, globalContexts, false)[element.id]
-  
+
   if (!contextHierarchy) {
     return logger.warn(
       `The component of type "${element._beagleComponent_}" and id "${element.id}" is detached from the current tree and attempted to change the value of the context "${contextId}".`,
       'This behavior is not supported, please, hide the component instead of removing it if you still need it to perform an action in the tree.',
     )
   }
-  
+
   const context = Context.find(contextHierarchy, contextId)
 
   if (context && context.id === 'global') {
@@ -55,7 +55,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   if (!path) context.value = value
   else {
     context.value = context.value || {}
-    set(context.value, path, value)
+    set(context, `value.${path}`, value)
   }
 
   beagleView.getRenderer().doPartialRender(uiTree)

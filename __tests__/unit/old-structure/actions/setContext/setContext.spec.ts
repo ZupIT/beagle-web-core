@@ -356,7 +356,7 @@ describe('Actions: beagle:setContext', () => {
       beagleView,
       element: mock,
       executeAction: jest.fn(),
-    }) 
+    })
     expect(globalContext.set).toHaveBeenCalled()
   })
 
@@ -364,7 +364,7 @@ describe('Actions: beagle:setContext', () => {
     const mock = createGlobalContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const { globalContext } = beagleView.getBeagleService()
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -375,7 +375,7 @@ describe('Actions: beagle:setContext', () => {
       element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
-  
+
     expect(globalContext.set).toHaveBeenCalledWith('new value', undefined)
   })
 
@@ -383,7 +383,7 @@ describe('Actions: beagle:setContext', () => {
     const mock = createGlobalContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
     const { globalContext } = beagleView.getBeagleService()
-  
+
     setContext({
       action: {
         _beagleAction_: 'beagle:setContext',
@@ -395,7 +395,7 @@ describe('Actions: beagle:setContext', () => {
       element: Tree.findById(mock, 'button')!,
       executeAction: jest.fn(),
     })
-  
+
     expect(globalContext.set).toHaveBeenCalledWith('new value', 'testing.path')
   })
 
@@ -472,5 +472,59 @@ describe('Actions: beagle:setContext', () => {
       expect.stringContaining('is detached from the current tree and attempted to change the value of the context'),
       expect.any(String),
     )
+  })
+
+  it('should be able to set a different type of value', () => {
+    const ctxId = 'changeValueTypeCtx'
+    const mock: IdentifiableBeagleUIElement = {
+      _beagleComponent_: 'beagle:button',
+      id: 'button',
+      context: {
+        id: ctxId,
+        value: '',
+      },
+    }
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        value: 'value',
+        contextId: ctxId,
+      },
+      beagleView,
+      element: Tree.findById(mock, 'button')!,
+      executeAction: jest.fn(),
+    })
+
+    expect(mock.context?.value).toBe('value')
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        value: 'value',
+        path: 'new',
+        contextId: ctxId,
+      },
+      beagleView,
+      element: Tree.findById(mock, 'button')!,
+      executeAction: jest.fn(),
+    })
+
+    expect(mock.context?.value?.new).toBe('value')
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        value: ['new', 'value'],
+        contextId: ctxId,
+      },
+      beagleView,
+      element: Tree.findById(mock, 'button')!,
+      executeAction: jest.fn(),
+    })
+
+    expect(mock.context?.value[0]).toBe('new')
+    expect(mock.context?.value[1]).toBe('value')
   })
 })
