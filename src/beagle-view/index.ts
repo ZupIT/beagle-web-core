@@ -38,14 +38,21 @@ function createBeagleView(
   networkOptions?: NetworkOptions,
   initialControllerId?: string,
 ): BeagleView {
+
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers } = beagleService.getConfig()
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
-  let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => { }
+
+  function getTree() {
+    // to avoid errors, we should never give access to our own tree to third parties
+    return Tree.clone(currentUITree)
+  }
+
+  let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory, getTree)
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -98,7 +105,7 @@ function createBeagleView(
           routes: [{ url: path }],
           controllerId: initialControllerId,
         }]
-      navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
+      navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory, getTree)
       // eslint-disable-next-line
       setupNavigation()
     }
@@ -128,11 +135,6 @@ function createBeagleView(
       if (errorListeners.length === 0) logger.error(...errors)
       runErrorListeners(errors)
     }
-  }
-
-  function getTree() {
-    // to avoid errors, we should never give access to our own tree to third parties
-    return Tree.clone(currentUITree)
   }
 
   function destroy() {
@@ -219,13 +221,14 @@ function createBeagleView(
       disableCssTransformation: !!beagleService.getConfig().disableCssTransformation,
     })
   }
-function setupNavigation() {
-    navigator.subscribe(async (route, navigationController) => {
+  function setupNavigation() {
+    navigator.subscribe(async (route, navigationController, elementToRestore) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
       let isDone = false
 
+      if (elementToRestore) return renderer.doFullRender(elementToRestore)
       if (screen) return renderer.doFullRender(screen)
 
       if (shouldPrefetch) {
@@ -237,12 +240,12 @@ function setupNavigation() {
           isDone = true
         } catch { }
       }
-      if (!isDone){  
+      if (!isDone) {
         await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
       }
       const platform = beagleService.getConfig().platform
       analyticsService.createScreenRecord({
-        route: route, 
+        route: route,
         platform: platform,
       })
     })

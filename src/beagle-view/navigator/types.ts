@@ -29,7 +29,13 @@ export type NavigationType = (
 export type NavigationListener = (
   route: Route,
   navigationController: NavigationController,
+  elementToRestore?: BeagleUIElement
 ) => void | Promise<void>
+
+export interface SavedElement {
+  route?: Route | string,
+  element: BeagleUIElement,
+}
 
 export interface RemoteView {
   url: string,
