@@ -29,7 +29,6 @@ import {
   NavigationType,
   NavigationListener,
   NavigationController,
-  SavedElement,
 } from './types'
 
 const createBeagleNavigator = (
@@ -116,7 +115,7 @@ const createBeagleNavigator = (
         // todo: remove screenComponent.identifier with the release of v2.0.0"
         (route && 'screen' in route && (route.screen.identifier || route.screen.id)) || ''
 
-    return route || ""
+    return route || ''
   }
 
   function saveElementToRestore() {
@@ -130,7 +129,7 @@ const createBeagleNavigator = (
 
         savedElements = {
           ...savedElements,
-          [key]: treeElement
+          [key]: treeElement,
         }
       }
     }

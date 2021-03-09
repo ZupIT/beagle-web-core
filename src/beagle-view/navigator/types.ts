@@ -32,11 +32,6 @@ export type NavigationListener = (
   elementToRestore?: BeagleUIElement
 ) => void | Promise<void>
 
-export interface SavedElement {
-  route?: Route | string,
-  element: BeagleUIElement,
-}
-
 export interface RemoteView {
   url: string,
   fallback?: BeagleUIElement,
