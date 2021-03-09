@@ -697,17 +697,17 @@ describe('Beagle View: Navigator', () => {
       const listener = jest.fn()
       navigator.subscribe(listener)
 
-      await navigator.pushView({ screen: {_beagleComponent_:""} })
-      await navigator.pushView({ screen: {_beagleComponent_:"", id:"myId"} })
-      await navigator.pushView({ screen: {_beagleComponent_:""} })
-      await navigator.pushView({ screen: {_beagleComponent_:""} })
+      await navigator.pushView({ screen: { _beagleComponent_: "" } })
+      await navigator.pushView({ screen: { _beagleComponent_: "", id: "myId" } })
+      await navigator.pushView({ screen: { _beagleComponent_: "" } })
+      await navigator.pushView({ screen: { _beagleComponent_: "" } })
       await navigator.popToView('myId')
 
 
       expect(listener).toHaveBeenCalledWith(expect.anything(), {}, mockElement)
     })
 
-    it('should NOT call listener with saved element when pushStack', async () => {
+    it('should NOT call listener with saved element on first pushStack', async () => {
       const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test" }
       const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
       const listener = jest.fn()
@@ -718,7 +718,7 @@ describe('Beagle View: Navigator', () => {
       expect(listener).toHaveBeenCalledWith(expect.anything(), {}, undefined)
     })
 
-    it('should NOT call listener with saved element when pushStack', async () => {
+    it('should NOT call listener with saved element on first pushView', async () => {
       const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test" }
       const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
       const listener = jest.fn()
@@ -729,7 +729,17 @@ describe('Beagle View: Navigator', () => {
       expect(listener).toHaveBeenCalledWith(expect.anything(), {}, undefined)
     })
 
-    
+    it('should REMOVE onInit property before calling the listener', async () => {
+      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test", onInit: (() => { }) }
+      const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+
+      await navigator.pushView({ url: '/home' })
+
+      expect(listener).toHaveBeenCalledWith(expect.anything(), {}, { _beagleComponent_: "beagle:test" })
+    })
+
   })
 
 })

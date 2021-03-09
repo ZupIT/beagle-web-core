@@ -42,7 +42,7 @@ const createBeagleNavigator = (
   let isDestroyed = false
   const defaultNavigationController = find(navigationControllers, { default: true }) || {}
   const listeners: NavigationListener[] = []
-  const savedElements: SavedElement[] = []
+  let savedElements: Record<string, BeagleUIElement> = {}
 
   function getNavigationController(controllerId?: string) {
     if (!controllerId) return defaultNavigationController
@@ -110,39 +110,36 @@ const createBeagleNavigator = (
       ('screen' in route && (route.screen.identifier === id || route.screen.id === id))
   }
 
-  function saveElementToRestore(navigationType: NavigationType) {
-    if ((navigationType === 'pushStack' || navigationType === 'pushView') && getTree) {
+  function getRouteName(route?: Route | string): string {
+    if (route && typeof route !== 'string')
+      return (route && 'url' in route && route.url) ||
+        // todo: remove screenComponent.identifier with the release of v2.0.0"
+        (route && 'screen' in route && (route.screen.identifier || route.screen.id)) || ''
+
+    return route || ""
+  }
+
+  function saveElementToRestore() {
+    if (getTree) {
       const treeElement = getTree()
+      const key = getRouteName(last(getCurrentStack().routes))
+
       if (treeElement) {
         if (treeElement['onInit'])
           delete treeElement['onInit']
-        savedElements.push({ route: last(getCurrentStack().routes), element: treeElement })
-      }
 
+        savedElements = {
+          ...savedElements,
+          [key]: treeElement
+        }
+      }
     }
   }
 
-  function getElementToRestore(navigationType: NavigationType, route?: string) {
-    let elementToRestore: BeagleUIElement | undefined
-
-    if (savedElements.length <= 0) return
-
-    if (navigationType === 'popView' || navigationType === 'popStack') {
-      elementToRestore = savedElements[savedElements.length - 1].element
-      savedElements.pop()
-      return elementToRestore
-    }
-
-    if (navigationType === 'popToView') {
-      const elementToRestoreIndex = findLastIndex(savedElements, e => {
-        if (!e.route || typeof e.route === 'string' || typeof route !== 'string') return false
-        return isRouteIdentifiedBy(e.route, route)
-      })
-
-      elementToRestore = savedElements[elementToRestoreIndex].element
-      savedElements.splice(elementToRestoreIndex)
-      return elementToRestore
-    }
+  function getElementToRestore(route?: Route | string) {
+    if (!route) return
+    const key = getRouteName(route)
+    return savedElements[key]
   }
 
   async function navigate(
@@ -151,7 +148,7 @@ const createBeagleNavigator = (
     controllerId?: string,
   ) {
 
-    saveElementToRestore(type)
+    saveElementToRestore()
 
     const handlers: Record<NavigationType, () => Promise<void>> = {
       pushStack: async () => {
@@ -159,7 +156,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushStack. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
+        await runListeners(route, getElementToRestore(route))
 
         navigation.push({ routes: [route], controllerId })
       },
@@ -170,7 +167,7 @@ const createBeagleNavigator = (
         }
 
         const route = last(getPreviousStack().routes)!
-        await runListeners(route, getElementToRestore(type))
+        await runListeners(route, getElementToRestore(route))
         navigation.pop()
       },
 
@@ -179,7 +176,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route)
+        await runListeners(route, getElementToRestore(route))
 
         if (navigation.length === 0) navigation.push({ routes: [] })
         getCurrentStack().routes.push(route)
@@ -189,9 +186,9 @@ const createBeagleNavigator = (
         if (isSingleRoute()) {
           throw new BeagleNavigationError('It was not possible to pop a view because Beagle Navigator has not more than one recorded route')
         }
-
-        await runListeners(getPreviousRoute(), getElementToRestore(type))
         const currentStack = getCurrentStack()
+
+        await runListeners(getPreviousRoute(), getElementToRestore(getPreviousRoute()))
         currentStack.routes.pop()
         if (currentStack.routes.length <= 0) navigation.pop()
       },
@@ -204,7 +201,7 @@ const createBeagleNavigator = (
         const currentStack = getCurrentStack()
         const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
-        await runListeners(currentStack.routes[index], getElementToRestore(type, route))
+        await runListeners(currentStack.routes[index], getElementToRestore(route))
         currentStack.routes.splice(index + 1)
       },
 
