@@ -15,7 +15,7 @@
  */
 
 export type HttpMethod = (
-  'post' | 'get' | 'put' | 'delete' | 'patch' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  'post' | 'get' | 'put' | 'delete' | 'patch' | 'head' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD'
 )
 
 export interface HttpClient {

@@ -223,7 +223,7 @@ function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
-      const { url, fallback, shouldPrefetch } = route as RemoteView
+      const { url, fallback, shouldPrefetch, httpAdditionalData } = route as RemoteView
       let isDone = false
 
       if (screen) return renderer.doFullRender(screen)
@@ -237,8 +237,9 @@ function setupNavigation() {
           isDone = true
         } catch { }
       }
-      if (!isDone){  
-        await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
+      if (!isDone){
+        const httpData = httpAdditionalData || networkOptions  
+        await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }
       const platform = beagleService.getConfig().platform
       analyticsService.createScreenRecord({

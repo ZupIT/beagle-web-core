@@ -26,6 +26,9 @@ export type Listener = (tree: IdentifiableBeagleUIElement) => void
 
 export type ErrorListener = (errors: Array<BeagleError>) => void
 
+/**
+ * @deprecated prefer using the HttpAdditionalData in your Route properties instead
+ */
 export interface NetworkOptions {
   /**
    * Additional headers to send in the request.
