@@ -228,7 +228,9 @@ function createBeagleView(
       const { url, fallback, shouldPrefetch } = route as RemoteView
       let isDone = false
 
-      if (elementToRestore) return renderer.doFullRender(elementToRestore)
+      if (elementToRestore && elementToRestore._beagleComponent_ !== 'custom:error')
+        return renderer.doFullRender(elementToRestore)
+
       if (screen) return renderer.doFullRender(screen)
 
       if (shouldPrefetch) {
