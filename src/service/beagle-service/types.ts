@@ -174,7 +174,7 @@ export interface BeagleConfig<Schema> {
   disableCssTransformation?: boolean,
 }
 
-interface CreateView {
+export interface CreateView {
   /**
    * @deprecated since v1.7. Will be deleted in v2.0. Instead, please use `route.httpAdditionalData`
    * when making a navigation.
