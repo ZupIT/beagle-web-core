@@ -31,13 +31,14 @@ import {
   LoadParams,
   UpdateWithTreeParams,
   NetworkOptions,
+  CreateBeagleView,
 } from './types'
 
-function createBeagleView(
+const createBeagleView: CreateBeagleView =(
   beagleService: BeagleService,
-  networkOptions?: NetworkOptions,
+  networkOptionsOrInitialControllerId?: NetworkOptions | string,
   initialControllerId?: string,
-): BeagleView {
+): BeagleView => {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
@@ -46,6 +47,15 @@ function createBeagleView(
   let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => { }
+
+   // todo: remove legacy code for v2.0
+   let networkOptions: NetworkOptions | undefined
+   if (typeof networkOptionsOrInitialControllerId === 'string') {
+     initialControllerId = networkOptionsOrInitialControllerId
+   } else {
+     networkOptions = networkOptionsOrInitialControllerId
+   }
+   // end of legacy code
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
