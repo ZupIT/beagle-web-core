@@ -222,7 +222,7 @@ function createBeagleView(
     })
   }
   function setupNavigation() {
-    navigator.subscribe(async (route, navigationController, elementToRestore) => {
+    navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { state } = route as StateView
       const { screen } = route as LocalView
