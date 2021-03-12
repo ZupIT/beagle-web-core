@@ -16,7 +16,7 @@
 
 import cloneDeep from 'lodash/cloneDeep'
 import Navigator from 'beagle-view/navigator'
-import { BeagleNavigator, NavigationType, NavigationController } from 'beagle-view/navigator/types'
+import { BeagleNavigator, NavigationType, NavigationController, Route } from 'beagle-view/navigator/types'
 import { BeagleUIElement } from 'index'
 
 describe('Beagle View: Navigator', () => {
@@ -168,7 +168,7 @@ describe('Beagle View: Navigator', () => {
       })
       navigator.subscribe(listener)
       await navigator.navigate('pushStack', { url: '/test' })
-      expect(listener).toHaveBeenCalledWith({ url: '/test' }, {}, undefined)
+      expect(listener).toHaveBeenCalledWith({ url: '/test' }, {})
     })
 
     it('should wait for listener and complete the navigation', async () => {
@@ -192,9 +192,9 @@ describe('Beagle View: Navigator', () => {
       expect(listeners[0]).toHaveBeenCalledTimes(1)
       expect(listeners[1]).toHaveBeenCalledTimes(1)
       expect(listeners[2]).toHaveBeenCalledTimes(1)
-      expect(listeners[0]).toHaveBeenCalledWith({ url: '/test' }, {}, undefined)
-      expect(listeners[1]).toHaveBeenCalledWith({ url: '/test' }, {}, undefined)
-      expect(listeners[2]).toHaveBeenCalledWith({ url: '/test' }, {}, undefined)
+      expect(listeners[0]).toHaveBeenCalledWith({ url: '/test' }, {})
+      expect(listeners[1]).toHaveBeenCalledWith({ url: '/test' }, {})
+      expect(listeners[2]).toHaveBeenCalledWith({ url: '/test' }, {})
     })
 
     it('should run multiple listeners at once and wait for all of them', async () => {
@@ -524,9 +524,9 @@ describe('Beagle View: Navigator', () => {
       await navigator.navigate(type, { url: '/account' }, 'secured')
       await navigator.pushView({ url: '/profile' })
       expect(listener).toHaveBeenCalledTimes(3)
-      expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public, undefined])
-      expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.public, undefined])
-      expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured, undefined])
+      expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public])
+      expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.public])
+      expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured])
     }
 
     async function shouldPopController(type: NavigationType) {
@@ -538,10 +538,10 @@ describe('Beagle View: Navigator', () => {
       await navigator.navigate(type)
       await navigator.pushView({ url: '/sign-up' })
       expect(listener).toHaveBeenCalledTimes(4)
-      expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public, undefined])
-      expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.public, undefined])
-      expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured, undefined])
-      expect(listener.mock.calls[3]).toEqual([expect.anything(), controllers.public, undefined])
+      expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public])
+      expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.public])
+      expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured])
+      expect(listener.mock.calls[3]).toEqual([expect.anything(), controllers.public])
     }
 
     it('should use default controller', async () => {
@@ -549,7 +549,7 @@ describe('Beagle View: Navigator', () => {
       const listener = jest.fn()
       navigator.subscribe(listener)
       await navigator.pushStack({ url: '/sign-up' })
-      expect(listener).toHaveBeenCalledWith(expect.anything(), controllers.public, undefined)
+      expect(listener).toHaveBeenCalledWith(expect.anything(), controllers.public)
     })
 
     it('should use the controller given in the initial value', async () => {
@@ -557,7 +557,7 @@ describe('Beagle View: Navigator', () => {
       const listener = jest.fn()
       navigator.subscribe(listener)
       await navigator.pushView({ url: '/account' })
-      expect(listener).toHaveBeenCalledWith(expect.anything(), controllers.secured, undefined)
+      expect(listener).toHaveBeenCalledWith(expect.anything(), controllers.secured)
     })
 
     it('should change the controller after a pushStack', () => {
@@ -595,11 +595,11 @@ describe('Beagle View: Navigator', () => {
         await navigator.pushView({ url: '/order' })
 
         expect(listener).toHaveBeenCalledTimes(5)
-        expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public, undefined])
-        expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.public, undefined])
-        expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured, undefined])
-        expect(listener.mock.calls[3]).toEqual([expect.anything(), controllers.secured, undefined])
-        expect(listener.mock.calls[4]).toEqual([expect.anything(), controllers.secured, undefined])
+        expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public])
+        expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.public])
+        expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured])
+        expect(listener.mock.calls[3]).toEqual([expect.anything(), controllers.secured])
+        expect(listener.mock.calls[4]).toEqual([expect.anything(), controllers.secured])
       },
     )
 
@@ -616,12 +616,12 @@ describe('Beagle View: Navigator', () => {
       await navigator.navigate('pushView', { url: '/products' }, 'public')
 
       expect(listener).toHaveBeenCalledTimes(6)
-      expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public, undefined])
-      expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.secured, undefined])
-      expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured, undefined])
-      expect(listener.mock.calls[3]).toEqual([expect.anything(), controllers.secured, undefined])
-      expect(listener.mock.calls[4]).toEqual([expect.anything(), controllers.secured, undefined])
-      expect(listener.mock.calls[5]).toEqual([expect.anything(), controllers.secured, undefined])
+      expect(listener.mock.calls[0]).toEqual([expect.anything(), controllers.public])
+      expect(listener.mock.calls[1]).toEqual([expect.anything(), controllers.secured])
+      expect(listener.mock.calls[2]).toEqual([expect.anything(), controllers.secured])
+      expect(listener.mock.calls[3]).toEqual([expect.anything(), controllers.secured])
+      expect(listener.mock.calls[4]).toEqual([expect.anything(), controllers.secured])
+      expect(listener.mock.calls[5]).toEqual([expect.anything(), controllers.secured])
     })
 
     it('should log warning and use default controller if the controller is not found', async () => {
@@ -633,7 +633,7 @@ describe('Beagle View: Navigator', () => {
       await navigator.pushView({ url: '/profile' })
 
       expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
-      expect(listener).toHaveBeenLastCalledWith(expect.anything(), controllers.public, undefined)
+      expect(listener).toHaveBeenLastCalledWith(expect.anything(), controllers.public)
     })
 
     it('should use empty object as default controller if no default is specified', async () => {
@@ -646,7 +646,7 @@ describe('Beagle View: Navigator', () => {
       navigator.subscribe(listener)
       navigator.pushStack({ url: '/account' })
 
-      expect(listener).toHaveBeenCalledWith(expect.anything(), {}, undefined)
+      expect(listener).toHaveBeenCalledWith(expect.anything(), {})
     })
 
     it('should log warning and use empty object if no controller exists', async () => {
@@ -658,88 +658,27 @@ describe('Beagle View: Navigator', () => {
       await navigator.pushView({ url: '/profile' })
 
       expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.any(String))
-      expect(listener).toHaveBeenLastCalledWith(expect.anything(), {}, undefined)
+      expect(listener).toHaveBeenLastCalledWith(expect.anything(), {})
     })
   })
 
   describe('Navigation State', () => {
 
-    it('should call listener with saved element when popView', async () => {
-      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test" }
+    it('should restore state on pop events', async () => {
+      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test", context: { id: 'mockId', value: "mock" } }
       const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
       const listener = jest.fn()
       navigator.subscribe(listener)
 
-      await navigator.pushStack({ url: '/account' }, 'blah')
-      await navigator.pushView({ url: '/profile' })
-      await navigator.popView()
+      await navigator.pushView({ screen: { _beagleComponent_: "beagle:test" } })
+      await navigator.popView();
 
-      expect(listener).toHaveBeenLastCalledWith(expect.anything(), {}, mockElement)
+      expect(listener).toHaveBeenLastCalledWith({url:'/home', state: mockElement}, {})
+
+      await navigator.pushStack({ screen: { _beagleComponent_: "beagle:test" } })
+      await navigator.popStack();
+      expect(listener).toHaveBeenLastCalledWith({url:'/home', state: mockElement}, {})
     })
-
-    it('should call listener with saved element when popStack', async () => {
-      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test" }
-      const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
-      const listener = jest.fn()
-      navigator.subscribe(listener)
-
-      await navigator.pushStack({ url: '/account' }, 'blah')
-      await navigator.pushStack({ url: '/configuration' }, 'blah')
-      await navigator.pushView({ url: '/profile' })
-      await navigator.popStack()
-
-      expect(listener).toHaveBeenLastCalledWith(expect.anything(), {}, mockElement)
-    })
-
-    it('should call listener with saved element when popToView', async () => {
-      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test" }
-      const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
-      const listener = jest.fn()
-      navigator.subscribe(listener)
-
-      await navigator.pushView({ screen: { _beagleComponent_: "" } })
-      await navigator.pushView({ screen: { _beagleComponent_: "", id: "myId" } })
-      await navigator.pushView({ screen: { _beagleComponent_: "" } })
-      await navigator.pushView({ screen: { _beagleComponent_: "" } })
-      await navigator.popToView('myId')
-
-
-      expect(listener).toHaveBeenCalledWith(expect.anything(), {}, mockElement)
-    })
-
-    it('should NOT call listener with saved element on first pushStack', async () => {
-      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test" }
-      const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
-      const listener = jest.fn()
-      navigator.subscribe(listener)
-
-      await navigator.pushStack({ url: '/account' }, 'blah')
-
-      expect(listener).toHaveBeenCalledWith(expect.anything(), {}, undefined)
-    })
-
-    it('should NOT call listener with saved element on first pushView', async () => {
-      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test" }
-      const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
-      const listener = jest.fn()
-      navigator.subscribe(listener)
-
-      await navigator.pushView({ url: '/account' })
-
-      expect(listener).toHaveBeenCalledWith(expect.anything(), {}, undefined)
-    })
-
-    it('should REMOVE onInit property before calling the listener', async () => {
-      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test", onInit: (() => { }) }
-      const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
-      const listener = jest.fn()
-      navigator.subscribe(listener)
-
-      await navigator.pushView({ url: '/home' })
-
-      expect(listener).toHaveBeenCalledWith(expect.anything(), {}, { _beagleComponent_: "beagle:test" })
-    })
-
   })
-
 })
+

@@ -97,10 +97,6 @@ const createBeagleNavigator = (
   }
 
   function runListeners(route: Route) {
-    console.log('STATE', navigation);
-    if (`state` in route)
-      console.log('To Restore', route.state);
-
     const controllerId = navigation.length ? getCurrentStack().controllerId : undefined
     const navigationController = getNavigationController(controllerId)
     return Promise.all(listeners.map(l => l(route, navigationController)))
@@ -113,13 +109,21 @@ const createBeagleNavigator = (
   }
 
   function saveElementToRestore() {
-    const stateTree = getTree && getTree()
+    if (!getTree) return
+
+    const stateTree = getTree()
+
+    /*fixme Removing the onInit cycle is not the best option for this case, because we can't guarantee that the user won't create another type of handling.
+    it is necessary to remove the onInit right now but a better approach to this should be considered
+    */
+    if (stateTree && stateTree['onInit'])
+      delete stateTree['onInit']
 
     const currentRoutesInStack = getCurrentStack().routes
 
-    getCurrentStack().routes[currentRoutesInStack.length - 1] = {
+    currentRoutesInStack[currentRoutesInStack.length - 1] = {
       ...getCurrentRoute(),
-      state: stateTree
+      state: stateTree,
     }
   }
 

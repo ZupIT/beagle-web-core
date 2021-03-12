@@ -228,7 +228,6 @@ function createBeagleView(
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
       let isDone = false
-      console.log('Setup Navigation Restore', elementToRestore);
 
       if (state) return renderer.doFullRender(state)
 

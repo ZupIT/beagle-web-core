@@ -52,14 +52,14 @@ interface Screen extends BeagleUIElement {
 }
 
 export interface StateView {
-  state?: BeagleUIElement
+  state?: BeagleUIElement,
 }
 
 export type Route = LocalView | RemoteView | StateView
 
 export interface Stack {
   routes: Route[],
-  controllerId?: string
+  controllerId?: string,
 }
 
 export interface NavigationController {
