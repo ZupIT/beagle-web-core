@@ -89,7 +89,7 @@ export interface ActionAnalyticsConfig {
 }
 
 export interface ScreenRecordParams {
-  route: LocalView | RemoteView,
+  route: Route,
   platform?: string,
 }
 

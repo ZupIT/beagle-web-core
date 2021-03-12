@@ -41,7 +41,6 @@ const createBeagleNavigator = (
   let isDestroyed = false
   const defaultNavigationController = find(navigationControllers, { default: true }) || {}
   const listeners: NavigationListener[] = []
-  let savedElements: Record<string, BeagleUIElement> = {}
 
   function getNavigationController(controllerId?: string) {
     if (!controllerId) return defaultNavigationController
@@ -97,10 +96,14 @@ const createBeagleNavigator = (
     return route
   }
 
-  function runListeners(route: Route, elementToRestore?: BeagleUIElement) {
+  function runListeners(route: Route) {
+    console.log('STATE', navigation);
+    if (`state` in route)
+      console.log('To Restore', route.state);
+
     const controllerId = navigation.length ? getCurrentStack().controllerId : undefined
     const navigationController = getNavigationController(controllerId)
-    return Promise.all(listeners.map(l => l(route, navigationController, elementToRestore)))
+    return Promise.all(listeners.map(l => l(route, navigationController)))
   }
 
   function isRouteIdentifiedBy(route: Route, id: string) {
@@ -109,36 +112,15 @@ const createBeagleNavigator = (
       ('screen' in route && (route.screen.identifier === id || route.screen.id === id))
   }
 
-  function getRouteName(route?: Route | string): string {
-    if (route && typeof route !== 'string')
-      return (route && 'url' in route && route.url) ||
-        // todo: remove screenComponent.identifier with the release of v2.0.0"
-        (route && 'screen' in route && (route.screen.identifier || route.screen.id)) || ''
-
-    return route || ''
-  }
-
   function saveElementToRestore() {
-    if (getTree) {
-      const treeElement = getTree()
-      const key = getRouteName(last(getCurrentStack().routes))
+    const stateTree = getTree && getTree()
 
-      if (treeElement) {
-        if (treeElement['onInit'])
-          delete treeElement['onInit']
+    const currentRoutesInStack = getCurrentStack().routes
 
-        savedElements = {
-          ...savedElements,
-          [key]: treeElement,
-        }
-      }
+    getCurrentStack().routes[currentRoutesInStack.length - 1] = {
+      ...getCurrentRoute(),
+      state: stateTree
     }
-  }
-
-  function getElementToRestore(route?: Route | string) {
-    if (!route) return
-    const key = getRouteName(route)
-    return savedElements[key]
   }
 
   async function navigate(
@@ -155,8 +137,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushStack. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route, getElementToRestore(route))
-
+        await runListeners(route)
         navigation.push({ routes: [route], controllerId })
       },
 
@@ -166,7 +147,7 @@ const createBeagleNavigator = (
         }
 
         const route = last(getPreviousStack().routes)!
-        await runListeners(route, getElementToRestore(route))
+        await runListeners(route)
         navigation.pop()
       },
 
@@ -175,8 +156,7 @@ const createBeagleNavigator = (
           throw new BeagleNavigationError(`Invalid route for pushView. Expected: Route object. Received: ${route}.`)
         }
 
-        await runListeners(route, getElementToRestore(route))
-
+        await runListeners(route)
         if (navigation.length === 0) navigation.push({ routes: [] })
         getCurrentStack().routes.push(route)
       },
@@ -187,7 +167,7 @@ const createBeagleNavigator = (
         }
         const currentStack = getCurrentStack()
 
-        await runListeners(getPreviousRoute(), getElementToRestore(getPreviousRoute()))
+        await runListeners(getPreviousRoute())
         currentStack.routes.pop()
         if (currentStack.routes.length <= 0) navigation.pop()
       },
@@ -200,7 +180,7 @@ const createBeagleNavigator = (
         const currentStack = getCurrentStack()
         const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
-        await runListeners(currentStack.routes[index], getElementToRestore(route))
+        await runListeners(currentStack.routes[index])
         currentStack.routes.splice(index + 1)
       },
 
