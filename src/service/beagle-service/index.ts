@@ -24,7 +24,7 @@ import { BeagleConfig, BeagleService } from './types'
 function createBeagleUIService<
   Schema = DefaultSchema,
   ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
-> (config: ConfigType): BeagleService {
+>(config: ConfigType): BeagleService {
   Configuration.update(config)
   Configuration.validate(config)
   const processedConfig = Configuration.process(config)
@@ -34,11 +34,19 @@ function createBeagleUIService<
     ...services,
     ...processedConfig,
     getConfig: () => config,
-    createView: (networkOptions?: NetworkOptions, initialControllerId?: string) => (
-      BeagleView.create(beagleService, networkOptions, initialControllerId)
-    ),
+    createView: (networkOptionsOrInitialControllerId?: NetworkOptions | string, initialControllerId?: string) => {
+      // todo: remove legacy code for v2.0
+      let networkOptions: NetworkOptions | undefined
+      if (typeof networkOptionsOrInitialControllerId === 'string') {
+        initialControllerId = networkOptionsOrInitialControllerId
+      } else {
+        networkOptions = networkOptionsOrInitialControllerId
+      }
+      // end of legacy code
+      return BeagleView.create(beagleService, networkOptions, initialControllerId)
+    },
   }
-  
+
   return beagleService
 }
 

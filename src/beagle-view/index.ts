@@ -31,21 +31,32 @@ import {
   LoadParams,
   UpdateWithTreeParams,
   NetworkOptions,
+  CreateBeagleView,
 } from './types'
 
-function createBeagleView(
+const createBeagleView: CreateBeagleView = (
   beagleService: BeagleService,
-  networkOptions?: NetworkOptions,
+  networkOptionsOrInitialControllerId?: NetworkOptions | string,
   initialControllerId?: string,
-): BeagleView {
+): BeagleView => {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers } = beagleService.getConfig()
+  // todo: remove legacy code for v2.0
+  let networkOptions: NetworkOptions | undefined
+  if (typeof networkOptionsOrInitialControllerId === 'string') {
+    initialControllerId = networkOptionsOrInitialControllerId
+  } else {
+    networkOptions = networkOptionsOrInitialControllerId
+  }
+  // end of legacy code
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
   let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => { }
+
+
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -219,11 +230,11 @@ function createBeagleView(
       disableCssTransformation: !!beagleService.getConfig().disableCssTransformation,
     })
   }
-function setupNavigation() {
+  function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
-      const { url, fallback, shouldPrefetch } = route as RemoteView
+      const { url, fallback, shouldPrefetch, httpAdditionalData } = route as RemoteView
       let isDone = false
 
       if (screen) return renderer.doFullRender(screen)
@@ -237,12 +248,13 @@ function setupNavigation() {
           isDone = true
         } catch { }
       }
-      if (!isDone){  
-        await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
+      if (!isDone) {
+        const httpData = httpAdditionalData || networkOptions
+        await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }
       const platform = beagleService.getConfig().platform
       analyticsService.createScreenRecord({
-        route: route, 
+        route: route,
         platform: platform,
       })
     })
