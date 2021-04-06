@@ -33,6 +33,8 @@ import {
   NetworkOptions,
 } from './types'
 
+const DEFAULT_INITIALIZATION_EVENTS = ['onInit']
+
 function createBeagleView(
   beagleService: BeagleService,
   networkOptions?: NetworkOptions,
@@ -52,7 +54,24 @@ function createBeagleView(
     return Tree.clone(currentUITree)
   }
 
-  let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory, getTree)
+  function getViewState() {
+    const tree = getTree()
+    const initializationEvents = (
+      beagleService.getConfig().initializationEvents
+      || DEFAULT_INITIALIZATION_EVENTS
+    )
+    Tree.forEach(tree, (component) => {
+      initializationEvents.forEach(eventName => delete component[eventName])
+    })
+
+    return tree
+  }
+
+  let navigator = BeagleNavigator.create(
+    navigationControllers,
+    initialNavigationHistory,
+    getViewState,
+  )
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -105,7 +124,11 @@ function createBeagleView(
           routes: [{ url: path }],
           controllerId: initialControllerId,
         }]
-      navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory, getTree)
+      navigator = BeagleNavigator.create(
+        navigationControllers,
+        initialNavigationHistory,
+        getViewState,
+      )
       // eslint-disable-next-line
       setupNavigation()
     }

@@ -34,7 +34,7 @@ import {
 const createBeagleNavigator = (
   navigationControllers?: Record<string, NavigationController>,
   initialValue?: Stack[],
-  getTree?: () => BeagleUIElement
+  getViewState?: () => BeagleUIElement,
 ): BeagleNavigator => {
   let navigation: Stack[] = initialValue ? cloneDeep(initialValue) : []
   let isNavigationInProgress = false
@@ -108,23 +108,10 @@ const createBeagleNavigator = (
       ('screen' in route && (route.screen.identifier === id || route.screen.id === id))
   }
 
-  function saveElementToRestore() {
-    if (!getTree) return
-
-    const stateTree = getTree()
-
-    /*fixme Removing the onInit cycle is not the best option for this case, because we can't guarantee that the user won't create another type of handling.
-    it is necessary to remove the onInit right now but a better approach to this should be considered
-    */
-    if (stateTree && stateTree['onInit'])
-      delete stateTree['onInit']
-
-    const currentRoutesInStack = getCurrentStack().routes
-
-    currentRoutesInStack[currentRoutesInStack.length - 1] = {
-      ...getCurrentRoute(),
-      state: stateTree,
-    }
+  function saveCurrentRouteState() {
+    const current = getCurrentRoute()
+    if (!getViewState || !current) return
+    current.state = getViewState()
   }
 
   async function navigate(
@@ -132,8 +119,7 @@ const createBeagleNavigator = (
     route?: Route | string,
     controllerId?: string,
   ) {
-
-    saveElementToRestore()
+    saveCurrentRouteState()
 
     const handlers: Record<NavigationType, () => Promise<void>> = {
       pushStack: async () => {
