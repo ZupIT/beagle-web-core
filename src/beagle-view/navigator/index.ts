@@ -137,7 +137,8 @@ const createBeagleNavigator = (
         }
 
         const route = last(getPreviousStack().routes)!
-        await runListeners(route)
+        const routeToRender = route.state ? { screen: route.state } : route
+        await runListeners(routeToRender)
         navigation.pop()
       },
 
@@ -157,7 +158,9 @@ const createBeagleNavigator = (
         }
         const currentStack = getCurrentStack()
 
-        await runListeners(getPreviousRoute())
+        const route = getPreviousRoute()
+        const routeToRender = route.state ? { screen: route.state } : route
+        await runListeners(routeToRender)
         currentStack.routes.pop()
         if (currentStack.routes.length <= 0) navigation.pop()
       },
@@ -170,7 +173,9 @@ const createBeagleNavigator = (
         const currentStack = getCurrentStack()
         const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
-        await runListeners(currentStack.routes[index])
+        const poppedRoute = currentStack.routes[index]
+        const routeToRender = poppedRoute.state ? { screen: poppedRoute.state } : poppedRoute
+        await runListeners(routeToRender)
         currentStack.routes.splice(index + 1)
       },
 
