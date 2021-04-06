@@ -34,6 +34,8 @@ import {
   CreateBeagleView,
 } from './types'
 
+const DEFAULT_INITIALIZATION_EVENTS = ['onInit']
+
 const createBeagleView: CreateBeagleView = (
   beagleService: BeagleService,
   networkOptionsOrInitialControllerId?: NetworkOptions | string,
@@ -52,11 +54,33 @@ const createBeagleView: CreateBeagleView = (
   }
   // end of legacy code
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
-  let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => { }
 
+  function getTree() {
+    // to avoid errors, we should never give access to our own tree to third parties
+    return Tree.clone(currentUITree)
+  }
 
+  function getViewState() {
+    const tree = getTree()
+    if (!tree) return
+    const initializationEvents = (
+      beagleService.getConfig().initializationEvents
+      || DEFAULT_INITIALIZATION_EVENTS
+    )
+    Tree.forEach(tree, (component) => {
+      initializationEvents.forEach(eventName => delete component[eventName])
+    })
+
+    return tree
+  }
+
+  let navigator = BeagleNavigator.create(
+    navigationControllers,
+    initialNavigationHistory,
+    getViewState,
+  )
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -109,7 +133,11 @@ const createBeagleView: CreateBeagleView = (
           routes: [{ url: path }],
           controllerId: initialControllerId,
         }]
-      navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory)
+      navigator = BeagleNavigator.create(
+        navigationControllers,
+        initialNavigationHistory,
+        getViewState,
+      )
       // eslint-disable-next-line
       setupNavigation()
     }
@@ -139,11 +167,6 @@ const createBeagleView: CreateBeagleView = (
       if (errorListeners.length === 0) logger.error(...errors)
       runErrorListeners(errors)
     }
-  }
-
-  function getTree() {
-    // to avoid errors, we should never give access to our own tree to third parties
-    return Tree.clone(currentUITree)
   }
 
   function destroy() {
