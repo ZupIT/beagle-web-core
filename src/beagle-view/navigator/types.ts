@@ -51,14 +51,10 @@ interface Screen extends BeagleUIElement {
   id?: string,
 }
 
-export interface StateView {
-  state?: BeagleUIElement,
-}
-
-export type Route = LocalView | RemoteView | StateView
+export type Route = LocalView | RemoteView
 
 export interface Stack {
-  routes: Route[],
+  routes: (Route & { state?: BeagleUIElement })[],
   controllerId?: string,
 }
 

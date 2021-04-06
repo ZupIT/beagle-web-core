@@ -34,7 +34,7 @@ import {
 const createBeagleNavigator = (
   navigationControllers?: Record<string, NavigationController>,
   initialValue?: Stack[],
-  getTree?: () => BeagleUIElement
+  getViewState?: () => BeagleUIElement | void,
 ): BeagleNavigator => {
   let navigation: Stack[] = initialValue ? cloneDeep(initialValue) : []
   let isNavigationInProgress = false
@@ -108,23 +108,12 @@ const createBeagleNavigator = (
       ('screen' in route && (route.screen.identifier === id || route.screen.id === id))
   }
 
-  function saveElementToRestore() {
-    if (!getTree) return
-
-    const stateTree = getTree()
-
-    /*fixme Removing the onInit cycle is not the best option for this case, because we can't guarantee that the user won't create another type of handling.
-    it is necessary to remove the onInit right now but a better approach to this should be considered
-    */
-    if (stateTree && stateTree['onInit'])
-      delete stateTree['onInit']
-
-    const currentRoutesInStack = getCurrentStack().routes
-
-    currentRoutesInStack[currentRoutesInStack.length - 1] = {
-      ...getCurrentRoute(),
-      state: stateTree,
-    }
+  function saveCurrentRouteState() {
+    if (!getViewState || !navigation.length) return
+    const current = getCurrentRoute()
+    if (!current) return
+    const state = getViewState()
+    if (state) current.state = state
   }
 
   async function navigate(
@@ -132,8 +121,7 @@ const createBeagleNavigator = (
     route?: Route | string,
     controllerId?: string,
   ) {
-
-    saveElementToRestore()
+    saveCurrentRouteState()
 
     const handlers: Record<NavigationType, () => Promise<void>> = {
       pushStack: async () => {
@@ -151,7 +139,8 @@ const createBeagleNavigator = (
         }
 
         const route = last(getPreviousStack().routes)!
-        await runListeners(route)
+        const routeToRender = route.state ? { screen: route.state } : route
+        await runListeners(routeToRender)
         navigation.pop()
       },
 
@@ -171,7 +160,9 @@ const createBeagleNavigator = (
         }
         const currentStack = getCurrentStack()
 
-        await runListeners(getPreviousRoute())
+        const route = getPreviousRoute()
+        const routeToRender = route.state ? { screen: route.state } : route
+        await runListeners(routeToRender)
         currentStack.routes.pop()
         if (currentStack.routes.length <= 0) navigation.pop()
       },
@@ -184,7 +175,9 @@ const createBeagleNavigator = (
         const currentStack = getCurrentStack()
         const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
-        await runListeners(currentStack.routes[index])
+        const poppedRoute = currentStack.routes[index]
+        const routeToRender = poppedRoute.state ? { screen: poppedRoute.state } : poppedRoute
+        await runListeners(routeToRender)
         currentStack.routes.splice(index + 1)
       },
 

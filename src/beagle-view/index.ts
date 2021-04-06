@@ -23,7 +23,7 @@ import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'be
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
 import BeagleNavigator from './navigator'
-import { LocalView, RemoteView, StateView } from './navigator/types'
+import { LocalView, RemoteView } from './navigator/types'
 import {
   BeagleView,
   Listener,
@@ -32,6 +32,8 @@ import {
   UpdateWithTreeParams,
   NetworkOptions,
 } from './types'
+
+const DEFAULT_INITIALIZATION_EVENTS = ['onInit']
 
 function createBeagleView(
   beagleService: BeagleService,
@@ -52,7 +54,25 @@ function createBeagleView(
     return Tree.clone(currentUITree)
   }
 
-  let navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory, getTree)
+  function getViewState() {
+    const tree = getTree()
+    if (!tree) return
+    const initializationEvents = (
+      beagleService.getConfig().initializationEvents
+      || DEFAULT_INITIALIZATION_EVENTS
+    )
+    Tree.forEach(tree, (component) => {
+      initializationEvents.forEach(eventName => delete component[eventName])
+    })
+
+    return tree
+  }
+
+  let navigator = BeagleNavigator.create(
+    navigationControllers,
+    initialNavigationHistory,
+    getViewState,
+  )
 
   function subscribe(listener: Listener) {
     listeners.push(listener)
@@ -105,7 +125,11 @@ function createBeagleView(
           routes: [{ url: path }],
           controllerId: initialControllerId,
         }]
-      navigator = BeagleNavigator.create(navigationControllers, initialNavigationHistory, getTree)
+      navigator = BeagleNavigator.create(
+        navigationControllers,
+        initialNavigationHistory,
+        getViewState,
+      )
       // eslint-disable-next-line
       setupNavigation()
     }
@@ -224,12 +248,9 @@ function createBeagleView(
   function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
-      const { state } = route as StateView
       const { screen } = route as LocalView
       const { url, fallback, shouldPrefetch } = route as RemoteView
       let isDone = false
-
-      if (state) return renderer.doFullRender(state)
 
       if (screen) return renderer.doFullRender(screen)
 
