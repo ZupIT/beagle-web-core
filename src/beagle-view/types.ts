@@ -26,6 +26,9 @@ export type Listener = (tree: IdentifiableBeagleUIElement) => void
 
 export type ErrorListener = (errors: Array<BeagleError>) => void
 
+/**
+ * @deprecated since 1.7.0 prefer using the HttpAdditionalData in your Route properties instead
+ */
 export interface NetworkOptions {
   /**
    * Additional headers to send in the request.
@@ -166,4 +169,20 @@ export interface BeagleView<T = any> {
    * or `BeagleView.getRenderer().doPartialRender` instead.
    */
   updateWithTree: (params: UpdateWithTreeParams<T>) => void,
+}
+
+export interface CreateBeagleView {
+  /**
+   * @deprecated since v1.7. Will be deleted in v2.0. Instead, please use `route.httpAdditionalData`
+   * when making a navigation.
+   */
+  (
+    beagleService: BeagleService,
+    networkOptions?: NetworkOptions,
+    initialControllerId?: string,
+  ): BeagleView,
+  (
+    beagleService: BeagleService,
+    initialControllerId?: string,
+  ): BeagleView,
 }

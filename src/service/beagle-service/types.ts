@@ -182,6 +182,20 @@ export interface BeagleConfig<Schema> {
   initializationEvents?: string[],
 }
 
+export interface CreateView {
+  /**
+   * @deprecated since v1.7. Will be deleted in v2.0. Instead, please use `route.httpAdditionalData`
+   * when making a navigation.
+   */
+  (
+    networkOptions?: NetworkOptions,
+    initialControllerId?: string,
+  ): BeagleView,
+  (
+    initialControllerId?: string,
+  ): BeagleView,
+}
+
 export type BeagleService = Readonly<{
   /**
    * Creates a new Beagle View.
@@ -191,7 +205,7 @@ export type BeagleService = Readonly<{
    * @param initialControllerId the id of the navigation controller for the first navigation stack.
    * Will use the default navigation controller if not specified.
    */
-  createView: (networkOptions?: NetworkOptions, initialControllerId?: string) => BeagleView,
+  createView: CreateView,
   getConfig: () => BeagleConfig<any>,
   // processed configuration
   actionHandlers: Record<string, ActionHandler>,

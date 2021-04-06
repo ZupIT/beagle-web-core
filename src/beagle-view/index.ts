@@ -31,20 +31,28 @@ import {
   LoadParams,
   UpdateWithTreeParams,
   NetworkOptions,
+  CreateBeagleView,
 } from './types'
 
 const DEFAULT_INITIALIZATION_EVENTS = ['onInit']
 
-function createBeagleView(
+const createBeagleView: CreateBeagleView = (
   beagleService: BeagleService,
-  networkOptions?: NetworkOptions,
+  networkOptionsOrInitialControllerId?: NetworkOptions | string,
   initialControllerId?: string,
-): BeagleView {
-
+): BeagleView => {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers } = beagleService.getConfig()
+  // todo: remove legacy code for v2.0
+  let networkOptions: NetworkOptions | undefined
+  if (typeof networkOptionsOrInitialControllerId === 'string') {
+    initialControllerId = networkOptionsOrInitialControllerId
+  } else {
+    networkOptions = networkOptionsOrInitialControllerId
+  }
+  // end of legacy code
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => { }
@@ -249,7 +257,7 @@ function createBeagleView(
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
       const { screen } = route as LocalView
-      const { url, fallback, shouldPrefetch } = route as RemoteView
+      const { url, fallback, shouldPrefetch, httpAdditionalData } = route as RemoteView
       let isDone = false
 
       if (screen) return renderer.doFullRender(screen)
@@ -264,7 +272,8 @@ function createBeagleView(
         } catch { }
       }
       if (!isDone) {
-        await fetch({ path: url, fallback, ...networkOptions, ...navigationController })
+        const httpData = httpAdditionalData || networkOptions
+        await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }
       const platform = beagleService.getConfig().platform
       analyticsService.createScreenRecord({

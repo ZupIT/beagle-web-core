@@ -15,6 +15,7 @@
  */
 
 import { BeagleUIElement } from 'beagle-tree/types'
+import { HttpMethod } from 'service/network/types'
 
 export type NavigationType = (
   | 'pushStack'
@@ -32,10 +33,17 @@ export type NavigationListener = (
   elementToRestore?: BeagleUIElement
 ) => void | Promise<void>
 
+export interface HttpAdditionalData {
+  method: HttpMethod,
+  headers: Record<string, string>,
+  body: string,
+}
+
 export interface RemoteView {
   url: string,
   fallback?: BeagleUIElement,
   shouldPrefetch?: boolean,
+  httpAdditionalData?: HttpAdditionalData,
 }
 
 export interface LocalView {
