@@ -56,6 +56,7 @@ function createBeagleView(
 
   function getViewState() {
     const tree = getTree()
+    if (!tree) return
     const initializationEvents = (
       beagleService.getConfig().initializationEvents
       || DEFAULT_INITIALIZATION_EVENTS

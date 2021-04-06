@@ -663,21 +663,79 @@ describe('Beagle View: Navigator', () => {
   })
 
   describe('Navigation State', () => {
+    let nextId = 1
 
-    it('should restore state on pop events', async () => {
-      const mockElement: BeagleUIElement = { _beagleComponent_: "beagle:test", context: { id: 'mockId', value: "mock" } }
-      const navigator = Navigator.create(undefined, [{ routes: [{ url: "/home" }] }], () => mockElement)
+    function getViewState(id?: number): BeagleUIElement {
+      return {
+        _beagleComponent_: 'beagle:container',
+        id: `${id === undefined ? nextId++ : id}`,
+      }
+    }
+
+    beforeEach(() => nextId = 1)
+
+    it('should recover state on popView', async () => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
       const listener = jest.fn()
       navigator.subscribe(listener)
 
-      await navigator.pushView({ screen: { _beagleComponent_: "beagle:test" } })
-      await navigator.popView();
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/profile' })
+      await navigator.popView()
+      expect(listener).toHaveBeenLastCalledWith(
+        expect.objectContaining({ screen: getViewState(1) }),
+        {},
+      )
+    })
 
-      expect(listener).toHaveBeenLastCalledWith({url:'/home', state: mockElement}, {})
+    it('should recover state on popToView', async () => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
 
-      await navigator.pushStack({ screen: { _beagleComponent_: "beagle:test" } })
-      await navigator.popStack();
-      expect(listener).toHaveBeenLastCalledWith({url:'/home', state: mockElement}, {})
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/account' })
+      await navigator.pushView({ url: '/profile' })
+      await navigator.pushView({ url: '/test' })
+      await navigator.popToView('/account')
+      expect(listener).toHaveBeenLastCalledWith(
+        expect.objectContaining({ screen: getViewState(2) }),
+        {},
+      )
+    })
+
+    it('should recover state on popStack', async() => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/profile' })
+      await navigator.pushStack({ url: '/account' })
+      await navigator.pushView({ url: '/test1' })
+      await navigator.pushView({ url: '/test2' })
+      await navigator.popStack()
+      expect(listener).toHaveBeenLastCalledWith(
+        expect.objectContaining({ screen: getViewState(2) }),
+        {},
+      )
+    })
+
+    it('should recover states of different instances of the same view', async () => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/home' })
+      await navigator.pushView({ url: '/home' })
+      await navigator.pushView({ url: '/home' })
+      await navigator.popView()
+      await navigator.popView()
+      await navigator.popView()
+      expect(listener.mock.calls[4][0]).toEqual({ screen: getViewState(3) })
+      expect(listener.mock.calls[5][0]).toEqual({ screen: getViewState(2) })
+      expect(listener.mock.calls[6][0]).toEqual({ screen: getViewState(1) })
     })
   })
 })

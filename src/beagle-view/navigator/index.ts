@@ -34,7 +34,7 @@ import {
 const createBeagleNavigator = (
   navigationControllers?: Record<string, NavigationController>,
   initialValue?: Stack[],
-  getViewState?: () => BeagleUIElement,
+  getViewState?: () => BeagleUIElement | void,
 ): BeagleNavigator => {
   let navigation: Stack[] = initialValue ? cloneDeep(initialValue) : []
   let isNavigationInProgress = false
@@ -109,9 +109,11 @@ const createBeagleNavigator = (
   }
 
   function saveCurrentRouteState() {
+    if (!getViewState || !navigation.length) return
     const current = getCurrentRoute()
-    if (!getViewState || !current) return
-    current.state = getViewState()
+    if (!current) return
+    const state = getViewState()
+    if (state) current.state = state
   }
 
   async function navigate(
