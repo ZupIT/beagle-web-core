@@ -132,7 +132,7 @@ export interface ViewClient {
     url: string,
     method?: HttpMethod,
     headers?: Record<string, string>,
-    body?:any,
+    body?: any,
     shouldSaveCache?: boolean,
     useBeagleCacheProtocol?: boolean,
   ) => Promise<BeagleUIElement>,

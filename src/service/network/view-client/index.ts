@@ -108,7 +108,7 @@ function createViewClient(
     url: string,
     method: HttpMethod = 'get',
     headers?: Record<string, string>,
-    body?:any,
+    body?: any,
     shouldSaveCache = true,
     useBeagleCacheProtocol = true,
   ) {
