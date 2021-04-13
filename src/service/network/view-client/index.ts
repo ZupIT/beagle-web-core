@@ -108,17 +108,18 @@ function createViewClient(
     url: string,
     method: HttpMethod = 'get',
     headers?: Record<string, string>,
+    body?:any,
     shouldSaveCache = true,
     useBeagleCacheProtocol = true,
   ) {
     let response: Response
     const requestTime = Date.now()
-    const defaultHeaders = await defaultHeadersService.get(url, method)
+    const defaultHeaders = await defaultHeadersService.get(url, method, body)
     const allHeaders: Record<string, any> = { ...headers, ...defaultHeaders }
     try {
       response = await httpClient.fetch(
         url,
-        { method, headers: allHeaders }
+        { method, headers: allHeaders, body }
       )
     } catch (error) {
       throw new BeagleNetworkError(url, error.message)
@@ -160,6 +161,7 @@ function createViewClient(
     fallbackUIElement,
     method = 'get',
     headers,
+    body,
     strategy = globalStrategy,
     loadingComponent = 'custom:loading',
     errorComponent = 'custom:error',
@@ -176,6 +178,7 @@ function createViewClient(
         url,
         method,
         headers,
+        body,
         strategy !== 'network-only',
         useBeagleCacheProtocol,
       )

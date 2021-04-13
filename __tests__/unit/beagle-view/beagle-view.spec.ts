@@ -16,7 +16,7 @@
 
 import BeagleView from 'beagle-view'
 import { BeagleView as BeagleViewType, NetworkOptions } from 'beagle-view/types'
-import { NavigationController } from 'beagle-view/navigator/types'
+import { HttpAdditionalData, NavigationController } from 'beagle-view/navigator/types'
 import { BeagleService, BeagleConfig } from 'service/beagle-service/types'
 import * as Renderer from 'beagle-view/render'
 import {
@@ -104,7 +104,7 @@ describe('Beagle View', () => {
       expect(beagleView.getNavigator().get()).toEqual([{ routes: [], controllerId: 'secured' }])
     })
 
-    it('should use network options', () => {
+    fit('should use network options', () => {
       const networkOptions: NetworkOptions = {
         method: 'POST',
         headers: { testHeader: 'test-header' },
@@ -121,12 +121,29 @@ describe('Beagle View', () => {
     it('should navigate to remote route', async () => {
       await beagleView.getNavigator().pushView({
         url: '/home',
-        fallback: { _beagleComponent_: 'custom:fallback'},
+        fallback: { _beagleComponent_: 'custom:fallback' },
       })
       expect(beagleService.viewClient.load).toHaveBeenCalledWith(expect.objectContaining({
         url: 'base/home',
-        fallbackUIElement: { _beagleComponent_: 'custom:fallback'},
+        fallbackUIElement: { _beagleComponent_: 'custom:fallback' },
       }))
+      expect(doFullRender).toHaveBeenCalledWith(mock, undefined, 'replaceComponent')
+    })
+
+    it('should navigate with httpAdditionalData', async () => {
+      const httpAdditionalData: HttpAdditionalData = {
+        method: "post",
+        headers: {},
+        body: {
+          messege: "teste"
+        }
+      }
+      await beagleView.getNavigator().pushView({ url: '/home', httpAdditionalData })
+      expect(beagleService.viewClient.load).toHaveBeenCalledWith(expect.objectContaining({
+        url: 'base/home',
+        ...httpAdditionalData,
+      }))
+
       expect(doFullRender).toHaveBeenCalledWith(mock, undefined, 'replaceComponent')
     })
 

@@ -35,7 +35,7 @@ export type NavigationListener = (
 export interface HttpAdditionalData {
   method: HttpMethod,
   headers: Record<string, string>,
-  body: string,
+  body: any,
 }
 
 export interface RemoteView {

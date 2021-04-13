@@ -23,7 +23,7 @@ import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'be
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
 import BeagleNavigator from './navigator'
-import { LocalView, RemoteView } from './navigator/types'
+import { LocalView, RemoteView, HttpAdditionalData } from './navigator/types'
 import {
   BeagleView,
   Listener,
@@ -118,7 +118,7 @@ const createBeagleView: CreateBeagleView = (
       setTree(originalTree) // changes should be made based on the original tree
       renderer.doFullRender(loadedTree, elementId, mode)
     }
-
+    
     try {
       await beagleService.viewClient.load({
         url,
@@ -128,6 +128,7 @@ const createBeagleView: CreateBeagleView = (
         loadingComponent: params.loadingComponent,
         headers: params.headers,
         method: params.method,
+        body: params.body,
         shouldShowError: params.shouldShowError,
         shouldShowLoading: params.shouldShowLoading,
         strategy: params.strategy,
@@ -249,6 +250,9 @@ const createBeagleView: CreateBeagleView = (
         } catch { }
       }
       if (!isDone) {
+        if(httpAdditionalData?.body && typeof httpAdditionalData.body !== 'string' ){
+          (httpAdditionalData as HttpAdditionalData).body = JSON.stringify(httpAdditionalData?.body)
+        }
         const httpData = httpAdditionalData || networkOptions
         await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }
