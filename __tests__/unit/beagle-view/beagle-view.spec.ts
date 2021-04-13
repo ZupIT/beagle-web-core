@@ -104,7 +104,7 @@ describe('Beagle View', () => {
       expect(beagleView.getNavigator().get()).toEqual([{ routes: [], controllerId: 'secured' }])
     })
 
-    fit('should use network options', () => {
+    it('should use network options', () => {
       const networkOptions: NetworkOptions = {
         method: 'POST',
         headers: { testHeader: 'test-header' },
