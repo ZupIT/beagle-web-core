@@ -16,7 +16,8 @@
 
 import cloneDeep from 'lodash/cloneDeep'
 import Navigator from 'beagle-view/navigator'
-import { BeagleNavigator, NavigationType, NavigationController } from 'beagle-view/navigator/types'
+import { BeagleNavigator, NavigationType, NavigationController, Route } from 'beagle-view/navigator/types'
+import { BeagleUIElement } from 'index'
 
 describe('Beagle View: Navigator', () => {
   const history = [
@@ -167,7 +168,7 @@ describe('Beagle View: Navigator', () => {
       })
       navigator.subscribe(listener)
       await navigator.navigate('pushStack', { url: '/test' })
-      expect(listener).toHaveBeenCalledWith({ url: '/test' }, expect.anything())
+      expect(listener).toHaveBeenCalledWith({ url: '/test' }, {})
     })
 
     it('should wait for listener and complete the navigation', async () => {
@@ -191,9 +192,9 @@ describe('Beagle View: Navigator', () => {
       expect(listeners[0]).toHaveBeenCalledTimes(1)
       expect(listeners[1]).toHaveBeenCalledTimes(1)
       expect(listeners[2]).toHaveBeenCalledTimes(1)
-      expect(listeners[0]).toHaveBeenCalledWith({ url: '/test' }, expect.anything())
-      expect(listeners[1]).toHaveBeenCalledWith({ url: '/test' }, expect.anything())
-      expect(listeners[2]).toHaveBeenCalledWith({ url: '/test' }, expect.anything())
+      expect(listeners[0]).toHaveBeenCalledWith({ url: '/test' }, {})
+      expect(listeners[1]).toHaveBeenCalledWith({ url: '/test' }, {})
+      expect(listeners[2]).toHaveBeenCalledWith({ url: '/test' }, {})
     })
 
     it('should run multiple listeners at once and wait for all of them', async () => {
@@ -660,4 +661,82 @@ describe('Beagle View: Navigator', () => {
       expect(listener).toHaveBeenLastCalledWith(expect.anything(), {})
     })
   })
+
+  describe('Navigation State', () => {
+    let nextId = 1
+
+    function getViewState(id?: number): BeagleUIElement {
+      return {
+        _beagleComponent_: 'beagle:container',
+        id: `${id === undefined ? nextId++ : id}`,
+      }
+    }
+
+    beforeEach(() => nextId = 1)
+
+    it('should recover state on popView', async () => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/profile' })
+      await navigator.popView()
+      expect(listener).toHaveBeenLastCalledWith(
+        expect.objectContaining({ screen: getViewState(1) }),
+        {},
+      )
+    })
+
+    it('should recover state on popToView', async () => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/account' })
+      await navigator.pushView({ url: '/profile' })
+      await navigator.pushView({ url: '/test' })
+      await navigator.popToView('/account')
+      expect(listener).toHaveBeenLastCalledWith(
+        expect.objectContaining({ screen: getViewState(2) }),
+        {},
+      )
+    })
+
+    it('should recover state on popStack', async() => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/profile' })
+      await navigator.pushStack({ url: '/account' })
+      await navigator.pushView({ url: '/test1' })
+      await navigator.pushView({ url: '/test2' })
+      await navigator.popStack()
+      expect(listener).toHaveBeenLastCalledWith(
+        expect.objectContaining({ screen: getViewState(2) }),
+        {},
+      )
+    })
+
+    it('should recover states of different instances of the same view', async () => {
+      const navigator = Navigator.create(undefined, undefined, getViewState)
+      const listener = jest.fn()
+      navigator.subscribe(listener)
+
+      await navigator.pushStack({ url: '/home' })
+      await navigator.pushView({ url: '/home' })
+      await navigator.pushView({ url: '/home' })
+      await navigator.pushView({ url: '/home' })
+      await navigator.popView()
+      await navigator.popView()
+      await navigator.popView()
+      expect(listener.mock.calls[4][0]).toEqual({ screen: getViewState(3) })
+      expect(listener.mock.calls[5][0]).toEqual({ screen: getViewState(2) })
+      expect(listener.mock.calls[6][0]).toEqual({ screen: getViewState(1) })
+    })
+  })
 })
+

@@ -21,6 +21,7 @@ import find from 'lodash/find'
 import BeagleNavigationError from 'error/BeagleNavigationError'
 import logger from 'logger'
 import findLastIndex from 'lodash/findLastIndex'
+import { BeagleUIElement } from 'beagle-tree/types'
 import {
   BeagleNavigator,
   Route,
@@ -33,6 +34,7 @@ import {
 const createBeagleNavigator = (
   navigationControllers?: Record<string, NavigationController>,
   initialValue?: Stack[],
+  getViewState?: () => BeagleUIElement | void,
 ): BeagleNavigator => {
   let navigation: Stack[] = initialValue ? cloneDeep(initialValue) : []
   let isNavigationInProgress = false
@@ -106,11 +108,21 @@ const createBeagleNavigator = (
       ('screen' in route && (route.screen.identifier === id || route.screen.id === id))
   }
 
+  function saveCurrentRouteState() {
+    if (!getViewState || !navigation.length) return
+    const current = getCurrentRoute()
+    if (!current) return
+    const state = getViewState()
+    if (state) current.state = state
+  }
+
   async function navigate(
     type: NavigationType,
     route?: Route | string,
     controllerId?: string,
   ) {
+    saveCurrentRouteState()
+
     const handlers: Record<NavigationType, () => Promise<void>> = {
       pushStack: async () => {
         if (!route || typeof route === 'string') {
@@ -127,7 +139,8 @@ const createBeagleNavigator = (
         }
 
         const route = last(getPreviousStack().routes)!
-        await runListeners(route)
+        const routeToRender = route.state ? { screen: route.state } : route
+        await runListeners(routeToRender)
         navigation.pop()
       },
 
@@ -145,9 +158,11 @@ const createBeagleNavigator = (
         if (isSingleRoute()) {
           throw new BeagleNavigationError('It was not possible to pop a view because Beagle Navigator has not more than one recorded route')
         }
-
-        await runListeners(getPreviousRoute())
         const currentStack = getCurrentStack()
+
+        const route = getPreviousRoute()
+        const routeToRender = route.state ? { screen: route.state } : route
+        await runListeners(routeToRender)
         currentStack.routes.pop()
         if (currentStack.routes.length <= 0) navigation.pop()
       },
@@ -160,7 +175,9 @@ const createBeagleNavigator = (
         const currentStack = getCurrentStack()
         const index = findLastIndex(currentStack.routes, r => isRouteIdentifiedBy(r, route))
         if (index === -1) throw new BeagleNavigationError('The route does not exist in the current stack')
-        await runListeners(currentStack.routes[index])
+        const poppedRoute = currentStack.routes[index]
+        const routeToRender = poppedRoute.state ? { screen: poppedRoute.state } : poppedRoute
+        await runListeners(routeToRender)
         currentStack.routes.splice(index + 1)
       },
 
