@@ -30,6 +30,7 @@ export type NavigationType = (
 export type NavigationListener = (
   route: Route,
   navigationController: NavigationController,
+  elementToRestore?: BeagleUIElement
 ) => void | Promise<void>
 
 export interface HttpAdditionalData {
@@ -61,7 +62,7 @@ interface Screen extends BeagleUIElement {
 export type Route = LocalView | RemoteView
 
 export interface Stack {
-  routes: Route[],
+  routes: (Route & { state?: BeagleUIElement })[],
   controllerId?: string,
 }
 

@@ -172,6 +172,14 @@ export interface BeagleConfig<Schema> {
    * Disables the default style conversion to CSS in a Beagle tree.
    */
   disableCssTransformation?: boolean,
+  /**
+   * Experimental. When recovering states for past views (back navigation), we can't re-execute
+   * initialization events. The problem is: we have no way of knowing what is an initialization
+   * event. For this reason, we use this option in the configuration, this is an array with the
+   * names of every event we consider to be initialization. The default value for this option is
+   * `['onInit']`.
+   */
+  initializationEvents?: string[],
 }
 
 export interface CreateView {

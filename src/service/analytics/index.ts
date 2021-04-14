@@ -18,8 +18,8 @@ import formatActionRecord from './actions'
 import { AnalyticsProvider, AnalyticsRecord, ActionRecordParams, ScreenRecordParams } from './types'
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
-  
-  async function createScreenRecord (params: ScreenRecordParams) {
+
+  async function createScreenRecord(params: ScreenRecordParams) {
     if (!provider) return
     const config = provider.getConfig()
     const { platform, route } = params
@@ -30,19 +30,21 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       platform: `WEB ${platform}`,
       timestamp: Date.now(),
     }
-    
-    if (route){
-      record.screen = 'screen' in route 
-      ? route.screen.identifier || route.screen.id
-      : route.url
+
+    if (route) {
+      if ('screen' in route)
+        record.screen = route.screen.identifier || route.screen.id
+
+      if ('url' in route)
+        record.screen = route.url
     }
-    
+
 
     provider.createRecord(record)
 
   }
 
-  async function createActionRecord (params: ActionRecordParams) {
+  async function createActionRecord(params: ActionRecordParams) {
     if (!provider) return
     const { action, eventName, component, platform, route } = params
     const config = provider.getConfig()
@@ -51,7 +53,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     const isActionDisabledInPayload = action.analytics === false
     const isActionEnabledInConfig = config.actions[action._beagleAction_]
     const shouldGenerateAnalytics = (isActionEnabledInPayload || (!isActionDisabledInPayload && isActionEnabledInConfig))
-    
+
     if (shouldGenerateAnalytics) {
       const record = formatActionRecord({
         action,

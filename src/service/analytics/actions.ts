@@ -76,9 +76,11 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   }
 
   if (currentRoute) {
-    record.screen = 'screen' in currentRoute
-      ? currentRoute.screen.identifier || currentRoute.screen.id
-      : currentRoute.url
+    if ('screen' in currentRoute)
+      record.screen = currentRoute.screen.identifier || currentRoute.screen.id
+
+    if ('url' in currentRoute)
+      record.screen = currentRoute.url
   }
 
   return record
