@@ -31,5 +31,5 @@ export interface DefaultHeaders {
    * @param body
    * @returns a promise that resolves to a <key, value> map with the headers
    */
-  get: (url: string, method: HttpMethod, body: any) => Promise<BeagleDefaultHeaders | {}>,
+  get: (url: string, method: HttpMethod, body?: any) => Promise<BeagleDefaultHeaders | {}>,
 }
