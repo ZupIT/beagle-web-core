@@ -273,9 +273,6 @@ const createBeagleView: CreateBeagleView = (
         } catch { }
       }
       if (!isDone) {
-        if (httpAdditionalData?.body && typeof httpAdditionalData.body !== 'string'){
-          (httpAdditionalData as HttpAdditionalData).body = JSON.stringify(httpAdditionalData?.body)
-        }
         const httpData = httpAdditionalData || networkOptions
         await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }

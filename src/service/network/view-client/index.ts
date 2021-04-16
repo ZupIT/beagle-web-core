@@ -114,7 +114,7 @@ function createViewClient(
   ) {
     let response: Response
     const requestTime = Date.now()
-    const defaultHeaders = await defaultHeadersService.get(url, method, body)
+    const defaultHeaders = await defaultHeadersService.get(url, method)
     const allHeaders: Record<string, any> = { ...headers, ...defaultHeaders }
     try {
       response = await httpClient.fetch(
@@ -170,6 +170,9 @@ function createViewClient(
     onChangeTree,
     retry,
   }: ViewClientLoadParams) {
+    if (body && typeof body !== 'string') {
+      body = JSON.stringify(body)
+    }
     async function loadNetwork(hasPreviousSuccess = false, useBeagleCacheProtocol = true) {
       if (shouldShowLoading && !hasPreviousSuccess) {
         onChangeTree({ _beagleComponent_: loadingComponent })
