@@ -114,6 +114,12 @@ describe('StyleMiddleware', () => {
     expect(tree).toEqual(mocks.treeWithCornerRadiusParsed)
   })
 
+  it('should handle corner Radius with zero as value', () => {
+    const tree = Tree.clone(mocks.treeWithZeroCornerRadius)
+    Tree.forEach(tree, Styling.convert)
+    expect(tree).toEqual(mocks.treeWithZeroCornerRadiusParsed)
+  })
+
   it('should keep borderStyle value when border Style is present', () => {
     const tree = Tree.clone(mocks.treeWithBorderStyle)
     Tree.forEach(tree, Styling.convert)
