@@ -108,6 +108,7 @@ function createViewClient(
     url: string,
     method: HttpMethod = 'get',
     headers?: Record<string, string>,
+    body?: any,
     shouldSaveCache = true,
     useBeagleCacheProtocol = true,
   ) {
@@ -118,7 +119,7 @@ function createViewClient(
     try {
       response = await httpClient.fetch(
         url,
-        { method, headers: allHeaders }
+        { method, headers: allHeaders, body }
       )
     } catch (error) {
       throw new BeagleNetworkError(url, error.message)
@@ -160,6 +161,7 @@ function createViewClient(
     fallbackUIElement,
     method = 'get',
     headers,
+    body,
     strategy = globalStrategy,
     loadingComponent = 'custom:loading',
     errorComponent = 'custom:error',
@@ -168,6 +170,9 @@ function createViewClient(
     onChangeTree,
     retry,
   }: ViewClientLoadParams) {
+    if (body && typeof body !== 'string') {
+      body = JSON.stringify(body)
+    }
     async function loadNetwork(hasPreviousSuccess = false, useBeagleCacheProtocol = true) {
       if (shouldShowLoading && !hasPreviousSuccess) {
         onChangeTree({ _beagleComponent_: loadingComponent })
@@ -176,6 +181,7 @@ function createViewClient(
         url,
         method,
         headers,
+        body,
         strategy !== 'network-only',
         useBeagleCacheProtocol,
       )

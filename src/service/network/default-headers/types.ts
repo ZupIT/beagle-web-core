@@ -28,6 +28,7 @@ export interface DefaultHeaders {
    * 
    * @param url the url to get the headers for
    * @param method the http method the url will be called with
+   * @param body
    * @returns a promise that resolves to a <key, value> map with the headers
    */
   get: (url: string, method: HttpMethod) => Promise<BeagleDefaultHeaders | {}>,

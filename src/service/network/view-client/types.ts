@@ -54,6 +54,9 @@ export interface ViewClientLoadParams {
   /**
    * The cache strategy to use. Default is the base config.
    */
+
+  body?: any,
+
   strategy?: Strategy,
   /**
    * The loading component to use. Default is the base config.
@@ -96,7 +99,8 @@ export interface ViewClient {
    * method. This is the cache defined by the local configurations and not by the Beagle backend.
    * 
    * @param url the url to retrieve the cache for
-   * @param method optional. The http method of the url. Default is get.
+   * @param method optional. The http method of the url. Default is get
+   * @param body optional.
    * @returns a promise that resolves to the cache result. The promise is rejected if no cache is
    * available.
    */
@@ -128,6 +132,7 @@ export interface ViewClient {
     url: string,
     method?: HttpMethod,
     headers?: Record<string, string>,
+    body?: any,
     shouldSaveCache?: boolean,
     useBeagleCacheProtocol?: boolean,
   ) => Promise<BeagleUIElement>,
