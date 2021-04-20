@@ -67,6 +67,8 @@ export interface LoadParams<T = any> {
   /**
    * Wether to show a loading component or not. True by default.
    */
+  body?: any,
+  
   shouldShowLoading?: boolean,
   /**
    * Wether to show an error component or not. True by default.
