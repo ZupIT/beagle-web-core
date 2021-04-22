@@ -1237,6 +1237,26 @@ export const treeWithCornerRadiusParsed = {
   }
 }
 
+export const treeWithZeroCornerRadius = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    cornerRadius: {
+      radius: 0
+    }
+  }
+}
+
+export const treeWithZeroCornerRadiusParsed = {
+  id: 'G.1',
+  _beagleComponent_: 'type-G',
+  style: {
+    backgroundColor: "#0f4c81",
+    borderRadius: '0px'
+  }
+}
+
 export const treeWithoutBorderStyle = {
   id: 'Border',
   _beagleComponent_: 'type-border',

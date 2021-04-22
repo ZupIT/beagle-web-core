@@ -216,7 +216,7 @@ function formatFlexAttributes(flex: BeagleStyle['flex']) {
 }
 
 function formatCornerRadiusAttributes(cornerRadius: BeagleStyle['cornerRadius']): CSS {
-  return cornerRadius && typeof cornerRadius === 'object' && cornerRadius.radius
+  return cornerRadius && typeof cornerRadius === 'object' && Number.isFinite(cornerRadius.radius)
     ? { borderRadius: `${cornerRadius.radius}px` }
     : {}
 }
