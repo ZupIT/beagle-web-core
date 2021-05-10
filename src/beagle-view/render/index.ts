@@ -176,6 +176,7 @@ function createRenderer({
   return {
     doPartialRender,
     doFullRender,
+    preProcess,
   }
 }
 

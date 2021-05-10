@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
+import { BeagleUIElement, DefaultSchema, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 
 export interface Renderer {
   /**
@@ -52,4 +52,15 @@ export interface Renderer {
    * specified. It can be `append`, `prepend` or `replace`.
    */
   doFullRender: (viewTree: BeagleUIElement<any>, anchor?: string, mode?: TreeUpdateMode) => void,
+
+  preProcess: (viewTree: BeagleUIElement<any>) => IdentifiableBeagleUIElement<DefaultSchema>,
+  /**
+   * Does a Pre-process the tree, Adding the Beagle ID.
+   *
+   * To see the full documentation of the renderization process, please follow this link:
+   * https://github.com/ZupIT/beagle-web-core/blob/master/docs/renderization.md
+   * 
+   * @param viewTree the new tree to render, can be just a new branch to add to the current tree
+   * 
+   */
 }
