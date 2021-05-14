@@ -29,6 +29,13 @@ module.exports = {
   ],
   "plugins": ['@typescript-eslint', 'import'],
   "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "TSEnumDeclaration",
+        "message": "Do not declare enums"
+      }
+    ],
     'max-len': ['error', { code: 150, ignorePattern: maxLengthIgnorePattern, comments: 200 }],
     "arrow-body-style": ["error", "as-needed"],
     'eol-last': ['error', 'always'],
