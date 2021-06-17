@@ -17,15 +17,30 @@
 import Tree from 'beagle-tree'
 import BeagleError from 'error/BeagleError'
 import { BeagleView } from 'beagle-view/types'
+import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { ViewContentManager, ViewContentManagerMap } from './types'
 
 function createViewContentManagerMap(): ViewContentManagerMap {
   const views: Record<string, BeagleView> = {}
+  const unsubscribe: Record<string, () => void> = {}
+  const idCache: Record<string, Record<string, IdentifiableBeagleUIElement>> = {}
 
-  function create(view: BeagleView, elementId: string): ViewContentManager {
+  function createIdCache(tree: IdentifiableBeagleUIElement) {
+    const cache: Record<string, IdentifiableBeagleUIElement> = {}
+    Tree.forEach(tree, node => cache[node.id] = node)
+    return cache
+  }
+
+  function create(viewId: string, elementId: string): ViewContentManager {
+    const view = views[viewId]
+    if (!view) throw new BeagleError(`ViewContentManagerMap couldn\'t find view with id ${viewId}`)
+
     return {
       getElementId: () => elementId,
-      getElement: () => Tree.findById(view.getTree(), elementId)!,
+      getElement: () => {
+        if (!idCache[viewId]) idCache[viewId] = createIdCache(view.getTree())
+        return idCache[viewId][elementId]
+      },
       getView: () => view,
     }
   }
@@ -35,17 +50,18 @@ function createViewContentManagerMap(): ViewContentManagerMap {
       throw new BeagleError('ViewContentManagerMap couldn\'t find viewId or elementId')
     }
 
-    const view = views[viewId]
-    if (!view) throw new BeagleError(`ViewContentManagerMap couldn\'t find view with id ${viewId}`)
-
-    return create(view, elementId)
+    return create(viewId, elementId)
   }
 
   function register(viewId: string, view: BeagleView) {
     views[viewId] = view
+    unsubscribe[viewId] = view.subscribe(() => delete idCache[viewId])
   }
 
   function unregister(viewId: string) {
+    unsubscribe[viewId]()
+    delete unsubscribe[viewId]
+    delete idCache[viewId]
     delete views[viewId]
   }
 
