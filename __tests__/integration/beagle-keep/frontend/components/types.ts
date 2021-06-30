@@ -15,6 +15,7 @@
  */
 
 import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
+import { TemplateManagerItem } from 'beagle-view/render/template-manager/types'
 import { ViewContentManager } from 'service/view-content-manager/types'
 
 export type Component<T> = (props: T & { viewContentManager: ViewContentManager }) => any
@@ -23,6 +24,12 @@ export interface RepeaterProps extends IdentifiableBeagleUIElement {
   key: string,
   dataSource: any[],
   template: BeagleUIElement,
+}
+
+export interface TemplateProps extends IdentifiableBeagleUIElement {
+  key: string,
+  dataSource: any[],
+  templates: TemplateManagerItem[],
 }
 
 export interface ContainerProps extends IdentifiableBeagleUIElement {

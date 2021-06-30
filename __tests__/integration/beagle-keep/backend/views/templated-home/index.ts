@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import noteList from './note-list'
 import { getHomeBeagleElement } from '../shared'
+import noteTemplateList from './note-template-list'
 
-const home = getHomeBeagleElement(noteList)
+const templatedHome = getHomeBeagleElement(noteTemplateList)
 
-export default home
+export default templatedHome

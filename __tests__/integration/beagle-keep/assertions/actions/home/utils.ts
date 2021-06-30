@@ -30,8 +30,8 @@ export function setupHomeActionsTest() {
    * suit. Here, besides creating the beagle remote view, we wait for the first three renders to
    * finish and clear the mocks.
    */
-  async function createRemoteViewAndWaitInitialRendering() {
-    const { render, view } = await createBeagleRemoteView({ route: '/home' })
+  async function createRemoteViewAndWaitInitialRendering(route: string = '/home') {
+    const { render, view } = await createBeagleRemoteView({ route })
     await whenCalledTimes(render, 3)
     const tree = render.mock.calls[2][0]
     render.mockClear()

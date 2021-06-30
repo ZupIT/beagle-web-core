@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import nock from 'nock'
 import { createPersistentEndpoint } from '../../../../utils/nock'
-import { url, paths, delay } from '../../constants'
+import { url, paths } from '../../constants'
 import { getLabels, addLabel, editLabel, removeLabelById } from '../database/labels'
 
 const path = paths.label
@@ -51,8 +50,8 @@ function remove() {
 
 /**
  * Makes the next request to the label endpoint to fail.
- * 
- * @param message the error message 
+ *
+ * @param message the error message
  */
 export function simulateError(message: string) {
   endpoint.simulateError(message)

@@ -20,6 +20,7 @@ import Repeater from './repeater'
 import Container from './container'
 import { TextArea, TextInput } from './input'
 import { Component } from './types'
+import Template from './template'
 
 const Button: Component<any> = jest.fn()
 const Menu: Component<any> = jest.fn()
@@ -39,6 +40,7 @@ const components: Record<string, Component<any>> = {
   'custom:menu': Menu,
   'custom:menuItem': jest.fn(),
   'custom:repeater': jest.fn(Repeater),
+  'custom:template': jest.fn(Template),
   'custom:textArea': TextArea,
   'custom:note': jest.fn(),
   'custom:editableLabel': jest.fn(),
