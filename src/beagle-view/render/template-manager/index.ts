@@ -23,7 +23,7 @@ export function getEvaluatedTemplate(
   templates: TemplateManager,
   contextHierarchy: DataContext[],
   operationHandlers: Record<string, Operation>) {
-  return templates.templates.find((item: TemplateManagerItem) =>
+  return templates.templates.find(item =>
     item.case && Expression.resolve(item.case, contextHierarchy, operationHandlers) || !item.case
   )?.view || templates.default
 }
