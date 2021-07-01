@@ -192,7 +192,7 @@ function createRenderer({
     const uiTree = beagleView.getTree()
     const anchorElement = Tree.findById(uiTree, anchor)
 
-    if (!anchorElement) throw new BeagleParseError(`The anchor element with id "${anchor}" was not found!`)
+    if (!anchorElement) return beagle.error(`Beagle can't do the template rendering because it couldn't the node identified by the provided anchor: ${anchor}.`)
 
     const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, globalContexts: DataContext[]) => {
       const hierarchy = Context.evaluate(uiTree, globalContexts, false)
