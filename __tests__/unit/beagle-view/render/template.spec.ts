@@ -199,7 +199,7 @@ describe('Render a template with doTemplateRender ', () => {
         expect(componentManager).toHaveBeenNthCalledWith(6, mocks.templateManager.templates[2].view, 8)
       })
 
-      it('should not render an context when the case is not matched and default template is not defined', async () => {
+      it('should not render a context when the case is not matched and default template is not defined', async () => {
         expect(treeChildren[0].id).not.toEqual('unknown-child:0')
         expect(treeChildren[4].id).not.toEqual('unknown-child:4')
       })
