@@ -60,31 +60,42 @@ export interface Renderer {
   ) => void,
 
   /**
-   * Renders according to a template manager. A template is chosen from the template manager according
-   * to `case`, which is a boolean or a Beagle expression that resolves to a boolean value. When `case` is
-   * an expression, it's resolved using the entire context of the current tree plus the contexts
-   * passed in the parameter `context`.
-   *
-   * Since a template is used multiple times, it can produce repeated ids. Furthermore, depending
-   * on the situation, it might be necessary to have tight control of how the ids are generated inside
-   * a template (a list view, for instance). To avoid this, an id manager can be passed as parameter.
-   * An id manager is a function that receives the original id in the template and return the id that
-   * should be assigned. When no id manager is provided, the default process of assigning ids in
-   * Beagle is used.
-   *
-   * @param templateManager manages which template is chosen from the template manager according
-   * to `case`, which is a boolean or a beagle expression that resolves to a boolean. When `case` is
-   * an expression, it's resolved using the entire context of the current tree plus the contexts
-   * passed in the parameter `context`. When none of the the `case` are matched, the `default` template
-   * will be used, but only if set, if it is not set the item will be not rendered.
-   * @param anchor when `viewTree` is just a new branch to be added to the tree, `anchor` must be
-   * specified, it is the id of the component to attach `viewTree` to.
-   * @param contexts is the matrix of contexts to be rendered as children of the anchor element, each
-   * item of the `contexts` array will be evaluated using the hierarchy contexts of the current tree plus the
-   * contexts of each position.
-   * @param componentManager returns the current element being cloned in to the three, along with its index,
-   * where you can change or return more attributes to this component, before it is rendered in to the
-   * screen.
+ * Renders according to a template manager and a matrix of contexts.
+ *
+ * Each line in the matrix of contexts represents an iteration and each column represents the value
+ * of a template variable. For instance, imagine a template with the variables `@{name}`, `@{sex}`
+ * and `@{address}`. Now suppose we want to render three different entries with this template.
+ * Here's a context matrix that could be used for this example:
+ *
+ * [
+ *   [{ id: 'name', value: 'John' }, { id: 'sex', value: 'M' }, { id: 'address', value: { street: '42 Avenue', number: '256' } }],
+ *   [{ id: 'name', value: 'Sue' }, { id: 'sex', value: 'F' }, { id: 'address', value: { street: 'St Monica St', number: '85' } }],
+ *   [{ id: 'name', value: 'Paul' }, { id: 'sex', value: 'M' }, { id: 'address', value: { street: 'Bv Kennedy', number: '877' } }],
+ * ]
+ *
+ * Note that the parameter `contexts` adds to the context hierarchy that is already present in the
+ * tree, it doesn't replace it, i.e. you can still use the contexts declared in the current tree.
+ *
+ * For each line of the context matrix, a template is chosen from the template manager according to
+ * `case`, which is a boolean or a beagle expression that resolves to a boolean. When `case` is an
+ * expression, it's resolved using the entire context of the current tree plus the contexts passed
+ * in the parameter `contexts` corresponding to the current iteration. If no template attends the
+ * condition the default template is used. If there's no default template, the iteration is skipped.
+ *
+ * After processing all items, the resulting tree is attached to the current tree at the node with
+ * id `anchor` (passed as parameter).
+ *
+ * The component manager is an optional parameter and is used to modify the resulting component.
+ * This can be very useful for managing ids, for instance. The component manager is a function that
+ * receives the component generated and the index of the current iteration, returning the modified
+ * component.
+ *
+ * @param templateManager templates used to render each line of the context matrix.
+ * @param anchor the id of the node in the current tree to attach the new nodes to.
+ * @param contexts matrix of contexts where each line represents an item to be rendered according to
+ * the templateManager.
+ * @param componentManager optional. When set, the component goes through this function before being
+ * finally rendered.
  */
   doTemplateRender: (
     templateManager: TemplateManager,

@@ -15,6 +15,7 @@
  */
 
 import Tree from 'beagle-tree'
+import logger from 'logger'
 import { ActionHandler } from 'action/types'
 import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import { ExecutionMode, Lifecycle, LifecycleHookMap, Operation } from 'service/beagle-service/types'
@@ -186,13 +187,13 @@ function createRenderer({
     if (!templateManager.default && (!templateManager.templates || templateManager.templates.length === 0)) {
      return logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any template to use. Please provide at least one template to the templateManager parameter.`)
     }
-    if (!anchor) throw new BeagleParseError('The anchor id to render a template was not provided!')
-    if (!contexts || contexts.length === 0) throw new BeagleParseError('At least one data context should be provided!')
+    if (!anchor) return logger.error('Beagle can\'t do the template rendering because no anchor has been provided. Beagle needs to know where to place the new nodes within the current tree.')
+    if (!contexts || contexts.length === 0) logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any item to render. Please make sure the parameter "contexts" contains at least one element.`)
 
     const uiTree = beagleView.getTree()
     const anchorElement = Tree.findById(uiTree, anchor)
 
-    if (!anchorElement) throw new BeagleParseError(`The anchor element with id "${anchor}" was not found!`)
+    if (!anchorElement) return logger.error(`Beagle can't do the template rendering because it couldn't the node identified by the provided anchor: ${anchor}.`)
 
     const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, globalContexts: DataContext[]) => {
       const hierarchy = Context.evaluate(uiTree, globalContexts, false)
@@ -204,7 +205,7 @@ function createRenderer({
     let shouldRender = false
 
     contexts.forEach((context, index) => {
-      const contextHierarchy = [...treeContextHierarchy, ...context || []]
+      const contextHierarchy = [...context || [], ...treeContextHierarchy]
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
 
       if (template) {
