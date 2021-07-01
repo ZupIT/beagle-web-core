@@ -167,7 +167,7 @@ function createRenderer({
   function doFullRender(
     viewTree: BeagleUIElement<any>,
     anchor = '',
-    mode: TreeUpdateMode = 'replaceComponent'
+    mode: TreeUpdateMode = 'replaceComponent',
   ) {
     viewTree = runLifecycle(viewTree, 'beforeStart')
 

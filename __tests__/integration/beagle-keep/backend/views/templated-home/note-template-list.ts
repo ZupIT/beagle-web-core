@@ -85,8 +85,9 @@ const baseNoteTemplate = {
   },
 }
 
-const noteTemplates: TemplateManagerItem[] = [
+const noteTemplates = [
   {
+    _beagleComponent_: 'beagle:itemTemplate',
     case: "@{eq(item.labels[0], 'Personal')}",
     view: {
       ...baseNoteTemplate,
@@ -104,6 +105,7 @@ const noteTemplates: TemplateManagerItem[] = [
     },
   },
   {
+    _beagleComponent_: 'beagle:itemTemplate',
     case: "@{eq(item.labels[0], 'Work')}",
     view: {
       ...baseNoteTemplate,
@@ -121,6 +123,7 @@ const noteTemplates: TemplateManagerItem[] = [
     },
   },
   {
+    _beagleComponent_: 'beagle:itemTemplate',
     case: "@{eq(item.labels[0], 'Supermarket')}",
     view: {
       ...baseNoteTemplate,
@@ -138,6 +141,7 @@ const noteTemplates: TemplateManagerItem[] = [
     },
   },
   {
+    _beagleComponent_: 'beagle:itemTemplate',
     case: false,
     view: {
       ...baseNoteTemplate,

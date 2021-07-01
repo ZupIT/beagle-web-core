@@ -56,7 +56,7 @@ export interface Renderer {
   doFullRender: (
     viewTree: BeagleUIElement<any>,
     anchor?: string,
-    mode?: TreeUpdateMode
+    mode?: TreeUpdateMode,
   ) => void,
 
   /**
@@ -86,10 +86,10 @@ export interface Renderer {
    * where you can change or return more attributes to this component, before it is rendered in to the
    * screen.
  */
-   doTemplateRender: (
+  doTemplateRender: (
     templateManager: TemplateManager,
     anchor: string,
     contexts: DataContext[][],
-    componentManager?: ComponentManager
+    componentManager?: ComponentManager,
   ) => void,
 }

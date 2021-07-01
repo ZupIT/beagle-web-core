@@ -26,7 +26,7 @@ import Context from './context'
 
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
-const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_', 'templates']
+const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
 
 function getContextBindingValue(
   path: string,
