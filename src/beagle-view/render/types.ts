@@ -61,7 +61,7 @@ export interface Renderer {
 
   /**
    * Renders according to a template manager. A template is chosen from the template manager according
-   * to `case`, which is a boolean or a beagle expression that resolves to a boolean. When `case` is
+   * to `case`, which is a boolean or a Beagle expression that resolves to a boolean value. When `case` is
    * an expression, it's resolved using the entire context of the current tree plus the contexts
    * passed in the parameter `context`.
    *
