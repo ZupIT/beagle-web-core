@@ -184,7 +184,7 @@ function createRenderer({
     componentManager?: ComponentManager
   ) {
     if (!templateManager.default && (!templateManager.templates || templateManager.templates.length === 0)) {
-      throw new BeagleParseError('The template to render was not provided!')
+     return logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any template to use. Please provide at least one template to the templateManager parameter.`)
     }
     if (!anchor) throw new BeagleParseError('The anchor id to render a template was not provided!')
     if (!contexts || contexts.length === 0) throw new BeagleParseError('At least one data context should be provided!')
