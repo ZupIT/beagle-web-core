@@ -186,7 +186,7 @@ function createRenderer({
     if (!templateManager.default && (!templateManager.templates || templateManager.templates.length === 0)) {
      return logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any template to use. Please provide at least one template to the templateManager parameter.`)
     }
-    if (!anchor) throw new BeagleParseError('The anchor id to render a template was not provided!')
+    if (!anchor) return logger.error('Beagle can\'t do the template rendering because no anchor has been provided. Beagle needs to know where to place the new nodes within the current tree.')
     if (!contexts || contexts.length === 0) throw new BeagleParseError('At least one data context should be provided!')
 
     const uiTree = beagleView.getTree()
