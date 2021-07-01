@@ -204,7 +204,7 @@ function createRenderer({
     let shouldRender = false
 
     contexts.forEach((context, index) => {
-      const contextHierarchy = [...treeContextHierarchy, ...context || []]
+      const contextHierarchy = [...context || [], ...treeContextHierarchy]
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
 
       if (template) {
