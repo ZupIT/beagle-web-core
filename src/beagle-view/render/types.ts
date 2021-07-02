@@ -59,7 +59,7 @@ export interface Renderer {
     mode?: TreeUpdateMode,
   ) => void,
 
-  /**
+/**
  * Renders according to a template manager and a matrix of contexts.
  *
  * Each line in the matrix of contexts represents an iteration and each column represents the value
