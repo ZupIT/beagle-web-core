@@ -71,7 +71,7 @@ describe('Render a template with doTemplateRender ', () => {
         templateManagerSpy.mockClear()
       })
 
-      it('should have five child', async () => {
+      it('should have five children', async () => {
         expect(tree.children).toBeDefined()
         expect(tree.children?.length).toBe(5)
       })
