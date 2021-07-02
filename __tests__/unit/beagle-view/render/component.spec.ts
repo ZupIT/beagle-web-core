@@ -22,7 +22,7 @@ describe('Beagle View: render: component', () => {
     const component = createTable()
     const rows = component.rows
     Component.formatChildrenProperty(component, { property: 'rows' })
-  
+
     expect(component.rows).toBeUndefined()
     expect(component.children).toBe(rows)
   })
@@ -42,7 +42,7 @@ describe('Beagle View: render: component', () => {
     const row = component.rows[0]
     component.rows = row
     Component.formatChildrenProperty(component, { property: 'rows' })
-  
+
     expect(component.rows).toBeUndefined()
     expect(component.children).toEqual([row])
   })

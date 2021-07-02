@@ -15,11 +15,14 @@
  */
 
 import Tree from 'beagle-tree'
+import logger from 'logger'
 import { ActionHandler } from 'action/types'
-import { BeagleUIElement, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
+import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import { ExecutionMode, Lifecycle, LifecycleHookMap, Operation } from 'service/beagle-service/types'
 import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
+import { ComponentManager, TemplateManager } from 'beagle-view/render/template-manager/types'
+import { getEvaluatedTemplate } from 'beagle-view/render/template-manager'
 import BeagleParseError from 'error/BeagleParseError'
 import { Renderer } from './types'
 import Component from './component'
@@ -86,7 +89,7 @@ function createRenderer({
       runComponentLifecycleHook(component, lifecycle)
     ))
   }
-  
+
   function preProcess(viewTree: BeagleUIElement) {
     Tree.forEach(viewTree, (component) => {
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
@@ -97,7 +100,7 @@ function createRenderer({
 
     return viewTree as IdentifiableBeagleUIElement
   }
-  
+
   function takeViewSnapshot(
     viewTree: IdentifiableBeagleUIElement,
     anchor: string,
@@ -113,10 +116,10 @@ function createRenderer({
     } else {
       Tree.insertIntoTree(currentTree, viewTree, anchor, mode)
     }
-  
+
     setTree(currentTree)
   }
-  
+
   function evaluateComponents(viewTree: IdentifiableBeagleUIElement) {
     const contextMap = Context.evaluate(viewTree, [globalContext.getAsDataContext()])
     return Tree.replaceEach(viewTree, (component) => {
@@ -161,21 +164,68 @@ function createRenderer({
 
     renderToScreen(view)
   }
-  
+
   function doFullRender(
     viewTree: BeagleUIElement<any>,
     anchor = '',
     mode: TreeUpdateMode = 'replaceComponent',
   ) {
     viewTree = runLifecycle(viewTree, 'beforeStart')
+
     let viewTreeWithIds = preProcess(viewTree)
     viewTreeWithIds = runLifecycle(viewTreeWithIds, 'beforeViewSnapshot')
+
     doPartialRender(viewTreeWithIds, anchor, mode)
+  }
+
+  function doTemplateRender(
+    templateManager: TemplateManager,
+    anchor: string,
+    contexts: DataContext[][],
+    componentManager?: ComponentManager
+  ) {
+    if (!templateManager.default && (!templateManager.templates || templateManager.templates.length === 0)) {
+     return logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any template to use. Please provide at least one template to the templateManager parameter.`)
+    }
+    if (!anchor) return logger.error('Beagle can\'t do the template rendering because no anchor has been provided. Beagle needs to know where to place the new nodes within the current tree.')
+    if (!contexts || contexts.length === 0) logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any item to render. Please make sure the parameter "contexts" contains at least one element.`)
+
+    const uiTree = beagleView.getTree()
+    const anchorElement = Tree.findById(uiTree, anchor)
+
+    if (!anchorElement) return logger.error(`Beagle can't do the template rendering because it couldn't the node identified by the provided anchor: ${anchor}.`)
+
+    const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, globalContexts: DataContext[]) => {
+      const hierarchy = Context.evaluate(uiTree, globalContexts, false)
+      return Object.keys(hierarchy).map(key => hierarchy[key]).reduce((prev, cur) => [...prev, ...cur], [])
+    }
+
+    const globalContexts = [beagleView.getBeagleService().globalContext.getAsDataContext()]
+    const treeContextHierarchy = getTreeContextHierarchy(uiTree, globalContexts) || []
+    let shouldRender = false
+
+    contexts.forEach((context, index) => {
+      const contextHierarchy = [...context || [], ...treeContextHierarchy]
+      const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
+
+      if (template) {
+        let templateTree = preProcess(Tree.clone(template))
+        templateTree = {
+          ...(componentManager && componentManager(templateTree, index) || templateTree),
+          _implicitContexts_: context,
+        }
+
+        anchorElement.children = [...anchorElement.children || [], templateTree]
+        shouldRender = true
+      }
+    })
+    if (shouldRender) doFullRender(anchorElement, anchor)
   }
 
   return {
     doPartialRender,
     doFullRender,
+    doTemplateRender,
   }
 }
 

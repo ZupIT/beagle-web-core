@@ -24,7 +24,6 @@ import BeagleParseError from 'error/BeagleParseError'
 import { Operation } from 'service/beagle-service/types'
 import Context from './context'
 
-
 const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
 const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
 const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
@@ -54,7 +53,7 @@ function getContextBindingValue(
  * recognize each parameter with a simple regular expression. We need a deterministic pushdown
  * automaton (DPA) to do this. This function is the automaton to solve this problem, it recognizes
  * each parameter in the operation and return an array of parameters as its result.
- * 
+ *
  * @param input the input to the automaton
  * @returns an array of parameters
  */
@@ -168,17 +167,17 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
  * `contextHierarchy` (parameter). An expression is every non scaped string in the format
  * `@{expression}`. The context hierarchy is a stack of contexts where the top position has the top
  * priority, i.e. will be the first to be matched against the expression.
- * 
+ *
  * If an expression has no match, it will be kept unchanged.
- * 
+ *
  * If the third parameter (`shouldIgnore`) is passed, before evaluating a property of an object,
  * this function will be called with the value and key of the property. If
  * `shouldIgnore(value, key)` returns true, the entire property will be skipped and its expressions
  * won't be evaluated.
- * 
+ *
  * This function doesn't alter its parameters, instead, the data with the expressions replaced will
  * be its return value.
- * 
+ *
  * @param data the data with the expressions to be replaced.
  * @param contextHierarchy the data source to search for the values of the expressions.
  * @param shouldIgnore optional. Function to verify if a property of an object should be ignored
@@ -230,16 +229,16 @@ function isActionOrActionList(data: any) {
  * its value in the `contextHierarchy` (parameter). The difference is that it takes into
  * consideration that it is a component and doesn't evaluate sub-components, actions or properties
  * that can't contain expressions (`id`, `context`, `children` and `_beagleComponent_`).
- * 
+ *
  * When resolving expressions in a component it is important to ignore actions because an action
  * should only be evaluated when it's executed, and not when it's rendered.
- * 
+ *
  * When resolving expressions in a component, it is important to ignore sub-components because
  * they haven't been rendered yet. Take for instance a component called list-view that has the
  * property "template", template is an array of components that doesn't render as soon as the view
  * is rendered, instead, it is used to create the component's children at runtime. We don't need to
  * resolve its expressions when rendering the list-view.
- * 
+ *
  * @param component the component with the expressions to be replaced
  * @param contextHierarchy the data source to search for the values of the expressions
  * @returns the component with all its expressions replaced by their corresponding values
@@ -261,17 +260,17 @@ function resolveForComponent<T extends BeagleUIElement>(
  * Similar to `resolve`. It replaces every reference to an expression in `action` (parameter) by
  * its value in the `contextHierarchy` (parameter). The difference is that it takes into
  * consideration that it is an action and doesn't evaluate sub-components or sub-actions.
- * 
+ *
  * When resolving expressions inside an action it is important to ignore sub-actions because an
  * action should only be evaluated when it's executed. Take the action "sendRequest" for instance,
  * we should not resolve the expressions in the sub-action "onSuccess", these should be resolved
  * only when "onSuccess" is actually executed, i.e. when the request completes successfully.
- * 
+ *
  * When resolving expressions inside an action, it is important to ignore components because they
  * haven't been rendered yet. Take for instance the action "addChildren", we don't need to evaluate
  * the expressions of the components in "value", they will be evaluated when they actually get
  * rendered.
- * 
+ *
  * @param action the action with the expressions to be replaced
  * @param contextHierarchy the data source to search for the values of the expressions
  * @returns the action with all its expressions replaced by their corresponding values

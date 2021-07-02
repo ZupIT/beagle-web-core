@@ -57,7 +57,7 @@ describe('Beagle Keep: backend', () => {
     })
 
     it('should not get labels', () => testErrorResponse('label'))
-  
+
     it('should edit label', async () => {
       const label = { ...getLabels()[0] }
       label.name = 'Edited'
@@ -71,7 +71,7 @@ describe('Beagle Keep: backend', () => {
     })
 
     it('should not edit label', () => testErrorResponse('label', '', { method: 'put' }))
-  
+
     it('should create label', async () => {
       const originalLabels = [...getLabels()]
       const label = { name: 'new', id: '', color: '#000' }
@@ -84,7 +84,7 @@ describe('Beagle Keep: backend', () => {
     })
 
     it('should not create label', () => testErrorResponse('label', '', { method: 'post' }))
-  
+
     it('should remove label', async () => {
       const originalLabels = [...getLabels()]
       const request = { method: 'delete' }
@@ -113,7 +113,7 @@ describe('Beagle Keep: backend', () => {
     })
 
     it('should not get note by id', () => testErrorResponse('note', '/0'))
-  
+
     it('should edit note', async () => {
       const note = { ...getNoteById(0)! }
       note.title = 'Edited'
@@ -125,7 +125,7 @@ describe('Beagle Keep: backend', () => {
     })
 
     it('should not edit note', () => testErrorResponse('note', '', { method: 'put' }))
-  
+
     it('should create note', async () => {
       const originalNotes = [...getNotes()]
       const note = { title: 'new', id: '', text: 'blah', labels: [getLabels()[0]] }
@@ -138,7 +138,7 @@ describe('Beagle Keep: backend', () => {
     })
 
     it('should not create note', () => testErrorResponse('note', '', { method: 'post' }))
-  
+
     it('should remove note', async () => {
       const originalNotes = [...getNotes()]
       const request = { method: 'delete' }
@@ -159,6 +159,10 @@ describe('Beagle Keep: backend', () => {
     it('should get home', () => shouldGetView('/home'))
 
     it('should not get home', () => testErrorResponse('view', '/home'))
+
+    it('should get templated home', () => shouldGetView('/templatedHome'))
+
+    it('should not get templated home', () => testErrorResponse('view', '/templatedHome'))
 
     it('should get details', () => shouldGetView('/details'))
 

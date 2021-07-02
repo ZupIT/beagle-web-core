@@ -68,7 +68,7 @@ export interface LoadParams<T = any> {
    * Wether to show a loading component or not. True by default.
    */
   body?: any,
-  
+
   shouldShowLoading?: boolean,
   /**
    * Wether to show an error component or not. True by default.
@@ -104,7 +104,7 @@ export interface UpdateWithTreeParams<Schema> {
 export interface BeagleView<T = any> {
   /**
    * Subscribes to every change to the beagle tree.
-   * 
+   *
    * @param listener the function to run every time the tree changes. Must receive a tree as
    * parameter.
    * @returns a function to remove the listener (unsubscribe)
@@ -112,7 +112,7 @@ export interface BeagleView<T = any> {
   subscribe: (listener: Listener) => (() => void),
   /**
    * Subscribes to every error in the fetch and rendering process of a view.
-   * 
+   *
    * @param listener the function to run every time an error occurs. Must receive an array of
    * errors.
    * @returns a function to remove the listener (unsubscribe)
@@ -124,32 +124,32 @@ export interface BeagleView<T = any> {
   fetch: (options: LoadParams, anchor?: string, mode?: TreeUpdateMode) => Promise<void>,
   /**
    * Gets the renderer of the current BeagleView. Can be used to control the rendering directly.
-   * 
+   *
    * @returns the renderer
    */
   getRenderer: () => Renderer,
   /**
    * Gets a copy of the currently rendered tree.
-   * 
+   *
    * @returns a copy of the current tree
    */
   getTree: () => IdentifiableBeagleUIElement,
   /**
    * Gets the navigator of the Beagle View.
-   * 
+   *
    * @returns the navigator
    */
   getNavigator: () => BeagleNavigator,
   /**
    * Gets a copy of the NetworkOptions passed as parameter when creating this BeagleView. Undefined
    * is returned if no NetworkOptions was provided.
-   * 
+   *
    * @returns the NetworkOptions
    */
   getNetworkOptions: () => NetworkOptions | undefined,
   /**
    * Gets the BeagleService that created this BeagleView.
-   * 
+   *
    * @returns the BeagleService
    */
   getBeagleService: () => BeagleService,

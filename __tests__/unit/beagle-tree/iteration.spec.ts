@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- import { clone } from 'beagle-tree/manipulation'
+import { clone } from 'beagle-tree/manipulation'
 import { forEach, iterator, replaceEach } from 'beagle-tree/iteration'
 import { createFormTree, createListViewTree } from './iteration.mock'
 
@@ -26,7 +26,7 @@ describe('Beagle Tree: iteration', () => {
       forEach(tree, iteratee)
       expect(iteratee).toHaveBeenCalledTimes(order.length)
     })
-  
+
     it('should iterate in the correct order', () => {
       const { tree, order } = createFormTree()
       let next = 0
@@ -53,7 +53,7 @@ describe('Beagle Tree: iteration', () => {
       expect(iteratee).toHaveBeenCalledWith(tree, 0)
     })
   })
-  
+
   describe('Beagle Tree: iteration: replaceEach', () => {
     it('should iterate over all components without altering the tree', () => {
       const { tree, order } = createFormTree()
@@ -62,7 +62,7 @@ describe('Beagle Tree: iteration', () => {
       expect(iteratee).toHaveBeenCalledTimes(order.length)
       expect(result).toBe(tree)
     })
-  
+
     it('should iterate in the correct order and replace every component', () => {
       const { tree, order } = createFormTree()
 
@@ -79,7 +79,7 @@ describe('Beagle Tree: iteration', () => {
       forEach(result, (component, index) => {
         expect(component.value).toBe(index)
       })
-    }) 
+    })
 
     it('should not iterate over list-view\'s template', () => {
       const { tree, order } = createListViewTree()
@@ -119,7 +119,7 @@ describe('Beagle Tree: iteration', () => {
       }
       expect(counter).toBe(order.length)
     })
-  
+
     it('should iterate in the correct order', () => {
       const { tree, order } = createFormTree()
       const it = iterator(tree)

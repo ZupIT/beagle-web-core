@@ -152,18 +152,18 @@ describe('BeagleUIView', () => {
     // we don't want to test the styling
     const treeAWithoutStyles = Tree.clone(treeA)
     Tree.forEach(treeAWithoutStyles, component => delete component.style)
-  
+
     view.getRenderer().doFullRender(treeAWithoutStyles)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     const promise = view.fetch({ path }, 'A.1')
     const expectedLoading = Tree.clone(treeAWithoutStyles)
-    
+
     await promise
 
     expectedLoading.children![1] = { _beagleComponent_: 'custom:loading', id: 'loading' }
     expect(mockFunc.mock.calls[0][0]).toEqual(treeAWithoutStyles)
     expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
-  
+
     const expectedResult = Tree.clone(treeAWithoutStyles)
     expectedResult.children![1] = treeB
 
@@ -180,7 +180,7 @@ describe('BeagleUIView', () => {
     // we don't want to test the styling
     const treeAWithoutStyles = Tree.clone(treeA)
     Tree.forEach(treeAWithoutStyles, component => delete component.style)
-  
+
     view.getRenderer().doFullRender(treeAWithoutStyles)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     const promise = view.fetch({ path }, 'A.1', 'append')
@@ -207,11 +207,11 @@ describe('BeagleUIView', () => {
   it('should prepend network response to specific part of the tree', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc)
-    
+
     // we don't want to test the styling
     const treeAWithoutStyles = Tree.clone(treeA)
     Tree.forEach(treeAWithoutStyles, component => delete component.style)
-  
+
     view.getRenderer().doFullRender(treeAWithoutStyles)
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
     const promise = view.fetch({ path }, 'A.1', 'prepend')
@@ -250,7 +250,7 @@ describe('BeagleUIView', () => {
     nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
 
     await view.getNavigator().pushView({ url: path })
- 
+
     expect(fetchData).toHaveBeenCalledWith(
       baseUrl + path,
       { 'method': 'get', 'headers': { 'beagle-platform': 'WEB'} },

@@ -41,11 +41,11 @@ export interface RenderOptions extends ConfigOptions {
  * rendering process and, since, multiple renders are done before the view is in its final state,
  * the value for each key is an array of trees, where the first position is the first render and the
  * last position is the last render.
- * 
+ *
  * This is an async function, the returned promise is resolved as soon as the final render is done.
  * The parameter `numberOfRenders` is what defines the final render. If `numberOfRenders` is 2, for
  * example, the promise will be resolved after the seconde render.
- * 
+ *
  * @param route the initial route of the BeagleView.
  * @param numberOfRenders the number of renders necessary to achieve the final render.
  * @param options optional. The configuration options for the BeagleService.
@@ -84,6 +84,12 @@ export function renderHomeView() {
   return renderView('/home', 3)
 }
 
+export function renderTemplatedHomeView() {
+  /* must wait for three renders. First: loading. Second: home with an empty repeater. Third:
+  repeater with children. */
+  return renderView('/templatedHome', 3)
+}
+
 export function renderLabelsView() {
   /* must wait for two renders. First: view "labels" with an empty repeater. Second: the same view,
   but the repeater has children. */
@@ -101,7 +107,7 @@ export function renderDetailsView(noteId?: number): Promise<RenderingResult> {
   function beforeViewCreation(service: BeagleService) {
     if (hasNoteId) service.globalContext.set(noteId, 'selectedNote')
   }
-  
+
   return renderView(
     '/details',
     numberOfRenders,
@@ -111,7 +117,7 @@ export function renderDetailsView(noteId?: number): Promise<RenderingResult> {
 
 /**
  * Finds the first repeater in the given tree.
- * 
+ *
  * @param tree the tree to search for the repeater
  * @returns the repeater or undefined if none is found
  */
@@ -122,7 +128,7 @@ export function getRepeater(tree: BeagleUIElement) {
 /**
  * Finds the first repeater in the given tree and creates a copy of the tree where this repeater
  * has no children (children is undefined).
- * 
+ *
  * @param view the view to clone and remove the repeater's children
  * @returns the copy of the view with an empty repeater
  */
@@ -131,4 +137,28 @@ export function getViewWithAnEmptyRepeater(view: BeagleUIElement) {
   const emptyRepeater = getRepeater(emptyRepeaterView)
   delete emptyRepeater.children
   return emptyRepeaterView
+}
+
+/**
+ * Finds the first template manager in the given tree.
+ *
+ * @param tree the tree to search for the template manager
+ * @returns the repeater or undefined if none is found
+ */
+ export function getTemplate(tree: BeagleUIElement) {
+  return Tree.findByType(tree, 'custom:template')[0]
+}
+
+/**
+ * Finds the first template manager in the given tree and creates a copy of the tree where this template manager
+ * has no children (children is undefined).
+ *
+ * @param view the view to clone and remove the template manager's children
+ * @returns the copy of the view with an empty template manager
+ */
+export function getViewWithAnEmptyTemplateManager(view: BeagleUIElement) {
+  const emptyTemplateManagerView = Tree.clone(view)
+  const emptyTemplateManager = getTemplate(emptyTemplateManagerView)
+  delete emptyTemplateManager.children
+  return emptyTemplateManagerView
 }

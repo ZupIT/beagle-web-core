@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import noteList from './note-list'
-import { getHomeBeagleElement } from '../shared'
+import { DataContext } from 'beagle-tree/types'
+import { Operation } from 'service/beagle-service/types'
+import Expression from '../expression'
+import { TemplateManager } from './types'
 
-const home = getHomeBeagleElement(noteList)
-
-export default home
+export function getEvaluatedTemplate(
+  templates: TemplateManager,
+  contextHierarchy: DataContext[],
+  operationHandlers: Record<string, Operation>) {
+  return templates.templates.find(item =>
+    item.case && Expression.resolve(item.case, contextHierarchy, operationHandlers)
+  )?.view || templates.default
+}

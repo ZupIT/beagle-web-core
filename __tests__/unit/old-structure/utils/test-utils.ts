@@ -99,6 +99,7 @@ export function createRenderer(): Renderer {
   return {
     doFullRender: jest.fn(),
     doPartialRender: jest.fn(),
+    doTemplateRender: jest.fn(),
   }
 }
 
