@@ -17,7 +17,7 @@
 import { map, isEqual } from 'lodash'
 import { DataContext, IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { Component, TemplateProps } from './types'
-import { TemplateManager } from 'beagle-view/render/template-manager/types'
+import { TemplateManager,TemplateManagerItem } from 'beagle-view/render/template-manager/types'
 
 const Template: Component<TemplateProps> = ({
   id,
@@ -28,13 +28,17 @@ const Template: Component<TemplateProps> = ({
 }) => {
   function onChange() {
     const element = viewContentManager.getElement()
+    const templatesRaw = element.templates
     const hasChanged = (element && Array.isArray(dataSource) && !isEqual(map(element.children, 'key'), map(dataSource, key)))
 
     if (!hasChanged) return
 
     const contexts: DataContext[][] = dataSource.map(item => [{ id: 'item', value: item }])
-    const componentManager = (component: IdentifiableBeagleUIElement, index: number) => ({ id: `template:${id}:${component.id}:${index}` })
-    const manager: TemplateManager = { default: templates.find(t => !t.case)?.view, templates: templates.filter(t => t.case) || [] }
+    const componentManager = (component: IdentifiableBeagleUIElement, index: number) => ({ ...component, id: `template:${id}:${component.id}:${index}` })
+    const manager: TemplateManager = {
+      default: templatesRaw.find((t: TemplateManagerItem) => !t.case)?.view,
+      templates: templatesRaw.filter((t: TemplateManagerItem) => t.case) || []
+    }
 
     viewContentManager.getView().getRenderer().doTemplateRender(manager, id, contexts, componentManager)
   }

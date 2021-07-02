@@ -418,7 +418,6 @@ Object {
             },
             Object {
               "_beagleComponent_": "beagle:itemTemplate",
-              "case": false,
               "view": Object {
                 "_beagleComponent_": "beagle:container",
                 "children": Array [
@@ -1163,7 +1162,6 @@ Object {
             },
             Object {
               "_beagleComponent_": "beagle:itemTemplate",
-              "case": false,
               "view": Object {
                 "_beagleComponent_": "beagle:container",
                 "children": Array [
@@ -1828,7 +1826,6 @@ Object {
             },
             Object {
               "_beagleComponent_": "beagle:itemTemplate",
-              "case": false,
               "view": Object {
                 "_beagleComponent_": "beagle:container",
                 "children": Array [
@@ -2515,7 +2512,6 @@ Object {
             },
             Object {
               "_beagleComponent_": "beagle:itemTemplate",
-              "case": false,
               "view": Object {
                 "_beagleComponent_": "beagle:container",
                 "children": Array [
@@ -3261,7 +3257,6 @@ Object {
             },
             Object {
               "_beagleComponent_": "beagle:itemTemplate",
-              "case": false,
               "view": Object {
                 "_beagleComponent_": "beagle:container",
                 "children": Array [
@@ -4612,7 +4607,6 @@ Object {
     },
     Object {
       "_beagleComponent_": "beagle:itemTemplate",
-      "case": false,
       "view": Object {
         "_beagleComponent_": "beagle:container",
         "children": Array [
@@ -5529,7 +5523,6 @@ Object {
     },
     Object {
       "_beagleComponent_": "beagle:itemTemplate",
-      "case": false,
       "view": Object {
         "_beagleComponent_": "beagle:container",
         "children": Array [
@@ -6454,7 +6447,6 @@ Object {
     },
     Object {
       "_beagleComponent_": "beagle:itemTemplate",
-      "case": false,
       "view": Object {
         "_beagleComponent_": "beagle:container",
         "children": Array [
@@ -7640,7 +7632,6 @@ Object {
     },
     Object {
       "_beagleComponent_": "beagle:itemTemplate",
-      "case": false,
       "view": Object {
         "_beagleComponent_": "beagle:container",
         "children": Array [
@@ -8826,7 +8817,6 @@ Object {
     },
     Object {
       "_beagleComponent_": "beagle:itemTemplate",
-      "case": false,
       "view": Object {
         "_beagleComponent_": "beagle:container",
         "children": Array [

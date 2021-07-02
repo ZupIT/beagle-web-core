@@ -142,7 +142,6 @@ const noteTemplates = [
   },
   {
     _beagleComponent_: 'beagle:itemTemplate',
-    case: false,
     view: {
       ...baseNoteTemplate,
       children: [

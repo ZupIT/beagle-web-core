@@ -1,7 +1,7 @@
 import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
 
 export interface TemplateManagerItem {
-  case: string | boolean,
+  case: string,
   view: BeagleUIElement,
 }
 
@@ -10,4 +10,4 @@ export interface TemplateManager {
   templates: TemplateManagerItem[],
 }
 
-export type ComponentManager = (component: IdentifiableBeagleUIElement, index: number) => Record<string, any>
+export type ComponentManager = (component: IdentifiableBeagleUIElement, index: number) => IdentifiableBeagleUIElement

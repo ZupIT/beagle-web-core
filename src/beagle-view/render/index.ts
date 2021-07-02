@@ -211,8 +211,7 @@ function createRenderer({
       if (template) {
         let templateTree = preProcess(Tree.clone(template))
         templateTree = {
-          ...templateTree,
-          ...(componentManager && componentManager(templateTree, index) || {}),
+          ...(componentManager && componentManager(templateTree, index) || templateTree),
           _implicitContexts_: context,
         }
 

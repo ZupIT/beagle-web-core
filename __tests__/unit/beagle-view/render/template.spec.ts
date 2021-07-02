@@ -57,9 +57,7 @@ describe('Render a template with doTemplateRender ', () => {
       let mockChildren: BeagleUIElement[]
       const templateManagerSpy = jest.spyOn(templateManager, 'getEvaluatedTemplate')
       const componentManager = jest.fn((component: IdentifiableBeagleUIElement, index: number) => {
-        return {
-          id: component.id
-        }
+        return component
       })
 
       beforeAll(() => {
@@ -84,7 +82,7 @@ describe('Render a template with doTemplateRender ', () => {
         const higherContexts = [{ id: 'global', value: null }, mocks.baseContainer.context]
         for (let i = 0; i < 5; i++) {
           expect(templateManagerSpy.mock.calls[i][0]).toBe(mocks.templateManager)
-          expect(templateManagerSpy.mock.calls[i][1]).toEqual([...higherContexts, ...mocks.dataSource[i]])
+          expect(templateManagerSpy.mock.calls[i][1]).toEqual([...mocks.dataSource[i], ...higherContexts])
         }
       })
 
@@ -152,9 +150,8 @@ describe('Render a template with doTemplateRender ', () => {
       let mockChildren: BeagleUIElement[]
       const templateManagerSpy = jest.spyOn(templateManager, 'getEvaluatedTemplate')
       const componentManager = jest.fn((component: IdentifiableBeagleUIElement, index: number) => {
-        return {
-          id: `${component.id}:${index}`
-        }
+        component.id = `${component.id}:${index}`
+        return component
       })
 
       beforeAll(() => {
@@ -185,18 +182,20 @@ describe('Render a template with doTemplateRender ', () => {
         const higherContexts = [{ id: 'global', value: null }, mocks.baseContainer.context]
         for (let i = 0; i < 10; i++) {
           expect(templateManagerSpy.mock.calls[i][0]).toBe(mocks.exceptionTemplateManager)
-          expect(templateManagerSpy.mock.calls[i][1]).toEqual([...higherContexts, ...mocks.exceptionDataSource[i]])
+          expect(templateManagerSpy.mock.calls[i][1]).toEqual([...mocks.exceptionDataSource[i], ...higherContexts])
         }
       })
 
       it('should have called the componentManager six times', async () => {
+        const views = mocks.exceptionTemplateManager.templates.map(t => t.view)
+
         expect(componentManager).toHaveBeenCalledTimes(6)
-        expect(componentManager).toHaveBeenNthCalledWith(1, mocks.templateManager.templates[0].view, 1)
-        expect(componentManager).toHaveBeenNthCalledWith(2, mocks.templateManager.templates[0].view, 2)
-        expect(componentManager).toHaveBeenNthCalledWith(3, mocks.templateManager.templates[2].view, 3)
-        expect(componentManager).toHaveBeenNthCalledWith(4, mocks.templateManager.templates[3].view, 5)
-        expect(componentManager).toHaveBeenNthCalledWith(5, mocks.templateManager.templates[1].view, 7)
-        expect(componentManager).toHaveBeenNthCalledWith(6, mocks.templateManager.templates[2].view, 8)
+        expect(componentManager).toHaveBeenNthCalledWith(1, { ...views[0], id: `${views[0].id}:${1}`}, 1)
+        expect(componentManager).toHaveBeenNthCalledWith(2, { ...views[0], id: `${views[0].id}:${2}`}, 2)
+        expect(componentManager).toHaveBeenNthCalledWith(3, { ...views[2], id: `${views[2].id}:${3}`}, 3)
+        expect(componentManager).toHaveBeenNthCalledWith(4, { ...views[3], id: `${views[3].id}:${5}`}, 5)
+        expect(componentManager).toHaveBeenNthCalledWith(5, { ...views[1], id: `${views[1].id}:${7}`}, 7)
+        expect(componentManager).toHaveBeenNthCalledWith(6, { ...views[2], id: `${views[2].id}:${8}`}, 8)
       })
 
       it('should not render a context when the case is not matched and default template is not defined', async () => {
