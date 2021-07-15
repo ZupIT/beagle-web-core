@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
+import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeInsertionMode, TreeUpdateMode } from 'beagle-tree/types'
 import { ComponentManager, TemplateManager } from 'beagle-view/render/template-manager/types'
 
 export interface Renderer {
@@ -59,48 +59,51 @@ export interface Renderer {
     mode?: TreeUpdateMode,
   ) => void,
 
-/**
- * Renders according to a template manager and a matrix of contexts.
- *
- * Each line in the matrix of contexts represents an iteration and each column represents the value
- * of a template variable. For instance, imagine a template with the variables `@{name}`, `@{sex}`
- * and `@{address}`. Now suppose we want to render three different entries with this template.
- * Here's a context matrix that could be used for this example:
- *
- * [
- *   [{ id: 'name', value: 'John' }, { id: 'sex', value: 'M' }, { id: 'address', value: { street: '42 Avenue', number: '256' } }],
- *   [{ id: 'name', value: 'Sue' }, { id: 'sex', value: 'F' }, { id: 'address', value: { street: 'St Monica St', number: '85' } }],
- *   [{ id: 'name', value: 'Paul' }, { id: 'sex', value: 'M' }, { id: 'address', value: { street: 'Bv Kennedy', number: '877' } }],
- * ]
- *
- * Note that the parameter `contexts` adds to the context hierarchy that is already present in the
- * tree, it doesn't replace it, i.e. you can still use the contexts declared in the current tree.
- *
- * For each line of the context matrix, a template is chosen from the template manager according to
- * `case`, which is a boolean or a beagle expression that resolves to a boolean. When `case` is an
- * expression, it's resolved using the entire context of the current tree plus the contexts passed
- * in the parameter `contexts` corresponding to the current iteration. If no template attends the
- * condition the default template is used. If there's no default template, the iteration is skipped.
- *
- * After processing all items, the resulting tree is attached to the current tree at the node with
- * id `anchor` (passed as parameter).
- *
- * The component manager is an optional parameter and is used to modify the resulting component.
- * This can be very useful for managing ids, for instance. The component manager is a function that
- * receives the component generated and the index of the current iteration, returning the modified
- * component.
- *
- * @param templateManager templates used to render each line of the context matrix.
- * @param anchor the id of the node in the current tree to attach the new nodes to.
- * @param contexts matrix of contexts where each line represents an item to be rendered according to
- * the templateManager.
- * @param componentManager optional. When set, the component goes through this function before being
- * finally rendered.
- */
+  /**
+   * Renders according to a template manager and a matrix of contexts.
+   *
+   * Each line in the matrix of contexts represents an iteration and each column represents the value
+   * of a template variable. For instance, imagine a template with the variables `@{name}`, `@{sex}`
+   * and `@{address}`. Now suppose we want to render three different entries with this template.
+   * Here's a context matrix that could be used for this example:
+   *
+   * [
+   *   [{ id: 'name', value: 'John' }, { id: 'sex', value: 'M' }, { id: 'address', value: { street: '42 Avenue', number: '256' } }],
+   *   [{ id: 'name', value: 'Sue' }, { id: 'sex', value: 'F' }, { id: 'address', value: { street: 'St Monica St', number: '85' } }],
+   *   [{ id: 'name', value: 'Paul' }, { id: 'sex', value: 'M' }, { id: 'address', value: { street: 'Bv Kennedy', number: '877' } }],
+   * ]
+   *
+   * Note that the parameter `contexts` adds to the context hierarchy that is already present in the
+   * tree, it doesn't replace it, i.e. you can still use the contexts declared in the current tree.
+   *
+   * For each line of the context matrix, a template is chosen from the template manager according to
+   * `case`, which is a boolean or a beagle expression that resolves to a boolean. When `case` is an
+   * expression, it's resolved using the entire context of the current tree plus the contexts passed
+   * in the parameter `contexts` corresponding to the current iteration. If no template attends the
+   * condition the default template is used. If there's no default template, the iteration is skipped.
+   *
+   * After processing all items, the resulting tree is attached to the current tree at the node with
+   * id `anchor` (passed as parameter).
+   *
+   * The component manager is an optional parameter and is used to modify the resulting component.
+   * This can be very useful for managing ids, for instance. The component manager is a function that
+   * receives the component generated and the index of the current iteration, returning the modified
+   * component.
+   *
+   * @param templateManager templates used to render each line of the context matrix.
+   * @param anchor the id of the node in the current tree to attach the new nodes to.
+   * @param contexts matrix of contexts where each line represents an item to be rendered according to
+   * the templateManager.
+   * @param componentManager optional. When set, the component goes through this function before being
+   * finally rendered.
+   * @param mode optional. when `viewTree` is just a new branch to be added to the tree, the mode must be
+   * specified. It can be `append`, `prepend` or `replace`. The default value is `replace`
+  */
   doTemplateRender: (
     templateManager: TemplateManager,
     anchor: string,
     contexts: DataContext[][],
     componentManager?: ComponentManager,
+    mode?: TreeInsertionMode
   ) => void,
 }
