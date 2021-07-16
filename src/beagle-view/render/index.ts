@@ -17,7 +17,7 @@
 import Tree from 'beagle-tree'
 import logger from 'logger'
 import { ActionHandler } from 'action/types'
-import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
+import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeInsertionMode, TreeUpdateMode } from 'beagle-tree/types'
 import { ExecutionMode, Lifecycle, LifecycleHookMap, Operation } from 'service/beagle-service/types'
 import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
@@ -182,13 +182,14 @@ function createRenderer({
     templateManager: TemplateManager,
     anchor: string,
     contexts: DataContext[][],
-    componentManager?: ComponentManager
+    componentManager?: ComponentManager,
+    mode: TreeInsertionMode = 'replace',
   ) {
+    if (!Array.isArray(contexts)) return
     if (!templateManager.default && (!templateManager.templates || templateManager.templates.length === 0)) {
-     return logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any template to use. Please provide at least one template to the templateManager parameter.`)
+      return logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any template to use. Please provide at least one template to the templateManager parameter.`)
     }
     if (!anchor) return logger.error('Beagle can\'t do the template rendering because no anchor has been provided. Beagle needs to know where to place the new nodes within the current tree.')
-    if (!contexts || contexts.length === 0) logger.error(`Beagle can't do the template rendering at the node ${anchor} because it couldn't find any item to render. Please make sure the parameter "contexts" contains at least one element.`)
 
     const uiTree = beagleView.getTree()
     const anchorElement = Tree.findById(uiTree, anchor)
@@ -202,7 +203,12 @@ function createRenderer({
 
     const globalContexts = [beagleView.getBeagleService().globalContext.getAsDataContext()]
     const treeContextHierarchy = getTreeContextHierarchy(uiTree, globalContexts) || []
-    let shouldRender = false
+    const contextTemplates: IdentifiableBeagleUIElement[] = []
+    const insertion = {
+      prepend: (children: IdentifiableBeagleUIElement[]) => [...children?.reverse() || [], ...anchorElement.children || []],
+      append: (children: IdentifiableBeagleUIElement[]) => [...anchorElement.children || [], ...children || []],
+      replace: (children: IdentifiableBeagleUIElement[]) => children || [],
+    }
 
     contexts.forEach((context, index) => {
       const contextHierarchy = [...context || [], ...treeContextHierarchy]
@@ -214,12 +220,12 @@ function createRenderer({
           ...(componentManager && componentManager(templateTree, index) || templateTree),
           _implicitContexts_: context,
         }
-
-        anchorElement.children = [...anchorElement.children || [], templateTree]
-        shouldRender = true
+        contextTemplates.push(templateTree)
       }
     })
-    if (shouldRender) doFullRender(anchorElement, anchor)
+
+    anchorElement.children = insertion[mode] ? insertion[mode](contextTemplates) : insertion.replace(contextTemplates)
+    doFullRender(anchorElement, anchor)
   }
 
   return {
