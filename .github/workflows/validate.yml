@@ -18,7 +18,7 @@ name: Pull request validation
 
 on:
   pull_request:
-    branches: [ development, master, release/* ]
+    branches: [ development, main, release/* ]
 
 jobs:
   validation:
@@ -33,7 +33,7 @@ jobs:
 
     - name: install
       run: yarn
-    
+
     - name: lint
       run: yarn lint
 
