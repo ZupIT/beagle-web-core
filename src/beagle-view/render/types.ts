@@ -25,7 +25,7 @@ export interface Renderer {
    * hasn't been rendered before, you should use `doFullRender` instead.
    *
    * To see the full documentation of the renderization process, please follow this link:
-   * https://github.com/ZupIT/beagle-web-core/blob/master/docs/renderization.md
+   * https://github.com/ZupIT/beagle-web-core/blob/main/docs/renderization.md
    *
    * @param viewTree the new tree to render, can be just a new branch to add to the current tree
    * @param anchor when `viewTree` is just a new branch to be added to the tree, `anchor` must be
@@ -45,7 +45,7 @@ export interface Renderer {
    * you should call `doPartialRender` instead.
    *
    * To see the full documentation of the renderization process, please follow this link:
-   * https://github.com/ZupIT/beagle-web-core/blob/master/docs/renderization.md
+   * https://github.com/ZupIT/beagle-web-core/blob/main/docs/renderization.md
    *
    * @param viewTree the new tree to render, can be just a new branch to add to the current tree
    * @param anchor when `viewTree` is just a new branch to be added to the tree, `anchor` must be

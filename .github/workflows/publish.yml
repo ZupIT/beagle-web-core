@@ -18,7 +18,7 @@ name: Publishing process
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   publish:
@@ -32,9 +32,9 @@ jobs:
 
       - name: get current version
         run: echo PACKAGE_VERSION=$(node bin/publish/get-version) >> $GITHUB_ENV
-      
+
       # check if the version in package.json is greater than the version in NPM
-  
+
       - name: check if this version should be published
         run: echo SHOULD_PUBLISH=$(node bin/publish/should-publish) >> $GITHUB_ENV
 
