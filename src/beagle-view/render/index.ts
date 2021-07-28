@@ -61,6 +61,7 @@ function createRenderer({
   const { urlBuilder, preFetcher, globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
+    viewTree = viewTree || {}
     if (Object.keys(viewTree).length === 0) return viewTree
     const hook = lifecycleHooks[lifecycle].global
     if (!hook) return viewTree

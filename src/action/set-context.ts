@@ -22,33 +22,29 @@ import { ActionHandler, SetContextAction } from './types'
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
   const { value, contextId, path } = action
   const { globalContext } = beagleView.getBeagleService()
-
   const uiTree = beagleView.getTree()
   const globalContexts = [globalContext.getAsDataContext()]
   const contextHierarchy = Context.evaluate(uiTree, globalContexts, false)[element.id]
 
   if (!contextHierarchy) {
     return logger.warn(
-      `The component of type "${element._beagleComponent_}" and id "${element.id}" is detached from the current tree and attempted to change the value of the context "${contextId}".`,
+      `The component of type "${element?._beagleComponent_}" and id "${element?.id}" is detached from the current tree and attempted to change the value of the context "${contextId}".`,
       'This behavior is not supported, please, hide the component instead of removing it if you still need it to perform an action in the tree.',
     )
   }
 
   const context = Context.find(contextHierarchy, contextId)
-
   if (context && context.id === 'global') {
     globalContext.set(value, path)
     return
   }
 
   if (!context) {
-    const specificContextMessage = (
-      `Could not find context with id "${contextId}" for element of type "${element._beagleComponent_}" and id "${element.id}"`
+    logger.warn(
+      contextId
+      ? (`Could not find context with id "${contextId}" for element of type "${element?._beagleComponent_}" and id "${element?.id}"`)
+      : (`Could not find any context for element of type "${element?._beagleComponent_}" and id "${element?.id}"`)
     )
-    const anyContextMessage = (
-      `Could not find any context for element of type "${element._beagleComponent_}" and id "${element.id}"`
-    )
-    logger.warn(contextId ? specificContextMessage : anyContextMessage)
     return
   }
 
