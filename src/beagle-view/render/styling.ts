@@ -23,7 +23,7 @@ interface BeagleStyle {
   size?: Record<string, any>,
   position?: Record<string, any> | string,
   flex?: Record<string, any> | string,
-  cornerRadius?: Record<string, any>,
+  cornerRadius?: CornerRadiusDataFormat,
   margin?: Record<string, any> | string,
   padding?: Record<string, any> | string,
   positionType?: string,
@@ -31,6 +31,15 @@ interface BeagleStyle {
   backgroundColor?: string,
   borderWidth?: number,
   borderColor?: string,
+}
+
+interface CornerRadiusDataFormat {
+  radius?: number | string,
+  topLeft?: number | string,
+  topRight?: number | string,
+  bottomLeft?: number | string,
+  bottomRight?: number | string,
+  [key: string]: any,
 }
 
 interface HeightDataFormat {
@@ -216,9 +225,21 @@ function formatFlexAttributes(flex: BeagleStyle['flex']) {
 }
 
 function formatCornerRadiusAttributes(cornerRadius: BeagleStyle['cornerRadius']): CSS {
-  return cornerRadius && typeof cornerRadius === 'object' && Number.isFinite(cornerRadius.radius)
-    ? { borderRadius: `${cornerRadius.radius}px` }
-    : {}
+  if (!cornerRadius) return {}
+
+  const cornerRadiusProps: string[] = ['radius', 'topRight', 'topLeft', 'bottomLeft', 'bottomRight']
+  let cornerRadiusFormatted: CornerRadiusDataFormat = {}
+  cornerRadiusProps.forEach((prop, index) => {
+    cornerRadiusFormatted = {
+      ...cornerRadiusFormatted,
+      ...(Number.isFinite(cornerRadius[prop])
+        ? {
+          [index === 0 ? 'borderRadius' : `border${prop.charAt(0).toUpperCase() + prop.slice(1)}Radius`]: `${Number(cornerRadius[prop]) * 2}px`,
+        }
+        : {}),
+    }
+  })
+  return cornerRadiusFormatted
 }
 
 function handleSpecialEdge(
