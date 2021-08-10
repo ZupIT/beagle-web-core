@@ -34,11 +34,11 @@ interface BeagleStyle {
 }
 
 interface CornerRadiusDataFormat {
-  radius?: number | string,
-  topLeft?: number | string,
-  topRight?: number | string,
-  bottomLeft?: number | string,
-  bottomRight?: number | string,
+  radius?: number,
+  topLeft?: number,
+  topRight?: number,
+  bottomLeft?: number,
+  bottomRight?: number,
   [key: string]: any,
 }
 
@@ -234,7 +234,7 @@ function formatCornerRadiusAttributes(cornerRadius: BeagleStyle['cornerRadius'])
       ...cornerRadiusFormatted,
       ...(Number.isFinite(cornerRadius[prop])
         ? {
-          [index === 0 ? 'borderRadius' : `border${prop.charAt(0).toUpperCase() + prop.slice(1)}Radius`]: `${Number(cornerRadius[prop]) * 2}px`,
+          [index === 0 ? 'borderRadius' : `border${prop.charAt(0).toUpperCase() + prop.slice(1)}Radius`]: `${cornerRadius[prop] * 2}px`,
         }
         : {}),
     }
