@@ -3536,13 +3536,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_5",
+          "id": "_beagle_4",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_6",
+          "id": "_beagle_5",
           "text": "@{item.text}",
         },
       ],
@@ -3639,13 +3639,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_8",
+          "id": "_beagle_6",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_9",
+          "id": "_beagle_7",
           "text": "@{item.text}",
         },
       ],
@@ -3747,13 +3747,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_11",
+          "id": "_beagle_8",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_12",
+          "id": "_beagle_9",
           "text": "@{item.text}",
         },
       ],
@@ -3850,13 +3850,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_14",
+          "id": "_beagle_10",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_15",
+          "id": "_beagle_11",
           "text": "@{item.text}",
         },
       ],
@@ -3953,13 +3953,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_17",
+          "id": "_beagle_12",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_18",
+          "id": "_beagle_13",
           "text": "@{item.text}",
         },
       ],
@@ -4056,13 +4056,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_20",
+          "id": "_beagle_14",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_21",
+          "id": "_beagle_15",
           "text": "@{item.text}",
         },
       ],
@@ -4159,13 +4159,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_23",
+          "id": "_beagle_16",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_24",
+          "id": "_beagle_17",
           "text": "@{item.text}",
         },
       ],
@@ -4262,13 +4262,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_26",
+          "id": "_beagle_18",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_27",
+          "id": "_beagle_19",
           "text": "@{item.text}",
         },
       ],
@@ -4721,13 +4721,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_5",
+          "id": "_beagle_4",
           "text": "Personal: Dentist",
           "textColor": "#00ff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_6",
+          "id": "_beagle_5",
           "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
         },
       ],
@@ -4776,13 +4776,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_8",
+          "id": "_beagle_6",
           "text": "Personal: Gym exercises for monday",
           "textColor": "#00ff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_9",
+          "id": "_beagle_7",
           "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
         },
       ],
@@ -4836,13 +4836,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_11",
+          "id": "_beagle_8",
           "text": "Work: Send research results",
           "textColor": "#0000ff",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_12",
+          "id": "_beagle_9",
           "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
         },
       ],
@@ -4896,13 +4896,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_14",
+          "id": "_beagle_10",
           "text": "Supermarket: Market list for september",
           "textColor": "#ffff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_15",
+          "id": "_beagle_11",
           "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
         },
       ],
@@ -4951,13 +4951,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_17",
+          "id": "_beagle_12",
           "text": "Supermarket: Check the new coffee brand",
           "textColor": "#ffff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_18",
+          "id": "_beagle_13",
           "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
         },
       ],
@@ -5006,13 +5006,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_20",
+          "id": "_beagle_14",
           "text": "Work: Ask for a raise",
           "textColor": "#0000ff",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_21",
+          "id": "_beagle_15",
           "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
         },
       ],
@@ -5061,13 +5061,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_23",
+          "id": "_beagle_16",
           "text": "Work: Ask George to read his e-mails",
           "textColor": "#0000ff",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_24",
+          "id": "_beagle_17",
           "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
         },
       ],
@@ -5116,13 +5116,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_26",
+          "id": "_beagle_18",
           "text": "Personal: Parents meeting at school",
           "textColor": "#00ff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_27",
+          "id": "_beagle_19",
           "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
         },
       ],
@@ -5637,13 +5637,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_5",
+          "id": "_beagle_4",
           "text": "Personal: Dentist",
           "textColor": "#00ff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_6",
+          "id": "_beagle_5",
           "text": "Adipisicing ipsum fugiat tempor sint sunt minim labore pariatur. Velit anim officia laboris aliqua i...",
         },
       ],
@@ -5693,13 +5693,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_8",
+          "id": "_beagle_6",
           "text": "Personal: Gym exercises for monday",
           "textColor": "#00ff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_9",
+          "id": "_beagle_7",
           "text": "Enim cillum excepteur pariatur do sint officia esse consectetur sunt Lorem. Fugiat duis reprehenderi...",
         },
       ],
@@ -5754,13 +5754,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_11",
+          "id": "_beagle_8",
           "text": "Work: Send research results",
           "textColor": "#0000ff",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_12",
+          "id": "_beagle_9",
           "text": "Ullamco reprehenderit officia aliqua culpa sunt. Commodo deserunt veniam anim nostrud ut in labore c...",
         },
       ],
@@ -5815,13 +5815,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_14",
+          "id": "_beagle_10",
           "text": "Supermarket: Market list for september",
           "textColor": "#ffff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_15",
+          "id": "_beagle_11",
           "text": "Labore exercitation nulla ipsum do velit proident pariatur nostrud sunt exercitation. Pariatur excep...",
         },
       ],
@@ -5871,13 +5871,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_17",
+          "id": "_beagle_12",
           "text": "Supermarket: Check the new coffee brand",
           "textColor": "#ffff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_18",
+          "id": "_beagle_13",
           "text": "Incididunt officia cupidatat ut deserunt qui occaecat ut dolor nostrud. Irure cupidatat est veniam e...",
         },
       ],
@@ -5927,13 +5927,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_20",
+          "id": "_beagle_14",
           "text": "Work: Ask for a raise",
           "textColor": "#0000ff",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_21",
+          "id": "_beagle_15",
           "text": "Do culpa fugiat labore ut exercitation dolor magna ipsum sit. Do sit incididunt officia occaecat min...",
         },
       ],
@@ -5983,13 +5983,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_23",
+          "id": "_beagle_16",
           "text": "Work: Ask George to read his e-mails",
           "textColor": "#0000ff",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_24",
+          "id": "_beagle_17",
           "text": "Eiusmod commodo eu magna officia fugiat enim sint minim. Sint quis veniam commodo culpa sit ea eu. P...",
         },
       ],
@@ -6039,13 +6039,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_26",
+          "id": "_beagle_18",
           "text": "Personal: Parents meeting at school",
           "textColor": "#00ff00",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_27",
+          "id": "_beagle_19",
           "text": "Aliqua dolore nostrud occaecat non laborum do labore consequat consequat consequat deserunt anim rep...",
         },
       ],
@@ -6561,13 +6561,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_5",
+          "id": "_beagle_4",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_6",
+          "id": "_beagle_5",
           "text": "@{item.text}",
         },
       ],
@@ -6664,13 +6664,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_8",
+          "id": "_beagle_6",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_9",
+          "id": "_beagle_7",
           "text": "@{item.text}",
         },
       ],
@@ -6772,13 +6772,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_11",
+          "id": "_beagle_8",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_12",
+          "id": "_beagle_9",
           "text": "@{item.text}",
         },
       ],
@@ -6875,13 +6875,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_14",
+          "id": "_beagle_10",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_15",
+          "id": "_beagle_11",
           "text": "@{item.text}",
         },
       ],
@@ -6978,13 +6978,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_17",
+          "id": "_beagle_12",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_18",
+          "id": "_beagle_13",
           "text": "@{item.text}",
         },
       ],
@@ -7081,13 +7081,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_20",
+          "id": "_beagle_14",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_21",
+          "id": "_beagle_15",
           "text": "@{item.text}",
         },
       ],
@@ -7184,13 +7184,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_23",
+          "id": "_beagle_16",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_24",
+          "id": "_beagle_17",
           "text": "@{item.text}",
         },
       ],
@@ -7287,13 +7287,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_26",
+          "id": "_beagle_18",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_27",
+          "id": "_beagle_19",
           "text": "@{item.text}",
         },
       ],
@@ -7746,13 +7746,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_5",
+          "id": "_beagle_4",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_6",
+          "id": "_beagle_5",
           "text": "@{item.text}",
         },
       ],
@@ -7849,13 +7849,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_8",
+          "id": "_beagle_6",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_9",
+          "id": "_beagle_7",
           "text": "@{item.text}",
         },
       ],
@@ -7957,13 +7957,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_11",
+          "id": "_beagle_8",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_12",
+          "id": "_beagle_9",
           "text": "@{item.text}",
         },
       ],
@@ -8060,13 +8060,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_14",
+          "id": "_beagle_10",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_15",
+          "id": "_beagle_11",
           "text": "@{item.text}",
         },
       ],
@@ -8163,13 +8163,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_17",
+          "id": "_beagle_12",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_18",
+          "id": "_beagle_13",
           "text": "@{item.text}",
         },
       ],
@@ -8266,13 +8266,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_20",
+          "id": "_beagle_14",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_21",
+          "id": "_beagle_15",
           "text": "@{item.text}",
         },
       ],
@@ -8369,13 +8369,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_23",
+          "id": "_beagle_16",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_24",
+          "id": "_beagle_17",
           "text": "@{item.text}",
         },
       ],
@@ -8472,13 +8472,13 @@ Object {
       "children": Array [
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_26",
+          "id": "_beagle_18",
           "text": "@{item.labels[0].name}: @{item.title}",
           "textColor": "@{item.labels[0].color}",
         },
         Object {
           "_beagleComponent_": "beagle:textInput",
-          "id": "_beagle_27",
+          "id": "_beagle_19",
           "text": "@{item.text}",
         },
       ],
