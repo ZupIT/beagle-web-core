@@ -52,16 +52,28 @@ export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
 export type Operation = ((...args: any[]) => any)
 
+/**
+ * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead
+ * (AnalyticsProvider)
+ */
 export interface ClickEvent {
   category: string,
   label?: string,
   value?: string,
 }
 
+/**
+ * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead
+ * (AnalyticsProvider)
+ */
 export interface ScreenEvent {
   screenName: string,
 }
 
+/**
+ * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead
+ * (AnalyticsProvider)
+ */
 export interface Analytics {
   trackEventOnClick: (clickEvent: ClickEvent) => void,
   trackEventOnScreenAppeared: (screenEvent: ScreenEvent) => void,
@@ -86,7 +98,7 @@ export type BeagleStorage = SynchronousStorage | AsynchronousStorage
 
 export interface BeagleConfig<Schema> {
   /**
-   * URL to the backend providing the views (JSON) for Beagle. 
+   * URL to the backend providing the views (JSON) for Beagle.
    */
   baseUrl: string,
   /**
@@ -110,6 +122,9 @@ export interface BeagleConfig<Schema> {
    */
   fetchData?: typeof fetch,
   /**
+   * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead.
+   * It can be set up via the attribute `analyticsProvider`.
+   *
    * Provides an Analytics client so Analytics records can be generated. By default, no Analytics
    * data is registered.
    */
@@ -151,7 +166,7 @@ export interface BeagleConfig<Schema> {
    */
   navigationControllers?: Record<string, NavigationController>,
   /**
-   * Accepts a custom API that implements the provided interface `AnalyticsProvider` to handle the event tracking through the application. 
+   * Accepts a custom API that implements the provided interface `AnalyticsProvider` to handle the event tracking through the application.
    * If not analytics provider is registered, no analytics will be generated
    */
   analyticsProvider?: AnalyticsProvider,
@@ -160,10 +175,10 @@ export interface BeagleConfig<Schema> {
    */
   platform?: string,
   /**
-   * The map of custom operations that can be used to extend the capability of the Beagle expressions and are called like functions, 
+   * The map of custom operations that can be used to extend the capability of the Beagle expressions and are called like functions,
    * e.g. `@{sum(1, 2)}`.
-   * The keys of this object represent the operation name and the values must be the functions themselves. 
-   * An operation name must contain only letters, numbers and the character _, 
+   * The keys of this object represent the operation name and the values must be the functions themselves.
+   * An operation name must contain only letters, numbers and the character _,
    * it also must contain at least one letter or _.
    * Note: If you create custom operations using the same name of a default from Beagle, the default will be overwritten by the custom one
    */
@@ -199,7 +214,7 @@ export interface CreateView {
 export type BeagleService = Readonly<{
   /**
    * Creates a new Beagle View.
-   * 
+   *
    * @param networkOptions the network options (headers, http method and cache strategy) to use for
    * every request in this BeagleView. Will use the default values when not specified.
    * @param initialControllerId the id of the navigation controller for the first navigation stack.
