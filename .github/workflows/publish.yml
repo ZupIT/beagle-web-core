@@ -75,8 +75,19 @@ jobs:
         if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: yarn build
 
+      - name: Read secrets from AWS Secrets Manager into environment variables
+        if: ${{ env.SHOULD_PUBLISH == 'true' }}
+        uses: abhilash1in/aws-secrets-manager-action@v1.0.1
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+            secrets: |
+                beagle/web/publish
+            parse-json: true
+
       - name: publish to NPM
         if: ${{ env.SHOULD_PUBLISH == 'true' }}
         run: cd dist && npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH }}
+          NODE_AUTH_TOKEN: ${{ env.BEAGLE_WEB_PUBLISH_NPM_AUTH }}
