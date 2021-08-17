@@ -60,7 +60,7 @@ function createRenderer({
 }: Params): Renderer {
   const { urlBuilder, preFetcher, globalContext } = beagleView.getBeagleService()
 
-  function runGlobalLifecycleHook(viewTree: any, lifecycle: Lifecycle) {
+  function runGlobalLifecycleHook(viewTree: any = {}, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree
     const hook = lifecycleHooks[lifecycle].global
     if (!hook) return viewTree
@@ -107,7 +107,9 @@ function createRenderer({
     mode: TreeUpdateMode,
   ) {
     let currentTree = beagleView.getTree()
+
     if (!currentTree) return setTree(viewTree)
+
     anchor = anchor || currentTree.id
 
     if (mode === 'replaceComponent') {
