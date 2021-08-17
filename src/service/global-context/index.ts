@@ -59,8 +59,9 @@ function createGlobalContext(): GlobalContext {
       globalContext.value = value
     else {
       globalContext.value = globalContext.value || {}
-      setLodash(globalContext.value, path, value)
+      setLodash(globalContext, `value.${path}`, value)
     }
+
     callUpdateListeners()
   }
 

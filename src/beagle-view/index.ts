@@ -146,7 +146,7 @@ const createBeagleView: CreateBeagleView = (
       setTree(originalTree) // changes should be made based on the original tree
       renderer.doFullRender(loadedTree, elementId, mode)
     }
-    
+
     try {
       await beagleService.viewClient.load({
         url,
@@ -254,6 +254,7 @@ const createBeagleView: CreateBeagleView = (
       disableCssTransformation: !!beagleService.getConfig().disableCssTransformation,
     })
   }
+
   function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
