@@ -254,6 +254,7 @@ const createBeagleView: CreateBeagleView = (
       disableCssTransformation: !!beagleService.getConfig().disableCssTransformation,
     })
   }
+
   function setupNavigation() {
     navigator.subscribe(async (route, navigationController) => {
       const { urlBuilder, preFetcher, analyticsService } = beagleService
