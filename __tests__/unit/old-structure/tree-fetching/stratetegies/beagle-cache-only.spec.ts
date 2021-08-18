@@ -17,8 +17,6 @@
 import nock from 'nock'
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
-import BeagleCacheError from 'error/BeagleCacheError'
-import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
@@ -57,10 +55,10 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
         requestTime: 20203030,
         ttl: '5'
       }
-      
+
       const headers = { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' }
       nock(basePath).get(path).reply(200, JSON.stringify(treeA), headers)
-      
+
       const onChangeTree = jest.fn()
       await viewClient.load({ url, onChangeTree, strategy, retry })
 
@@ -80,7 +78,7 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
       requestTime: 20203030,
       ttl: '5'
     }
-    
+
     nock(basePath).get(path).reply(304, undefined, { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
     const onChangeTree = jest.fn()
     await viewClient.load({ url, onChangeTree, strategy, retry })
@@ -91,33 +89,12 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-
-  it('should throw error if received 304 from bff and doesnt find item in the storage', async () => {
-    const metadata = {
-      beagleHash: 'testing',
-      requestTime: 20203030,
-      ttl: '5'
-    }
-    
-    nock(basePath).get(path).reply(304, undefined,  { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' })
-    const onChangeTree = jest.fn()
-    const loadParams = { url, onChangeTree, strategy, retry }
-    await expect(viewClient.load(loadParams)).rejects.toEqual([
-      new BeagleExpiredCacheError(url),
-      new BeagleCacheError(url)
-    ])
-    expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
-    expect(storage.getItem).toHaveBeenCalledWith(treeKey)
-    expect(nock.isDone()).toBe(true)
-  })
-
   it('should not fallback to cache and throw errors', async () => {
     storage.setItem(treeKey, JSON.stringify(treeA))
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const loadParams = { url, onChangeTree: jest.fn(), strategy, retry }
     await expect(viewClient.load(loadParams)).rejects.toEqual([
-      new BeagleExpiredCacheError(url),
-      new BeagleNetworkError(url, {} as Response)
+      new BeagleNetworkError(url, {} as Response,500,'GET')
     ])
     expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
     expect(storage.getItem).not.toHaveBeenCalledWith(treeKey)
@@ -140,5 +117,5 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
     expect(storage.getItem).toHaveBeenCalledWith(treeKey)
   })
- 
+
 })

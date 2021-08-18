@@ -17,7 +17,6 @@
 import nock from 'nock'
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
-import BeagleCacheError from 'error/BeagleCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
@@ -67,8 +66,7 @@ describe('Utils: tree fetching (load: network-with-fallback-to-cache)', () => {
     const params = { url, onChangeTree: jest.fn(), strategy, retry }
     await expect(viewClient.load(params)).rejects.toEqual([
       // @ts-ignore
-      new BeagleNetworkError(url),
-      new BeagleCacheError(url),
+      new BeagleNetworkError(url, {} as Response, 500, 'GET'),
     ])
     expect(nock.isDone()).toBe(true)
   })

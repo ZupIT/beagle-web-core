@@ -17,8 +17,6 @@
 import nock from 'nock'
 import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import BeagleService from 'service/beagle-service'
-import BeagleCacheError from 'error/BeagleCacheError'
-import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import Tree from 'beagle-tree'
 import { treeA, treeB } from './mocks'
@@ -94,9 +92,7 @@ describe('BeagleUIView', () => {
     await view.getNavigator().pushView({ url: path })
     // @ts-ignore
     const expectedErrors = [
-      new BeagleExpiredCacheError(url),
-      new BeagleNetworkError(url, createHttpResponse()),
-      new BeagleCacheError(url),
+      new BeagleNetworkError(url, createHttpResponse(),500,'GET'),
     ]
     expect(listener1).toHaveBeenCalledWith(expectedErrors)
     expect(listener2).toHaveBeenCalledWith(expectedErrors)
@@ -296,9 +292,7 @@ describe('BeagleUIView', () => {
     await view.getNavigator().pushView({ url: path })
     expect(globalMocks.log).toHaveBeenCalledWith(
       'error',
-      expect.any(Error),
-      expect.any(Error),
-      expect.any(Error),
+      expect.any(Error)
     )
     expect(nock.isDone()).toBe(true)
   })

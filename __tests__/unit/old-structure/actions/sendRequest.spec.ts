@@ -181,10 +181,10 @@ describe('Actions: beagle:sendRequest', () => {
         data: response,
         status: 500,
         statusText: 'Internal Server Error',
-        message: 'Beagle: network error while trying to access /url-builder.',
+        message: 'Beagle: network error 500 while trying to access GET /url-builder.',
       },
     }
-    
+
     expect(nock.isDone()).toBe(true)
     expect(executeAction).toHaveBeenCalledWith(
       onError,

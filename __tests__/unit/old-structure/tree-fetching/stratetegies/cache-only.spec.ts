@@ -16,7 +16,6 @@
 
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType, Strategy } from 'service/network/view-client/types'
-import BeagleCacheError from 'error/BeagleCacheError'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../../mocks'
@@ -46,12 +45,5 @@ describe('Utils: tree fetching (load: cache-only)', () => {
     const onChangeTree = jest.fn()
     await viewClient.load({ url, onChangeTree, strategy, retry })
     expect(onChangeTree).toHaveBeenCalledWith(treeA)
-  })
-
-  it('should throw error', async () => {
-    const params = { url, onChangeTree: jest.fn(), strategy, retry }
-    await expect(viewClient.load(params)).rejects.toEqual([
-      new BeagleCacheError(url),
-    ])
   })
 })

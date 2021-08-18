@@ -31,7 +31,7 @@ describe('Utils: tree fetching (load: general)', () => {
   const httpClient = { fetch }
   const retry = jest.fn()
   let viewClient: ViewClientType
-  
+
   beforeEach(() => {
     nock.cleanAll()
     const storage = createLocalStorageMock()
@@ -64,8 +64,7 @@ describe('Utils: tree fetching (load: general)', () => {
     expect(onChangeTree).toHaveBeenCalledWith({
       _beagleComponent_: 'custom:error',
       errors: [
-        expect.objectContaining({ message: expect.stringContaining('network error') }),
-        expect.objectContaining({ message: expect.stringContaining('cache') }),
+        expect.objectContaining({ message: expect.stringContaining('network error') })
       ],
       retry,
     })
@@ -110,7 +109,7 @@ describe('Utils: tree fetching (load: general)', () => {
     const onChangeTree = jest.fn()
     const promise = viewClient.load({
       url,
-      strategy, 
+      strategy,
       onChangeTree,
       loadingComponent: 'custom-loading',
       retry,
@@ -136,8 +135,7 @@ describe('Utils: tree fetching (load: general)', () => {
     expect(onChangeTree).toHaveBeenCalledWith({
       _beagleComponent_: 'custom-error',
       errors: [
-        expect.objectContaining({ message: expect.stringContaining('network error') }),
-        expect.objectContaining({ message: expect.stringContaining('cache') }),
+        expect.objectContaining({ message: expect.stringContaining('network error') })
       ],
       retry,
     })
@@ -174,7 +172,6 @@ describe('Utils: tree fetching (load: general)', () => {
           json: { error: 'unexpected error' },
         }
       },
-      expect.objectContaining({ message: expect.stringContaining('cache') }),
     ])
     expect(nock.isDone()).toBe(true)
   })
