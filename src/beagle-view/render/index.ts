@@ -218,7 +218,6 @@ function createRenderer({
 
       if (template) {
         let templateTree = Tree.clone(template) as IdentifiableBeagleUIElement
-        templateTree.id = template.id ? template.id : ''
         templateTree = {
           ...templateTree,
           ...((componentManager && componentManager(templateTree, index)) || {}),
