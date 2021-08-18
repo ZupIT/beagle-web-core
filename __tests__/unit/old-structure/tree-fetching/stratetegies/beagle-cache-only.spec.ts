@@ -94,7 +94,7 @@ describe('Utils: tree fetching (load: beagle-cache-only)', () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     const loadParams = { url, onChangeTree: jest.fn(), strategy, retry }
     await expect(viewClient.load(loadParams)).rejects.toEqual([
-      new BeagleNetworkError(url, {} as Response,500,'GET')
+      new BeagleNetworkError(url, {} as Response, 500, 'GET')
     ])
     expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
     expect(storage.getItem).not.toHaveBeenCalledWith(treeKey)

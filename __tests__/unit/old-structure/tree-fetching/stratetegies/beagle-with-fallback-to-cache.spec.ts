@@ -136,7 +136,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await expect(viewClient.load({ url, onChangeTree: jest.fn(), retry })).rejects.toEqual([
-      new BeagleNetworkError(url, {} as Response, 500,'GET'),
+      new BeagleNetworkError(url, {} as Response, 500, 'GET'),
     ])
     expect(nock.isDone()).toBe(true)
   })

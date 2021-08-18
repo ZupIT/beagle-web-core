@@ -73,7 +73,7 @@ describe('Utils: tree fetching (load: cache-first)', () => {
     const onChangeTree = jest.fn()
     await expect(viewClient.load({ url, onChangeTree, strategy, retry })).rejects.toEqual([
       // @ts-ignore
-      new BeagleNetworkError(url, {} as Response, 500,'GET'),
+      new BeagleNetworkError(url, {} as Response, 500, 'GET'),
     ])
     expect(nock.isDone()).toBe(true)
   })

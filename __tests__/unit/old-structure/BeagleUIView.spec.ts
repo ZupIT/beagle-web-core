@@ -92,7 +92,7 @@ describe('BeagleUIView', () => {
     await view.getNavigator().pushView({ url: path })
     // @ts-ignore
     const expectedErrors = [
-      new BeagleNetworkError(url, createHttpResponse(),500,'GET'),
+      new BeagleNetworkError(url, createHttpResponse(), 500, 'GET'),
     ]
     expect(listener1).toHaveBeenCalledWith(expectedErrors)
     expect(listener2).toHaveBeenCalledWith(expectedErrors)

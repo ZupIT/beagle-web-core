@@ -53,18 +53,18 @@ export default class BeagleNetworkError extends BeagleError {
     } catch {}
 
     return {
-        message: this.message,
-        response: {
-          status: this.response.status,
-          statusText: this.response.statusText,
-          ok: this.response.ok,
-          type: this.response.type,
-          redirected: this.response.redirected,
-          url: this.response.url,
-          headers: this.response.headers,
-          text,
-          json,
-        },
-      }
+      message: this.message,
+      response: {
+        status: this.response.status,
+        statusText: this.response.statusText,
+        ok: this.response.ok,
+        type: this.response.type,
+        redirected: this.response.redirected,
+        url: this.response.url,
+        headers: this.response.headers,
+        text,
+        json,
+      },
+    }
   }
 }
