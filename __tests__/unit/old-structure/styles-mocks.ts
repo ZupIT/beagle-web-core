@@ -1233,7 +1233,7 @@ export const treeWithCornerRadiusParsed = {
   _beagleComponent_: 'type-G',
   style: {
     backgroundColor: "#0f4c81",
-    borderRadius: '10px'
+    borderRadius: '20px'
   }
 }
 
