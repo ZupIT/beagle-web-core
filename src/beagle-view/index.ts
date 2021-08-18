@@ -23,7 +23,7 @@ import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'be
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
 import BeagleNavigator from './navigator'
-import { LocalView, RemoteView, HttpAdditionalData } from './navigator/types'
+import { LocalView, RemoteView } from './navigator/types'
 import {
   BeagleView,
   Listener,
@@ -146,7 +146,7 @@ const createBeagleView: CreateBeagleView = (
       setTree(originalTree) // changes should be made based on the original tree
       renderer.doFullRender(loadedTree, elementId, mode)
     }
-    
+
     try {
       await beagleService.viewClient.load({
         url,
