@@ -323,7 +323,7 @@ Object {
           "id": "container:1",
           "style": Object {
             "backgroundColor": "#333",
-            "borderRadius": "20px",
+            "borderRadius": "40px",
             "flexDirection": "column",
             "marginBottom": "30px",
             "maxWidth": "500px",
@@ -973,7 +973,7 @@ Object {
           "id": "container:1",
           "style": Object {
             "backgroundColor": "#333",
-            "borderRadius": "20px",
+            "borderRadius": "40px",
             "color": "#FFF",
             "flexDirection": "column",
             "marginBottom": "30px",

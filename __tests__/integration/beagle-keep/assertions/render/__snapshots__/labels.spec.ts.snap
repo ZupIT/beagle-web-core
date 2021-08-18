@@ -32,7 +32,7 @@ Object {
       "key": "id",
       "style": Object {
         "backgroundColor": "#333",
-        "borderRadius": "20px",
+        "borderRadius": "40px",
         "flexDirection": "column",
         "marginBottom": "30px",
         "maxWidth": "500px",
@@ -368,7 +368,7 @@ Object {
   "key": "id",
   "style": Object {
     "backgroundColor": "#333",
-    "borderRadius": "20px",
+    "borderRadius": "40px",
     "flexDirection": "column",
     "marginBottom": "30px",
     "maxWidth": "500px",
