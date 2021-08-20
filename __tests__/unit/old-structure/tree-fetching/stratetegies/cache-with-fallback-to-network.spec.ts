@@ -67,7 +67,7 @@ describe('Utils: tree fetching (load: cache-with-fallback-to-network)', () => {
       retry,
     })).rejects.toEqual([
       // @ts-ignore
-      new BeagleNetworkError(url, undefined, 500, 'GET'),
+      new BeagleNetworkError(url, {} as Response, 500, 'GET'),
     ])
     expect(nock.isDone()).toBe(true)
   })
