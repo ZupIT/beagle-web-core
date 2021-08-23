@@ -16,7 +16,6 @@
 
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType } from 'service/network/view-client/types'
-import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../mocks'
@@ -66,31 +65,9 @@ describe('Utils: tree fetching (cacheCheckingTTL)', () => {
 
       storage.setItem(cacheKey, JSON.stringify(metadata))
       storage.setItem(treeKey, JSON.stringify(treeA))
-      
+
       const result = await viewClient.loadFromCacheCheckingTTL(url, 'post')
       expect(storage.getItem).toHaveBeenCalledWith(treeKey)
       expect(result).toEqual(treeA)
-  })
-
-  it('should throw an error when no metadata available', async () => {
-      await expect(viewClient.loadFromCacheCheckingTTL(url)).rejects.toEqual(
-        new BeagleExpiredCacheError(url)
-      )
-      expect(storage.getItem).toHaveBeenCalledTimes(1)
-  })
-
-  it('should throw an error when invalid ttl and not load from cache ', async () => {
-      const metadata = {
-          beagleHash: 'testing',
-          requestTime: 20101010,
-          ttl: '5'
-      }
-      
-      storage.setItem(`${beagleCacheNamespace}/${url}/get`, JSON.stringify(metadata))
-
-      await expect(viewClient.loadFromCacheCheckingTTL(url)).rejects.toEqual(
-        new BeagleExpiredCacheError(url)
-      )
-      expect(storage.getItem).toHaveBeenCalledTimes(1)
   })
 })

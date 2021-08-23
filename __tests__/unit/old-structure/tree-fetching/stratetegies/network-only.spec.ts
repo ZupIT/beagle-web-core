@@ -57,7 +57,7 @@ describe('Utils: tree fetching (load: network only)', () => {
     const params = { url, onChangeTree: jest.fn(), strategy, retry }
     await expect(viewClient.load(params)).rejects.toEqual([
       // @ts-ignore
-      new BeagleNetworkError(url),
+      new BeagleNetworkError(url, {} as Response, 500, 'GET'),
     ])
     expect(nock.isDone()).toBe(true)
   })

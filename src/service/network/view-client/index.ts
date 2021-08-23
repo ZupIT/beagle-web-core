@@ -15,9 +15,7 @@
  */
 
 import BeagleError, { isBeagleError } from 'error/BeagleError'
-import BeagleCacheError from 'error/BeagleCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
-import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
 import { HttpClient, HttpMethod } from 'service/network/types'
 import { RemoteCache, CacheMetadata } from 'service/network/remote-cache/types'
@@ -51,7 +49,7 @@ function createViewClient(
   async function loadFromCache(url: string, method: HttpMethod = 'get') {
     const fromStorage = await storage.getItem(`${namespace}/${url}/${method}`)
     const uiTree = fromStorage ? JSON.parse(fromStorage) as BeagleUIElement : null
-    if (!uiTree) throw new BeagleCacheError(url)
+    if (!uiTree) throw new Error('Cannot load tree from cache.')
     return uiTree
   }
 
@@ -63,7 +61,7 @@ function createViewClient(
       && (timeInMs - metadata.requestTime) / 1000 < parseInt(metadata.ttl)
     )
     if (!metadata || !isCacheValid) {
-      throw new BeagleExpiredCacheError(url)
+      throw new Error('Beagle cache has expired.')
     }
     return loadFromCache(url, method)
   }
@@ -122,10 +120,10 @@ function createViewClient(
         { method, headers: allHeaders, body }
       )
     } catch (error) {
-      throw new BeagleNetworkError(url, error.message)
+      throw new BeagleNetworkError(url, error.message, error?.status || 'unknown status', 'GET')
     }
 
-    if (response.status < 100 || response.status >= 400) throw new BeagleNetworkError(url, response)
+    if (response.status < 100 || response.status >= 400) throw new BeagleNetworkError(url, response, response.status, method)
 
     let uiTree = {} as BeagleUIElement
     if (useBeagleCacheProtocol) {
@@ -219,7 +217,9 @@ function createViewClient(
           hasSuccess = true
           if (stopOnSuccess || isBeagleCache) return [hasSuccess, errors]
         } catch (error) {
-          errors.push(error)
+          if (!['cache', 'cache-ttl'].some(strategy => strategy === strategies[i])){
+            errors.push(error)
+          }
         }
       }
 

@@ -23,7 +23,7 @@ import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'be
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
 import BeagleNavigator from './navigator'
-import { LocalView, RemoteView, HttpAdditionalData } from './navigator/types'
+import { LocalView, RemoteView } from './navigator/types'
 import {
   BeagleView,
   Listener,

@@ -38,10 +38,8 @@ import BeagleError from 'error/BeagleError'
 export { SerializableError } from 'error/BeagleError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 export { SerializableNetworkError, SerializableResponse } from 'error/BeagleNetworkError'
-import BeagleCacheError from 'error/BeagleCacheError'
-import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 
-export { BeagleError, BeagleNetworkError, BeagleCacheError, BeagleExpiredCacheError }
+export { BeagleError, BeagleNetworkError }
 
 // decorators
 

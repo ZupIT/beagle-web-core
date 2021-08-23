@@ -17,8 +17,6 @@
 import nock from 'nock'
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType } from 'service/network/view-client/types'
-import BeagleCacheError from 'error/BeagleCacheError'
-import BeagleExpiredCacheError from 'error/BeagleExpiredCacheError'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import RemoteCache, { beagleCacheNamespace } from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
@@ -122,7 +120,7 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
       expect(nock.isDone()).toBe(true)
     },
   )
-  
+
 
   it('should fallback to cache', async () => {
     storage.setItem(treeKey, JSON.stringify(treeA))
@@ -135,35 +133,10 @@ describe('Utils: tree fetching (load: beagle-with-fallback-to-cache)', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-  it(
-    'should throw error if received 304 from bff and doesn\'t find item in the storage',
-    async () => {
-      const metadata = {
-        beagleHash: 'testing',
-        requestTime: 20203030,
-        ttl: '5'
-      }
-      
-      const headers = { 'beagle-hash': 'testing', 'cache-control': 'max-age=5' }
-      nock(basePath).get(path).reply(304, undefined, headers)
-      const onChangeTree = jest.fn()
-      await expect(viewClient.load({ url, onChangeTree, retry })).rejects.toEqual([
-        new BeagleExpiredCacheError(url),
-        new BeagleCacheError(url),
-        new BeagleCacheError(url)
-      ])
-      expect(storage.getItem).toHaveBeenCalledWith(cacheKey)
-      expect(storage.getItem).toHaveBeenCalledWith(treeKey)
-      expect(nock.isDone()).toBe(true)
-    },
-  )
-
   it('should throw errors', async () => {
     nock(basePath).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
     await expect(viewClient.load({ url, onChangeTree: jest.fn(), retry })).rejects.toEqual([
-      new BeagleExpiredCacheError(url),
-      new BeagleNetworkError(url, {} as Response),
-      new BeagleCacheError(url),
+      new BeagleNetworkError(url, {} as Response, 500, 'GET'),
     ])
     expect(nock.isDone()).toBe(true)
   })

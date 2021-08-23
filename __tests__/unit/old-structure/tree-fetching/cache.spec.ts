@@ -16,7 +16,6 @@
 
 import ViewClient, { namespace } from 'service/network/view-client'
 import { ViewClient as ViewClientType } from 'service/network/view-client/types'
-import BeagleCacheError from 'error/BeagleCacheError'
 import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import { treeA } from '../mocks'
@@ -51,9 +50,5 @@ describe('Utils: tree fetching (cache)', () => {
     const result = await viewClient.loadFromCache(url, 'post')
     expect(storage.getItem).toHaveBeenCalledWith(`${namespace}/${url}/post`)
     expect(result).toEqual(treeA)
-  })
-
-  it('should throw error when cache is not available', async () => {
-    await expect(viewClient.loadFromCache('blah')).rejects.toEqual(new BeagleCacheError('blah'))
   })
 })

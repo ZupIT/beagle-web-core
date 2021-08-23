@@ -29,16 +29,17 @@ export interface SerializableNetworkError {
   response?: SerializableResponse,
 }
 
-function buildMessage(path: string, responseOrMessage?: Response | string) {
+function buildMessage(path: string, responseOrMessage: Response | string = '', status?: number, method?: string) {
   const additionalMessage = typeof responseOrMessage === 'string' ? ` ${responseOrMessage}` : ''
-  return `network error while trying to access ${path}.${additionalMessage}`
+
+  return `network error ${status} while trying to access ${method?.toUpperCase()} ${path}.${additionalMessage}`
 }
 
 export default class BeagleNetworkError extends BeagleError {
   public response?: Response
 
-  constructor(path: string, responseOrMessage: Response | string) {
-    super(buildMessage(path, responseOrMessage))
+  constructor(path: string, responseOrMessage: Response | string, status?: number, method?: string) {
+    super(buildMessage(path, responseOrMessage, status, method))
     this.response = typeof responseOrMessage === 'string' ? undefined : responseOrMessage
   }
 
