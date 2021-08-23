@@ -217,12 +217,13 @@ function createRenderer({
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
 
       if (template) {
-        let templateTree = preProcess(Tree.clone(template))
+        let templateTree = Tree.clone(template) as IdentifiableBeagleUIElement
         templateTree = {
-          ...(componentManager && componentManager(templateTree, index) || templateTree),
+          ...templateTree,
+          ...((componentManager && componentManager(templateTree, index)) || {}),
           _implicitContexts_: context,
         }
-        contextTemplates.push(templateTree)
+        contextTemplates.push(preProcess(templateTree))
       }
     })
 
