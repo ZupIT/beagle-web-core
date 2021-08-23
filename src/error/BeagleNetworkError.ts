@@ -29,7 +29,7 @@ export interface SerializableNetworkError {
   response?: SerializableResponse,
 }
 
-function buildMessage(path: string, responseOrMessage: Response | string ='', status?: number, method?: string) {
+function buildMessage(path: string, responseOrMessage: Response | string = '', status?: number, method?: string) {
   const additionalMessage = typeof responseOrMessage === 'string' ? ` ${responseOrMessage}` : ''
 
   return `network error ${status} while trying to access ${method?.toUpperCase()} ${path}.${additionalMessage}`
