@@ -58,7 +58,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     component: {
       type: component && component._beagleComponent_,
       id: component && component.id,
-      xPath: `${xPath}`,
+      xPath: xPath || '',
     },
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
