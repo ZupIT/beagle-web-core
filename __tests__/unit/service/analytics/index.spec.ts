@@ -63,7 +63,7 @@ describe('Actions Analytics Service', () => {
 
   expectedRecordBase = {
     type: 'action',
-    platform: 'WEB Jest',
+    platform: 'Jest',
     event: 'OnPress',
     component: {
       type: 'beagle:button',
@@ -281,7 +281,7 @@ describe('Actions Analytics Service', () => {
   it('should call create Record for Screen', () => {
     expectedRecordBase = {
       type: 'screen',
-      platform: 'WEB Jest',
+      platform: 'Jest',
       screen: 'text.action.payload',
       timestamp: 10
     }

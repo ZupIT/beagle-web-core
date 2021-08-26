@@ -48,7 +48,7 @@ export function getPath(element: Node): any {
   * @returns the element of the given Id
   */
 export function getElementByBeagleId(elementId: string) {
-  if (!document || !document.querySelector) return
+  if (typeof document !== 'object' || !document.querySelector) return
   return document.querySelector(`[data-beagle-id="${elementId}"]`)
 }
 
