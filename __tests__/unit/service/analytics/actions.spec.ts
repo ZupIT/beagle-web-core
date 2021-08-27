@@ -54,7 +54,7 @@ describe('Actions Analytics Service', () => {
 
   const expectedBase = {
     type: 'action',
-    platform: 'WEB Jest',
+    platform: 'Jest',
     event: 'OnPress',
     component: {
       type: 'beagle:button',

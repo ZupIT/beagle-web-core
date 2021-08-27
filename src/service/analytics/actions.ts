@@ -49,11 +49,11 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
   const currentRoute = route
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
-  const xPath = element && getPath(element)
+  const xPath = element && getPath(element) || ''
 
   let record: ActionAnalyticsRecord = {
     type: 'action',
-    platform: `WEB ${platform}`,
+    platform: platform || '',
     event: eventName,
     component: {
       type: component && component._beagleComponent_,
