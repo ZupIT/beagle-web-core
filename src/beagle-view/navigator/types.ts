@@ -51,11 +51,6 @@ export interface LocalView {
 }
 
 interface Screen extends BeagleUIElement {
-  /**
-  * @deprecated since v1.5.0, please use id instead
-  */
-  // todo: remove screenComponent.identifier with the release of v2.0.0"
-  identifier?: string,
   id?: string,
 }
 
@@ -95,18 +90,18 @@ export interface BeagleNavigator {
    * navigation history. If a listener throws an error, the navigation is aborted, i.e. the
    * navigation history is not changed. The navigation history only changes after all listeners
    * are successfully executed.
-   * 
+   *
    * The listener is called with two parameters: the first is the resulting route of the
    * navigation. The second is the navigation controller to use for this navigation. A navigation
    * controller is nothing more than a set of options to perform the navigation.
-   * 
+   *
    * @param listener the navigation listener
    * @returns a function that, when called, unsubscribes the listener from the Navigator
    */
   subscribe: (listener: NavigationListener) => (() => void),
   /**
    * Creates and navigates to a new navigation stack where the first route is the parameter `route`.
-   * 
+   *
    * @param route the route to navigate to
    * @param controllerId optional. NavigationController to use for this specific stack.
    * @returns a promise that resolves as soon as the navigation completes
@@ -115,13 +110,13 @@ export interface BeagleNavigator {
   /**
    * Removes the entire current navigation stack and navigates back to the last route of the
    * previous stack. Throws an error if there's only one navigation stack.
-   * 
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
   popStack: () => Promise<void>,
   /**
    * Navigates to `route` by pushing it to the navigation history of the current navigation stack.
-   * 
+   *
    * @param route the route to navigate to
    * @returns a promise that resolves as soon as the navigation completes
    */
@@ -129,21 +124,21 @@ export interface BeagleNavigator {
   /**
    * Goes back one entry in the navigation history. If the current stack has only one view, this
    * also pops the current stack. If only one stack and one view exist, it will throw an error.
-   * 
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
   popView: () => Promise<void>,
   /**
    * Removes every navigation entry in the current stack until `route` is found. Navigates to
    * `route`. If `route` doesn't exist in the current stack, an error is thrown.
-   * 
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
   popToView: (route: string) => Promise<void>,
   /**
    * Removes the current navigation stack and navigates to the a new stack where the first route is
    * the one passed as parameter.
-   * 
+   *
    * @param route the route to navigate to
    * @param controllerId optional. NavigationController to use for this specific stack.
    * @returns a promise that resolves as soon as the navigation completes
@@ -152,7 +147,7 @@ export interface BeagleNavigator {
   /**
    * Removes the entire navigation history and starts it over by navigating to a new initial route
    * (passed as parameter).
-   * 
+   *
    * @param route the route to navigate to (new initial route)
    * @param controllerId optional. NavigationController to use for this specific stack.
    * @returns a promise that resolves as soon as the navigation completes
@@ -162,7 +157,7 @@ export interface BeagleNavigator {
    * This is generic function to call any navigation type. For quick reference, read the JSDocs of
    * each method separately. If the route provided is not of the type expected by the navigation
    * type, an error is thrown.
-   * 
+   *
    * @param the navigation type
    * @param route the route expected by the navigation type
    * @param controllerId the controller id for navigation actions of type pushStack, resetStack and
@@ -176,13 +171,13 @@ export interface BeagleNavigator {
   ) => Promise<void>,
   /**
    * Gets a copy of the navigation history.
-   * 
+   *
    * @returns a copy of all navigation stacks
    */
   get: () => Stack[],
   /**
    * Verifies if the navigation history is empty, i.e. if there are no registered routes.
-   * 
+   *
    * @returns true for an empty navigation history, false otherwise.
    */
   isEmpty: () => boolean,

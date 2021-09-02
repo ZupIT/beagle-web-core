@@ -18,9 +18,8 @@ import nock from 'nock'
 import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import BeagleService from 'service/beagle-service'
 import BeagleNetworkError from 'error/BeagleNetworkError'
-import Tree from 'beagle-tree'
 import { treeA, treeB } from './mocks'
-import { mockLocalStorage, stripTreeIds, createHttpResponse } from './utils/test-utils'
+import { mockLocalStorage, createHttpResponse } from './utils/test-utils'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
@@ -138,93 +137,6 @@ describe('BeagleUIView', () => {
     expect(view.getTree()).toEqual(treeB)
     expect(nock.isDone()).toBe(true)
     nock.cleanAll()
-  })
-
-  // todo: remove in v2.0. This feature is deprecated.
-  it('should replace part of the tree with loading and network response', async () => {
-    const mockFunc = jest.fn()
-    view.subscribe(mockFunc)
-
-    // we don't want to test the styling
-    const treeAWithoutStyles = Tree.clone(treeA)
-    Tree.forEach(treeAWithoutStyles, component => delete component.style)
-
-    view.getRenderer().doFullRender(treeAWithoutStyles)
-    nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
-    const promise = view.fetch({ path }, 'A.1')
-    const expectedLoading = Tree.clone(treeAWithoutStyles)
-
-    await promise
-
-    expectedLoading.children![1] = { _beagleComponent_: 'custom:loading', id: 'loading' }
-    expect(mockFunc.mock.calls[0][0]).toEqual(treeAWithoutStyles)
-    expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
-
-    const expectedResult = Tree.clone(treeAWithoutStyles)
-    expectedResult.children![1] = treeB
-
-    expect(mockFunc.mock.calls[2][0]).toEqual(expectedResult)
-    expect(view.getTree()).toEqual(expectedResult)
-    expect(nock.isDone()).toBe(true)
-  })
-
-  // todo: remove in v2.0. This feature is deprecated.
-  it('should append loading and network response to specific part of the tree', async () => {
-    const mockFunc = jest.fn()
-    view.subscribe(mockFunc)
-
-    // we don't want to test the styling
-    const treeAWithoutStyles = Tree.clone(treeA)
-    Tree.forEach(treeAWithoutStyles, component => delete component.style)
-
-    view.getRenderer().doFullRender(treeAWithoutStyles)
-    nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
-    const promise = view.fetch({ path }, 'A.1', 'append')
-
-    await promise
-
-    const expectedLoading = Tree.clone(treeAWithoutStyles)
-    expectedLoading.children![1].children!.push({
-      _beagleComponent_: 'custom:loading',
-      id: 'loading',
-    })
-    expect(mockFunc.mock.calls[0][0]).toEqual(treeAWithoutStyles)
-    expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
-
-
-    const expectedResult = Tree.clone(treeAWithoutStyles)
-    expectedResult.children![1].children!.push(treeB)
-    expect(mockFunc.mock.calls[2][0]).toEqual(expectedResult)
-    expect(view.getTree()).toEqual(expectedResult)
-    expect(nock.isDone()).toBe(true)
-  })
-
-  // todo: remove in v2.0. This feature is deprecated.
-  it('should prepend network response to specific part of the tree', async () => {
-    const mockFunc = jest.fn()
-    view.subscribe(mockFunc)
-
-    // we don't want to test the styling
-    const treeAWithoutStyles = Tree.clone(treeA)
-    Tree.forEach(treeAWithoutStyles, component => delete component.style)
-
-    view.getRenderer().doFullRender(treeAWithoutStyles)
-    nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
-    const promise = view.fetch({ path }, 'A.1', 'prepend')
-
-    await promise
-
-    const expectedLoading = Tree.clone(treeAWithoutStyles)
-    expectedLoading.children![1].children!.unshift({ _beagleComponent_: 'custom:loading', id: 'loading' })
-    expect(mockFunc.mock.calls[0][0]).toEqual(treeAWithoutStyles)
-    expect(stripTreeIds(mockFunc.mock.calls[1][0])).toEqual(stripTreeIds(expectedLoading))
-
-
-    const expectedResult = Tree.clone(treeAWithoutStyles)
-    expectedResult.children![1].children!.unshift(treeB)
-    expect(mockFunc.mock.calls[2][0]).toEqual(expectedResult)
-    expect(view.getTree()).toEqual(expectedResult)
-    expect(nock.isDone()).toBe(true)
   })
 
   it('should encapsulate ui tree: getTree', () => {

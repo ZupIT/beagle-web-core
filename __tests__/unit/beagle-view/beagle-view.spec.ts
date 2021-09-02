@@ -15,7 +15,7 @@
  */
 
 import BeagleView from 'beagle-view'
-import { BeagleView as BeagleViewType, NetworkOptions } from 'beagle-view/types'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import { HttpAdditionalData, NavigationController } from 'beagle-view/navigator/types'
 import { BeagleService, BeagleConfig } from 'service/beagle-service/types'
 import * as Renderer from 'beagle-view/render'
@@ -28,20 +28,6 @@ import {
 
 describe('Beagle View', () => {
   describe('general behavior', () => {
-    it('should return a copy of the NetworkOptions', () => {
-      const beagleService = createBeagleServiceMock()
-      const networkOptions: NetworkOptions = { strategy: 'network-only' }
-      const beagleView = BeagleView.create(beagleService, networkOptions)
-      expect(beagleView.getNetworkOptions()).not.toBe(networkOptions)
-      expect(beagleView.getNetworkOptions()).toEqual(networkOptions)
-    })
-
-    it('should return undefined if no NetworkOptions is provided', () => {
-      const beagleService = createBeagleServiceMock()
-      const beagleView = BeagleView.create(beagleService)
-      expect(beagleView.getNetworkOptions()).toBeUndefined()
-    })
-
     it('should disable css on renderer', () => {
       const originalCreateRenderer = Renderer.default.create
       Renderer.default.create = jest.fn()
@@ -100,22 +86,8 @@ describe('Beagle View', () => {
     })
 
     it('should apply initial navigation controller', () => {
-      beagleView = BeagleView.create(beagleService, {}, 'secured')
+      beagleView = BeagleView.create(beagleService, 'secured')
       expect(beagleView.getNavigator().get()).toEqual([{ routes: [], controllerId: 'secured' }])
-    })
-
-    it('should use network options', () => {
-      const networkOptions: NetworkOptions = {
-        method: 'POST',
-        headers: { testHeader: 'test-header' },
-        strategy: 'network-only',
-      }
-      beagleView = BeagleView.create(beagleService, networkOptions)
-      beagleView.getNavigator().pushStack({ url: '/home' })
-      expect(beagleService.viewClient.load).toHaveBeenCalledWith(expect.objectContaining({
-        url: 'base/home',
-        ...networkOptions,
-      }))
     })
 
     it('should navigate to remote route', async () => {

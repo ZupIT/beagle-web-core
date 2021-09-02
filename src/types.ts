@@ -40,30 +40,4 @@ export interface Iterator<T> {
   throw?(e?: any): IteratorResult<T>,
 }
 
-// todo: legacy code, remove with v2.0
-import { ClickEvent as CE, ScreenEvent as SE } from 'service/beagle-service/types'
-import { IdentifiableBeagleUIElement as IBE, BeagleUIElement as BE } from 'beagle-tree/types'
 
-/**
- * @deprecated Since version 1.2. Will be removed in version 2.0. Import it from the root instead
- * (`import { ClickEvent } from '@zup-it/beagle-web'`).
- */
-export type ClickEvent = CE
-
-/**
- * @deprecated Since version 1.2. Will be removed in version 2.0. Import it from the root instead
- * (`import { ScreenEvent } from '@zup-it/beagle-web'`).
- */
-export type ScreenEvent = SE
-
-/**
- * @deprecated Since version 1.2. Will be removed in version 2.0. Import it from the root instead
- * (`import { BeagleUIElement } from '@zup-it/beagle-web'`).
- */
-export type BeagleUIElement = BE
-
-/**
- * @deprecated Since version 1.2. Will be removed in version 2.0. Import it from the root instead
- * (`import { IdentifiableBeagleUIElement } from '@zup-it/beagle-web'`).
- */
-export type IdentifiableBeagleUIElement = IBE
