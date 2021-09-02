@@ -31,7 +31,6 @@ export function createServices(config: BeagleConfig<any>) {
   }
   const storage = config.customStorage || localStorage
   const urlBuilder = URLBuilder.create(config.baseUrl)
-  const analytics = config.analytics
   const remoteCache = RemoteCache.create(storage)
   const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
   const viewClient = ViewClient.create(
@@ -50,7 +49,6 @@ export function createServices(config: BeagleConfig<any>) {
     storage,
     httpClient,
     urlBuilder,
-    analytics,
     remoteCache,
     viewClient,
     defaultHeaders,

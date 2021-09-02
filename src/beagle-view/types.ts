@@ -105,7 +105,6 @@ export interface BeagleView {
    * @returns the navigator
    */
   getNavigator: () => BeagleNavigator,
-
   /**
    * Gets the BeagleService that created this BeagleView.
    *
