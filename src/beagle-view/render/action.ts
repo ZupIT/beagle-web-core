@@ -86,10 +86,10 @@ function deserializeAction(
         executeAction: executeSubAction,
       })
 
-      const route = params.beagleView.getNavigator().getCurrentRoute()
+      const navigator = params.beagleView.getNavigator()
+      const route = navigator?.getCurrentRoute() || 'unknown'
       const platform = beagleService.getConfig().platform || ''
-      if (route)
-
+      if (route) {
         beagleService.analyticsService.createActionRecord({
           action: resolvedAction,
           eventName: eventName,
@@ -97,7 +97,7 @@ function deserializeAction(
           platform: platform,
           route: route,
         })
-        
+      }
     })
   }
 }
@@ -123,11 +123,11 @@ function findAndDeserializeActions(data: any, propertyName: string, params: Para
  * De-serializes every Beagle Action in the component into a function. If any expression is used
  * inside the Beagle Action, `params.contextHierarchy` will be used as the data source to retrieve
  * the expressions values.
- * 
+ *
  * Actions that are properties of another action are not deserialized by this function. This
  * function only de-serializes actions that are part of the component interface. The responsibility
  * to de-serialize an action inside another action is of the action handler. See the example below:
- * 
+ *
  * ```json
  * {
  *   "_beagleComponent_": "beagle:button",
@@ -142,13 +142,13 @@ function findAndDeserializeActions(data: any, propertyName: string, params: Para
  *   }
  * }
  * ```
- * 
+ *
  * In the example above, "onPress" is deserialized when running this function, but "onSuccess" is
  * not. The action handler for the action "beagle:sendRequest" is the one responsible for
  * deserializing "onSuccess".
- * 
+ *
  * This function alters `params.component`, i.e. this is not a pure function.
- * 
+ *
  * @param params set of parameters to perform the de-serialization. The key-value map must contain
  * the following:
  * - `component`: the component whose actions must be deserialized.

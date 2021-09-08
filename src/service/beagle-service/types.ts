@@ -21,13 +21,11 @@ import {
   DefaultSchema,
 } from 'beagle-tree/types'
 import { ActionHandler } from 'action/types'
-import { BeagleView, NetworkOptions } from 'beagle-view/types'
-import { NavigationController } from 'beagle-view/navigator/types'
+import { NavigationController } from 'beagle-navigator/types'
 import { RemoteCache } from 'service/network/remote-cache/types'
 import { DefaultHeaders } from 'service/network/default-headers/types'
 import { URLBuilder } from 'service/network/url-builder/types'
-import { ViewClient, Strategy } from 'service/network/view-client/types'
-import { PreFetcher } from 'service/network/pre-fetcher/types'
+import { ViewClient } from 'service/network/view-client/types'
 import { GlobalContext } from 'service/global-context/types'
 import { ViewContentManagerMap } from 'service/view-content-manager/types'
 import { ChildrenMetadataMap } from 'metadata/types'
@@ -110,11 +108,6 @@ export interface BeagleConfig<Schema> {
    */
   middlewares?: Array<BeagleMiddleware<Schema>>,
   /**
-   * The default cache strategy for fetching views from the backend. By default uses
-   * `beagle-with-fallback-to-cache`.
-   */
-  strategy?: Strategy,
-  /**
    * Custom function to make HTTP requests. You can use this to implement your own HTTP client,
    * calculating your own headers, cookies, response transformation, etc. The function provided here
    * must implement the same interface as the default fetch function of the browser. By default, the
@@ -161,8 +154,15 @@ export interface BeagleConfig<Schema> {
    */
   useBeagleHeaders?: boolean,
   /**
-   * Options for the visual feedback when navigating from a view to another. To set the default
-   * options, use `default: true`.
+   * Sets the default navigation controller. If not set, The DefaultNavigationController is used.
+   *
+   * The Navigation Controller is responsible for handling the events loading, error and success
+   * of a navigator.
+   */
+  defaultNavigationController?: NavigationController,
+  /**
+   * Additional navigation controllers for customizing sections of the application. Every navigation
+   * that changes the current stack can have its own navigation controller.
    */
   navigationControllers?: Record<string, NavigationController>,
   /**
@@ -187,40 +187,10 @@ export interface BeagleConfig<Schema> {
    * Disables the default style conversion to CSS in a Beagle tree.
    */
   disableCssTransformation?: boolean,
-  /**
-   * Experimental. When recovering states for past views (back navigation), we can't re-execute
-   * initialization events. The problem is: we have no way of knowing what is an initialization
-   * event. For this reason, we use this option in the configuration, this is an array with the
-   * names of every event we consider to be initialization. The default value for this option is
-   * `['onInit']`.
-   */
-  initializationEvents?: string[],
-}
-
-export interface CreateView {
-  /**
-   * @deprecated since v1.7. Will be deleted in v2.0. Instead, please use `route.httpAdditionalData`
-   * when making a navigation.
-   */
-  (
-    networkOptions?: NetworkOptions,
-    initialControllerId?: string,
-  ): BeagleView,
-  (
-    initialControllerId?: string,
-  ): BeagleView,
+  viewClient?: ViewClient,
 }
 
 export type BeagleService = Readonly<{
-  /**
-   * Creates a new Beagle View.
-   *
-   * @param networkOptions the network options (headers, http method and cache strategy) to use for
-   * every request in this BeagleView. Will use the default values when not specified.
-   * @param initialControllerId the id of the navigation controller for the first navigation stack.
-   * Will use the default navigation controller if not specified.
-   */
-  createView: CreateView,
   getConfig: () => BeagleConfig<any>,
   // processed configuration
   actionHandlers: Record<string, ActionHandler>,
@@ -235,7 +205,6 @@ export type BeagleService = Readonly<{
   remoteCache: RemoteCache,
   viewClient: ViewClient,
   defaultHeaders: DefaultHeaders,
-  preFetcher: PreFetcher,
   globalContext: GlobalContext,
   viewContentManagerMap: ViewContentManagerMap,
   analyticsService: AnalyticsService,

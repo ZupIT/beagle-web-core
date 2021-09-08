@@ -19,7 +19,6 @@ import RemoteCache from 'service/network/remote-cache'
 import DefaultHeaders from 'service/network/default-headers'
 import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
-import PreFetcher from 'service/network/pre-fetcher'
 import GlobalContext from 'service/global-context'
 import ViewContentManagerMap from 'service/view-content-manager'
 import AnalyticsService from 'service/analytics'
@@ -34,14 +33,6 @@ export function createServices(config: BeagleConfig<any>) {
   const analytics = config.analytics
   const remoteCache = RemoteCache.create(storage)
   const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
-  const viewClient = ViewClient.create(
-    storage,
-    defaultHeaders,
-    remoteCache,
-    httpClient,
-    config.strategy,
-  )
-  const preFetcher = PreFetcher.create(viewClient)
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
   const analyticsService = AnalyticsService.create(config.analyticsProvider)
@@ -52,9 +43,8 @@ export function createServices(config: BeagleConfig<any>) {
     urlBuilder,
     analytics,
     remoteCache,
-    viewClient,
+    viewClient: config.viewClient || ViewClient.create(),
     defaultHeaders,
-    preFetcher,
     globalContext,
     viewContentManagerMap,
     analyticsService,

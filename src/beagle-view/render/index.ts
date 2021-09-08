@@ -26,7 +26,6 @@ import { getEvaluatedTemplate } from 'beagle-view/render/template-manager'
 import BeagleParseError from 'error/BeagleParseError'
 import { Renderer } from './types'
 import Component from './component'
-import Navigation from './navigation'
 import Expression from './expression'
 import Action from './action'
 import Context from './context'
@@ -40,7 +39,7 @@ interface Params {
   renderToScreen: (tree: any) => void,
   lifecycleHooks: LifecycleHookMap,
   childrenMetadata: ChildrenMetadataMap,
-  executionMode: ExecutionMode,
+  executionMode?: ExecutionMode,
   actionHandlers: Record<string, ActionHandler>,
   operationHandlers: Record<string, Operation>,
   disableCssTransformation: boolean,
@@ -53,12 +52,13 @@ function createRenderer({
   renderToScreen,
   lifecycleHooks,
   childrenMetadata,
-  executionMode,
+  // this is not currently being used. It's ok to set it to whatever value
+  executionMode = 'production',
   actionHandlers,
   operationHandlers,
   disableCssTransformation,
 }: Params): Renderer {
-  const { urlBuilder, preFetcher, globalContext } = beagleView.getBeagleService()
+  const { urlBuilder, globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any = {}, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree
@@ -95,7 +95,6 @@ function createRenderer({
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
       Component.assignId(component)
       Component.eraseNullProperties(component)
-      Navigation.preFetchViews(component, urlBuilder, preFetcher)
     })
 
     return viewTree as IdentifiableBeagleUIElement

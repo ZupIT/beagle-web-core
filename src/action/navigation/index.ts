@@ -15,7 +15,7 @@
  */
 
 import { ActionHandler } from 'action/types'
-import { NavigationType } from 'beagle-view/navigator/types'
+import { NavigationType } from 'beagle-navigator/types'
 import UrlUtils from 'utils/url'
 import StringUtils from 'utils/string'
 import ObjectUtils from 'utils/object'
@@ -54,9 +54,13 @@ const navigateBeagleView: ActionHandler<GenericNavigationAction> = async ({
   )
   const navigationType = actionName.replace(/^beagle:/, '') as NavigationType
   try {
-    await beagleView.getNavigator().navigate(navigationType, action.route, action.controllerId)
+    const navigator = beagleView.getNavigator()
+    if (!navigator) {
+      return logger.error("Can't navigate because this Beagle View is not attached to any Beagle Navigator.")
+    }
+    await navigator.navigate(navigationType, action.route, action.controllerId)
   } catch (error) {
-    logger.error(error.message || error)
+    logger.error((error as any).message || error)
   }
 }
 

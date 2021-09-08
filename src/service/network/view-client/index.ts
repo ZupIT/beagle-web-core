@@ -1,258 +1,35 @@
-/*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import { RemoteView } from 'beagle-navigator/types'
+import { BeagleUIElement } from 'index'
+import logger from 'logger'
+import { HttpClient } from '../types'
+import { ViewClient } from './types'
 
-import BeagleError, { isBeagleError } from 'error/BeagleError'
-import BeagleNetworkError from 'error/BeagleNetworkError'
-import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
-import { HttpClient, HttpMethod } from 'service/network/types'
-import { RemoteCache, CacheMetadata } from 'service/network/remote-cache/types'
-import { DefaultHeaders } from 'service/network/default-headers/types'
-import { BeagleStorage } from 'service/beagle-service/types'
-import { ViewClient, Strategy, StrategyType, StrategyArrays, ViewClientLoadParams } from './types'
+function createViewClient(): ViewClient {
+  const preFetched: Record<string, BeagleUIElement> = {}
 
-export const namespace = '@beagle-web/cache'
-
-const DEFAULT_STRATEGY: Strategy = 'beagle-with-fallback-to-cache'
-
-const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
-  'beagle-cache-only': { fetch: ['cache-ttl', 'network-beagle'], fallback: [] },
-  'beagle-with-fallback-to-cache': { fetch: ['cache-ttl', 'network-beagle'], fallback: ['cache'] },
-  'network-with-fallback-to-cache': { fetch: ['network'], fallback: ['cache'] },
-  'cache-with-fallback-to-network': { fetch: ['cache'], fallback: ['network'] },
-  'cache-only': { fetch: ['cache'], fallback: [] },
-  'network-only': { fetch: ['network'], fallback: [] },
-  'cache-first': { fetch: ['cache', 'network'], fallback: [] },
-}
-
-function createViewClient(
-  storage: BeagleStorage,
-  defaultHeadersService: DefaultHeaders,
-  remoteCache: RemoteCache,
-  httpClient: HttpClient,
-  globalStrategy = DEFAULT_STRATEGY,
-): ViewClient {
-  /* The following function is async for future compatibility with environments other than web. React
-  native's localStorage, for instance, always returns promises. */
-  async function loadFromCache(url: string, method: HttpMethod = 'get') {
-    const fromStorage = await storage.getItem(`${namespace}/${url}/${method}`)
-    const uiTree = fromStorage ? JSON.parse(fromStorage) as BeagleUIElement : null
-    if (!uiTree) throw new Error('Cannot load tree from cache.')
-    return uiTree
-  }
-
-  async function loadFromCacheCheckingTTL(url: string, method: HttpMethod = 'get') {
-    const metadata = await remoteCache.getMetadata(url, method)
-    const timeInMs = Date.now()
-    const isCacheValid = (
-      metadata
-      && (timeInMs - metadata.requestTime) / 1000 < parseInt(metadata.ttl)
-    )
-    if (!metadata || !isCacheValid) {
-      throw new Error('Beagle cache has expired.')
-    }
-    return loadFromCache(url, method)
-  }
-
-  function updateCacheMetadataFromResponse(
-    response: Response,
-    requestTime: number,
-    url: string,
-    method: HttpMethod
-  ) {
-    const beagleHash = response.headers.get('beagle-hash') || ''
-    const cacheControl = response.headers.get('cache-control') || ''
-    const maxAge = cacheControl && cacheControl.match(/max-age=(\d+)/)
-    const ttl = (maxAge && maxAge[1]) || ''
-    const metadata: CacheMetadata = {
-      beagleHash,
-      requestTime,
-      ttl,
-    }
-    remoteCache.updateMetadata(metadata, url, method)
-  }
-
-  async function getUITreeCacheProtocol(
-    response: Response,
-    url: string,
-    method: HttpMethod,
-    shouldSaveCache: boolean,
-  ) {
-    let uiTree = {} as BeagleUIElement
-    if (response.status === 304) {
-      uiTree = await loadFromCache(url, method)
-    } else {
-      uiTree = await response.json() as BeagleUIElement
-      if (shouldSaveCache) {
-        storage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
-      }
-    }
-    return uiTree
-  }
-
-  async function loadFromServer(
-    url: string,
-    method: HttpMethod = 'get',
-    headers?: Record<string, string>,
-    body?: any,
-    shouldSaveCache = true,
-    useBeagleCacheProtocol = true,
-  ) {
-    let response: Response
-    const requestTime = Date.now()
-    const defaultHeaders = await defaultHeadersService.get(url, method)
-    const allHeaders: Record<string, any> = { ...headers, ...defaultHeaders }
-    try {
-      response = await httpClient.fetch(
-        url,
-        { method, headers: allHeaders, body }
-      )
-    } catch (error) {
-      throw new BeagleNetworkError(url, error.message, error?.status || 'unknown status', 'GET')
-    }
-
-    if (response.status < 100 || response.status >= 400) throw new BeagleNetworkError(url, response, response.status, method)
-
-    let uiTree = {} as BeagleUIElement
-    if (useBeagleCacheProtocol) {
-      updateCacheMetadataFromResponse(response, requestTime, url, method)
-      uiTree = await getUITreeCacheProtocol(response, url, method, shouldSaveCache)
-    } else {
-      uiTree = await response.json() as BeagleUIElement
-
-      if (shouldSaveCache) {
-        storage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
-      }
-    }
-    return uiTree
-  }
-
-  function buildSerializableErrorsArray(errors: Error[]) {
-    const promises = errors.map(e => {
-      if (isBeagleError(e)) {
-        const serializableError = (e as BeagleError).getSerializableError()
-        return serializableError instanceof Promise
-          ? serializableError
-          : Promise.resolve(serializableError)
-      }
-
-      return Promise.resolve({ message: e.message })
-    })
-
-    return Promise.all(promises)
-  }
-
-  async function load({
-    url,
-    fallbackUIElement,
-    method = 'get',
-    headers,
-    body,
-    strategy = globalStrategy,
-    loadingComponent = 'custom:loading',
-    errorComponent = 'custom:error',
-    shouldShowLoading = true,
-    shouldShowError = true,
-    onChangeTree,
-    retry,
-  }: ViewClientLoadParams) {
-    if (body && typeof body !== 'string') {
-      body = JSON.stringify(body)
-    }
-    async function loadNetwork(hasPreviousSuccess = false, useBeagleCacheProtocol = true) {
-      if (shouldShowLoading && !hasPreviousSuccess) {
-        onChangeTree({ _beagleComponent_: loadingComponent })
-      }
-      const tree = await loadFromServer(
-        url,
-        method,
-        headers,
-        body,
-        strategy !== 'network-only',
-        useBeagleCacheProtocol,
-      )
-      onChangeTree(tree)
-    }
-
-    async function loadCache() {
-      onChangeTree(await loadFromCache(url, method))
-    }
-
-    async function loadCacheTTL() {
-      onChangeTree(await loadFromCacheCheckingTTL(url, method))
-    }
-
-    async function runStrategies(
-      strategies: Array<StrategyType>,
-      stopOnSuccess: boolean,
-    ): Promise<[boolean, Array<Error>]> {
-      const errors: Array<Error> = []
-      let hasSuccess = false
-      let isBeagleCache = false
-
-      for (let i = 0; i < strategies.length; i++) {
-        try {
-          if (strategies[i] === 'network') await loadNetwork(hasSuccess, false)
-          else if (strategies[i] === 'network-beagle') {
-            await loadNetwork(hasSuccess, true)
-            isBeagleCache = true
-          }
-          else if (strategies[i] === 'cache-ttl') {
-            await loadCacheTTL()
-            isBeagleCache = true
-          }
-          else await loadCache()
-          hasSuccess = true
-          if (stopOnSuccess || isBeagleCache) return [hasSuccess, errors]
-        } catch (error) {
-          if (!['cache', 'cache-ttl'].some(strategy => strategy === strategies[i])){
-            errors.push(error)
-          }
-        }
-      }
-
-      return [hasSuccess, errors]
-    }
-
-    async function start() {
-      const { fetch, fallback: fallbackStrategy } = strategyNameToStrategyArrays[strategy]
-      const [hasFetchSuccess, fetchErrors] = await runStrategies(fetch, false)
-      if (hasFetchSuccess) return
-      if (fallbackUIElement) return onChangeTree(fallbackUIElement)
-      const [hasFallbackStrategySuccess, fallbackStrategyErrors] = await runStrategies(fallbackStrategy, true)
-      if (hasFallbackStrategySuccess) return
-      const errors = [...fetchErrors, ...fallbackStrategyErrors]
-      if (shouldShowError) {
-        const errorUITree: BeagleUIElement & ErrorComponentParams = {
-          _beagleComponent_: errorComponent,
-          retry,
-          errors: await buildSerializableErrorsArray(errors),
-        }
-        onChangeTree(errorUITree)
-      }
-      throw errors
-    }
-
-    await start()
+  async function fetchView(httpClient: HttpClient, route: RemoteView): Promise<BeagleUIElement> {
+    const { method, body, headers } = route.httpAdditionalData || {}
+    const response = await httpClient.fetch(route.url, { method, body, headers })
+    if (!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
+    return await response.json()
   }
 
   return {
-    load,
-    loadFromCache,
-    loadFromCacheCheckingTTL,
-    loadFromServer,
+    preFetch: async (httpClient, route) => {
+      try {
+        preFetched[route.url] = await fetchView(httpClient, route)
+      } catch (error) {
+        logger.error(`Error while pre-fetching view: ${route.url}`, error)
+      }
+    },
+    fetch: async (httpClient, route) => {
+      if (preFetched[route.url]) {
+        const result = preFetched[route.url]
+        delete preFetched[route.url]
+        return result
+      }
+      return await fetchView(httpClient, route)
+    },
   }
 }
 

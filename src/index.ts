@@ -19,6 +19,12 @@ import logger from 'logger'
 
 export { logger }
 
+// navigator
+import DefaultWebNavigator from 'beagle-navigator/default-web-navigator'
+import DefaultNavigatorController from 'beagle-navigator/default-web-controller'
+
+export { DefaultWebNavigator, DefaultNavigatorController }
+
 // beagle utilities
 import Tree from 'beagle-tree'
 import Component from 'beagle-view/render/component'
@@ -54,7 +60,7 @@ export * from 'service/network/types'
 export * from 'service/network/default-headers/types'
 export * from 'service/network/remote-cache/types'
 export * from 'service/network/url-builder/types'
-export { Strategy, ViewClient } from 'service/network/view-client/types'
+export { ViewClient } from 'service/network/view-client/types'
 export { AnalyticsProvider, AnalyticsRecord, AnalyticsConfig } from 'service/analytics/types'
 
 // general types
@@ -65,7 +71,7 @@ export * from 'beagle-tree/types'
 export * from 'beagle-view/types'
 export * from 'beagle-view/render/types'
 export * from 'beagle-view/render/template-manager/types'
-export * from 'beagle-view/navigator/types'
+export * from 'beagle-navigator/types'
 export * from 'metadata/types'
 
 // beagle service: default exportation

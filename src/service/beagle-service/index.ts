@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import BeagleView from 'beagle-view'
-import { NetworkOptions } from 'beagle-view/types'
 import { DefaultSchema } from 'beagle-tree/types'
 import logger from 'logger'
 import Configuration from './configuration'
@@ -35,17 +33,6 @@ function createBeagleUIService<
     ...services,
     ...processedConfig,
     getConfig: () => config,
-    createView: (networkOptionsOrInitialControllerId?: NetworkOptions | string, initialControllerId?: string) => {
-      // todo: remove legacy code for v2.0
-      let networkOptions: NetworkOptions | undefined
-      if (typeof networkOptionsOrInitialControllerId === 'string') {
-        initialControllerId = networkOptionsOrInitialControllerId
-      } else {
-        networkOptions = networkOptionsOrInitialControllerId
-      }
-      // end of legacy code
-      return BeagleView.create(beagleService, networkOptions, initialControllerId)
-    },
   }
 
   if (config.analytics) {

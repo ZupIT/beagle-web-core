@@ -14,10 +14,34 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement } from 'beagle-tree/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import { BeagleView } from 'beagle-view/types'
 import { HttpMethod } from 'service/network/types'
 
-export type NavigationType = (
+/**
+ * This data structure represents a stack of stacks and offers some utilities methods to read
+ * and manipulate it.
+ */
+export interface DoubleStack<T> {
+  pushItem: (item: T) => void,
+  popItem: () => T | undefined,
+  popUntil: (predicate: (item: T) => boolean) => T[] | undefined,
+  pushStack: (item: T) => void,
+  popStack: () => T[] | undefined,
+  resetStack: (item: T) => void,
+  reset: (item: T) => void,
+  getTopItem: () => T | undefined,
+  isEmpty: () => boolean,
+  hasSingleStack: () => boolean,
+  hasSingleItem: () => boolean,
+}
+
+export interface DefaultWebNavigatorItem<T> {
+  screen: { id: string, content: T },
+  controller: NavigationController,
+}
+
+export type NavigationType = Extract<keyof BeagleNavigator<any>, (
   | 'pushStack'
   | 'pushView'
   | 'popStack'
@@ -25,13 +49,7 @@ export type NavigationType = (
   | 'popToView'
   | 'resetStack'
   | 'resetApplication'
-)
-
-export type NavigationListener = (
-  route: Route,
-  navigationController: NavigationController,
-  elementToRestore?: BeagleUIElement
-) => void | Promise<void>
+)>
 
 export interface HttpAdditionalData {
   method: HttpMethod,
@@ -47,66 +65,28 @@ export interface RemoteView {
 }
 
 export interface LocalView {
-  screen: Screen,
-}
-
-interface Screen extends BeagleUIElement {
-  /**
-  * @deprecated since v1.5.0, please use id instead
-  */
-  // todo: remove screenComponent.identifier with the release of v2.0.0"
-  identifier?: string,
-  id?: string,
+  screen: IdentifiableBeagleUIElement,
 }
 
 export type Route = LocalView | RemoteView
 
-export interface Stack {
-  routes: (Route & { state?: BeagleUIElement })[],
-  controllerId?: string,
-}
-
 export interface NavigationController {
-  /**
-   * If true, uses this as the default navigation controller.
-   */
-  default?: boolean,
-  /**
-   * Wether to show a loading component or not. True by default.
-   */
-  shouldShowLoading?: boolean,
-  /**
-   * Wether to show an error component or not. True by default.
-   */
-  shouldShowError?: boolean,
-  /**
-   * A custom loading component to use. The default value is "beagle:loading"
-   */
-  loadingComponent?: string,
-  /**
-   * A custom error component to use. The default value is "beagle:error"
-   */
-  errorComponent?: string,
+  onLoading: (view: BeagleView, completeNavigation: () => void) => void,
+  onError: (
+    view: BeagleView,
+    error: any,
+    retry: () => void,
+    completeNavigation: () => void,
+  ) => void,
+  onSuccess: (view: BeagleView, screen: BeagleUIElement, completeNavigation: () => void) => void,
 }
 
-export interface BeagleNavigator {
-  /**
-   * Subscribes to view navigations. The listener is executed before any change is done to the
-   * navigation history. If a listener throws an error, the navigation is aborted, i.e. the
-   * navigation history is not changed. The navigation history only changes after all listeners
-   * are successfully executed.
-   * 
-   * The listener is called with two parameters: the first is the resulting route of the
-   * navigation. The second is the navigation controller to use for this navigation. A navigation
-   * controller is nothing more than a set of options to perform the navigation.
-   * 
-   * @param listener the navigation listener
-   * @returns a function that, when called, unsubscribes the listener from the Navigator
-   */
-  subscribe: (listener: NavigationListener) => (() => void),
+export type NavigatorChangeListener<T> = (widget: T) => void
+
+export interface BeagleNavigator<T> {
   /**
    * Creates and navigates to a new navigation stack where the first route is the parameter `route`.
-   * 
+   *
    * @param route the route to navigate to
    * @param controllerId optional. NavigationController to use for this specific stack.
    * @returns a promise that resolves as soon as the navigation completes
@@ -115,13 +95,13 @@ export interface BeagleNavigator {
   /**
    * Removes the entire current navigation stack and navigates back to the last route of the
    * previous stack. Throws an error if there's only one navigation stack.
-   * 
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  popStack: () => Promise<void>,
+  popStack: () => void,
   /**
    * Navigates to `route` by pushing it to the navigation history of the current navigation stack.
-   * 
+   *
    * @param route the route to navigate to
    * @returns a promise that resolves as soon as the navigation completes
    */
@@ -129,21 +109,21 @@ export interface BeagleNavigator {
   /**
    * Goes back one entry in the navigation history. If the current stack has only one view, this
    * also pops the current stack. If only one stack and one view exist, it will throw an error.
-   * 
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  popView: () => Promise<void>,
+  popView: () => void,
   /**
    * Removes every navigation entry in the current stack until `route` is found. Navigates to
    * `route`. If `route` doesn't exist in the current stack, an error is thrown.
-   * 
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  popToView: (route: string) => Promise<void>,
+  popToView: (route: string) => void,
   /**
    * Removes the current navigation stack and navigates to the a new stack where the first route is
    * the one passed as parameter.
-   * 
+   *
    * @param route the route to navigate to
    * @param controllerId optional. NavigationController to use for this specific stack.
    * @returns a promise that resolves as soon as the navigation completes
@@ -152,7 +132,7 @@ export interface BeagleNavigator {
   /**
    * Removes the entire navigation history and starts it over by navigating to a new initial route
    * (passed as parameter).
-   * 
+   *
    * @param route the route to navigate to (new initial route)
    * @param controllerId optional. NavigationController to use for this specific stack.
    * @returns a promise that resolves as soon as the navigation completes
@@ -162,7 +142,7 @@ export interface BeagleNavigator {
    * This is generic function to call any navigation type. For quick reference, read the JSDocs of
    * each method separately. If the route provided is not of the type expected by the navigation
    * type, an error is thrown.
-   * 
+   *
    * @param the navigation type
    * @param route the route expected by the navigation type
    * @param controllerId the controller id for navigation actions of type pushStack, resetStack and
@@ -175,24 +155,15 @@ export interface BeagleNavigator {
     controllerId?: string,
   ) => Promise<void>,
   /**
-   * Gets a copy of the navigation history.
-   * 
-   * @returns a copy of all navigation stacks
-   */
-  get: () => Stack[],
-  /**
-   * Verifies if the navigation history is empty, i.e. if there are no registered routes.
-   * 
-   * @returns true for an empty navigation history, false otherwise.
+   * Check if the navigator is empty
    */
   isEmpty: () => boolean,
   /**
-   * Destroys the navigator.
+   * Get the current route name. If the navigator is empty, undefined is returned.
    */
-  destroy: () => void,
+  getCurrentRoute: () => string | undefined,
   /**
-   * gets the current route
-   * @returns the current route or undefined if the navigator has not loaded its first route yet.
+   * Registers a listener to run every time the navigation stack changes.
    */
-  getCurrentRoute: () => Route | undefined,
+  onChange: (listener: NavigatorChangeListener<T>) => () => void,
 }

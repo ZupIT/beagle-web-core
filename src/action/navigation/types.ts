@@ -15,7 +15,7 @@
  */
 
 import { BaseAction } from 'action/types'
-import { Route } from 'beagle-view/navigator/types'
+import { Route } from 'beagle-navigator/types'
 
 export interface OpenExternalURLAction extends BaseAction {
   _beagleAction_: 'beagle:openExternalURL',
