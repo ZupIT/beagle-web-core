@@ -257,7 +257,7 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
 
 export function createPreFetcherMock(custom: Partial<PreFetcher> = {}): PreFetcher {
   return {
-    fetch: jest.fn(),
+    fetch: custom.fetch || jest.fn(),
     recover: custom.recover || jest.fn(() => Promise.reject()),
   }
 }
