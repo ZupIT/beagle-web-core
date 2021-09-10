@@ -50,34 +50,6 @@ export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
 
 export type Operation = ((...args: any[]) => any)
 
-/**
- * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead
- * (AnalyticsProvider)
- */
-export interface ClickEvent {
-  category: string,
-  label?: string,
-  value?: string,
-}
-
-/**
- * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead
- * (AnalyticsProvider)
- */
-export interface ScreenEvent {
-  screenName: string,
-}
-
-/**
- * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead
- * (AnalyticsProvider)
- */
-export interface Analytics {
-  trackEventOnClick: (clickEvent: ClickEvent) => void,
-  trackEventOnScreenAppeared: (screenEvent: ScreenEvent) => void,
-  trackEventOnScreenDisappeared: (screenEvent: ScreenEvent) => void,
-}
-
 export interface SynchronousStorage {
   getItem: (key: string) => string | null,
   setItem: (key: string, value: string) => void,
@@ -104,24 +76,12 @@ export interface BeagleConfig<Schema> {
    */
   schemaUrl?: string,
   /**
-   * @deprecated Since version 1.2. Will be deleted in version 2.0. Use lifecycles instead.
-   */
-  middlewares?: Array<BeagleMiddleware<Schema>>,
-  /**
    * Custom function to make HTTP requests. You can use this to implement your own HTTP client,
    * calculating your own headers, cookies, response transformation, etc. The function provided here
    * must implement the same interface as the default fetch function of the browser. By default, the
    * browser's fetch function will be used.
    */
   fetchData?: typeof fetch,
-  /**
-   * @deprecated since v1.10. Will be removed in version 2.0. Use the new Analytics Service instead.
-   * It can be set up via the attribute `analyticsProvider`.
-   *
-   * Provides an Analytics client so Analytics records can be generated. By default, no Analytics
-   * data is registered.
-   */
-  analytics?: Analytics,
   /**
    * The map of components to be used when rendering a view. The key must be the `_beagleComponent_`
    * identifier and the value must be the component itself. The key must always start with `beagle:`
@@ -201,7 +161,6 @@ export type BeagleService = Readonly<{
   storage: BeagleStorage,
   httpClient: HttpClient,
   urlBuilder: URLBuilder,
-  analytics?: Analytics,
   remoteCache: RemoteCache,
   viewClient: ViewClient,
   defaultHeaders: DefaultHeaders,

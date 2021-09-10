@@ -18,12 +18,10 @@ import mapKeys from 'lodash/mapKeys'
 import defaultActionHandlers from 'action'
 import ComponentMetadata from 'metadata/parser'
 import { ExtractedMetadata } from 'metadata/types'
-import { updateMiddlewaresInConfiguration } from 'legacy/middlewares'
 import BeagleError from 'error/BeagleError'
 import defaultOperations from 'operation'
 import logger from 'logger'
 import { BeagleConfig, LifecycleHookMap, Operation } from './types'
-
 
 function checkPrefix(items: Record<string, any>) {
   mapKeys(items, (value, key: string) => {
@@ -72,11 +70,6 @@ function checkOperationNames(operations?: Record<string, Operation>) {
   })
 }
 
-function update(config: BeagleConfig<any>) {
-  // todo: remove with version 2.0
-  updateMiddlewaresInConfiguration(config)
-}
-
 function validate(config: BeagleConfig<any>) {
   checkPrefix(config.components)
   checkOperationNames(config.customOperations)
@@ -92,7 +85,6 @@ function process(config: BeagleConfig<any>) {
 }
 
 export default {
-  update,
   validate,
   process,
 }

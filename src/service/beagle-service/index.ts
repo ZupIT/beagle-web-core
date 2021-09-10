@@ -15,7 +15,6 @@
  */
 
 import { DefaultSchema } from 'beagle-tree/types'
-import logger from 'logger'
 import Configuration from './configuration'
 import { createServices } from './services'
 import { BeagleConfig, BeagleService } from './types'
@@ -24,7 +23,6 @@ function createBeagleUIService<
   Schema = DefaultSchema,
   ConfigType extends BeagleConfig<Schema> = BeagleConfig<Schema>
 >(config: ConfigType): BeagleService {
-  Configuration.update(config)
   Configuration.validate(config)
   const processedConfig = Configuration.process(config)
   const services = createServices(config)
@@ -33,10 +31,6 @@ function createBeagleUIService<
     ...services,
     ...processedConfig,
     getConfig: () => config,
-  }
-
-  if (config.analytics) {
-    logger.warn("You're using a deprecated version of the Analytics for Beagle. Don't worry, your application will work just fine, but be aware that it's going to be removed in version 2.0. If you want to update, a new version called Analytics 2.0 is available.")
   }
 
   return beagleService

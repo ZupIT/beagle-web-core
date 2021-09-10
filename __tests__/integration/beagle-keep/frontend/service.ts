@@ -16,22 +16,19 @@
 
 import { uniqueId } from 'lodash'
 import BeagleService from 'service/beagle-service'
-import { BeagleConfig } from 'service/beagle-service/types'
 import Tree from 'beagle-tree'
-import { NetworkOptions } from 'beagle-view/types'
 import createConfig, { ConfigOptions } from './config'
 
 interface ViewParams {
   route?: string,
-  networkOptions?: NetworkOptions,
   initialController?: string,
 }
 
 function start(options?: ConfigOptions) {
   const service = BeagleService.create(createConfig(options))
 
-  async function createBeagleRemoteView({ networkOptions, initialController, route }: ViewParams) {
-    const view = service.createView(networkOptions, initialController)
+  async function createBeagleRemoteView({ initialController, route }: ViewParams) {
+    const view = service.createView(initialController)
     const viewId = uniqueId()
     service.viewContentManagerMap.register(viewId, view)
 
