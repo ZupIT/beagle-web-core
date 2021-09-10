@@ -78,7 +78,7 @@ export interface NavigationController {
     retry: () => void,
     completeNavigation: () => void,
   ) => void,
-  onSuccess: (view: BeagleView, screen: BeagleUIElement, completeNavigation: () => void) => void,
+  onSuccess: (view: BeagleView, screen: BeagleUIElement) => void,
 }
 
 export type NavigatorChangeListener<T> = (widget: T) => void

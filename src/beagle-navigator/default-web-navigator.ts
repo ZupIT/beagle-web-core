@@ -30,6 +30,7 @@ import {
 } from './types'
 import defaultWebController from './default-web-controller'
 import DoubleStack from './double-stack'
+import { NavigationController } from 'index'
 
 function createDefaultWebNavigator<T>(
   beagleService: BeagleService,
@@ -77,15 +78,16 @@ function createDefaultWebNavigator<T>(
   async function fetchContentAndUpdateView(
     route: RemoteView,
     view: BeagleViewType,
+    controller: NavigationController,
     completeNavigation: () => void,
   ) {
-    const controller = getCurrentNavigationController()
     try {
       controller.onLoading(view, completeNavigation)
       const screen = await beagleService.viewClient.fetch(beagleService.httpClient, route)
-      controller.onSuccess(view, screen, completeNavigation)
+      controller.onSuccess(view, screen)
+      completeNavigation()
     } catch (error) {
-      const retry = () => fetchContentAndUpdateView(route, view, completeNavigation)
+      const retry = () => fetchContentAndUpdateView(route, view, controller, completeNavigation)
       controller.onError(view, error, retry, completeNavigation)
     }
   }
@@ -115,12 +117,11 @@ function createDefaultWebNavigator<T>(
     }
 
     if (isLocalView(route)) {
-      getCurrentNavigationController().onSuccess(view, (route as LocalView).screen, complete)
+      stackController.onSuccess(view, (route as LocalView).screen)
       return Promise.resolve()
     }
 
-    await fetchContentAndUpdateView(route as RemoteView, view, complete)
-    if (!completed) complete()
+    await fetchContentAndUpdateView(route as RemoteView, view, stackController, complete)
   }
 
   const navigator: BeagleNavigator<T> = {
