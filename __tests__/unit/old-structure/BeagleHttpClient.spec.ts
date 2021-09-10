@@ -40,19 +40,6 @@ describe.only('BeagleHttpClient', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-  // todo: remove this, we should not test the browser's default fetch function
-  it('should use options when fetching content from server', async () => {
-    const { httpClient } = BeagleService.create({ baseUrl: '', components: {} })
-    const path = '/example';
-    nock(url, { reqheaders: { test: 'test' } })
-      .post(path, (body) => body.test).reply(200, { status: 'OK' })
-    const body = new URLSearchParams()
-    body.set('test', 'test')
-    const parametersOptions = { body, headers: { test: 'test' }, method: 'post' }
-    await  httpClient.fetch(url + path, parametersOptions)
-    expect(nock.isDone()).toBe(true)
-  })
-
   it('should use custom fetch function', async () => {
     const fetchData = jest.fn()
     const { httpClient } = BeagleService.create({ baseUrl: '', components: {}, fetchData })

@@ -29,8 +29,6 @@ import {
   Listener,
   ErrorListener,
   LoadParams,
-  UpdateWithTreeParams,
-  NetworkOptions,
   CreateBeagleView,
 } from './types'
 
@@ -38,21 +36,12 @@ const DEFAULT_INITIALIZATION_EVENTS = ['onInit']
 
 const createBeagleView: CreateBeagleView = (
   beagleService: BeagleService,
-  networkOptionsOrInitialControllerId?: NetworkOptions | string,
   initialControllerId?: string,
 ): BeagleView => {
   let currentUITree: IdentifiableBeagleUIElement
   const listeners: Array<Listener> = []
   const errorListeners: Array<ErrorListener> = []
   const { navigationControllers } = beagleService.getConfig()
-  // todo: remove legacy code for v2.0
-  let networkOptions: NetworkOptions | undefined
-  if (typeof networkOptionsOrInitialControllerId === 'string') {
-    initialControllerId = networkOptionsOrInitialControllerId
-  } else {
-    networkOptions = networkOptionsOrInitialControllerId
-  }
-  // end of legacy code
   const initialNavigationHistory = [{ routes: [], controllerId: initialControllerId }]
   let renderer = {} as RendererType
   let unsubscribeFromGlobalContext = () => { }
@@ -76,7 +65,7 @@ const createBeagleView: CreateBeagleView = (
     return tree
   }
 
-  let navigator = BeagleNavigator.create(
+  const navigator = BeagleNavigator.create(
     navigationControllers,
     initialNavigationHistory,
     getViewState,
@@ -112,9 +101,6 @@ const createBeagleView: CreateBeagleView = (
     errorListeners.forEach(l => l(errors))
   }
 
-  /* todo: beagleView.fetch has been deprecated. This  function is still needed for internal usage,
-  but we can probably simplify it a lot once we no longer need to support beagleView.fetch
-  (v2.0). */
   async function fetch(
     params: LoadParams,
     elementId?: string,
@@ -124,23 +110,6 @@ const createBeagleView: CreateBeagleView = (
     const url = beagleService.urlBuilder.build(path)
     const originalTree = currentUITree
     const fallbackUIElement = params.fallback
-
-    // todo: legacy code. remove the following "if" in v2.0.
-    // if this is equivalent to a first navigation, reflect it in the navigator
-    if (navigator.isEmpty() && !elementId && mode === 'replaceComponent') {
-      const initialNavigationHistory = [
-        {
-          routes: [{ url: path }],
-          controllerId: initialControllerId,
-        }]
-      navigator = BeagleNavigator.create(
-        navigationControllers,
-        initialNavigationHistory,
-        getViewState,
-      )
-      // eslint-disable-next-line
-      setupNavigation()
-    }
 
     function onChangeTree(loadedTree: BeagleUIElement) {
       setTree(originalTree) // changes should be made based on the original tree
@@ -175,53 +144,6 @@ const createBeagleView: CreateBeagleView = (
     navigator.destroy()
   }
 
-  // todo: legacy code. Remove this function with v2.0.
-  function updateWithFetch(
-    params: LoadParams,
-    elementId?: string,
-    mode: 'replace' | 'append' | 'prepend' = 'replace',
-  ) {
-    const newMode = mode === 'replace' ? 'replaceComponent' : mode
-    return fetch(params, elementId, newMode)
-  }
-
-  // todo: legacy code. Remove this function with v2.0.
-  function updateWithTree({
-    sourceTree,
-    middlewares = [],
-    mode = 'replace',
-    shouldRunListeners = true,
-    shouldRunMiddlewares = true,
-    elementId,
-  }: UpdateWithTreeParams<any>) {
-    const warnings = [
-      '"updateWithTree" has been deprecated and now exists only as a compatibility mode. This will be fully removed in v2.0. Please, consider updating your code.',
-    ]
-    const errors = []
-
-    if (middlewares.length) {
-      errors.push('The option "middlewares" in "updateWithTree" is no longer supported. Please contact the Beagle WEB team for further guidance.')
-    }
-
-    if (!shouldRunListeners) {
-      errors.push('The option "shouldRunListeners" in "updateWithTree" is no longer supported. Please contact the Beagle WEB team for further guidance.')
-    }
-
-    const newMode = mode === 'replace' ? 'replaceComponent' : mode
-    if (shouldRunMiddlewares) renderer.doFullRender(sourceTree, elementId, newMode)
-    else {
-      warnings.push('The option "shouldRunMiddlewares" in "updateWithTree" is no longer fully supported and might not have the desired effect. If the behavior you\'re getting differs from what you expected, please contact the Beagle WEB team.')
-      renderer.doPartialRender(sourceTree as IdentifiableBeagleUIElement, elementId, newMode)
-    }
-
-    logger.warn(...warnings)
-    if (errors.length) logger.error(...errors)
-  }
-
-  function getNetworkOptions() {
-    return networkOptions && { ...networkOptions }
-  }
-
   const beagleView: BeagleView = {
     subscribe,
     addErrorListener,
@@ -230,14 +152,6 @@ const createBeagleView: CreateBeagleView = (
     getNavigator: () => navigator,
     getBeagleService: () => beagleService,
     destroy,
-    // todo: legacy code. Remove the following 3 properties with v2.0.
-    fetch: (...args) => {
-      logger.warn('beagleView.fetch has been deprecated to avoid inconsistencies with the internal Beagle Navigator. It will be removed with version 2.0. If you want to change the current view according to a new url, consider using the navigator instead.')
-      return fetch(...args)
-    },
-    updateWithFetch,
-    updateWithTree,
-    getNetworkOptions,
   }
 
   function createRenderer() {
@@ -274,7 +188,7 @@ const createBeagleView: CreateBeagleView = (
         } catch { }
       }
       if (!isDone) {
-        const httpData = httpAdditionalData || networkOptions
+        const httpData = httpAdditionalData
         await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }
       const platform = beagleService.getConfig().platform
