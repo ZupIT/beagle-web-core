@@ -31,7 +31,6 @@ import {
 } from './types'
 import defaultWebController from './default-web-controller'
 import DoubleStack from './double-stack'
-import { remove } from 'lodash'
 
 function createDefaultWebNavigator<T>(
   beagleService: BeagleService,
