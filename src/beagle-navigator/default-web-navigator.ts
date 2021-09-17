@@ -27,16 +27,23 @@ import {
   RemoteView,
   NavigatorChangeListener,
   DefaultWebNavigatorItem,
+  NavigationController,
 } from './types'
 import defaultWebController from './default-web-controller'
 import DoubleStack from './double-stack'
-import { NavigationController } from 'index'
+import { remove } from 'lodash'
 
 function createDefaultWebNavigator<T>(
   beagleService: BeagleService,
   widgetBuilder: (view: BeagleViewType) => T,
 ): BeagleNavigator<T> {
-  const changeListeners: NavigatorChangeListener<T>[] = []
+  const analyticsListener: NavigatorChangeListener<T> = (_, routeId) => (
+    beagleService.analyticsService.createScreenRecord({
+      route: routeId,
+      platform: beagleService.getConfig().platform,
+    })
+  )
+  const changeListeners: NavigatorChangeListener<T>[] = [analyticsListener]
   const navigationStack = DoubleStack.create<DefaultWebNavigatorItem<T>>()
   const {
     navigationControllers,
@@ -72,7 +79,7 @@ function createDefaultWebNavigator<T>(
   function runChangeListeners() {
     const topItem = navigationStack.getTopItem()
     if (!topItem) return
-    changeListeners.forEach(l => l(topItem.screen.content))
+    changeListeners.forEach(l => l(topItem.screen.content, topItem.screen.id))
   }
 
   async function fetchContentAndUpdateView(
@@ -83,7 +90,7 @@ function createDefaultWebNavigator<T>(
   ) {
     try {
       controller.onLoading(view, completeNavigation)
-      const screen = await beagleService.viewClient.fetch(beagleService.httpClient, route)
+      const screen = await beagleService.viewClient.fetch(route)
       controller.onSuccess(view, screen)
       completeNavigation()
     } catch (error) {
@@ -118,6 +125,7 @@ function createDefaultWebNavigator<T>(
 
     if (isLocalView(route)) {
       stackController.onSuccess(view, (route as LocalView).screen)
+      complete()
       return Promise.resolve()
     }
 
@@ -145,7 +153,7 @@ function createDefaultWebNavigator<T>(
     },
     popToView: (route) => {
       const removed = navigationStack.popUntil(item => item.screen.id === route)
-      if (removed) runChangeListeners()
+      if (removed && removed.length) runChangeListeners()
     },
     resetStack: (route, controllerId) => newNavigationItem(route, 'resetStack', controllerId),
     resetApplication: (route, controllerId) => newNavigationItem(route, 'reset', controllerId),

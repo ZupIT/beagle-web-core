@@ -25,6 +25,11 @@ import DefaultNavigatorController from 'beagle-navigator/default-web-controller'
 
 export { DefaultWebNavigator, DefaultNavigatorController }
 
+// beagle view
+import BeagleViewImpl from 'beagle-view'
+
+export { BeagleViewImpl }
+
 // beagle utilities
 import Tree from 'beagle-tree'
 import Component from 'beagle-view/render/component'
@@ -57,8 +62,6 @@ export * from 'service/global-context/types'
 export * from 'service/view-content-manager/types'
 export * from 'service/beagle-service/types'
 export * from 'service/network/types'
-export * from 'service/network/default-headers/types'
-export * from 'service/network/remote-cache/types'
 export * from 'service/network/url-builder/types'
 export { ViewClient } from 'service/network/view-client/types'
 export { AnalyticsProvider, AnalyticsRecord, AnalyticsConfig } from 'service/analytics/types'

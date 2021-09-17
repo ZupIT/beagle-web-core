@@ -46,7 +46,6 @@ function createActionAttributes(action: BeagleAction, whiteListedAttributesInCon
  */
 function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig): ActionAnalyticsRecord {
   const { action, eventName, component, platform, route } = params
-  const currentRoute = route
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
   const xPath = element && getPath(element) || ''
@@ -63,6 +62,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
     timestamp: Date.now(),
+    screen: route,
   }
 
   if (position)
@@ -73,14 +73,6 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
       ...record,
       additionalEntries: { ...action.analytics.additionalEntries },
     }
-  }
-
-  if (currentRoute) {
-    if ('screen' in currentRoute)
-      record.screen = currentRoute.screen.identifier || currentRoute.screen.id
-
-    if ('url' in currentRoute)
-      record.screen = currentRoute.url
   }
 
   return record

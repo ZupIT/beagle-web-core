@@ -14,16 +14,9 @@
   * limitations under the License.
 */
 
-import {
-  BeagleUIElement,
-  IdentifiableBeagleUIElement,
-  ComponentName,
-  DefaultSchema,
-} from 'beagle-tree/types'
+import { IdentifiableBeagleUIElement, ComponentName } from 'beagle-tree/types'
 import { ActionHandler } from 'action/types'
 import { NavigationController } from 'beagle-navigator/types'
-import { RemoteCache } from 'service/network/remote-cache/types'
-import { DefaultHeaders } from 'service/network/default-headers/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
 import { GlobalContext } from 'service/global-context/types'
@@ -43,28 +36,7 @@ export type LifecycleHookMap = Record<Lifecycle, {
   components: Record<string, LifecycleHook>,
 }>
 
-export type BeagleMiddleware<Schema = DefaultSchema> = (uiTree: BeagleUIElement<Schema>) =>
-  BeagleUIElement<Schema>
-
-export type NavigatorType = 'BROWSER_HISTORY' | 'BEAGLE_NAVIGATOR'
-
 export type Operation = ((...args: any[]) => any)
-
-export interface SynchronousStorage {
-  getItem: (key: string) => string | null,
-  setItem: (key: string, value: string) => void,
-  clear: () => void,
-  removeItem: (key: string) => void,
-}
-
-export interface AsynchronousStorage {
-  getItem: (key: string) => Promise<string | null>,
-  setItem: (key: string, value: string) => Promise<void>,
-  clear: () => Promise<void>,
-  removeItem: (key: string) => Promise<void>,
-}
-
-export type BeagleStorage = SynchronousStorage | AsynchronousStorage
 
 export interface BeagleConfig<Schema> {
   /**
@@ -105,14 +77,6 @@ export interface BeagleConfig<Schema> {
     afterViewSnapshot?: LifecycleHook<IdentifiableBeagleUIElement>,
     beforeRender?: LifecycleHook<IdentifiableBeagleUIElement>,
   },
-  /**
-   * The custom storage. By default, uses the browser's `localStorage`.
-   */
-  customStorage?: BeagleStorage,
-  /**
-   * Wether or not to send specific beagle headers in the requests to fetch a view. Default is true.
-   */
-  useBeagleHeaders?: boolean,
   /**
    * Sets the default navigation controller. If not set, The DefaultNavigationController is used.
    *
@@ -158,12 +122,9 @@ export type BeagleService = Readonly<{
   childrenMetadata: ChildrenMetadataMap,
   operationHandlers: Record<string, Operation>,
   // services
-  storage: BeagleStorage,
   httpClient: HttpClient,
   urlBuilder: URLBuilder,
-  remoteCache: RemoteCache,
   viewClient: ViewClient,
-  defaultHeaders: DefaultHeaders,
   globalContext: GlobalContext,
   viewContentManagerMap: ViewContentManagerMap,
   analyticsService: AnalyticsService,

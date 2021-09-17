@@ -21,7 +21,7 @@ function createDoubleStack<T>(): DoubleStack<T> {
   let stacks: T[][] = []
 
   function isEmpty() {
-    return !!stacks.length
+    return !stacks.length
   }
 
   function getTopItem(): T | undefined {
@@ -44,7 +44,7 @@ function createDoubleStack<T>(): DoubleStack<T> {
       const topStack = last(stacks)!
       const index = topStack.findIndex(predicate)
       if (index == -1) return
-      return topStack.splice(index, topStack.length - index)
+      return topStack.splice(index + 1, topStack.length - index - 1)
     },
     pushStack: (item) => stacks.push([item]),
     popStack: () => isEmpty() ? undefined : stacks.pop(),

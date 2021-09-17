@@ -17,8 +17,8 @@
 import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
 import { NavigationController } from './types'
 
-const loadingComponentName = 'beagle:loading'
-const errorComponentName = 'beagle:error'
+const loadingComponentName = 'custom:loading'
+const errorComponentName = 'custom:error'
 
 const defaultWebController: NavigationController = {
   onLoading: (view, completeNavigation) => {

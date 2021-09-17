@@ -81,7 +81,7 @@ export interface NavigationController {
   onSuccess: (view: BeagleView, screen: BeagleUIElement) => void,
 }
 
-export type NavigatorChangeListener<T> = (widget: T) => void
+export type NavigatorChangeListener<T> = (widget: T, routeId: string) => void
 
 export interface BeagleNavigator<T> {
   /**

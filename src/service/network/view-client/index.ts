@@ -1,34 +1,36 @@
 import { RemoteView } from 'beagle-navigator/types'
-import { BeagleUIElement } from 'index'
+import { BeagleUIElement } from 'beagle-tree/types'
 import logger from 'logger'
 import { HttpClient } from '../types'
+import { URLBuilder } from '../url-builder/types'
 import { ViewClient } from './types'
 
-function createViewClient(): ViewClient {
+function createViewClient(httpClient: HttpClient, urlBuilder: URLBuilder): ViewClient {
   const preFetched: Record<string, BeagleUIElement> = {}
 
-  async function fetchView(httpClient: HttpClient, route: RemoteView): Promise<BeagleUIElement> {
+  async function fetchView(route: RemoteView): Promise<BeagleUIElement> {
     const { method, body, headers } = route.httpAdditionalData || {}
-    const response = await httpClient.fetch(route.url, { method, body, headers })
+    const url = urlBuilder.build(route.url)
+    const response = await httpClient.fetch(url, { method, body, headers })
     if (!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
     return await response.json()
   }
 
   return {
-    preFetch: async (httpClient, route) => {
+    preFetch: async (route) => {
       try {
-        preFetched[route.url] = await fetchView(httpClient, route)
+        preFetched[route.url] = await fetchView(route)
       } catch (error) {
         logger.error(`Error while pre-fetching view: ${route.url}`, error)
       }
     },
-    fetch: async (httpClient, route) => {
+    fetch: async (route) => {
       if (preFetched[route.url]) {
         const result = preFetched[route.url]
         delete preFetched[route.url]
         return result
       }
-      return await fetchView(httpClient, route)
+      return await fetchView(route)
     },
   }
 }

@@ -29,19 +29,10 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       type: 'screen',
       platform: platform || '',
       timestamp: Date.now(),
+      screen: route,
     }
-
-    if (route) {
-      if ('screen' in route)
-        record.screen = route.screen.identifier || route.screen.id
-
-      if ('url' in route)
-        record.screen = route.url
-    }
-
 
     provider.createRecord(record)
-
   }
 
   async function createActionRecord(params: ActionRecordParams) {

@@ -15,8 +15,6 @@
  */
 
 import { HttpClient } from 'service/network/types'
-import RemoteCache from 'service/network/remote-cache'
-import DefaultHeaders from 'service/network/default-headers'
 import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
 import GlobalContext from 'service/global-context'
@@ -28,21 +26,16 @@ export function createServices(config: BeagleConfig<any>) {
   const httpClient: HttpClient = {
     fetch: (...args) => (config.fetchData ? config.fetchData(...args) : fetch(...args)),
   }
-  const storage = config.customStorage || localStorage
   const urlBuilder = URLBuilder.create(config.baseUrl)
-  const remoteCache = RemoteCache.create(storage)
-  const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
   const analyticsService = AnalyticsService.create(config.analyticsProvider)
+  const viewClient = config.viewClient || ViewClient.create(httpClient, urlBuilder)
 
   return {
-    storage,
     httpClient,
     urlBuilder,
-    remoteCache,
-    viewClient: config.viewClient || ViewClient.create(),
-    defaultHeaders,
+    viewClient,
     globalContext,
     viewContentManagerMap,
     analyticsService,
