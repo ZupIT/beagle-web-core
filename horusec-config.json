@@ -1,0 +1,5 @@
+{
+  "horusecCliFilesOrPathsToIgnore": [
+    "**/__tests__/**"
+  ]
+}
