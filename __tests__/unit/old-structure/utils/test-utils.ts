@@ -17,40 +17,13 @@
 import { BeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
 import { Renderer } from 'beagle-view/render/types'
-import { BeagleNavigator } from 'beagle-view/navigator/types'
-import { BeagleService, BeagleStorage } from 'service/beagle-service/types'
+import { BeagleNavigator } from 'beagle-navigator/types'
+import { BeagleService } from 'service/beagle-service/types'
 import { GlobalContext } from 'service/global-context/types'
-import { DefaultHeaders } from 'service/network/default-headers/types'
-import { RemoteCache } from 'service/network/remote-cache/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
-import { PreFetcher } from 'service/network/pre-fetcher/types'
 import { HttpClient } from 'service/network/types'
 import defaultOperations from 'operation'
-
-export function createLocalStorageMock(storage: Record<string, string> = {}): BeagleStorage {
-  return {
-    getItem: jest.fn(key => storage[key] || null),
-    setItem: jest.fn((key, value) => storage[key] = value),
-    clear: jest.fn(() => {
-      const keys = Object.keys(storage)
-      keys.forEach(k => delete storage[k])
-    }),
-    removeItem: jest.fn(key => delete storage[key]),
-  }
-}
-
-export function mockLocalStorage(storage: Record<string, string> = {}) {
-  const globalScope = global as any
-  const original = globalScope.localStorage
-
-  globalScope.localStorage = createLocalStorageMock({ ...storage })
-
-  return {
-    unmock: () => globalScope.localStorage = original,
-    clear: globalScope.localStorage.clear,
-  }
-}
 
 export function mockSystemDialogs(result = false) {
   const globalScope = global as any
@@ -113,20 +86,6 @@ export function createGlobalContextMock(): GlobalContext {
   }
 }
 
-export function createRemoteCacheMock(): RemoteCache {
-  return {
-    getHash: jest.fn(),
-    getMetadata: jest.fn(),
-    updateMetadata: jest.fn(),
-  }
-}
-
-export function createDefaultHeadersMock(): DefaultHeaders {
-  return {
-    get: jest.fn(() => Promise.resolve({})),
-  }
-}
-
 export function createUrlBuilderMock(custom: Partial<URLBuilder> = {}): URLBuilder {
   return {
     build: jest.fn(url => url),
@@ -136,10 +95,8 @@ export function createUrlBuilderMock(custom: Partial<URLBuilder> = {}): URLBuild
 
 export function createViewClientMock(custom: Partial<ViewClient> = {}): ViewClient {
   return {
-    load: jest.fn(),
-    loadFromCache: jest.fn(),
-    loadFromCacheCheckingTTL: jest.fn(),
-    loadFromServer: jest.fn(),
+    fetch: jest.fn(),
+    preFetch: jest.fn(),
     ...custom,
   }
 }
@@ -184,7 +141,6 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     childrenMetadata: custom.childrenMetadata || {},
     // @ts-ignore
     createView: custom.createView || (() => null),
-    defaultHeaders: custom.defaultHeaders || createDefaultHeadersMock(),
     getConfig: custom.getConfig || (() => ({ baseUrl: '', components: {}, platform: 'Test' })),
     globalContext: custom.globalContext || createGlobalContextMock(),
     httpClient: custom.httpClient || createHttpClientMock(),
@@ -194,8 +150,6 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
       beforeStart: { components: {} },
       beforeViewSnapshot: { components: {} },
     },
-    remoteCache: custom.remoteCache || createRemoteCacheMock(),
-    storage: custom.storage || createLocalStorageMock(),
     viewContentManagerMap: custom.viewContentManagerMap || {
       get: jest.fn(),
       register: jest.fn(),
@@ -206,12 +160,9 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
       build: jest.fn(url => url),
     },
     viewClient: custom.viewClient || {
-      load: jest.fn(),
-      loadFromCache: jest.fn(),
-      loadFromCacheCheckingTTL: jest.fn(),
-      loadFromServer: jest.fn(),
+      fetch: jest.fn(),
+      preFetch: jest.fn(),
     },
-    preFetcher: custom.preFetcher || createPreFetcherMock(),
   }
 }
 
@@ -220,10 +171,8 @@ type PartialBeagleView = (
   & { getBeagleService?: () => Partial<BeagleService> }
 )
 
-export function createNavigatorMock(): BeagleNavigator {
+export function createNavigatorMock(): BeagleNavigator<any> {
   return {
-    destroy: jest.fn(),
-    get: jest.fn(),
     navigate: jest.fn(),
     popStack: jest.fn(),
     popToView: jest.fn(),
@@ -232,7 +181,7 @@ export function createNavigatorMock(): BeagleNavigator {
     pushView: jest.fn(),
     resetApplication: jest.fn(),
     resetStack: jest.fn(),
-    subscribe: jest.fn(),
+    onChange: jest.fn(),
     isEmpty: jest.fn(),
     getCurrentRoute: jest.fn()
   }
@@ -244,20 +193,12 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
   const beagleService = createBeagleServiceMock()
 
   return {
-    addErrorListener: jest.fn(custom.addErrorListener),
     getTree: jest.fn(custom.getTree),
-    subscribe: jest.fn(custom.subscribe),
+    onChange: jest.fn(custom.onChange),
     getNavigator: jest.fn(custom.getNavigator || (() => navigator)),
     getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
     // @ts-ignore
     getBeagleService: custom.getBeagleService || jest.fn(() => beagleService),
     destroy: jest.fn(),
-  }
-}
-
-export function createPreFetcherMock(custom: Partial<PreFetcher> = {}): PreFetcher {
-  return {
-    fetch: custom.fetch || jest.fn(),
-    recover: custom.recover || jest.fn(() => Promise.reject()),
   }
 }

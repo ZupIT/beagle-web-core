@@ -16,40 +16,36 @@
 
 import nock from 'nock'
 import { BeagleView as BeagleViewType } from 'beagle-view/types'
+import BeagleView from 'beagle-view'
 import BeagleService from 'service/beagle-service'
 import BeagleNetworkError from 'error/BeagleNetworkError'
 import { treeA, treeB } from './mocks'
-import { mockLocalStorage, createHttpResponse } from './utils/test-utils'
+import { createHttpResponse } from './utils/test-utils'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
 const url = `${baseUrl}${path}`
 
 describe('BeagleUIView', () => {
-  const localStorageMock = mockLocalStorage()
   let view: BeagleViewType
   const fetchData = jest.fn(fetch)
   const middleware = jest.fn(tree => tree)
   const unsubscribeFromGlobalContext = jest.fn()
-  const { createView, globalContext } = BeagleService.create({
+  const service = BeagleService.create({
     baseUrl,
     components: {},
     lifecycles: { beforeRender: middleware },
     fetchData,
   })
+  const { globalContext } = service
   globalContext.subscribe = jest.fn(() => unsubscribeFromGlobalContext)
 
   beforeEach(() => {
     nock.cleanAll()
-    view = createView()
-    localStorageMock.clear()
+    view = BeagleView.create(service)
     middleware.mockClear()
     fetchData.mockClear()
     globalMocks.log.mockClear()
-  })
-
-  afterAll(() => {
-    localStorageMock.unmock()
   })
 
   it('should get current ui tree', async () => {
@@ -64,8 +60,8 @@ describe('BeagleUIView', () => {
   it('should subscribe to view changes', async () => {
     const listener1 = jest.fn()
     const listener2 = jest.fn()
-    view.subscribe(listener1)
-    view.subscribe(listener2)
+    view.onChange(listener1)
+    view.onChange(listener2)
     view.getRenderer().doFullRender({ _beagleComponent_: 'test 1', id: '1'})
     expect(listener1).toHaveBeenCalledWith({ _beagleComponent_: 'test 1', id: '1' })
     expect(listener2).toHaveBeenCalledWith({ _beagleComponent_: 'test 1', id: '1' })
@@ -73,43 +69,13 @@ describe('BeagleUIView', () => {
 
   it('should unsubscribe from view changes', async () => {
     const listener = jest.fn()
-    const unsubscribe = view.subscribe(listener)
+    const unsubscribe = view.onChange(listener)
     view.getRenderer().doFullRender({ _beagleComponent_: 'test 1' })
     expect(listener).toHaveBeenCalled()
     listener.mockClear()
     unsubscribe()
     view.getRenderer().doFullRender({ _beagleComponent_: 'test 2' })
     expect(listener).not.toHaveBeenCalled()
-  })
-
-  it('should subscribe to errors', async () => {
-    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    const listener1 = jest.fn()
-    const listener2 = jest.fn()
-    view.addErrorListener(listener1)
-    view.addErrorListener(listener2)
-    await view.getNavigator().pushView({ url: path })
-    // @ts-ignore
-    const expectedErrors = [
-      new BeagleNetworkError(url, createHttpResponse(), 500, 'GET'),
-    ]
-    expect(listener1).toHaveBeenCalledWith(expectedErrors)
-    expect(listener2).toHaveBeenCalledWith(expectedErrors)
-    expect(nock.isDone()).toBe(true)
-  })
-
-  it('should unsubscribe from errors', async () => {
-    nock(baseUrl).get(path).times(2).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    const listener = jest.fn()
-    const unsubscribe = view.addErrorListener(listener)
-    await view.getNavigator().pushView({ url: path })
-    // @ts-ignore
-    expect(listener).toHaveBeenCalled()
-    listener.mockClear()
-    unsubscribe()
-    await view.getNavigator().pushView({ url: path })
-    expect(listener).not.toHaveBeenCalled()
-    expect(nock.isDone()).toBe(true)
   })
 
   it('should run middlewares', async () => {
@@ -130,15 +96,6 @@ describe('BeagleUIView', () => {
     expect(view.getTree().id).toBeUndefined()
   })
 
-  it('should replace entire content with network response', async () => {
-    view.getRenderer().doFullRender(treeA)
-    nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
-    await view.getNavigator().pushView({ url: path })
-    expect(view.getTree()).toEqual(treeB)
-    expect(nock.isDone()).toBe(true)
-    nock.cleanAll()
-  })
-
   it('should encapsulate ui tree: getTree', () => {
     const tree = { _beagleComponent_: 'test 1' }
     view.getRenderer().doFullRender(tree)
@@ -148,84 +105,13 @@ describe('BeagleUIView', () => {
   it('should encapsulate ui tree: updateTree', async () => {
     const tree = { _beagleComponent_: 'test 1' }
     const listener = jest.fn()
-    view.subscribe(listener)
+    view.onChange(listener)
     view.getRenderer().doFullRender(tree)
     expect(listener.mock.calls[0][0]).not.toBe(tree)
-  })
-
-  it('should use custom HttpClient to fetch', async () => {
-    const path = '/example'
-    nock(baseUrl).get(path).reply(200, JSON.stringify(treeB))
-
-    await view.getNavigator().pushView({ url: path })
-
-    expect(fetchData).toHaveBeenCalledWith(
-      baseUrl + path,
-      { 'method': 'get', 'headers': { 'beagle-platform': 'WEB'} },
-    )
-  })
-
-  it('should fallback to UIElement when fetch fails', async () => {
-    const fallbackTree = { _beagleComponent_: 'test 1' }
-    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await view.getNavigator().pushView({ url: path, fallback: fallbackTree })
-    expect(view.getTree()).toEqual(fallbackTree)
-    expect(nock.isDone()).toBe(true)
-  })
-
-  it('should not fallback to UIElement when fetch succeeds', async () => {
-    const fallbackTree = { _beagleComponent_: 'test 1' }
-    nock(baseUrl).get(path).reply(200, JSON.stringify(treeA))
-    await view.getNavigator().pushView({ url: path, fallback: fallbackTree })
-    expect(view.getTree()).toEqual(treeA)
-    expect(nock.isDone()).toBe(true)
-  })
-
-  it('should handle path as relative without starting with /', async () => {
-    const mockFunc = jest.fn()
-    view.subscribe(mockFunc)
-    const path = 'example'
-    nock(baseUrl).get(`/${path}`).reply(200, JSON.stringify(treeB))
-    await view.getNavigator().pushView({ url: path })
-    expect(nock.isDone()).toBe(true)
-  })
-
-  it('should make request for root baseUrl path', async () => {
-    const mockFunc = jest.fn()
-    view.subscribe(mockFunc)
-    const path = ''
-    nock(baseUrl).get(`/${path}`).reply(200, JSON.stringify(treeB))
-    await view.getNavigator().pushView({ url: path })
-    expect(nock.isDone()).toBe(true)
-  })
-
-  it('should log errors when no error listener is registered', async () => {
-    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    await view.getNavigator().pushView({ url: path })
-    expect(globalMocks.log).toHaveBeenCalledWith(
-      'error',
-      expect.any(Error)
-    )
-    expect(nock.isDone()).toBe(true)
-  })
-
-  it('should not log errors when at least one listener is registered', async () => {
-    nock(baseUrl).get(path).reply(500, JSON.stringify({ error: 'unexpected error' }))
-    view.addErrorListener(jest.fn())
-    await view.getNavigator().pushView({ url: path })
-    // @ts-ignore
-    expect(globalMocks.log).not.toHaveBeenCalled()
-    expect(nock.isDone()).toBe(true)
   })
 
   it('should call global context unsubscribe when calling destroy', () => {
     view.destroy()
     expect(unsubscribeFromGlobalContext).toHaveBeenCalled()
-  })
-
-  it('should destroy the navigator when the view is destroyed', async () => {
-    view.getNavigator().destroy = jest.fn(view.getNavigator().destroy)
-    view.destroy()
-    expect(view.getNavigator().destroy).toHaveBeenCalled()
   })
 })

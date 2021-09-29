@@ -16,19 +16,13 @@
 
 import nock from 'nock'
 import BeagleService from 'service/beagle-service'
-import { mockLocalStorage } from './utils/test-utils'
 
 // todo: move to the beagle-service test suit
 describe.only('BeagleHttpClient', () => {
   const url = 'http://test.com'
-  const localStorageMock = mockLocalStorage()
 
   beforeEach(() => {
     nock.cleanAll()
-  })
-
-  afterAll(() => {
-    localStorageMock.unmock()
   })
 
   it('should use window.fetch as default fetch function', async () => {

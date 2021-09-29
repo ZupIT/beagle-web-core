@@ -24,11 +24,11 @@ import { createBeagleViewMock } from '../../old-structure/utils/test-utils'
 /**
  * This test suit validates the integration between all rendering modules, i.e. it runs the entire
  * rendering process and expect the tree passed as a parameter to be rendered.
- * 
+ *
  * The tree we use here is created in the file 'integration.mock'. Its three stages (original,
  * pre-processed and ready to render) have been manually created and the goal here is to verify if
  * the rendering process can take the original tree and modify it into the two next stages.
- * 
+ *
  * The tree we created to make this test has missing ids, custom children properties, nulls,
  * pre-fetches, context, actions and expressions. This is so we can guarantee that the handlers for
  * every feature are being correctly called.
@@ -49,8 +49,6 @@ describe('Beagle View: render: integration', () => {
 
   it('should pre-process', () => {
     expect(setTree).toHaveBeenCalledWith(preProcessed)
-    expect(beagleView.getBeagleService().preFetcher.fetch)
-      .toHaveBeenCalledWith('/render.integration.spec')
   })
 
   it('should be ready to render', () => {

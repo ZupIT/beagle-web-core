@@ -16,36 +16,30 @@
 
 import nock from 'nock'
 import BeagleService from 'service/beagle-service'
-import { BeagleView } from 'beagle-view/types'
-import { treeA, treeC, treeD } from './mocks'
-import { mockLocalStorage } from './utils/test-utils'
-import {ViewContentManager} from "service/view-content-manager/types";
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
+import BeagleView from 'beagle-view'
+import { treeA } from './mocks'
 
 const baseUrl = 'http://teste.com'
 const path = '/myview'
 
 describe('ViewContentManager', () => {
-  const localStorageMock = mockLocalStorage()
   const viewId = 'beagleId'
   /* fixme: this is a terrible sign, if this test suit needs the entire beagle service to pass, its
   tests are clearly not unitary. */
-  const { viewContentManagerMap, createView } = BeagleService.create({
+  const service = BeagleService.create({
     baseUrl,
     components: {},
   })
-  let view: BeagleView
+  const { viewContentManagerMap } = service
+  let view: BeagleViewType
 
   beforeEach(() => {
     viewContentManagerMap.unregister(viewId)
-    view = createView()
+    view = BeagleView.create(service)
     view.getRenderer().doFullRender(treeA)
     viewContentManagerMap.register(viewId, view)
     nock.cleanAll()
-    localStorageMock.clear()
-  })
-
-  afterAll(() => {
-    localStorageMock.unmock()
   })
 
   it('should register a view', () => {
@@ -116,26 +110,21 @@ describe('ViewContentManager', () => {
 })
 
 describe('BeagleContext (Legacy)', () => {
-  const localStorageMock = mockLocalStorage()
   const viewId = 'beagleId'
   /* fixme: this is a terrible sign, if this test suit needs the entire beagle service to pass, its
   tests are clearly not unitary. */
-  const { viewContentManagerMap, createView } = BeagleService.create({
+  const service = BeagleService.create({
     baseUrl,
     components: {},
   })
-  let view: BeagleView
+  const { viewContentManagerMap } = service
+  let view: BeagleViewType
 
   beforeEach(() => {
     viewContentManagerMap.unregister(viewId)
-    view = createView()
+    view = BeagleView.create(service)
     view.getRenderer().doFullRender(treeA)
     viewContentManagerMap.register(viewId, view)
     nock.cleanAll()
-    localStorageMock.clear()
-  })
-
-  afterAll(() => {
-    localStorageMock.unmock()
   })
 })

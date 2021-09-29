@@ -36,9 +36,7 @@ describe('Actions Analytics Service', () => {
   let screenBase: ScreenRecordParams
 
   screenBase = {
-    route: {
-      url: 'text.action.payload'
-    },
+    route: 'text.action.payload',
     platform: 'Jest',
   }
 
@@ -56,9 +54,7 @@ describe('Actions Analytics Service', () => {
       onPress: actionMock
     },
     action: actionMock,
-    route: {
-      url: 'text.action.payload'
-    },
+    route: 'text.action.payload',
   }
 
   expectedRecordBase = {

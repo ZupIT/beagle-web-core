@@ -29,16 +29,17 @@ import defaultOperationHandlers from 'operation'
 import { ActionHandlerParams, BeagleAction } from 'action/types'
 import BeagleService from 'service/beagle-service'
 import { IdentifiableBeagleUIElement, BeagleUIElement } from 'beagle-tree/types'
-import { BeagleView } from 'beagle-view/types'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
+import BeagleView from 'beagle-view'
 import { createContainerWithAction, createModalMock, listViewWithAction } from './mocks'
-import { createBeagleViewMock, mockLocalStorage } from '../utils/test-utils'
+import { createBeagleViewMock } from '../utils/test-utils'
 
 interface ActionHandlerExpectation {
   handler: jest.Mock,
   times?: number,
   action: BeagleAction,
   element: BeagleUIElement,
-  beagleView: BeagleView,
+  beagleView: BeagleViewType,
   callIndex?: number,
 }
 
@@ -58,7 +59,7 @@ function expectActionHandlerToHaveBeenCalled({
   expect(typeof handlerParams.executeAction).toBe('function')
 }
 
-function interpretEventsInTree(tree: IdentifiableBeagleUIElement, beagleView: BeagleView) {
+function interpretEventsInTree(tree: IdentifiableBeagleUIElement, beagleView: BeagleViewType) {
   const contexts = Context.evaluate(tree)
   Tree.forEach(tree, (component) => {
     Action.deserialize({
@@ -87,7 +88,7 @@ describe('EventHandler', () => {
 
   it('Should NOT resolve expressions in sub-actions when creating action record with expressions', () => {
     const beagleView = createBeagleViewMock()
-    beagleView.getNavigator().getCurrentRoute = (() => { return { url: 'test' } })
+    beagleView.getNavigator()!.getCurrentRoute = () => 'test'
     const beagleAnalytics = beagleView.getBeagleService().analyticsService
     spyOn(beagleAnalytics, 'createActionRecord').and.callThrough()
 
@@ -147,22 +148,18 @@ describe('EventHandler', () => {
       },
       eventName: "onPress",
       platform: "Test",
-      route: {
-        url: "test",
-      }
+      route:  "test",
     }
 
     interpretEventsInTree(beagleComponent, beagleView)
     beagleComponent.onPress()
 
     expect(beagleAnalytics.createActionRecord).toBeCalledWith(resolvedComponent)
-
-
   })
 
   it('should resolve expressions and call analytics', () => {
     const beagleView = createBeagleViewMock()
-    beagleView.getNavigator().getCurrentRoute = (() => { return { url: 'test' } })
+    beagleView.getNavigator()!.getCurrentRoute = () => 'test'
     const beagleAnalytics = beagleView.getBeagleService().analyticsService
     spyOn(beagleAnalytics, 'createActionRecord').and.callThrough()
 
@@ -207,9 +204,7 @@ describe('EventHandler', () => {
       },
       eventName: "onPress",
       platform: "Test",
-      route: {
-        url: "test",
-      }
+      route: "test",
     }
 
     interpretEventsInTree(beagleComponent, beagleView)
@@ -355,7 +350,6 @@ describe('EventHandler', () => {
 
   // fixme: this is testing too many things. This should be moved and test only the BeagleService.
   it('should handle custom action', async () => {
-    const localStorageMock = mockLocalStorage()
     const myActionHandler = jest.fn()
     const service = BeagleService.create({
       baseUrl: '',
@@ -365,11 +359,11 @@ describe('EventHandler', () => {
       }
     })
 
-    const beagleView = service.createView()
+    const beagleView = BeagleView.create(service)
     const action = { _beagleAction_: 'custom:myAction', value: 'test' }
     const mock = createContainerWithAction('onInit', action)
     await new Promise((resolve: (value?: unknown) => void) => {
-      beagleView.subscribe(view => {
+      beagleView.onChange(view => {
         view.onInit()
         resolve()
       })
@@ -379,8 +373,6 @@ describe('EventHandler', () => {
     expect(myActionHandler).toHaveBeenCalledWith(
       expect.objectContaining({ action })
     )
-
-    localStorageMock.unmock()
   })
 
   it('should warn if action handler doesn\'t exist', () => {

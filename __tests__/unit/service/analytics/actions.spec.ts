@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { AnalyticsConfig, BeagleAction, IdentifiableBeagleUIElement, Route } from 'index'
+import { AnalyticsConfig, BeagleAction } from 'index'
 import formatActionRecord from 'service/analytics/actions'
 import { ActionRecordParams } from 'service/analytics/types'
 import * as htmlHelpers from 'utils/html'
@@ -42,9 +42,7 @@ describe('Actions Analytics Service', () => {
     platform: 'Jest',
     component: button,
     action: actionMock,
-    route: {
-      url: 'text.action.payload'
-    }
+    route: 'text.action.payload',
   }
 
   analyticsConfigMock = {
