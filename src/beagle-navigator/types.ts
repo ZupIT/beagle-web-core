@@ -25,7 +25,7 @@ import { HttpMethod } from 'service/network/types'
 export interface DoubleStack<T> {
   pushItem: (item: T) => void,
   popItem: () => T | undefined,
-  popUntil: (predicate: (item: T) => boolean) => T[] | undefined,
+  popUntil: (predicate: (item: T) => boolean) => T[],
   pushStack: (item: T) => void,
   popStack: () => T[] | undefined,
   resetStack: (item: T) => void,
@@ -34,6 +34,7 @@ export interface DoubleStack<T> {
   isEmpty: () => boolean,
   hasSingleStack: () => boolean,
   hasSingleItem: () => boolean,
+  asMatrix: () => T[][],
 }
 
 export interface DefaultWebNavigatorItem<T> {

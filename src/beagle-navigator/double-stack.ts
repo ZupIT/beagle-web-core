@@ -17,8 +17,8 @@
 import last from 'lodash/last'
 import { DoubleStack } from './types'
 
-function createDoubleStack<T>(): DoubleStack<T> {
-  let stacks: T[][] = []
+function createDoubleStack<T>(initial: T[][] = []): DoubleStack<T> {
+  let stacks: T[][] = initial
 
   function isEmpty() {
     return !stacks.length
@@ -40,10 +40,10 @@ function createDoubleStack<T>(): DoubleStack<T> {
       return removed
     },
     popUntil: (predicate) => {
-      if (isEmpty()) return
+      if (isEmpty()) return []
       const topStack = last(stacks)!
       const index = topStack.findIndex(predicate)
-      if (index == -1) return
+      if (index === -1) return []
       return topStack.splice(index + 1, topStack.length - index - 1)
     },
     pushStack: (item) => stacks.push([item]),
@@ -57,6 +57,7 @@ function createDoubleStack<T>(): DoubleStack<T> {
     isEmpty,
     hasSingleStack: () => stacks.length === 1,
     hasSingleItem: () => stacks.length === 1 && stacks[0]!.length === 1,
+    asMatrix: () => stacks.map(stack => [...stack]),
   }
 }
 
