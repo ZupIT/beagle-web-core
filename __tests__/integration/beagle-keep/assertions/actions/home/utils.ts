@@ -31,7 +31,8 @@ export function setupHomeActionsTest() {
    * finish and clear the mocks.
    */
   async function createRemoteViewAndWaitInitialRendering(route: string = '/home') {
-    const { render, view } = await createBeagleRemoteView({ route })
+    const widgetRef = await createBeagleRemoteView({ route })
+    const { current: { render, view } } = widgetRef
     await whenCalledTimes(render, 3)
     const tree = render.mock.calls[2][0]
     render.mockClear()
@@ -40,6 +41,7 @@ export function setupHomeActionsTest() {
       tree: tree as IdentifiableBeagleUIElement,
       beagleView: view,
       render,
+      widgetRef,
     }
   }
 

@@ -20,6 +20,7 @@ import { BeagleView } from 'beagle-view/types'
 import { FullNote } from '../../../backend/database/notes'
 import { whenCalledTimes } from '../../../../../utils/function'
 import { setupHomeActionsTest } from './utils'
+import { whenNextNavigation } from '../../utils'
 
 describe('Beagle Keep: actions: home: menu', () => {
   const { createRemoteViewAndWaitInitialRendering } = setupHomeActionsTest()
@@ -33,26 +34,32 @@ describe('Beagle Keep: actions: home: menu', () => {
   }
 
   describe('should navigate to the view "labels" when the menu item "labels" is pressed', () => {
-    let renderFn: jest.Mock
-    let beagleView: BeagleView
+    let secondRouteRenderFn: jest.Mock
+    let beagleViews: BeagleView[] = []
     const renderedTrees: Record<string, IdentifiableBeagleUIElement> = {}
 
     beforeAll(async () => {
-      const { render, tree, beagleView: bView } = await createRemoteViewAndWaitInitialRendering()
+      const { tree, beagleView: bView, widgetRef } = await createRemoteViewAndWaitInitialRendering()
+      beagleViews.push(bView)
       const { labels } = getMenuItems(tree)
+      const nextNavigation = whenNextNavigation(bView.getNavigator()!)
       labels.onPress()
+      // waits for the next navigation to complete
+      await nextNavigation
+      // gets the widget corresponding to the new route
+      const newWidget = widgetRef.current
+      beagleViews.push(newWidget.view)
+      secondRouteRenderFn = newWidget.render
       // first: loading; second: labels with empty repeater; third: labels with list of labels
-      await whenCalledTimes(render, 3)
-      renderFn = render
-      beagleView = bView
-      renderedTrees.loading = render.mock.calls[0][0]
-      renderedTrees.labels = render.mock.calls[2][0]
+      await whenCalledTimes(secondRouteRenderFn, 3)
+      renderedTrees.loading = secondRouteRenderFn.mock.calls[0][0]
+      renderedTrees.labels = secondRouteRenderFn.mock.calls[2][0]
     })
 
-    afterAll(() => beagleView.destroy())
+    afterAll(() => beagleViews.forEach(v => v.destroy()))
 
     it('should do 3 renders with no warnings or errors', () => {
-      expect(renderFn).toHaveBeenCalledTimes(3)
+      expect(secondRouteRenderFn).toHaveBeenCalledTimes(3)
       expect(globalMocks.log).not.toHaveBeenCalled()
     })
 

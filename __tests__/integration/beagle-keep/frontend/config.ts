@@ -15,8 +15,9 @@
  */
 
 import { clone } from 'beagle-tree/manipulation'
+import defaultWebController from 'beagle-navigator/default-web-controller'
+import { NavigationController } from 'beagle-navigator/types'
 import { BeagleConfig } from 'service/beagle-service/types'
-import { createLocalStorageMock } from '../../../unit/old-structure/utils/test-utils'
 import { url, paths } from '../constants'
 import components from './components'
 import setupOperations from './operations'
@@ -29,16 +30,18 @@ const defaultOptions: ConfigOptions = {
   showLoading: true,
 }
 
+const noLoadingController: NavigationController = {
+  ...defaultWebController,
+  onLoading: () => {},
+  onError: (view, error, retry, completeNavigation) => {
+    defaultWebController.onError(view, error, retry, completeNavigation)
+    completeNavigation()
+  },
+}
+
 function createConfig(options?: ConfigOptions): BeagleConfig<any> {
   setupOperations()
   options = { ...defaultOptions, ...options }
-
-  const navigationControllers = {
-    main: {
-      default: true,
-      shouldShowLoading: false,
-    }
-  }
 
   return {
     baseUrl: `${url}${paths.view}`,
@@ -60,8 +63,7 @@ function createConfig(options?: ConfigOptions): BeagleConfig<any> {
       afterViewSnapshot: jest.fn(clone),
       beforeRender: jest.fn(clone),
     },
-    customStorage: createLocalStorageMock(),
-    navigationControllers: options.showLoading ? undefined : navigationControllers,
+    defaultNavigationController: options.showLoading ? undefined : noLoadingController,
   }
 }
 

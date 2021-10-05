@@ -17,14 +17,14 @@
 /**
  * Returns a promise that is resolved as soon as the function mock passed as parameter is called
  * for the nth time, where n is the parameter `times`.
- * 
+ *
  * The function calls will be checked every 20ms, so when this is resolved, the function might
  * have been called more then desired number of times.
- * 
+ *
  * If the function is not called the desired number of times before `timeout` ms, the promise is
  * either rejected or it's resolved with an error message logged to the console. The behavior will
  * depend on the parameter `rejectOnTimeout`.
- * 
+ *
  * @param fn the function mock to check
  * @param times the minimum number of times you wish the function to be called before resolving the
  * promise
@@ -64,7 +64,7 @@ export function whenCalledTimes(
 /**
  * Gets the nth parameter of the mth call to the function `fn`, where n is `parameterIndex` and m is
  * `callIndex`.
- * 
+ *
  * @param fn the function mock
  * @param callIndex the index of the call to get parameter from
  * @param parameterIndex the index of the desired parameter
@@ -76,7 +76,7 @@ export function getParameter(fn: jest.Mock, callIndex = 0, parameterIndex = 0) {
 
 /**
  * Gets the nth parameter of all calls to the function `fn`, where n is `parameterIndex`.
- * 
+ *
  * @param fn the function mock
  * @param parameterIndex the index of the desired parameter
  * @returns an array with the parameter value for each one of the calls

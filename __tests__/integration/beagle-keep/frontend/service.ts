@@ -16,23 +16,35 @@
 
 import { uniqueId } from 'lodash'
 import BeagleService from 'service/beagle-service'
+import DefaultWebNavigator from 'beagle-navigator/default-web-navigator'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import Tree from 'beagle-tree'
 import createConfig, { ConfigOptions } from './config'
+import { IdentifiableBeagleUIElement } from 'index'
 
 interface ViewParams {
-  route?: string,
+  route: string,
   initialController?: string,
+}
+
+interface BeagleWidget {
+  view: BeagleViewType,
+  viewId: string,
+  render: jest.Mock<void, [IdentifiableBeagleUIElement<any>]>,
+}
+
+interface BeagleWidgetRef {
+  current: BeagleWidget,
 }
 
 function start(options?: ConfigOptions) {
   const service = BeagleService.create(createConfig(options))
 
-  async function createBeagleRemoteView({ initialController, route }: ViewParams) {
-    const view = service.createView(initialController)
+  function createWidget(view: BeagleViewType): BeagleWidget {
     const viewId = uniqueId()
     service.viewContentManagerMap.register(viewId, view)
 
-    const render = jest.fn((tree) => {
+    const render = jest.fn((tree: IdentifiableBeagleUIElement) => {
       Tree.forEach(tree, (component) => {
         const componentFunction = service.getConfig().components[component._beagleComponent_]
         if (!componentFunction) {
@@ -43,10 +55,19 @@ function start(options?: ConfigOptions) {
       })
     })
 
-    view.subscribe(render)
-    if (route) await view.getNavigator().pushView({ url: route })
+    view.onChange(render)
 
-    return { view, render }
+    return { view, viewId, render }
+  }
+
+  async function createBeagleRemoteView({ initialController, route }: ViewParams) {
+    const navigator = DefaultWebNavigator.create(service, createWidget)
+    const widgetRef: Partial<BeagleWidgetRef> = {}
+    navigator.onChange(widget => widgetRef.current = widget)
+
+    await navigator.pushStack({ url: route }, initialController)
+
+    return widgetRef as BeagleWidgetRef
   }
 
   return { service, createBeagleRemoteView }

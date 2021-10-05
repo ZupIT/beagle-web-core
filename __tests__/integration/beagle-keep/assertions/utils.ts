@@ -18,7 +18,7 @@ import Tree from 'beagle-tree'
 import { Lifecycle } from 'service/beagle-service/types'
 import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import { BeagleService } from 'service/beagle-service/types'
-import { BeagleView } from 'beagle-view/types'
+import { BeagleNavigator } from 'beagle-navigator/types'
 import createService from '../frontend/service'
 import { ConfigOptions } from '../frontend/config'
 import { whenCalledTimes, getParameterByCalls } from '../../../utils/function'
@@ -65,7 +65,7 @@ export async function renderView(
   const { service, createBeagleRemoteView } = createService(configOptions)
   if (beforeViewCreation) beforeViewCreation(service)
   const lifecycles = service.getConfig().lifecycles! as Record<Lifecycle, jest.Mock>
-  const { render, view } = await createBeagleRemoteView({ route })
+  const { current: { render, view } } = await createBeagleRemoteView({ route })
 
   await whenCalledTimes(render, numberOfRenders)
 
@@ -161,4 +161,13 @@ export function getViewWithAnEmptyTemplateManager(view: BeagleUIElement) {
   const emptyTemplateManager = getTemplate(emptyTemplateManagerView)
   delete emptyTemplateManager.children
   return emptyTemplateManagerView
+}
+
+export function whenNextNavigation(navigator: BeagleNavigator<any>) {
+  return new Promise<void>((resolve) => {
+    const remove = navigator.onChange(() => {
+      remove()
+      resolve()
+    })
+  })
 }
