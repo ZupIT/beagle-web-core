@@ -152,6 +152,7 @@ function createDefaultWebNavigator<T>(
     },
     popToView: (route) => {
       const removed = navigationStack.popUntil(item => item.screen.id === route)
+      logger.error(`Can't pop to view "${route}"", it doesn't exist in teh current stack.`)
       if (removed && removed.length) runChangeListeners()
     },
     resetStack: (route, controllerId) => newNavigationItem(route, 'resetStack', controllerId),
