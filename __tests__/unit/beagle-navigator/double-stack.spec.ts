@@ -157,7 +157,7 @@ describe('Double Stack', () => {
       expect(doubleStack.asMatrix()).toEqual([[1, 2]])
     })
 
-    it("should pop 3 last item when using popUntil", () => {
+    it("should pop 3 last items when using popUntil", () => {
       const doubleStack = DoubleStack.create([[1, 2, 3, 4]])
       const removed = doubleStack.popUntil(i => i === 1)
       expect(removed).toEqual([2, 3, 4])

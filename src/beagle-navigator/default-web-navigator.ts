@@ -35,6 +35,7 @@ import DoubleStack from './double-stack'
 function createDefaultWebNavigator<T>(
   beagleService: BeagleService,
   widgetBuilder: (view: BeagleViewType) => T,
+  navigationStack: DoubleStackType<DefaultWebNavigatorItem<T>> = DoubleStack.create()
 ): BeagleNavigator<T> {
   const analyticsListener: NavigatorChangeListener<T> = (_, routeId) => (
     beagleService.analyticsService.createScreenRecord({
@@ -43,7 +44,6 @@ function createDefaultWebNavigator<T>(
     })
   )
   const changeListeners: NavigatorChangeListener<T>[] = [analyticsListener]
-  const navigationStack = DoubleStack.create<DefaultWebNavigatorItem<T>>()
   const {
     navigationControllers,
     defaultNavigationController = defaultWebController,
