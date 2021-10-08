@@ -9,15 +9,14 @@ function createViewClient(httpClient: HttpClient, urlBuilder: URLBuilder): ViewC
   const preFetched: Record<string, BeagleUIElement> = {}
 
   async function fetchView(route: RemoteView): Promise<BeagleUIElement> {
-    const { method, body, headers } = route.httpAdditionalData || {}
     const url = urlBuilder.build(route.url)
-    const response = await httpClient.fetch(url, { method, body, headers })
+    const response = await httpClient.fetch(url, route.httpAdditionalData)
     if (!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
     return await response.json()
   }
 
   return {
-    preFetch: async (route) => {
+    prefetch: async (route) => {
       try {
         preFetched[route.url] = await fetchView(route)
       } catch (error) {

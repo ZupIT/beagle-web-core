@@ -96,12 +96,12 @@ export function createUrlBuilderMock(custom: Partial<URLBuilder> = {}): URLBuild
 export function createViewClientMock(custom: Partial<ViewClient> = {}): ViewClient {
   return {
     fetch: jest.fn(),
-    preFetch: jest.fn(),
+    prefetch: jest.fn(),
     ...custom,
   }
 }
 
-export function createHttpResponse(): Response {
+export function createHttpResponse(custom?: Partial<Response>): Response {
   const response: Response = {
     body: null,
     bodyUsed: false,
@@ -121,6 +121,7 @@ export function createHttpResponse(): Response {
     type: 'default',
     url: '',
     clone: () => response,
+    ...custom,
   }
 
   return response
@@ -161,7 +162,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     },
     viewClient: custom.viewClient || {
       fetch: jest.fn(),
-      preFetch: jest.fn(),
+      prefetch: jest.fn(),
     },
   }
 }
@@ -221,4 +222,8 @@ export function createDoubleStackMock<T>(custom?: Partial<DoubleStack<any>>): Do
     asMatrix: jest.fn(),
     ...custom,
   }
+}
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
