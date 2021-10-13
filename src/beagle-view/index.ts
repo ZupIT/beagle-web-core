@@ -120,8 +120,7 @@ const createBeagleView: CreateBeagleView = (
     elementId?: string,
     mode: TreeUpdateMode = 'replaceComponent',
   ) {
-    const path = String.addPrefix(params.path, '/')
-    const url = beagleService.urlBuilder.build(path)
+    const url = beagleService.urlBuilder.build(params.path)
     const originalTree = currentUITree
     const fallbackUIElement = params.fallback
 
@@ -265,8 +264,7 @@ const createBeagleView: CreateBeagleView = (
       if (screen) return renderer.doFullRender(screen)
 
       if (shouldPrefetch) {
-        const path = StringUtils.addPrefix(url, '/')
-        const preFetchedUrl = urlBuilder.build(path)
+        const preFetchedUrl = urlBuilder.build(url)
         try {
           const preFetchedView = await preFetcher.recover(preFetchedUrl)
           renderer.doFullRender(preFetchedView)

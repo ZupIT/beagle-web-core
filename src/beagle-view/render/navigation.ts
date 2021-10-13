@@ -18,7 +18,6 @@ import flatten from 'lodash/flatten'
 import { BeagleUIElement } from 'beagle-tree/types'
 import NavigationActions from 'action/navigation'
 import { BeagleNavigationAction } from 'action/navigation/types'
-import StringUtils from 'utils/string'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { PreFetcher } from 'service/network/pre-fetcher/types'
 import logger from 'logger'
@@ -71,8 +70,7 @@ async function preFetchViews(
     const shouldPrefetch = action.route && action.route.shouldPrefetch
     const isUrlValid = action.route && validateUrl(action.route.url)
     if (shouldPrefetch && isUrlValid) {
-      const path = StringUtils.addPrefix(action.route.url, '/')
-      const url = urlBuilder.build(path)
+      const url = urlBuilder.build(action.route.url)
       promises.push(preFetchWithWarning(preFetcher, url))
     }
   })

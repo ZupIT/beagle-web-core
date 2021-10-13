@@ -269,11 +269,11 @@ describe('BeagleUIView', () => {
     expect(nock.isDone()).toBe(true)
   })
 
-  it('should handle path as relative without starting with /', async () => {
+  it('should handle a absolute path', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc)
-    const path = 'example'
-    nock(baseUrl).get(`/${path}`).reply(200, JSON.stringify(treeB))
+    const path = 'http://example.com/screen1'
+    nock('http://example.com/').get(`/screen1`).reply(200, JSON.stringify(treeB))
     await view.getNavigator().pushView({ url: path })
     expect(nock.isDone()).toBe(true)
   })
@@ -281,8 +281,8 @@ describe('BeagleUIView', () => {
   it('should make request for root baseUrl path', async () => {
     const mockFunc = jest.fn()
     view.subscribe(mockFunc)
-    const path = ''
-    nock(baseUrl).get(`/${path}`).reply(200, JSON.stringify(treeB))
+    const path = '/'
+    nock(baseUrl).get(`/`).reply(200, JSON.stringify(treeB))
     await view.getNavigator().pushView({ url: path })
     expect(nock.isDone()).toBe(true)
   })
