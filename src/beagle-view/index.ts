@@ -16,8 +16,6 @@
 
 import logger from 'logger'
 import Tree from 'beagle-tree'
-import String from 'utils/string'
-import StringUtils from 'utils/string'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import Renderer from './render'
