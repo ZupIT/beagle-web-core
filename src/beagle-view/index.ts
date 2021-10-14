@@ -129,7 +129,7 @@ const createBeagleView: CreateBeagleView = (
     if (navigator.isEmpty() && !elementId && mode === 'replaceComponent') {
       const initialNavigationHistory = [
         {
-          routes: [{ url: path }],
+          routes: [{ url: params.path }],
           controllerId: initialControllerId,
         }]
       navigator = BeagleNavigator.create(
