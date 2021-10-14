@@ -16,8 +16,6 @@
 
 import logger from 'logger'
 import Tree from 'beagle-tree'
-import String from 'utils/string'
-import StringUtils from 'utils/string'
 import { BeagleService } from 'service/beagle-service/types'
 import { IdentifiableBeagleUIElement, BeagleUIElement, TreeUpdateMode } from 'beagle-tree/types'
 import Renderer from './render'
@@ -120,8 +118,7 @@ const createBeagleView: CreateBeagleView = (
     elementId?: string,
     mode: TreeUpdateMode = 'replaceComponent',
   ) {
-    const path = String.addPrefix(params.path, '/')
-    const url = beagleService.urlBuilder.build(path)
+    const url = beagleService.urlBuilder.build(params.path)
     const originalTree = currentUITree
     const fallbackUIElement = params.fallback
 
@@ -130,7 +127,7 @@ const createBeagleView: CreateBeagleView = (
     if (navigator.isEmpty() && !elementId && mode === 'replaceComponent') {
       const initialNavigationHistory = [
         {
-          routes: [{ url: path }],
+          routes: [{ url: params.path }],
           controllerId: initialControllerId,
         }]
       navigator = BeagleNavigator.create(
@@ -265,8 +262,7 @@ const createBeagleView: CreateBeagleView = (
       if (screen) return renderer.doFullRender(screen)
 
       if (shouldPrefetch) {
-        const path = StringUtils.addPrefix(url, '/')
-        const preFetchedUrl = urlBuilder.build(path)
+        const preFetchedUrl = urlBuilder.build(url)
         try {
           const preFetchedView = await preFetcher.recover(preFetchedUrl)
           renderer.doFullRender(preFetchedView)

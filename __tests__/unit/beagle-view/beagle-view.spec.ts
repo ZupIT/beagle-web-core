@@ -147,9 +147,9 @@ describe('Beagle View', () => {
       expect(doFullRender).toHaveBeenCalledWith(mock, undefined, 'replaceComponent')
     })
 
-    it('should add "/" if missing', async () => {
-      await beagleView.getNavigator().pushView({ url: 'home' })
-      expect(beagleService.urlBuilder.build).toHaveBeenCalledWith('/home')
+    it('should fetch using a absolute path', async () => {
+      await beagleView.getNavigator().pushView({ url: 'http://example.com/screen1' })
+      expect(beagleService.urlBuilder.build).toHaveBeenCalledWith('http://example.com/screen1')
     })
 
     it('should navigate to local tree', async () => {
@@ -166,14 +166,6 @@ describe('Beagle View', () => {
       expect(beagleService.viewClient.load).not.toHaveBeenCalled()
       expect(beagleService.preFetcher.recover).toHaveBeenCalledWith('base/home')
       expect(doFullRender).toHaveBeenCalledWith(mock)
-    })
-
-    it('should pre-fetch and add "/" if missing', async () => {
-      await beagleView.getNavigator().pushView({
-        url: 'home',
-        shouldPrefetch: true,
-      })
-      expect(beagleService.urlBuilder.build).toHaveBeenCalledWith('/home')
     })
 
     it('should fallback to network if pre-fetched recovery failed', async () => {
