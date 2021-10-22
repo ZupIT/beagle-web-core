@@ -76,7 +76,7 @@ export interface NavigationController {
   onError: (
     view: BeagleView,
     error: any,
-    retry: () => void,
+    retry: () => Promise<void>,
     completeNavigation: () => void,
   ) => void,
   onSuccess: (view: BeagleView, screen: BeagleUIElement) => void,

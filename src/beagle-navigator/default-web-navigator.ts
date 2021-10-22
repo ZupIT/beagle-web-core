@@ -35,6 +35,7 @@ import DoubleStack from './double-stack'
 function createDefaultWebNavigator<T>(
   beagleService: BeagleService,
   widgetBuilder: (view: BeagleViewType) => T,
+  navigationStack: DoubleStackType<DefaultWebNavigatorItem<T>> = DoubleStack.create()
 ): BeagleNavigator<T> {
   const analyticsListener: NavigatorChangeListener<T> = (_, routeId) => (
     beagleService.analyticsService.createScreenRecord({
@@ -43,7 +44,6 @@ function createDefaultWebNavigator<T>(
     })
   )
   const changeListeners: NavigatorChangeListener<T>[] = [analyticsListener]
-  const navigationStack = DoubleStack.create<DefaultWebNavigatorItem<T>>()
   const {
     navigationControllers,
     defaultNavigationController = defaultWebController,
@@ -152,6 +152,7 @@ function createDefaultWebNavigator<T>(
     },
     popToView: (route) => {
       const removed = navigationStack.popUntil(item => item.screen.id === route)
+      logger.error(`Can't pop to view "${route}"", it doesn't exist in teh current stack.`)
       if (removed && removed.length) runChangeListeners()
     },
     resetStack: (route, controllerId) => newNavigationItem(route, 'resetStack', controllerId),

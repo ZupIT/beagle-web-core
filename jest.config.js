@@ -35,6 +35,7 @@ module.exports = {
   },
   preset: 'ts-jest',
   setupFiles: ['./jest.setup.ts'],
+  setupFilesAfterEnv: ['jest-extended'],
   testEnvironment: "node",
   testMatch: [
     "**/?(*.)+(spec).ts"

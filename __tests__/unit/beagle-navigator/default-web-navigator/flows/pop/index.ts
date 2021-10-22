@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-import BeagleError from 'error/BeagleError'
+import { successfulPopFlow } from './successful'
+import { unsuccessfulPopFlow } from './unsuccessful'
+import { PopOperation } from './types'
 
-export default class BeagleNavigationError extends BeagleError {
-  constructor(message: string) {
-    super(`navigation error: ${message}`)
-  }
+export function createTestSuitForPopOperation(type: PopOperation) {
+  describe(`${type}: flows`, () => {
+    successfulPopFlow(type)
+    unsuccessfulPopFlow(type)
+  })
 }

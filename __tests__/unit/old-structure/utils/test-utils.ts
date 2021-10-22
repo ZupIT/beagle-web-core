@@ -17,7 +17,7 @@
 import { BeagleUIElement } from 'beagle-tree/types'
 import { BeagleView } from 'beagle-view/types'
 import { Renderer } from 'beagle-view/render/types'
-import { BeagleNavigator } from 'beagle-navigator/types'
+import { BeagleNavigator, DoubleStack } from 'beagle-navigator/types'
 import { BeagleService } from 'service/beagle-service/types'
 import { GlobalContext } from 'service/global-context/types'
 import { URLBuilder } from 'service/network/url-builder/types'
@@ -96,12 +96,12 @@ export function createUrlBuilderMock(custom: Partial<URLBuilder> = {}): URLBuild
 export function createViewClientMock(custom: Partial<ViewClient> = {}): ViewClient {
   return {
     fetch: jest.fn(),
-    preFetch: jest.fn(),
+    prefetch: jest.fn(),
     ...custom,
   }
 }
 
-export function createHttpResponse(): Response {
+export function createHttpResponse(custom?: Partial<Response>): Response {
   const response: Response = {
     body: null,
     bodyUsed: false,
@@ -121,6 +121,7 @@ export function createHttpResponse(): Response {
     type: 'default',
     url: '',
     clone: () => response,
+    ...custom,
   }
 
   return response
@@ -161,7 +162,7 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     },
     viewClient: custom.viewClient || {
       fetch: jest.fn(),
-      preFetch: jest.fn(),
+      prefetch: jest.fn(),
     },
   }
 }
@@ -201,4 +202,28 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
     getBeagleService: custom.getBeagleService || jest.fn(() => beagleService),
     destroy: jest.fn(),
   }
+}
+
+export function createDoubleStackMock<T>(custom?: Partial<DoubleStack<any>>): DoubleStack<T> {
+  let topItem: T
+
+  return {
+    pushItem: jest.fn(i => topItem = i),
+    popItem: jest.fn(),
+    popUntil: jest.fn(),
+    pushStack: jest.fn(i => topItem = i),
+    popStack: jest.fn(),
+    resetStack: jest.fn(i => topItem = i),
+    reset: jest.fn(i => topItem = i),
+    getTopItem: jest.fn(() => topItem),
+    isEmpty: jest.fn(),
+    hasSingleStack: jest.fn(),
+    hasSingleItem: jest.fn(),
+    asMatrix: jest.fn(),
+    ...custom,
+  }
+}
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
