@@ -18,7 +18,8 @@ import { RemoteView } from 'beagle-navigator/types'
 import { HttpClient } from 'service/network/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import ViewClient from 'service/network/view-client'
-import { createHttpResponse, sleep } from '../old-structure/utils/test-utils'
+import { createHttpResponse, sleep } from '../../../old-structure/utils/test-utils'
+import { BeagleUIElement } from './../../../../../src/beagle-tree/types';
 
 describe('ViewClient', () => {
   const urlBuilder: URLBuilder = { build: path => path }
@@ -31,6 +32,17 @@ describe('ViewClient', () => {
       method: 'GET',
     }
   }
+
+  const fallbackElement = {
+    _beagleComponent_: 'beagle:container',
+    children: [
+      {
+        _beagleComponent_: 'beagle:text',
+        text: 'Fallback page'
+      }
+    ]
+  } as BeagleUIElement
+
   const successfulHttpClient: HttpClient = {
     fetch: jest.fn(() => {
       return Promise.resolve(createHttpResponse({
@@ -88,6 +100,21 @@ describe('ViewClient', () => {
     }
   })
 
+  it('should fallback when a request failed', async () => {
+    const httpClient = {
+      fetch: jest.fn((_, __) => Promise.resolve({ ok: false } as Response))
+    } as HttpClient
+    const viewClient = ViewClient.create(httpClient, urlBuilder)
+
+    const route = {
+      url: '/route',
+      fallback: fallbackElement,
+    }
+    const response = await viewClient.fetch(route)
+
+    expect(response).toEqual(fallbackElement)
+  })
+
   it('should prefetch route', async () => {
     const viewClient = ViewClient.create(successfulHttpClient, urlBuilder)
     viewClient.prefetch(route)
@@ -116,7 +143,7 @@ describe('ViewClient', () => {
     await sleep(50)
     try {
       await viewClient.fetch(route)
-    } catch {}
+    } catch { }
     finally {
       expect(httpClient.fetch).toHaveBeenCalledTimes(2)
     }
