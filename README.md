@@ -1,4 +1,3 @@
-
 # **Beagle Web**
 
 ## **Table of Contents**
@@ -203,11 +202,11 @@ For this method, your name and e-mail must be the same registered on your GitHub
 
 ## **Code of Conduct**
 
-Please read the [**code of conduct**](https://github.com/ZupIT/beagle-backend-kotlin/blob/main/CODE_OF_CONDUCT.md).
+Please read the [**code of conduct**](https://github.com/ZupIT/beagle/blob/main/CODE_OF_CONDUCT.md).
 
 ## **License**
 
-[**Apache License 2.0**]( https://github.com/ZupIT/beagle-ios/blob/main/LICENSE.txt).
+[**Apache License 2.0**](https://github.com/ZupIT/beagle-web-core/blob/main/LICENSE).
 
 
 ## **Community**
