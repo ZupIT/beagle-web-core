@@ -128,7 +128,7 @@ After Beagle's team analyze your contribution, we may add some questions and sug
 
 ## **Community**
 
-- Do you have any question about Beagle? Let's chat in our [**forum**](https://forum.zup.com.br/c/en/horusec/14).
+- Do you have any question about Beagle? Let's chat in our [**forum**](https://forum.zup.com.br/).
 
 
 **Thank you for your contribution!**

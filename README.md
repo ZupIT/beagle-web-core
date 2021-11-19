@@ -3,9 +3,9 @@
 ## **Table of Contents**
 
 ### 1. [**About**](#about)
-### 2. [**Usage**](#-usage)
+### 2. [**Usage**](#usage)
 >#### 2.1. [**Installation**](#installation)
->#### 2.2. [**How does it work?**](#how-does-it-work?)
+>#### 2.2. [**How does it work?**](#how-does-it-work)
 ### 3. [**Configuration**](#configuration)
 ### 4. [**API**](#api)
 ### 5. [**Documentation**](#documentation)
