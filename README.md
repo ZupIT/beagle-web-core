@@ -1,3 +1,4 @@
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5396/badge)](https://bestpractices.coreinfrastructure.org/projects/5396)
 # Beagle
 Beagle is an open source project with the objective to reduce the complexity of implementing
 server-driven UIs for any kind of project. Our main goal is to offer a simple set of libraries
@@ -17,6 +18,7 @@ To know more about Beagle as a whole, please visit our
 [documentation page](https://docs.usebeagle.io).
 
 ## Beagle WEB
+
 Beagle WEB is the library used to render beagle views in any javascript project, i.e. it is
 currently used to develop Beagle for Angular, Beagle for React and Beagle for React Native. The code
 here is the core part of all these libraries. If you're looking to develop a project in any of these
