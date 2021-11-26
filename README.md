@@ -1,4 +1,5 @@
 # **Beagle Web**
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5396/badge)](https://bestpractices.coreinfrastructure.org/projects/5396)
 
 ## **Table of Contents**
 
