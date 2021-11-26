@@ -102,7 +102,7 @@ Follow the Pull Request submission guidelines below:
 
 **Step 2.** Make sure that the issue describes the problem you're fixing, or documents the design for the feature you'd like to add. Discussing the design upfront helps to ensure that we're ready to accept your work.
 
-**Step 3.** Fork the ZupIT/beagle repo;
+**Step 3.** git clone the repository;
 
 **Step 4.** Make your changes in a new git branch.
 
