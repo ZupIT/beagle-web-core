@@ -96,7 +96,6 @@ export function createUrlBuilderMock(custom: Partial<URLBuilder> = {}): URLBuild
 export function createViewClientMock(custom: Partial<ViewClient> = {}): ViewClient {
   return {
     fetch: jest.fn(),
-    prefetch: jest.fn(),
     ...custom,
   }
 }
@@ -162,7 +161,6 @@ export function createBeagleServiceMock(custom: Partial<BeagleService> = {}): Be
     },
     viewClient: custom.viewClient || {
       fetch: jest.fn(),
-      prefetch: jest.fn(),
     },
   }
 }

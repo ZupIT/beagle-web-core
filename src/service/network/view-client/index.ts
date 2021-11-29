@@ -16,42 +16,53 @@
 
 import { RemoteView } from 'beagle-navigator/types'
 import { BeagleUIElement } from 'beagle-tree/types'
-import logger from 'logger'
 import { HttpClient } from '../types'
 import { URLBuilder } from '../url-builder/types'
+import { findNavigationActions, validateUrl } from './utils'
 import { ViewClient } from './types'
 
+const preFetched = new Map()
+
+async function preFetchViews(
+  component: BeagleUIElement,
+  urlBuilder: URLBuilder,
+) {
+  component.children?.forEach(async (item: BeagleUIElement) => {
+    const navigationActions = findNavigationActions(item, false)
+    navigationActions.forEach(async (action: any) => {
+      const shouldPrefetch = action.route && action.route.shouldPrefetch
+      const isUrlValid = action.route && validateUrl(action.route.url)
+      if (shouldPrefetch && isUrlValid) {
+        const url = urlBuilder.build(action.route.url)
+        const response = await fetch(url, action.route.httpAdditionalData)
+        preFetched.set(action.route.url, await response.json())
+      }
+    })
+  })
+}
+
 function createViewClient(httpClient: HttpClient, urlBuilder: URLBuilder): ViewClient {
-  const preFetched: Record<string, BeagleUIElement> = {}
 
   async function fetchView(route: RemoteView): Promise<BeagleUIElement> {
     const url = urlBuilder.build(route.url)
     const response = await httpClient.fetch(url, route.httpAdditionalData)
 
     if (response.ok) return await response.json()
+
     if (route.fallback) return route.fallback
     throw new Error(`${response.status}: ${response.statusText}`)
   }
-
   return {
-    prefetch: async (route) => {
-      try {
-        preFetched[route.url] = await fetchView(route)
-      } catch (error) {
-        logger.error(`Error while pre-fetching view: ${route.url}`, error)
-      }
-    },
     fetch: async (route) => {
-      if (preFetched[route.url]) {
-        const result = preFetched[route.url]
-        delete preFetched[route.url]
-        return result
-      }
-      return await fetchView(route)
+      const view = preFetched.get(route.url) || await fetchView(route)
+      preFetched.delete(route.url)
+      preFetchViews(view, urlBuilder)
+      return view
     },
   }
 }
 
 export default {
+  preFetchViews,
   create: createViewClient,
 }

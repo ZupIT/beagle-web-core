@@ -58,7 +58,7 @@ function createRenderer({
   operationHandlers,
   disableCssTransformation,
 }: Params): Renderer {
-  const { urlBuilder, globalContext } = beagleView.getBeagleService()
+  const { globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any = {}, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree

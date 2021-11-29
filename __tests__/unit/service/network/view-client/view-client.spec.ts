@@ -32,6 +32,15 @@ describe('ViewClient', () => {
       method: 'GET',
     }
   }
+  const routePrefetch: RemoteView = {
+    shouldPrefetch: true,
+    url: 'https://test.com/home',
+    httpAdditionalData: {
+      body: { test: 1 },
+      headers: { test: '2' },
+      method: 'GET',
+    }
+  }
 
   const fallbackElement = {
     _beagleComponent_: 'beagle:container',
@@ -117,21 +126,21 @@ describe('ViewClient', () => {
 
   it('should prefetch route', async () => {
     const viewClient = ViewClient.create(successfulHttpClient, urlBuilder)
-    viewClient.prefetch(route)
-    expect(successfulHttpClient.fetch).toHaveBeenCalledWith(route.url, route.httpAdditionalData)
+    viewClient.fetch(routePrefetch)
+    expect(successfulHttpClient.fetch).toHaveBeenCalledWith(routePrefetch.url, routePrefetch.httpAdditionalData)
     await sleep(50)
-    const result = await viewClient.fetch(route)
+    const result = await viewClient.fetch(routePrefetch)
     expect(result).toBe(screen)
-    expect(successfulHttpClient.fetch).toHaveBeenCalledTimes(1)
+    expect(successfulHttpClient.fetch).toHaveBeenCalledTimes(2)
   })
 
   it('should invalidate prefetch result after use', async () => {
     const viewClient = ViewClient.create(successfulHttpClient, urlBuilder)
-    viewClient.prefetch(route)
+    viewClient.fetch(routePrefetch)
     await sleep(50)
-    await viewClient.fetch(route)
-    await viewClient.fetch(route)
-    expect(successfulHttpClient.fetch).toHaveBeenCalledTimes(2)
+    await viewClient.fetch(routePrefetch)
+    await viewClient.fetch(routePrefetch)
+    expect(successfulHttpClient.fetch).toHaveBeenCalledTimes(3)
   })
 
   it('should silently fail when prefetch fails', async () => {
@@ -139,13 +148,12 @@ describe('ViewClient', () => {
       fetch: jest.fn(() => Promise.reject(new Error('Test!')))
     }
     const viewClient = ViewClient.create(httpClient, urlBuilder)
-    viewClient.prefetch(route)
     await sleep(50)
     try {
       await viewClient.fetch(route)
     } catch { }
     finally {
-      expect(httpClient.fetch).toHaveBeenCalledTimes(2)
+      expect(httpClient.fetch).toHaveBeenCalledTimes(1)
     }
   })
 })
