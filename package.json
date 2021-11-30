@@ -42,7 +42,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.20.1",
     "husky": "^4.2.5",
-    "jest": "^25.1.0",
+    "jest": "^27.4.2",
     "lorem-ipsum": "^2.0.3",
     "nock": "^12.0.1",
     "node-fetch": "^2.6.0",
