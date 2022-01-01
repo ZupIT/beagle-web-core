@@ -50,6 +50,6 @@
     "random-seed": "^0.3.0",
     "ts-jest": "^26.4.1",
     "tscpaths": "https://github.com/Tiagoperes/tscpaths.git#498769882091cfe6fd8c4067bb50843dc4ca551e",
-    "typescript": "3.7.5"
+    "typescript": "4.5.4"
   }
 }
