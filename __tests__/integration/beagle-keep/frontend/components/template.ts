@@ -15,7 +15,7 @@
  */
 
 import { map, isEqual } from 'lodash'
-import { DataContext, IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import { DataContext, BeagleUIElement } from 'beagle-tree/types'
 import { Component, TemplateProps } from './types'
 import { TemplateManager,TemplateManagerItem } from 'beagle-view/render/template-manager/types'
 
@@ -34,7 +34,7 @@ const Template: Component<TemplateProps> = ({
     if (!hasChanged) return
 
     const contexts: DataContext[][] = dataSource.map(item => [{ id: 'item', value: item }])
-    const componentManager = (component: IdentifiableBeagleUIElement, index: number) => ({ ...component, id: `template:${id}:${component.id}:${index}` })
+    const componentManager = (component: BeagleUIElement, index: number) => ({ ...component, id: `template:${id}:${component.id}:${index}` })
     const manager: TemplateManager = {
       default: templatesRaw.find((t: TemplateManagerItem) => !t.case)?.view,
       templates: templatesRaw.filter((t: TemplateManagerItem) => t.case) || []

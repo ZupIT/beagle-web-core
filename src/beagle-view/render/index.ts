@@ -216,7 +216,7 @@ function createRenderer({
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
 
       if (template) {
-        let templateTree = Tree.clone(template) as IdentifiableBeagleUIElement
+        let templateTree = Tree.clone(template)
         templateTree = {
           ...templateTree,
           ...((componentManager && componentManager(templateTree, index)) || {}),

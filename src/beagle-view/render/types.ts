@@ -94,8 +94,8 @@ export interface Renderer {
    * @param anchor the id of the node in the current tree to attach the new nodes to.
    * @param contexts matrix of contexts where each line represents an item to be rendered according to
    * the templateManager.
-   * @param componentManager optional. When set, the component goes through this function before being
-   * finally rendered.
+   * @param componentManager optional. When set, the template result goes through this function before
+   * being finally rendered.
    * @param mode optional. when `viewTree` is just a new branch to be added to the tree, the mode must be
    * specified. It can be `append`, `prepend` or `replace`. The default value is `replace`
   */

@@ -49,9 +49,7 @@ describe('Render a template with doTemplateRender ', () => {
       let treeChildren: IdentifiableBeagleUIElement[]
       let mockChildren: BeagleUIElement[]
       const templateManagerSpy = jest.spyOn(templateManager, 'getEvaluatedTemplate')
-      const componentManager = jest.fn((component: IdentifiableBeagleUIElement, index: number) => {
-        return component
-      })
+      const componentManager = jest.fn((component: BeagleUIElement) => component)
 
       const templateOrder = [
         mocks.templateManager.templates[0].view,
@@ -194,7 +192,7 @@ describe('Render a template with doTemplateRender ', () => {
       let treeChildren: IdentifiableBeagleUIElement[]
       let mockChildren: BeagleUIElement[]
       const templateManagerSpy = jest.spyOn(templateManager, 'getEvaluatedTemplate')
-      const componentManager = jest.fn((component: IdentifiableBeagleUIElement, index: number) => {
+      const componentManager = jest.fn((component: BeagleUIElement, index: number) => {
         component.id = `${component.id}:${index}`
         return component
       })

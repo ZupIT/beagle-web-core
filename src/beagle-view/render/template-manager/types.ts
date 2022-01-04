@@ -1,4 +1,4 @@
-import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import { BeagleUIElement } from 'beagle-tree/types'
 
 export interface TemplateManagerItem {
   case: string,
@@ -10,4 +10,4 @@ export interface TemplateManager {
   templates: TemplateManagerItem[],
 }
 
-export type ComponentManager = (component: IdentifiableBeagleUIElement, index: number) => IdentifiableBeagleUIElement
+export type ComponentManager = (component: BeagleUIElement, index: number) => BeagleUIElement
