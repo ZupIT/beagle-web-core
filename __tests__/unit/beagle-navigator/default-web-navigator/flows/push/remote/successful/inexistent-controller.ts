@@ -27,26 +27,21 @@ export function remoteSuccessfulFlowWithInexistentController(
     beforeAll(async () => {
       globalMocks.log.mockClear()
       t = prepare({ fetchResult: result })
-      await t.navigator[type]({ url: '/test' }, 'inexistentController')
+      await t.navigator[type]({ route: { url: '/test' }, controllerId:  'inexistentController' })
     })
 
     afterAll(() => t.tearDown())
 
     it('should log warning', () => {
-      expect(globalMocks.log).toHaveBeenCalledWith(
-        'warn',
-        expect.stringMatching(/No navigation controller .* has been found/),
-      )
+      expect(globalMocks.log).toHaveBeenCalledWith('warn', expect.stringMatching(/No navigation controller .* has been found/))
     })
 
     it('should use default onLoading', () => {
-      expect(t.controller.onLoading)
-        .toHaveBeenCalledWith(t.beagleViewRef.current, expect.any(Function))
+      expect(t.controller.onLoading).toHaveBeenCalledWith(t.beagleViewRef.current, expect.any(Function))
     })
 
     it('should use default onSuccess', () => {
-      expect(t.controller.onSuccess)
-        .toHaveBeenCalledWith(t.beagleViewRef.current, result)
+      expect(t.controller.onSuccess).toHaveBeenCalledWith(t.beagleViewRef.current, result)
     })
   })
 }

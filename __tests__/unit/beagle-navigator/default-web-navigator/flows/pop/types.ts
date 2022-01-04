@@ -18,6 +18,7 @@ export interface PrepareParams {
   hasSingleStack?: boolean,
   hasSingleItem?: boolean,
   shouldPopUntil?: boolean,
+  useTopItemWithNavigationContext?: boolean,
 }
 
 export type PopOperation = 'popView' | 'popStack' | 'popToView'

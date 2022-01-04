@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { createLocalContextsMock } from '../../../../../../old-structure/utils/test-utils'
 import { PushOperation } from '../../types'
 import { prepare, navigationToStackOperation } from '../../utils'
 
-export function remoteSuccessfulFlowWithCompletionOnLoading(
-  type: PushOperation,
-) {
+export function remoteSuccessfulFlowWithCompletionOnLoading(type: PushOperation) {
   describe('Successful remote view flow (completion on loading)', () => {
+    const localContextsManager = createLocalContextsMock()
     let t: ReturnType<typeof prepare>
 
     beforeAll(() => {
@@ -28,22 +27,23 @@ export function remoteSuccessfulFlowWithCompletionOnLoading(
         defaultController: {
           onLoading: (_, complete) => complete(),
         },
-      })
+      }, {}, { getLocalContexts: () => localContextsManager })
       // it's important to not wait the navigation to finish here
-      t.navigator[type]({ url: '/test' })
+      t.navigator[type]({ route: { url: '/test' }, navigationContext: { path: 'testPath', value: 'Test value' } })
     })
 
     afterAll(() => t.tearDown())
 
-    it(
-      'should not wait response to finish before adding the new route to the navigation data structure',
-      () => {
-        expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalled()
-      },
-    )
+    it('should not wait response to finish before adding the new route to the navigation data structure', () => {
+      expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalled()
+    })
 
     it('should not wait response to finish before creating analytics record', () => {
       expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalled()
+    })
+
+    it('should create the navigationContext', () => {
+      expect(localContextsManager.setContext).toHaveBeenCalledWith('navigationContext', 'Test value', 'testPath')
     })
 
     it('should not wait response to finish before running change listeners', () => {

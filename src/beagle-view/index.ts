@@ -22,6 +22,8 @@ import { BeagleNavigator } from 'beagle-navigator/types'
 import Renderer from './render'
 import { Renderer as RendererType } from './render/types'
 import { BeagleView, ChangeListener } from './types'
+import { LocalContextsManager as LocalContextsManagerType } from './local-contexts/types'
+import LocalContextsManager from './local-contexts/manager'
 
 const createBeagleView = (
   beagleService: BeagleService,
@@ -31,6 +33,7 @@ const createBeagleView = (
   const changeListeners: ChangeListener[] = []
 
   let renderer = {} as RendererType
+  let localContextsManager = {} as LocalContextsManagerType
   let unsubscribeFromGlobalContext = () => {}
 
   function getTree() {
@@ -57,6 +60,7 @@ const createBeagleView = (
 
   const beagleView: BeagleView = {
     onChange,
+    getLocalContexts: () => localContextsManager,
     getRenderer: () => renderer,
     getTree,
     getNavigator: () => parentNavigator,
@@ -78,14 +82,18 @@ const createBeagleView = (
     })
   }
 
-  function setupGlobalContext() {
-    unsubscribeFromGlobalContext = beagleService.globalContext.subscribe(
-      () => renderer.doPartialRender(getTree()),
-    )
+  function createLocalContext() {
+    // renderer, getTree
+    localContextsManager = LocalContextsManager.create()
   }
 
+  function setupGlobalContexts() {
+    unsubscribeFromGlobalContext = beagleService.globalContext.subscribe(() => renderer.doPartialRender(getTree()))
+  }
+
+  createLocalContext()
   createRenderer()
-  setupGlobalContext()
+  setupGlobalContexts()
 
   return beagleView
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { prepare, navigationToStackOperation } from './utils'
+import { prepare } from './utils'
 import { PopOperation } from './types'
 
 export function unsuccessfulPopFlow(type: PopOperation, toView?: string) {
@@ -28,7 +28,7 @@ export function unsuccessfulPopFlow(type: PopOperation, toView?: string) {
         popToView: { shouldPopUntil: false },
       }
       t = prepare(config[type])
-      t.navigator[type](toView!)
+      t.navigator[type]({ route: toView as any })
     })
 
     it('should log error', () => {
@@ -41,6 +41,9 @@ export function unsuccessfulPopFlow(type: PopOperation, toView?: string) {
 
     it('should not create analytics record', () => {
       expect(t.service.analyticsService.createScreenRecord).not.toHaveBeenCalled()
+    })
+
+    it('should not set the navigation context', () => {
     })
 
     it('should not run change listeners', () => {

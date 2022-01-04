@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-import BeagleView from 'beagle-view'
+import { createLocalContextsMock } from '../../../../../../old-structure/utils/test-utils'
 import { PushOperation } from '../../types'
 import { prepare, navigationToStackOperation } from '../../utils'
 
-export function remoteUnsuccessfulFlowWithoutCompletion(
-  type: PushOperation,
-) {
+export function remoteUnsuccessfulFlowWithoutCompletion(type: PushOperation) {
   describe('Unsuccessful remote view flow (never completes)', () => {
     const error = Error('test')
+    const localContextsManager = createLocalContextsMock()
     let t: ReturnType<typeof prepare>
 
     beforeAll(async () => {
-      t = prepare({ fetchError: error })
-      await t.navigator[type]({ url: '/test' })
+      t = prepare({ fetchError: error }, {}, { getLocalContexts: () => localContextsManager })
+      await t.navigator[type]({ route: { url: '/test' } })
     })
 
     afterAll(() => t.tearDown())
@@ -52,6 +51,10 @@ export function remoteUnsuccessfulFlowWithoutCompletion(
 
     it('should not create analytics record', () => {
       expect(t.service.analyticsService.createScreenRecord).not.toHaveBeenCalled()
+    })
+
+    it('should not set the navigation context', () => {
+      expect(localContextsManager.setContext).not.toHaveBeenCalled()
     })
 
     it('should not run change listeners', () => {

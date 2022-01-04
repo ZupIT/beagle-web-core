@@ -18,13 +18,8 @@ import nock from 'nock'
 import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import BeagleView from 'beagle-view'
 import BeagleService from 'service/beagle-service'
-import BeagleNetworkError from 'error/BeagleNetworkError'
-import { treeA, treeB } from './mocks'
-import { createHttpResponse } from './utils/test-utils'
 
 const baseUrl = 'http://teste.com'
-const path = '/myview'
-const url = `${baseUrl}${path}`
 
 describe('BeagleUIView', () => {
   let view: BeagleViewType

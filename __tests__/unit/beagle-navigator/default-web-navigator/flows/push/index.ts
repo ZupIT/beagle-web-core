@@ -33,6 +33,7 @@ export function createTestSuitForPushOperation(type: PushOperation) {
     remoteUnsuccessfulFlowWithCompletionOnError(type)
     remoteUnsuccessfulFlowWithoutCompletion(type)
     remoteUnsuccessfulFlowWithRetrial(type)
+
     if (type !== 'pushView') {
       remoteSuccessfulFlowWithCustomController(type)
       remoteSuccessfulFlowWithInexistentController(type)

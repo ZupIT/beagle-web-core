@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { successfulPopFlow } from './successful'
+import { successfulPopFlow, successfulPopFlowWithNavigationContext } from './successful'
 import { unsuccessfulPopFlow } from './unsuccessful'
 import { PopOperation } from './types'
 
 export function createTestSuitForPopOperation(type: PopOperation) {
   describe(`${type}: flows`, () => {
     successfulPopFlow(type)
+    successfulPopFlowWithNavigationContext(type)
     unsuccessfulPopFlow(type)
   })
 }

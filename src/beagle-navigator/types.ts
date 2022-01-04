@@ -15,6 +15,7 @@
  */
 
 import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import { LocalContextsManager } from 'beagle-view/local-contexts/types'
 import { BeagleView } from 'beagle-view/types'
 import { HttpMethod } from 'service/network/types'
 
@@ -38,8 +39,12 @@ export interface DoubleStack<T> {
 }
 
 export interface DefaultWebNavigatorItem<T> {
-  screen: { id: string, content: T },
+  screen: {
+    id: string,
+    content: T,
+  },
   controller: NavigationController,
+  localContextsManager: LocalContextsManager,
 }
 
 export type NavigationType = Extract<keyof BeagleNavigator<any>, (
@@ -82,78 +87,110 @@ export interface NavigationController {
   onSuccess: (view: BeagleView, screen: BeagleUIElement) => void,
 }
 
+export interface NavigationContext {
+  path?: string,
+  value?: any,
+}
+
 export type NavigatorChangeListener<T> = (widget: T, routeId: string) => void
+
+export interface NavigationActionOptions {
+  route?: Route | string,
+  controllerId?: string,
+  navigationContext?: NavigationContext,
+}
 
 export interface BeagleNavigator<T> {
   /**
    * Creates and navigates to a new navigation stack where the first route is the parameter `route`.
    *
-   * @param route the route to navigate to
-   * @param controllerId optional. NavigationController to use for this specific stack.
+   * @param options the NavigationActionOptions object to set the attributes of the navigation
+   * @prop {Object} options.route the route to navigate to
+   * @prop {string} [options.controllerId] NavigationController to use for this specific stack.
+   * @prop {Object} [options.navigationContext] Context to be passed to the action and will be attached to the next active `BeagleView`.
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  pushStack: (route: Route, controllerId?: string) => Promise<void>,
+  pushStack: (options: NavigationActionOptions) => Promise<void>,
   /**
    * Removes the entire current navigation stack and navigates back to the last route of the
    * previous stack. Throws an error if there's only one navigation stack.
    *
+   * @param options the NavigationActionOptions object to set the attributes of the navigation
+   * @prop {Object} options.route the route to navigate to
+   * @prop {Object} [options.navigationContext] Context to be passed to the action and will be attached to the next active `BeagleView`.
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  popStack: () => void,
+  popStack: (options: Omit<NavigationActionOptions, 'controllerId'>) => void,
   /**
    * Navigates to `route` by pushing it to the navigation history of the current navigation stack.
    *
-   * @param route the route to navigate to
+   * @param options the NavigationActionOptions object to set the attributes of the navigation
+   * @prop {Object} options.route the route to navigate to
+   * @prop {Object} [options.navigationContext] Context to be passed to the action and will be attached to the next active `BeagleView`.
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  pushView: (route: Route) => Promise<void>,
+  pushView: (options: Omit<NavigationActionOptions, 'controllerId'>) => Promise<void>,
   /**
    * Goes back one entry in the navigation history. If the current stack has only one view, this
    * also pops the current stack. If only one stack and one view exist, it will throw an error.
    *
+   * @param options the NavigationActionOptions object to set the attributes of the navigation
+   * @prop {Object} options.route the route to navigate to
+   * @prop {Object} [options.navigationContext] Context to be passed to the action and will be attached to the next active `BeagleView`.
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  popView: () => void,
+  popView: (options: Omit<NavigationActionOptions, 'controllerId'>) => void,
   /**
    * Removes every navigation entry in the current stack until `route` is found. Navigates to
    * `route`. If `route` doesn't exist in the current stack, an error is thrown.
    *
+   * @param options the NavigationActionOptions object to set the attributes of the navigation
+   * @prop {string} options.route the route to navigate to
+   * @prop {Object} [options.navigationContext] Context to be passed to the action and will be attached to the next active `BeagleView`.
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  popToView: (route: string) => void,
+  popToView: (options: Pick<NavigationActionOptions, 'navigationContext'> & { route: string }) => void,
   /**
    * Removes the current navigation stack and navigates to the a new stack where the first route is
    * the one passed as parameter.
    *
-   * @param route the route to navigate to
-   * @param controllerId optional. NavigationController to use for this specific stack.
+   * @param options the NavigationActionOptions object to set the attributes of the navigation
+   * @prop {Object} options.route the route to navigate to
+   * @prop {string} [options.controllerId] NavigationController to use for this specific stack.
+   * @prop {Object} [options.navigationContext] Context to be passed to the action and will be attached to the next active `BeagleView`.
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  resetStack: (route: Route, controllerId?: string) => Promise<void>,
+  resetStack: (options: NavigationActionOptions) => Promise<void>,
   /**
    * Removes the entire navigation history and starts it over by navigating to a new initial route
    * (passed as parameter).
    *
-   * @param route the route to navigate to (new initial route)
-   * @param controllerId optional. NavigationController to use for this specific stack.
+   * @param options the NavigationActionOptions object to set the attributes of the navigation
+   * @prop {Object} options.route the route to navigate to
+   * @prop {string} [options.controllerId] NavigationController to use for this specific stack.
+   * @prop {Object} [options.navigationContext] Context to be passed to the action and will be attached to the next active `BeagleView`.
+   *
    * @returns a promise that resolves as soon as the navigation completes
    */
-  resetApplication: (route: Route, controllerId?: string) => Promise<void>,
+  resetApplication: (options: NavigationActionOptions) => Promise<void>,
   /**
    * This is generic function to call any navigation type. For quick reference, read the JSDocs of
    * each method separately. If the route provided is not of the type expected by the navigation
    * type, an error is thrown.
    *
-   * @param the navigation type
-   * @param route the route expected by the navigation type
-   * @param controllerId the controller id for navigation actions of type pushStack, resetStack and
-   * resetApplication
    * @returns a promise that resolves as soon as the navigation completes
    */
   navigate: (
     type: NavigationType,
     route?: Route | string,
     controllerId?: string,
+    navigationContext?: NavigationContext,
   ) => Promise<void>,
   /**
    * Check if the navigator is empty

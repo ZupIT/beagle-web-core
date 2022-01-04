@@ -16,6 +16,7 @@
 
 import DefaultWebNavigator from 'beagle-navigator/default-web-navigator'
 import BeagleView from 'beagle-view'
+import { BeagleService } from 'service/beagle-service/types'
 import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import { DefaultWebNavigatorItem, DoubleStack as DoubleStackType } from 'beagle-navigator/types'
 import {
@@ -39,7 +40,9 @@ export function prepare({
   fetchResult = { _beagleComponent_: '' },
   defaultController,
   fetchError,
-}: PrepareParams = {}) {
+}: PrepareParams = {},
+beagleServiceCustom: Partial<BeagleService> = {},
+beagleViewCustom: Partial<BeagleViewType> = {}) {
   // Services
   const viewClient = createViewClientMock({
     fetch: jest.fn(() => new Promise((resolve, reject) => {
@@ -72,7 +75,8 @@ export function prepare({
       platform: 'Test',
       defaultNavigationController: controller,
       navigationControllers,
-    })
+    }),
+    ...beagleServiceCustom,
   })
 
   // Navigator
@@ -86,7 +90,7 @@ export function prepare({
   const beagleViewRef: { current: BeagleViewType | null } = { current: null }
   const originalBeagleView = BeagleView.create
   BeagleView.create = jest.fn(() => {
-    beagleViewRef.current = createBeagleViewMock()
+    beagleViewRef.current = createBeagleViewMock(beagleViewCustom)
     return beagleViewRef.current
   })
 

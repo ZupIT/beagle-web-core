@@ -65,7 +65,7 @@ function start(options?: ConfigOptions) {
     const widgetRef: Partial<BeagleWidgetRef> = {}
     navigator.onChange(widget => widgetRef.current = widget)
 
-    await navigator.pushStack({ url: route }, initialController)
+    await navigator.pushStack({ route: { url: route }, controllerId: initialController })
 
     return widgetRef as BeagleWidgetRef
   }

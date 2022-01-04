@@ -15,22 +15,19 @@
  */
 
 import logger from 'logger'
-import unset from 'lodash/unset'
 import has from 'lodash/has'
-import setLodash from 'lodash/set'
+import unset from 'lodash/unset'
 import getLodash from 'lodash/get'
-import cloneDeep from 'lodash/cloneDeep'
+import setLodash from 'lodash/set'
+import { cloneDeep } from 'lodash'
 import { DataContext } from 'beagle-tree/types'
-import { GlobalContext, GlobalContextListener } from './types'
+import { LocalContext, LocalContextListener } from './types'
 
-function createGlobalContext(): GlobalContext {
-  const listeners: Array<GlobalContextListener> = []
-  const globalContext: DataContext = {
-    id: 'global',
-    value: null,
-  }
+function createLocalContext(id: string): LocalContext {
+  const listeners: Array<LocalContextListener> = []
+  const localContext: DataContext = { id, value: null }
 
-  function subscribe(listener: GlobalContextListener) {
+  function subscribe(listener: LocalContextListener) {
     listeners.push(listener)
     return () => {
       const index = listeners.indexOf(listener)
@@ -38,38 +35,38 @@ function createGlobalContext(): GlobalContext {
     }
   }
 
-  function callUpdateListeners(listeners: Array<GlobalContextListener>) {
+  function callUpdateListeners(listeners: Array<LocalContextListener>) {
     listeners.forEach(listener => listener())
   }
 
   function getAsDataContext() {
-    return cloneDeep(globalContext)
+    return cloneDeep(localContext)
   }
 
   function get(path?: string) {
-    if (!path) return cloneDeep(globalContext.value)
-    return getLodash(globalContext.value, path)
+    if (!path) return cloneDeep(localContext.value)
+    return getLodash(localContext.value, path)
   }
 
   function set(value: any, path?: string) {
-    if (!path) globalContext.value = value
+    if (!path) localContext.value = value
     else {
-      globalContext.value = globalContext.value || {}
-      setLodash(globalContext, `value.${path}`, value)
+      localContext.value = localContext.value || {}
+      setLodash(localContext, `value.${path}`, value)
     }
     callUpdateListeners(listeners)
   }
 
   function clear(path?: string) {
     if (!path) {
-      globalContext.value = null
+      localContext.value = null
     } else {
-      if (has(globalContext.value, path)) {
-        unset(globalContext.value, path)
+      if (has(localContext.value, path)) {
+        unset(localContext.value, path)
       } else logger.warn(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
     }
 
-    if (!path || has(globalContext.value, path)) callUpdateListeners(listeners)
+    if (!path || has(localContext.value, path)) callUpdateListeners(listeners)
   }
 
   return {
@@ -82,5 +79,5 @@ function createGlobalContext(): GlobalContext {
 }
 
 export default {
-  create: createGlobalContext,
+  create: createLocalContext,
 }

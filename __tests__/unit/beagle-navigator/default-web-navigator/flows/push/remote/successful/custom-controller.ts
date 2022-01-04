@@ -26,7 +26,7 @@ export function remoteSuccessfulFlowWithCustomController(
 
     beforeAll(async () => {
       t = prepare({ fetchResult: result })
-      await t.navigator[type]({ url: '/test' }, 'myCustomController')
+      await t.navigator[type]({ route: { url: '/test' }, controllerId: 'myCustomController' })
     })
 
     afterAll(() => t.tearDown())

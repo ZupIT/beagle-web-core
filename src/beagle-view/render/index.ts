@@ -122,7 +122,8 @@ function createRenderer({
   }
 
   function evaluateComponents(viewTree: IdentifiableBeagleUIElement) {
-    const contextMap = Context.evaluate(viewTree, [globalContext.getAsDataContext()])
+    const localContexts = beagleView.getLocalContexts().getAllAsDataContext()
+    const contextMap = Context.evaluate(viewTree, [globalContext.getAsDataContext(), ...localContexts])
     return Tree.replaceEach(viewTree, (component) => {
       Action.deserialize({
         component,
@@ -197,13 +198,14 @@ function createRenderer({
 
     if (!anchorElement) return logger.error(`Beagle can't do the template rendering because it couldn't the node identified by the provided anchor: ${anchor}.`)
 
-    const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, globalContexts: DataContext[]) => {
-      const hierarchy = Context.evaluate(uiTree, globalContexts, false)
+    const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, extraContexts: DataContext[]) => {
+      const hierarchy = Context.evaluate(uiTree, extraContexts, false)
       return Object.keys(hierarchy).map(key => hierarchy[key]).reduce((prev, cur) => [...prev, ...cur], [])
     }
 
-    const globalContexts = [beagleView.getBeagleService().globalContext.getAsDataContext()]
-    const treeContextHierarchy = getTreeContextHierarchy(uiTree, globalContexts) || []
+    const beagleService = beagleView.getBeagleService()
+    const extraContexts = [beagleService.globalContext.getAsDataContext(), ...beagleView.getLocalContexts().getAllAsDataContext()]
+    const treeContextHierarchy = getTreeContextHierarchy(uiTree, extraContexts) || []
     const contextTemplates: IdentifiableBeagleUIElement[] = []
     const insertion = {
       prepend: (children: IdentifiableBeagleUIElement[]) => [...children?.reverse() || [], ...anchorElement.children || []],
@@ -214,7 +216,6 @@ function createRenderer({
     contexts.forEach((context, index) => {
       const contextHierarchy = [...context || [], ...treeContextHierarchy]
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
-
       if (template) {
         let templateTree = Tree.clone(template)
         templateTree = {

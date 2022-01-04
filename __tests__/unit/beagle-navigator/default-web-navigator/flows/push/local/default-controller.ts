@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import LocalContextsManager from 'beagle-view/local-contexts/manager'
 import { LocalView } from 'beagle-navigator/types'
+import { createLocalContextsMock } from '../../../../../old-structure/utils/test-utils'
 import { PushOperation } from '../types'
 import { prepare } from '../utils'
 
@@ -22,6 +24,7 @@ const IMMEDIATELY_THRESHOLD_MS = 10
 
 export function localFlowWithDefaultController(type: PushOperation) {
   describe('Local view flow with default controller', () => {
+    const localContextsManager = createLocalContextsMock()
     const route: LocalView = {
       screen: { id: 'test', _beagleComponent_: 'beagle:container' }
     }
@@ -29,9 +32,9 @@ export function localFlowWithDefaultController(type: PushOperation) {
     let t: ReturnType<typeof prepare>
 
     beforeAll(async () => {
-      t = prepare()
+      t = prepare({}, {}, { getLocalContexts: () => localContextsManager })
       const started = new Date().getTime()
-      await t.navigator[type](route)
+      await t.navigator[type]({ route })
       timeTaken = new Date().getTime() - started
     })
 
@@ -60,14 +63,53 @@ export function localFlowWithDefaultController(type: PushOperation) {
         route: route.screen.id,
         platform: t.service.getConfig().platform,
       })
-      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(
-        t.controller.onSuccess as jest.Mock,
-      )
+      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(t.controller.onSuccess as jest.Mock)
+    })
+
+    it('should not set the navigation context', () => {
+      expect(localContextsManager.setContext).not.toHaveBeenCalled()
     })
 
     it('should run change listeners', () => {
       expect(t.onChange).toHaveBeenCalledWith(t.beagleViewRef.current, route.screen.id)
       expect(t.onChange).toHaveBeenCalledAfter(t.controller.onSuccess as jest.Mock)
+    })
+  })
+
+  describe('Local view flow with default controller with navigation context flow', () => {
+    const localContextsManager = LocalContextsManager.create()
+    let t: ReturnType<typeof prepare>
+
+    beforeAll(async () => {
+      t = prepare({}, {}, { getLocalContexts: () => localContextsManager })
+    })
+
+    it('should keep empty the navigation context if none is given', async () => {
+      const setContextSpy = jest.spyOn(localContextsManager, 'setContext')
+      const route: LocalView = {
+        screen: { id: 'test', _beagleComponent_: 'beagle:container' }
+      }
+      await t.navigator[type]({ route })
+
+      expect(setContextSpy).not.toHaveBeenCalled()
+      expect(localContextsManager.getAllAsDataContext().length).toBe(0)
+
+      setContextSpy.mockRestore()
+    })
+
+    it('should set the navigation context if given', async () => {
+      const setContextSpy = jest.spyOn(localContextsManager, 'setContext')
+      const route: LocalView = {
+        screen: { id: 'route-with-navigation-context', _beagleComponent_: 'beagle:container' }
+      }
+      await t.navigator[type]({ route, navigationContext: { path: 'test', value: 'value of test' } })
+
+      const dataContexts = localContextsManager.getAllAsDataContext()
+      expect(setContextSpy).toHaveBeenCalledWith('navigationContext', 'value of test', 'test')
+      expect(dataContexts.length).toBe(1)
+      expect(dataContexts[0]).toEqual({ id: 'navigationContext', value: { test: 'value of test' } })
+
+      setContextSpy.mockRestore()
     })
   })
 }

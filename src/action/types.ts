@@ -78,7 +78,6 @@ export interface CustomAction extends BaseAction {
   [key: string]: any,
 }
 
-
 export type BeagleDefaultAction = (
   SendRequestAction
   | AddChildrenAction

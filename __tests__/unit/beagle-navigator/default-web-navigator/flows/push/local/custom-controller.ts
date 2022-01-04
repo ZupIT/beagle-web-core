@@ -27,7 +27,7 @@ export function localFlowWithCustomController(type: PushOperation) {
 
     beforeAll(async () => {
       t = prepare()
-      await t.navigator[type](route, 'myCustomController')
+      await t.navigator[type]({ route, controllerId: 'myCustomController' })
     })
 
     it('should handle onSuccess', () => {

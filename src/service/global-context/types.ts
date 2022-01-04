@@ -21,7 +21,7 @@ export type GlobalContextListener = () => void
 export interface GlobalContext {
   /**
    * Gets a value in the global context.
-   * 
+   *
    * @parameter path optional. Path for the desired value in the global context. Example:
    * `user.documents[0]` if the global context has an object named `user`, with an array named
    * `documents` and you want the first document. When omitted, the entire global context is
@@ -31,7 +31,7 @@ export interface GlobalContext {
   get: (path?: string) => any,
   /**
    * Sets a value in the global context. If the provided path doesn't exist, nothing happens.
-   * 
+   *
    * @param value the value to set.
    * @param path optional. Where in the global context to set the value. When omitted, the entire
    * global context is replaced.
@@ -39,11 +39,11 @@ export interface GlobalContext {
   set: (value: any, path?: string) => void,
   /**
    * Removes a value from the global context. If the provided path doesn't exist, nothing happens.
-   * 
+   *
    * To clear a key in an object is to remove the key entirely.
    * To clear an element of an array is to transform it to null.
    * To clear the entire global context is to set it to null.
-   * 
+   *
    * @param path optional. The path of the value you want to remove from the global context. When
    * omitted, the entire global cleared.
    */
@@ -54,7 +54,7 @@ export interface GlobalContext {
   getAsDataContext: () => DataContext,
   /**
    * Subscribes to changes in the global context.
-   * 
+   *
    * @param listener function to be called every time the global context changes.
    * @returns a function to remove the listener (unsubscribe).
    */

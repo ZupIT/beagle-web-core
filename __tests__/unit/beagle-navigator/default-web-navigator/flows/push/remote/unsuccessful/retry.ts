@@ -33,7 +33,7 @@ export function remoteUnsuccessfulFlowWithRetrial(
           onError: jest.fn((_, __, retryParam) => retry = retryParam),
         },
       })
-      await t.navigator[type]({ url: '/test' })
+      await t.navigator[type]({ route: { url: '/test' } })
       t.viewClient.fetch = () => Promise.resolve(result)
       await retry()
     })

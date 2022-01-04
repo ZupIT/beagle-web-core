@@ -18,6 +18,7 @@ import { BeagleNavigator } from 'beagle-navigator/types'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import BeagleError from 'error/BeagleError'
 import { BeagleService } from 'service/beagle-service/types'
+import { LocalContextsManager } from './local-contexts/types'
 import { Renderer } from './render/types'
 
 export type ChangeListener = (tree: IdentifiableBeagleUIElement) => void
@@ -33,6 +34,12 @@ export interface BeagleView {
    * @returns a function to remove the listener (unsubscribe)
    */
   onChange: (listener: ChangeListener) => (() => void),
+  /**
+   * Gets the local context of the current BeagleView.
+   *
+   * @returns the localContext
+   */
+  getLocalContexts: () => LocalContextsManager,
   /**
    * Gets the renderer of the current BeagleView. Can be used to control the rendering directly.
    *

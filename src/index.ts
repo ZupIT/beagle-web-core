@@ -53,11 +53,9 @@ export { SerializableNetworkError, SerializableResponse } from 'error/BeagleNetw
 export { BeagleError, BeagleNetworkError }
 
 // decorators
-
 export * from 'metadata/decorator'
 
 // service types
-
 export * from 'service/global-context/types'
 export * from 'service/view-content-manager/types'
 export * from 'service/beagle-service/types'
@@ -67,7 +65,6 @@ export { ViewClient } from 'service/network/view-client/types'
 export { AnalyticsProvider, AnalyticsRecord, AnalyticsConfig } from 'service/analytics/types'
 
 // general types
-
 export * from 'action/types'
 export * from 'action/navigation/types'
 export * from 'beagle-tree/types'
@@ -78,7 +75,6 @@ export * from 'beagle-navigator/types'
 export * from 'metadata/types'
 
 // beagle service: default exportation
-
 import BeagleService from 'service/beagle-service'
 
 export default BeagleService.create

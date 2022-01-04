@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { createLocalContextsMock } from '../../../../../../old-structure/utils/test-utils'
 import { PushOperation } from '../../types'
 import { prepare, navigationToStackOperation } from '../../utils'
 
-export function remoteUnsuccessfulFlowWithCompletionOnError(
-  type: PushOperation,
-) {
+export function remoteUnsuccessfulFlowWithCompletionOnError(type: PushOperation) {
   describe('Unsuccessful remote view flow (completes onError)', () => {
     const route = { url: '/test' }
     const error = Error('test')
+    const localContextsManager = createLocalContextsMock()
     let t: ReturnType<typeof prepare>
 
     beforeAll(async () => {
@@ -30,9 +30,9 @@ export function remoteUnsuccessfulFlowWithCompletionOnError(
         fetchError: error,
         defaultController: {
           onError: jest.fn((_, __, ___, complete) => complete()),
-        },
-      })
-      await t.navigator[type](route)
+        }
+      }, {}, { getLocalContexts: () => localContextsManager })
+      await t.navigator[type]({ route, navigationContext: { path: 'testPath', value: 'Test value' } })
     })
 
     afterAll(() => t.tearDown())
@@ -41,10 +41,9 @@ export function remoteUnsuccessfulFlowWithCompletionOnError(
       expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledWith({
         controller: t.controller,
         screen: { id: route.url, content: t.beagleViewRef.current },
+        localContextsManager: localContextsManager,
       })
-      expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledAfter(
-        t.controller.onError as jest.Mock,
-      )
+      expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledAfter(t.controller.onError as jest.Mock)
     })
 
     it('should create analytics record', () => {
@@ -52,9 +51,11 @@ export function remoteUnsuccessfulFlowWithCompletionOnError(
         route: route.url,
         platform: t.service.getConfig().platform,
       })
-      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(
-        t.controller.onError as jest.Mock,
-      )
+      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(t.controller.onError as jest.Mock)
+    })
+
+    it('should create the navigationContext', () => {
+      expect(localContextsManager.setContext).toHaveBeenCalledWith('navigationContext', 'Test value', 'testPath')
     })
 
     it('should run change listeners', () => {

@@ -37,13 +37,13 @@ describe('DefaultWebNavigator: navigation method as an alternative call', () => 
 
   it('should push stack', () => {
     navigator.navigate('pushStack', '/test', 'myController')
-    expect(navigator.pushStack).toHaveBeenCalledWith('/test', 'myController')
+    expect(navigator.pushStack).toHaveBeenCalledWith({ route: '/test', controllerId: 'myController', navigationContext: undefined })
   })
 
   it('should push view', () => {
     navigator.navigate('pushView', '/test')
     const pushViewMock = navigator.pushView as jest.Mock
-    expect(pushViewMock.mock.calls[0][0]).toBe('/test')
+    expect(pushViewMock.mock.calls[0][0].route).toBe('/test')
   })
 
   it('should pop stack', () => {
@@ -59,16 +59,16 @@ describe('DefaultWebNavigator: navigation method as an alternative call', () => 
   it('should pop to view', () => {
     navigator.navigate('popToView', '/test')
     const popToViewMock = navigator.popToView as jest.Mock
-    expect(popToViewMock.mock.calls[0][0]).toBe('/test')
+    expect(popToViewMock.mock.calls[0][0].route).toBe('/test')
   })
 
   it('should reset stack', () => {
     navigator.navigate('resetStack', '/test', 'myController')
-    expect(navigator.resetStack).toHaveBeenCalledWith('/test', 'myController')
+    expect(navigator.resetStack).toHaveBeenCalledWith({ route: '/test', controllerId: 'myController', navigationContext: undefined })
   })
 
   it('should reset application', () => {
     navigator.navigate('resetApplication', '/test', 'myController')
-    expect(navigator.resetApplication).toHaveBeenCalledWith('/test', 'myController')
+    expect(navigator.resetApplication).toHaveBeenCalledWith({ route: '/test', controllerId: 'myController', navigationContext: undefined })
   })
 })

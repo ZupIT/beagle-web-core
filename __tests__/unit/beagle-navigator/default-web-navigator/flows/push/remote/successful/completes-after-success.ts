@@ -15,20 +15,20 @@
  */
 
 import BeagleView from 'beagle-view'
+import { createLocalContextsMock } from '../../../../../../old-structure/utils/test-utils'
 import { PushOperation } from '../../types'
 import { prepare, navigationToStackOperation } from '../../utils'
 
-export function remoteSuccessfulFlowWithCompletionAfterSuccess(
-  type: PushOperation,
-) {
+export function remoteSuccessfulFlowWithCompletionAfterSuccess(type: PushOperation) {
   describe('Successful remote view flow (completion after success)', () => {
+    const localContextsManager = createLocalContextsMock()
     const route = { url: '/test' }
     const result = { _beagleComponent_: 'beagle:container' }
     let t: ReturnType<typeof prepare>
 
     beforeAll(async () => {
-      t = prepare({ fetchResult: result })
-      await t.navigator[type](route)
+      t = prepare({ fetchResult: result }, {}, { getLocalContexts: () => localContextsManager })
+      await t.navigator[type]({ route, navigationContext: { path: 'testPath', value: 'Test value' } })
     })
 
     afterAll(() => t.tearDown())
@@ -38,8 +38,7 @@ export function remoteSuccessfulFlowWithCompletionAfterSuccess(
     })
 
     it('should handle onLoading', () => {
-      expect(t.controller.onLoading)
-        .toHaveBeenCalledWith(t.beagleViewRef.current, expect.any(Function))
+      expect(t.controller.onLoading).toHaveBeenCalledWith(t.beagleViewRef.current, expect.any(Function))
     })
 
     it('should fetch view', () => {
@@ -60,10 +59,9 @@ export function remoteSuccessfulFlowWithCompletionAfterSuccess(
       expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledWith({
         controller: t.controller,
         screen: { id: route.url, content: t.beagleViewRef.current },
+        localContextsManager: localContextsManager,
       })
-      expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledAfter(
-        t.controller.onSuccess as jest.Mock,
-      )
+      expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledAfter(t.controller.onSuccess as jest.Mock)
     })
 
     it('should create analytics record', () => {
@@ -71,9 +69,11 @@ export function remoteSuccessfulFlowWithCompletionAfterSuccess(
         route: route.url,
         platform: t.service.getConfig().platform,
       })
-      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(
-        t.controller.onSuccess as jest.Mock,
-      )
+      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(t.controller.onSuccess as jest.Mock)
+    })
+
+    it('should create the navigation context', () => {
+      expect(localContextsManager.setContext).toHaveBeenCalledWith('navigationContext', 'Test value', 'testPath')
     })
 
     it('should run change listeners', () => {

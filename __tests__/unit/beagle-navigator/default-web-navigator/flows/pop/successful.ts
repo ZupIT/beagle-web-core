@@ -24,7 +24,7 @@ export function successfulPopFlow(type: PopOperation) {
 
     beforeAll(() => {
       t = prepare()
-      t.navigator[type](toView)
+      t.navigator[type]({ route: toView })
     })
 
     if (type === 'popToView') {
@@ -49,6 +49,134 @@ export function successfulPopFlow(type: PopOperation) {
 
     it('should run change listeners', () => {
       expect(t.onChange).toHaveBeenCalledWith(t.topItem.screen.content, t.topItem.screen.id)
+    })
+  })
+}
+
+export function successfulPopFlowWithNavigationContext(type: PopOperation) {
+  describe('Successful pop flow with navigation context', () => {
+    const toView = '/test'
+    let setContextSpy: jest.SpyInstance<any>
+    let t: ReturnType<typeof prepare>
+
+    describe('when previous path has no navigation context', () => {
+      beforeAll(() => {
+        t = prepare()
+        setContextSpy = jest.spyOn(t.topItemLocalContextsManager, 'setContext')
+      })
+
+      it('should set the navigationContext as the one passed on the pop call', () => {
+        expect(t.topItemLocalContextsManager.getAllAsDataContext().length).toBe(0)
+
+        t.navigator[type]({ route: toView, navigationContext: { path: 'popPath', value: { pop: 'value' } } })
+
+        expect(setContextSpy).toHaveBeenCalledWith('navigationContext', { pop: 'value' }, 'popPath')
+        const dataContexts = t.topItemLocalContextsManager.getAllAsDataContext()
+        expect(dataContexts.length).toBe(1)
+        expect(dataContexts[0]).toEqual({ id: 'navigationContext', value: { popPath: { pop: 'value' } } })
+      })
+
+      afterAll(() => {
+        setContextSpy.mockRestore()
+      })
+    })
+
+    describe('when previous path has navigation context', () => {
+      const toView = '/test'
+
+      describe('when none navigation context is provided', () => {
+        let setContextSpy: jest.SpyInstance<any>
+        let t: ReturnType<typeof prepare>
+
+        beforeAll(() => {
+          t = prepare({ useTopItemWithNavigationContext: true })
+          setContextSpy = jest.spyOn(t.topItemLocalContextsManager, 'setContext')
+        })
+
+        it('should not set the navigation context', () => {
+          expect(t.topItemLocalContextsManager.getAllAsDataContext().length).toBe(1)
+
+          t.navigator[type]({ route: toView, navigationContext: undefined })
+
+          expect(setContextSpy).not.toHaveBeenCalled()
+
+          const dataContexts = t.topItemLocalContextsManager.getAllAsDataContext()
+          expect(dataContexts.length).toBe(1)
+          expect(dataContexts[0]).toEqual({
+            id: 'navigationContext',
+            value: {
+              [t.topItemNavigationContext.path]: t.topItemNavigationContext.value
+            }
+          })
+        })
+
+        afterAll(() => {
+          setContextSpy.mockRestore()
+        })
+      })
+
+      describe('when pop navigation context has path', () => {
+        let setContextSpy: jest.SpyInstance<any>
+        let t: ReturnType<typeof prepare>
+
+        beforeAll(() => {
+          t = prepare({ useTopItemWithNavigationContext: true })
+          setContextSpy = jest.spyOn(t.topItemLocalContextsManager, 'setContext')
+        })
+
+        it('should merge the navigation context with the one passed on the pop call', () => {
+          expect(t.topItemLocalContextsManager.getAllAsDataContext().length).toBe(1)
+
+          t.navigator[type]({ route: toView, navigationContext: { path: 'popPath', value: { pop: 'value' } } })
+
+          expect(setContextSpy).toHaveBeenCalledWith('navigationContext', { pop: 'value' }, 'popPath')
+
+          const dataContexts = t.topItemLocalContextsManager.getAllAsDataContext()
+          expect(dataContexts.length).toBe(1)
+          expect(dataContexts[0]).toEqual({
+            id: 'navigationContext',
+            value: {
+              [t.topItemNavigationContext.path]: t.topItemNavigationContext.value,
+              popPath: {
+                pop: 'value'
+              }
+            }
+          })
+        })
+
+        afterAll(() => {
+          setContextSpy.mockRestore()
+        })
+      })
+
+      describe('when pop navigation context has no path', () => {
+        let setContextSpy: jest.SpyInstance<any>
+        let t: ReturnType<typeof prepare>
+
+        beforeAll(() => {
+          t = prepare({ useTopItemWithNavigationContext: true })
+          setContextSpy = jest.spyOn(t.topItemLocalContextsManager, 'setContext')
+        })
+
+        it('should set the navigation context as the one passed on the pop call', () => {
+          expect(t.topItemLocalContextsManager.getAllAsDataContext().length).toBe(1)
+
+          t.navigator[type]({ route: toView, navigationContext: { path: '', value: { pop: 'value' } } })
+
+          const dataContexts = t.topItemLocalContextsManager.getAllAsDataContext()
+          expect(dataContexts.length).toBe(1)
+          expect(dataContexts[0]).toEqual({
+            id: 'navigationContext',
+            value: {
+              pop: 'value'
+            }
+          })
+        })
+
+        afterAll(() => {
+          setContextSpy.mockRestore()
+        })
+      })
     })
   })
 }

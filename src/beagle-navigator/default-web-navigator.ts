@@ -28,6 +28,7 @@ import {
   NavigatorChangeListener,
   DefaultWebNavigatorItem,
   NavigationController,
+  NavigationContext,
 } from './types'
 import defaultWebController from './default-web-controller'
 import DoubleStack from './double-stack'
@@ -75,6 +76,16 @@ function createDefaultWebNavigator<T>(
     return () => pull(changeListeners, listener)
   }
 
+  function setNavigationContext(context?: NavigationContext): void {
+    if (context) {
+      const localContexts = navigationStack.getTopItem()?.localContextsManager
+      if (!localContexts) return
+
+      const { path, value } = context
+      localContexts.setContext('navigationContext', value, path)
+    }
+  }
+
   function runChangeListeners() {
     const topItem = navigationStack.getTopItem()
     if (!topItem) return
@@ -89,8 +100,7 @@ function createDefaultWebNavigator<T>(
   ) {
     try {
       controller.onLoading(view, completeNavigation)
-      const screen = await beagleService.viewClient.fetch(route)
-      controller.onSuccess(view, screen)
+      controller.onSuccess(view, await beagleService.viewClient.fetch(route))
       completeNavigation()
     } catch (error) {
       const retry = () => fetchContentAndUpdateView(route, view, controller, completeNavigation)
@@ -99,15 +109,17 @@ function createDefaultWebNavigator<T>(
   }
 
   async function newNavigationItem(
-    route: Route,
+    route: string | Route | undefined,
     type: Extract<keyof DoubleStackType<T>, 'pushItem' | 'pushStack' | 'resetStack' | 'reset'>,
     controllerId?: string,
+    navigationContext?: NavigationContext,
   ) {
+    if (!route) return logger.error('Route should be defined')
+    if (typeof route === 'string') return logger.error('To create a new navigation item, use a Route object')
+
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const view = BeagleView.create(beagleService, navigator)
-    const stackController = type === 'pushItem'
-      ? getCurrentNavigationController()
-      : getNavigationControllerById(controllerId)
+    const stackController = type === 'pushItem' ? getCurrentNavigationController() : getNavigationControllerById(controllerId)
     const routeId = getRouteId(route)
     const widget = widgetBuilder(view)
     let completed = false
@@ -116,8 +128,14 @@ function createDefaultWebNavigator<T>(
       if (completed) return
       navigationStack[type]({
         controller: stackController,
-        screen: { id: routeId, content: widget },
+        screen: {
+          id: routeId,
+          content: widget,
+        },
+        localContextsManager: view.getLocalContexts(),
       })
+
+      setNavigationContext(navigationContext)
       runChangeListeners()
       completed = true
     }
@@ -132,33 +150,33 @@ function createDefaultWebNavigator<T>(
   }
 
   const navigator: BeagleNavigator<T> = {
-    pushStack: (route, controllerId) => newNavigationItem(route, 'pushStack', controllerId),
-    popStack: () => {
-      if (navigationStack.hasSingleStack()) {
-        logger.error("Can't pop stack, there's only a single stack in the navigation.")
-        return
-      }
+    pushStack: ({ route, controllerId, navigationContext }) => newNavigationItem(route, 'pushStack', controllerId, navigationContext),
+    popStack: ({ navigationContext }) => {
+      if (navigationStack.hasSingleStack()) return logger.error("Can't pop stack, there's only a single stack in the navigation.")
       navigationStack.popStack()
+      setNavigationContext(navigationContext)
       runChangeListeners()
     },
-    pushView: (route) => newNavigationItem(route, 'pushItem'),
-    popView: () => {
-      if (navigationStack.hasSingleItem()) {
-        logger.error("Can't pop view, there's only a single view in the navigation.")
-        return
-      }
+    pushView: ({ route, navigationContext }) => newNavigationItem(route, 'pushItem', undefined, navigationContext),
+    popView: ({ navigationContext }) => {
+      if (navigationStack.hasSingleItem()) return logger.error("Can't pop view, there's only a single view in the navigation.")
       navigationStack.popItem()
+      setNavigationContext(navigationContext)
       runChangeListeners()
     },
-    popToView: (route) => {
-      const removed = navigationStack.popUntil(item => item.screen.id === route)
+    popToView: ({ route, navigationContext }) => {
+      if (!route) return logger.error('Can\'t pop, route should not be undefined')
+      const removed = navigationStack.popUntil((item) => item.screen.id === route)
       logger.error(`Can't pop to view "${route}"", it doesn't exist in teh current stack.`)
-      if (removed && removed.length) runChangeListeners()
+      if (removed && removed.length) {
+        setNavigationContext(navigationContext)
+        runChangeListeners()
+      }
     },
-    resetStack: (route, controllerId) => newNavigationItem(route, 'resetStack', controllerId),
-    resetApplication: (route, controllerId) => newNavigationItem(route, 'reset', controllerId),
-    navigate: (type, route, controllerId) => {
-      const result = navigator[type](route as any, controllerId)
+    resetStack: ({ route, controllerId, navigationContext }) => newNavigationItem(route, 'resetStack', controllerId, navigationContext),
+    resetApplication: ({ route, controllerId, navigationContext }) => newNavigationItem(route, 'reset', controllerId, navigationContext),
+    navigate: (type, route, controllerId, navigationContext) => {
+      const result = navigator[type]({ route: route as any, controllerId, navigationContext })
       return result instanceof Promise ? result : Promise.resolve()
     },
     getCurrentRoute: () => navigationStack.getTopItem()?.screen.id,

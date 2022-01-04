@@ -16,6 +16,7 @@
 
 import navigationActions from 'action/navigation'
 import { GenericNavigationAction } from 'action/navigation/types'
+import { NavigationContext } from 'beagle-navigator/types'
 import { createBeagleViewMock } from '../old-structure/utils/test-utils'
 
 describe('Action: navigation', () => {
@@ -82,7 +83,7 @@ describe('Action: navigation', () => {
       })
 
       expect(navigator).toBeDefined()
-      expect(navigator!.navigate).toHaveBeenCalledWith('pushStack', { url: '/test' }, 'myController')
+      expect(navigator!.navigate).toHaveBeenCalledWith('pushStack', { url: '/test' }, 'myController', undefined)
     })
 
     it('should resetStack', async () => {
@@ -93,8 +94,7 @@ describe('Action: navigation', () => {
       })
 
       expect(navigator).toBeDefined()
-      expect(navigator!.navigate)
-        .toHaveBeenCalledWith('resetStack', { url: '/test' }, 'myController')
+      expect(navigator!.navigate).toHaveBeenCalledWith('resetStack', { url: '/test' }, 'myController', undefined)
     })
 
     it('should resetApplication', async () => {
@@ -106,7 +106,7 @@ describe('Action: navigation', () => {
 
       expect(navigator).toBeDefined()
       expect(navigator!.navigate)
-        .toHaveBeenCalledWith('resetApplication', { url: '/test' }, 'myController')
+        .toHaveBeenCalledWith('resetApplication', { url: '/test' }, 'myController', undefined)
     })
 
     it('should pushView', async () => {
@@ -116,25 +116,25 @@ describe('Action: navigation', () => {
       })
 
       expect(navigator).toBeDefined()
-      expect(navigator!.navigate).toHaveBeenCalledWith('pushView', { url: '/test' }, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('pushView', { url: '/test' }, undefined, undefined)
     })
 
     it('should popStack', async () => {
       const navigator = await callAction({ _beagleAction_: 'beagle:popStack' })
       expect(navigator).toBeDefined()
-      expect(navigator!.navigate).toHaveBeenCalledWith('popStack', undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('popStack', undefined, undefined, undefined)
     })
 
     it('should popView', async () => {
       const navigator = await callAction({ _beagleAction_: 'beagle:popView' })
       expect(navigator).toBeDefined()
-      expect(navigator!.navigate).toHaveBeenCalledWith('popView', undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('popView', undefined, undefined, undefined)
     })
 
     it('should popToView', async () => {
       const navigator = await callAction({ _beagleAction_: 'beagle:popToView', route: '/home' })
       expect(navigator).toBeDefined()
-      expect(navigator!.navigate).toHaveBeenCalledWith('popToView', '/home', undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('popToView', '/home', undefined, undefined)
     })
 
     it('should be case-insensitive regarding the action name', async () => {
@@ -143,23 +143,20 @@ describe('Action: navigation', () => {
 
       await callAction({ _beagleAction_: 'beagle:pushstack' }, beagleView, 'beagle:pushStack')
       await callAction({ _beagleAction_: 'beagle:resetstack' }, beagleView, 'beagle:resetStack')
-      await callAction(
-        { _beagleAction_: 'beagle:resetapplication' },
-        beagleView, 'beagle:resetApplication',
-      )
+      await callAction({ _beagleAction_: 'beagle:resetapplication' }, beagleView, 'beagle:resetApplication')
       await callAction({ _beagleAction_: 'beagle:pushview' }, beagleView, 'beagle:pushView')
       await callAction({ _beagleAction_: 'beagle:popview' }, beagleView, 'beagle:popView')
       await callAction({ _beagleAction_: 'beagle:popstack' }, beagleView, 'beagle:popStack')
       await callAction({ _beagleAction_: 'beagle:poptoview' }, beagleView, 'beagle:popToView')
 
       expect(navigator).toBeDefined()
-      expect(navigator!.navigate).toHaveBeenCalledWith('pushStack', undefined, undefined)
-      expect(navigator!.navigate).toHaveBeenCalledWith('resetStack', undefined, undefined)
-      expect(navigator!.navigate).toHaveBeenCalledWith('resetApplication', undefined, undefined)
-      expect(navigator!.navigate).toHaveBeenCalledWith('pushView', undefined, undefined)
-      expect(navigator!.navigate).toHaveBeenCalledWith('popView', undefined, undefined)
-      expect(navigator!.navigate).toHaveBeenCalledWith('popStack', undefined, undefined)
-      expect(navigator!.navigate).toHaveBeenCalledWith('popToView', undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('pushStack', undefined, undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('resetStack', undefined, undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('resetApplication', undefined, undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('pushView', undefined, undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('popView', undefined, undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('popStack', undefined, undefined, undefined)
+      expect(navigator!.navigate).toHaveBeenCalledWith('popToView', undefined, undefined, undefined)
     })
 
     it('should log error', async () => {
@@ -171,6 +168,76 @@ describe('Action: navigation', () => {
       }
       await callAction({ _beagleAction_: 'beagle:popView' }, beagleView)
       expect(globalMocks.log).toHaveBeenCalledWith('error', 'test error')
+    })
+
+    describe('navigation context', () => {
+      const defaultNavigationContext: NavigationContext = { path: 'ctxPath', value: 'ctxValue' }
+
+      it('should pushStack with navigation context', async () => {
+        const navigator = await callAction({
+          _beagleAction_: 'beagle:pushStack',
+          route: { url: '/test' },
+          controllerId: 'myController',
+          navigationContext: defaultNavigationContext,
+        })
+
+        expect(navigator).toBeDefined()
+        expect(navigator!.navigate).toHaveBeenCalledWith('pushStack', { url: '/test' }, 'myController', defaultNavigationContext)
+      })
+
+      it('should resetStack with navigation context', async () => {
+        const navigator = await callAction({
+          _beagleAction_: 'beagle:resetStack',
+          route: { url: '/test' },
+          controllerId: 'myController',
+          navigationContext: defaultNavigationContext,
+        })
+
+        expect(navigator).toBeDefined()
+        expect(navigator!.navigate).toHaveBeenCalledWith('resetStack', { url: '/test' }, 'myController', defaultNavigationContext)
+      })
+
+      it('should resetApplication with navigation context', async () => {
+        const navigator = await callAction({
+          _beagleAction_: 'beagle:resetApplication',
+          route: { url: '/test' },
+          controllerId: 'myController',
+          navigationContext: defaultNavigationContext,
+        })
+
+        expect(navigator).toBeDefined()
+        expect(navigator!.navigate)
+          .toHaveBeenCalledWith('resetApplication', { url: '/test' }, 'myController', defaultNavigationContext)
+      })
+
+      it('should pushView with navigation context', async () => {
+        const navigator = await callAction({
+          _beagleAction_: 'beagle:pushView',
+          route: { url: '/test' },
+          navigationContext: defaultNavigationContext,
+        })
+
+        expect(navigator).toBeDefined()
+        expect(navigator!.navigate).toHaveBeenCalledWith('pushView', { url: '/test' }, undefined, defaultNavigationContext)
+      })
+
+      it('should popStack with navigation context', async () => {
+        const navigator = await callAction({ _beagleAction_: 'beagle:popStack', navigationContext: defaultNavigationContext })
+        expect(navigator).toBeDefined()
+        expect(navigator!.navigate).toHaveBeenCalledWith('popStack', undefined, undefined, defaultNavigationContext)
+      })
+
+      it('should popView with navigation context', async () => {
+        const navigator = await callAction({ _beagleAction_: 'beagle:popView', navigationContext: defaultNavigationContext })
+        expect(navigator).toBeDefined()
+        expect(navigator!.navigate).toHaveBeenCalledWith('popView', undefined, undefined, defaultNavigationContext)
+      })
+
+      it('should popToView with navigation context', async () => {
+        const navigator = await callAction({ _beagleAction_: 'beagle:popToView', route: '/home', navigationContext: defaultNavigationContext })
+        expect(navigator).toBeDefined()
+        expect(navigator!.navigate).toHaveBeenCalledWith('popToView', '/home', undefined, defaultNavigationContext)
+      })
     })
   })
 })

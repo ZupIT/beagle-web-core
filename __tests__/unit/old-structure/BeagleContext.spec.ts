@@ -21,7 +21,6 @@ import BeagleView from 'beagle-view'
 import { treeA } from './mocks'
 
 const baseUrl = 'http://teste.com'
-const path = '/myview'
 
 describe('ViewContentManager', () => {
   const viewId = 'beagleId'

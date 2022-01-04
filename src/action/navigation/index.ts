@@ -33,9 +33,7 @@ const openExternalURL: ActionHandler<OpenExternalURLAction> = ({ action }) => {
   window.open(url)
 }
 
-const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
-  action,
-}) => {
+const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({ action }) => {
   const { route, data } = action
   const origin = window.location.origin
   const qs = data && UrlUtils.createQueryString(data)
@@ -43,22 +41,15 @@ const openNativeRoute: ActionHandler<OpenNativeRouteAction> = ({
   window.location.href = `${origin}${prefixedRoute}${qs || ''}`
 }
 
-const navigateBeagleView: ActionHandler<GenericNavigationAction> = async ({
-  action,
-  beagleView,
-}) => {
+const navigateBeagleView: ActionHandler<GenericNavigationAction> = async ({ action, beagleView }) => {
   const actionNameLowercase = action._beagleAction_.toLowerCase()
-  const actionName = ObjectUtils.getOriginalKeyByCaseInsensitiveKey(
-    NavigationActions,
-    actionNameLowercase,
-  )
+  const actionName = ObjectUtils.getOriginalKeyByCaseInsensitiveKey(NavigationActions, actionNameLowercase)
   const navigationType = actionName.replace(/^beagle:/, '') as NavigationType
+
   try {
     const navigator = beagleView.getNavigator()
-    if (!navigator) {
-      return logger.error("Can't navigate because this Beagle View is not attached to any Beagle Navigator.")
-    }
-    await navigator.navigate(navigationType, action.route, action.controllerId)
+    if (!navigator) return logger.error("Can't navigate because this Beagle View is not attached to any Beagle Navigator.")
+    await navigator.navigate(navigationType, action.route, action.controllerId, action.navigationContext)
   } catch (error) {
     logger.error((error as any).message || error)
   }

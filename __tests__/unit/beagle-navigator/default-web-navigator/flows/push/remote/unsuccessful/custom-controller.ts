@@ -26,7 +26,7 @@ export function remoteUnsuccessfulFlowWithCustomController(
 
     beforeAll(async () => {
       t = prepare({ fetchError: error })
-      await t.navigator[type]({ url: '/test' })
+      await t.navigator[type]({ route: { url: '/test' } })
     })
 
     afterAll(() => t.tearDown())

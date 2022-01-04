@@ -20,10 +20,12 @@ import { Renderer } from 'beagle-view/render/types'
 import { BeagleNavigator, DoubleStack } from 'beagle-navigator/types'
 import { BeagleService } from 'service/beagle-service/types'
 import { GlobalContext } from 'service/global-context/types'
+import { LocalContext } from 'beagle-view/local-contexts/types'
 import { URLBuilder } from 'service/network/url-builder/types'
 import { ViewClient } from 'service/network/view-client/types'
 import { HttpClient } from 'service/network/types'
 import defaultOperations from 'operation'
+import { LocalContextsManager } from 'beagle-view/local-contexts/types'
 
 export function mockSystemDialogs(result = false) {
   const globalScope = global as any
@@ -81,6 +83,16 @@ export function createGlobalContextMock(): GlobalContext {
     clear: jest.fn(),
     get: jest.fn(() => null),
     getAsDataContext: jest.fn(() => ({ id: 'global', value: null })),
+    set: jest.fn(),
+    subscribe: jest.fn(),
+  }
+}
+
+export function createNavigationContextMock(): LocalContext {
+  return {
+    clear: jest.fn(),
+    get: jest.fn(() => null),
+    getAsDataContext: jest.fn(() => ({ id: 'navigationContext', value: null })),
     set: jest.fn(),
     subscribe: jest.fn(),
   }
@@ -186,9 +198,21 @@ export function createNavigatorMock(): BeagleNavigator<any> {
   }
 }
 
+export function createLocalContextsMock(): LocalContextsManager {
+  return {
+    getContext: jest.fn(),
+    setContext: jest.fn(),
+    getAllAsDataContext: jest.fn(() => []),
+    getContextAsDataContext: jest.fn(),
+    removeContext: jest.fn(),
+    clearAll: jest.fn(),
+  }
+}
+
 export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView {
   const renderer = createRenderer()
   const navigator = createNavigatorMock()
+  const localContextsManager = createLocalContextsMock()
   const beagleService = createBeagleServiceMock()
 
   return {
@@ -196,6 +220,7 @@ export function createBeagleViewMock(custom: PartialBeagleView = {}): BeagleView
     onChange: jest.fn(custom.onChange),
     getNavigator: jest.fn(custom.getNavigator || (() => navigator)),
     getRenderer: jest.fn(custom.getRenderer || (() => renderer)),
+    getLocalContexts: jest.fn(custom.getLocalContexts || (() => localContextsManager)),
     // @ts-ignore
     getBeagleService: custom.getBeagleService || jest.fn(() => beagleService),
     destroy: jest.fn(),

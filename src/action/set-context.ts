@@ -22,10 +22,11 @@ import { ActionHandler, SetContextAction } from './types'
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
   const { value, contextId, path } = action
   const { globalContext } = beagleView.getBeagleService()
+  const localContexts = beagleView.getLocalContexts().getAllAsDataContext()
 
   const uiTree = beagleView.getTree()
-  const globalContexts = [globalContext.getAsDataContext()]
-  const contextHierarchy = Context.evaluate(uiTree, globalContexts, false)[element.id]
+  const extraContexts = [globalContext.getAsDataContext(), ...localContexts]
+  const contextHierarchy = Context.evaluate(uiTree, extraContexts, false)[element.id]
 
   if (!contextHierarchy) {
     return logger.warn(
@@ -35,19 +36,18 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   }
 
   const context = Context.find(contextHierarchy, contextId)
-
   if (context && context.id === 'global') {
     globalContext.set(value, path)
     return
   }
+  if (contextId === 'navigationContext' || localContexts.some(lc => lc.id === contextId)) {
+    beagleView.getLocalContexts().setContext(contextId!, value, path)
+    return
+  }
 
   if (!context) {
-    const specificContextMessage = (
-      `Could not find context with id "${contextId}" for element of type "${element._beagleComponent_}" and id "${element.id}"`
-    )
-    const anyContextMessage = (
-      `Could not find any context for element of type "${element._beagleComponent_}" and id "${element.id}"`
-    )
+    const specificContextMessage = (`Could not find context with id "${contextId}" for element of type "${element._beagleComponent_}" and id "${element.id}"`)
+    const anyContextMessage = (`Could not find any context for element of type "${element._beagleComponent_}" and id "${element.id}"`)
     logger.warn(contextId ? specificContextMessage : anyContextMessage)
     return
   }

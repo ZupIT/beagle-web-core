@@ -16,11 +16,10 @@
 
 import DefaultWebNavigator from 'beagle-navigator/default-web-navigator'
 import { BeagleView as BeagleViewType } from 'beagle-view/types'
+import { BeagleService } from 'service/beagle-service/types'
+import LocalContextsManager from 'beagle-view/local-contexts/manager'
 import { DefaultWebNavigatorItem, DoubleStack as DoubleStackType } from 'beagle-navigator/types'
-import {
-  createBeagleServiceMock,
-  createDoubleStackMock,
-} from '../../../../old-structure/utils/test-utils'
+import { createBeagleServiceMock, createDoubleStackMock } from '../../../../old-structure/utils/test-utils'
 import { PopOperation, PrepareParams } from './types'
 
 export const navigationToStackOperation: Record<PopOperation, keyof DoubleStackType<any>> = {
@@ -33,9 +32,17 @@ export function prepare({
   hasSingleStack = false,
   hasSingleItem = false,
   shouldPopUntil = true,
-}: PrepareParams = {}) {
-  const service = createBeagleServiceMock()
-  const topItem = { screen: { id: '/test', content: {} } }
+  useTopItemWithNavigationContext = false,
+}: PrepareParams = {},
+beagleServiceCustom: Partial<BeagleService> = {}) {
+  const service = createBeagleServiceMock(beagleServiceCustom)
+  const topItemLocalContextsManager = LocalContextsManager.create()
+  const topItemNavigationContext = { path: 'previous', value: { previousKey: 'previous value' } }
+  if (useTopItemWithNavigationContext) {
+    topItemLocalContextsManager.setContext('navigationContext', topItemNavigationContext.value, topItemNavigationContext.path)
+  }
+
+  const topItem = { screen: { id: '/test', content: {} }, localContextsManager: topItemLocalContextsManager }
   const onChange = jest.fn()
   const doubleStack = createDoubleStackMock<DefaultWebNavigatorItem<BeagleViewType>>({
     hasSingleStack: () => !!hasSingleStack,
@@ -48,5 +55,5 @@ export function prepare({
   navigator.onChange(onChange)
   globalMocks.log.mockClear()
 
-  return { service, topItem, onChange, doubleStack, navigator }
+  return { service, topItem, onChange, doubleStack, navigator, topItemNavigationContext, topItemLocalContextsManager }
 }
