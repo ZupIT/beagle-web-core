@@ -283,7 +283,7 @@ const createBeagleView: CreateBeagleView = (
       analyticsService.createScreenRecord({
         route: route,
         currentTree: getTree(),
-        platform: platform
+        platform: platform,
       })
 
     })
