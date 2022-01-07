@@ -22,7 +22,7 @@
  * @jest-environment jsdom
  */
 
-import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction } from 'index'
+import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction, BeagleUIElement, IdentifiableBeagleUIElement } from 'index'
 import { ActionRecordParams, AnalyticsService, ScreenRecordParams } from 'service/analytics/types'
 import analyticsService from '../../../../src/service/analytics'
 import * as htmlHelpers from 'utils/html'
@@ -34,12 +34,25 @@ describe('Actions Analytics Service', () => {
   let expectedRecordBase: any
   let recordBase: ActionRecordParams
   let screenBase: ScreenRecordParams
+  let baseTree: IdentifiableBeagleUIElement
+
+  baseTree = {
+    _beagleComponent_ : "beagle:container",
+    id: "This is the root Id",
+    children: [
+      {
+        _beagleComponent_:"beagle:text",
+        id:"This id is from the child"
+      }
+    ]
+  }
 
   screenBase = {
     route: {
       url: 'text.action.payload'
     },
     platform: 'Jest',
+    currentTree: baseTree
   }
 
   actionMock = {
@@ -281,6 +294,7 @@ describe('Actions Analytics Service', () => {
   it('should call create Record for Screen', () => {
     expectedRecordBase = {
       type: 'screen',
+      rootId: 'This is the root Id',
       platform: 'WEB Jest',
       screen: 'text.action.payload',
       timestamp: 10
@@ -294,6 +308,45 @@ describe('Actions Analytics Service', () => {
     provider.getConfig = (() => analyticsConfigMock)
     analyticsServiceMock = analyticsService.create(provider)
     analyticsServiceMock.createScreenRecord(screenBase)
+    expect(provider.createRecord).toHaveBeenCalledWith(expectedRecordBase)
+
+  })
+
+  it('should call create Record for Screen with identifier as rootId', () => {
+
+    let treeWithScreenRoot = {
+        _beagleComponent_ : "beagle:screenComponent",
+        identifier: "This is an identifier",
+        id: "_beagle_1",
+        children: [
+          {
+            _beagleComponent_:"beagle:text",
+            id:"This id is from the child"
+          }
+        ]
+    }
+
+    let changedScreenBase: ScreenRecordParams = {
+      ...screenBase,
+      currentTree : treeWithScreenRoot
+    }
+
+    expectedRecordBase = {
+      type: 'screen',
+      rootId: 'This is an identifier',
+      platform: 'WEB Jest',
+      screen: 'text.action.payload',
+      timestamp: 10
+    }
+
+    analyticsConfigMock = {
+      enableScreenAnalytics: true,
+      actions: { 'beagle:pushStack': [] }
+    }
+
+    provider.getConfig = (() => analyticsConfigMock)
+    analyticsServiceMock = analyticsService.create(provider)
+    analyticsServiceMock.createScreenRecord(changedScreenBase)
     expect(provider.createRecord).toHaveBeenCalledWith(expectedRecordBase)
 
   })

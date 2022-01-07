@@ -277,11 +277,15 @@ const createBeagleView: CreateBeagleView = (
         const httpData = httpAdditionalData || networkOptions
         await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }
+
       const platform = beagleService.getConfig().platform
+
       analyticsService.createScreenRecord({
         route: route,
-        platform: platform,
+        currentTree: getTree(),
+        platform: platform
       })
+
     })
   }
 

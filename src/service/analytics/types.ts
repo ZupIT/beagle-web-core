@@ -43,6 +43,10 @@ export interface AnalyticsRecord {
   screen?: string,
 }
 
+export interface ScreenAnalyticsRecord extends AnalyticsRecord{
+  rootId?: string
+}
+
 export interface ActionAnalyticsRecord extends AnalyticsRecord {
   event: string,
   component: {
@@ -90,6 +94,7 @@ export interface ActionAnalyticsConfig {
 
 export interface ScreenRecordParams {
   route: Route,
+  currentTree: IdentifiableBeagleUIElement
   platform?: string,
 }
 
