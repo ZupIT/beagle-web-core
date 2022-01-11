@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -277,11 +277,15 @@ const createBeagleView: CreateBeagleView = (
         const httpData = httpAdditionalData || networkOptions
         await fetch({ path: url, fallback, ...httpData, ...navigationController })
       }
+
       const platform = beagleService.getConfig().platform
+
       analyticsService.createScreenRecord({
         route: route,
+        currentTree: getTree(),
         platform: platform,
       })
+
     })
   }
 
