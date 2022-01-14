@@ -23,7 +23,6 @@ const Template: Component<TemplateProps> = ({
   id,
   key,
   dataSource,
-  templates,
   viewContentManager,
 }) => {
   function onChange() {

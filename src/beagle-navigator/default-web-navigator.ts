@@ -167,7 +167,7 @@ function createDefaultWebNavigator<T>(
     popToView: ({ route, navigationContext }) => {
       if (!route) return logger.error('Can\'t pop, route should not be undefined')
       const removed = navigationStack.popUntil((item) => item.screen.id === route)
-      logger.error(`Can't pop to view "${route}"", it doesn't exist in teh current stack.`)
+      logger.error(`Can't pop to view "${route}"", it doesn't exist in the current stack.`)
       if (removed && removed.length) {
         setNavigationContext(navigationContext)
         runChangeListeners()
