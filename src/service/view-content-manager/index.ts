@@ -17,6 +17,8 @@
 import Tree from 'beagle-tree'
 import BeagleError from 'error/BeagleError'
 import { BeagleView } from 'beagle-view/types'
+import set from 'lodash/set'
+import getLodash from 'lodash/get'
 import { ViewContentManager, ViewContentManagerMap } from './types'
 
 function createViewContentManagerMap(): ViewContentManagerMap {
@@ -27,6 +29,8 @@ function createViewContentManagerMap(): ViewContentManagerMap {
       getElementId: () => elementId,
       getElement: () => Tree.findById(view.getTree(), elementId)!,
       getView: () => view,
+      getState: (key: string) => getLodash(view.getState(), `contentManager.${elementId}.${key}`),
+      setState: (key: string, value: any) => set(view.getState(), `contentManager.${elementId}.${key}`, value),
     }
   }
 

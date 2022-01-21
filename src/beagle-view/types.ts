@@ -69,4 +69,11 @@ export interface BeagleView {
    * memory leaks and calls to objects that don't exist any longer.
    */
   destroy: () => void,
+  /**
+   * Useful for recovering some view state after a navigation. The state stored here is not lost
+   * when the component is unmounted.
+   *
+   * @returns the current view state
+   */
+  getState: () => Record<string, any>,
 }

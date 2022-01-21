@@ -31,6 +31,7 @@ const createBeagleView = (
 ): BeagleView => {
   let currentUITree: IdentifiableBeagleUIElement
   const changeListeners: ChangeListener[] = []
+  const state: Record<string, any> = {}
 
   let renderer = {} as RendererType
   let localContextsManager = {} as LocalContextsManagerType
@@ -66,6 +67,7 @@ const createBeagleView = (
     getNavigator: () => parentNavigator,
     getBeagleService: () => beagleService,
     destroy,
+    getState: () => state,
   }
 
   function createRenderer() {
@@ -83,7 +85,6 @@ const createBeagleView = (
   }
 
   function createLocalContext() {
-    // renderer, getTree
     localContextsManager = LocalContextsManager.create()
   }
 
