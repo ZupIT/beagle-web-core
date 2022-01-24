@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
  * @jest-environment jsdom
  */
 
-import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction } from 'index'
+import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction, BeagleUIElement, IdentifiableBeagleUIElement } from 'index'
 import { ActionRecordParams, AnalyticsService, ScreenRecordParams } from 'service/analytics/types'
 import analyticsService from '../../../../src/service/analytics'
 import * as htmlHelpers from 'utils/html'
@@ -34,6 +34,18 @@ describe('Actions Analytics Service', () => {
   let expectedRecordBase: any
   let recordBase: ActionRecordParams
   let screenBase: ScreenRecordParams
+  let baseTree: IdentifiableBeagleUIElement
+
+  baseTree = {
+    _beagleComponent_ : "beagle:container",
+    id: "This is the root Id",
+    children: [
+      {
+        _beagleComponent_:"beagle:text",
+        id:"This id is from the child"
+      }
+    ]
+  }
 
   screenBase = {
     route: 'text.action.payload',
