@@ -42,8 +42,8 @@ export interface AnalyticsRecord {
   screen?: string,
 }
 
-export interface ScreenAnalyticsRecord extends AnalyticsRecord{
-  rootId?: string
+export interface ScreenAnalyticsRecord extends AnalyticsRecord {
+  rootId?: string,
 }
 
 export interface ActionAnalyticsRecord extends AnalyticsRecord {
@@ -93,6 +93,7 @@ export interface ActionAnalyticsConfig {
 
 export interface ScreenRecordParams {
   route: string,
+  rootId?: string,
   platform?: string,
 }
 

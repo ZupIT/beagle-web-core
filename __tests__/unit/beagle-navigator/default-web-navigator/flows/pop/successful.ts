@@ -44,6 +44,7 @@ export function successfulPopFlow(type: PopOperation) {
       expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledWith({
         route: t.topItem.screen.id,
         platform: t.service.getConfig().platform,
+        rootId: 'test-root',
       })
     })
 

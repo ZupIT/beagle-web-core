@@ -61,6 +61,7 @@ export function localFlowWithDefaultController(type: PushOperation) {
     it('should create analytics record', () => {
       expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledWith({
         route: route.screen.id,
+        rootId: route.screen.id,
         platform: t.service.getConfig().platform,
       })
       expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(t.controller.onSuccess as jest.Mock)

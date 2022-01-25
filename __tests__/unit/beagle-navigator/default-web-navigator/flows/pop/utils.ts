@@ -42,7 +42,7 @@ beagleServiceCustom: Partial<BeagleService> = {}) {
     topItemLocalContextsManager.setContext('navigationContext', topItemNavigationContext.value, topItemNavigationContext.path)
   }
 
-  const topItem = { screen: { id: '/test', content: {} }, localContextsManager: topItemLocalContextsManager }
+  const topItem = { screen: { id: '/test', content: {}, rootId: 'test-root' }, localContextsManager: topItemLocalContextsManager }
   const onChange = jest.fn()
   const doubleStack = createDoubleStackMock<DefaultWebNavigatorItem<BeagleViewType>>({
     hasSingleStack: () => !!hasSingleStack,

@@ -42,6 +42,7 @@ export interface DefaultWebNavigatorItem<T> {
   screen: {
     id: string,
     content: T,
+    rootId?: string,
   },
   controller: NavigationController,
   localContextsManager: LocalContextsManager,

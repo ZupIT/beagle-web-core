@@ -34,22 +34,11 @@ describe('Actions Analytics Service', () => {
   let expectedRecordBase: any
   let recordBase: ActionRecordParams
   let screenBase: ScreenRecordParams
-  let baseTree: IdentifiableBeagleUIElement
-
-  baseTree = {
-    _beagleComponent_ : "beagle:container",
-    id: "This is the root Id",
-    children: [
-      {
-        _beagleComponent_:"beagle:text",
-        id:"This id is from the child"
-      }
-    ]
-  }
 
   screenBase = {
     route: 'text.action.payload',
     platform: 'Jest',
+    rootId: 'test-root',
   }
 
   actionMock = {
@@ -291,6 +280,7 @@ describe('Actions Analytics Service', () => {
       type: 'screen',
       platform: 'Jest',
       screen: 'text.action.payload',
+      rootId: 'test-root',
       timestamp: 10
     }
 

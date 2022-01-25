@@ -46,12 +46,8 @@ export function remoteUnsuccessfulFlowWithCompletionOnError(type: PushOperation)
       expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledAfter(t.controller.onError as jest.Mock)
     })
 
-    it('should create analytics record', () => {
-      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledWith({
-        route: route.url,
-        platform: t.service.getConfig().platform,
-      })
-      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(t.controller.onError as jest.Mock)
+    it('should not create analytics record', () => {
+      expect(t.service.analyticsService.createScreenRecord).not.toHaveBeenCalled()
     })
 
     it('should create the navigationContext', () => {

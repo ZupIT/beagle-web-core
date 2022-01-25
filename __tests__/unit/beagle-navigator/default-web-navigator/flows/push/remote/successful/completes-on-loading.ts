@@ -38,8 +38,8 @@ export function remoteSuccessfulFlowWithCompletionOnLoading(type: PushOperation)
       expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalled()
     })
 
-    it('should not wait response to finish before creating analytics record', () => {
-      expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalled()
+    it('should not create analytics record before the success event', () => {
+      expect(t.service.analyticsService.createScreenRecord).not.toHaveBeenCalled()
     })
 
     it('should create the navigationContext', () => {

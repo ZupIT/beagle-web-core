@@ -22,7 +22,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
   async function createScreenRecord(params: ScreenRecordParams) {
     if (!provider) return
     const config = provider.getConfig()
-    const { platform, route } = params
+    const { platform, route, rootId } = params
 
     if (config && !config.enableScreenAnalytics) return
     const record: ScreenAnalyticsRecord = {
@@ -30,6 +30,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
       platform: platform || '',
       timestamp: Date.now(),
       screen: route,
+      rootId,
     }
 
     provider.createRecord(record)

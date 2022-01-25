@@ -38,17 +38,21 @@ function createDefaultWebNavigator<T>(
   widgetBuilder: (view: BeagleViewType) => T,
   navigationStack: DoubleStackType<DefaultWebNavigatorItem<T>> = DoubleStack.create()
 ): BeagleNavigator<T> {
-  const analyticsListener: NavigatorChangeListener<T> = (_, routeId) => (
-    beagleService.analyticsService.createScreenRecord({
-      route: routeId,
-      platform: beagleService.getConfig().platform,
-    })
-  )
-  const changeListeners: NavigatorChangeListener<T>[] = [analyticsListener]
+  const changeListeners: NavigatorChangeListener<T>[] = []
   const {
     navigationControllers,
     defaultNavigationController = defaultWebController,
   } = beagleService.getConfig()
+
+  function createScreenAnalytics() {
+    const topItem = navigationStack.getTopItem()
+    if (!topItem) return
+    beagleService.analyticsService.createScreenRecord({
+      route: topItem.screen.id,
+      rootId: topItem.screen.rootId,
+      platform: beagleService.getConfig().platform,
+    })
+  }
 
   function isLocalView(route: Route) {
     return !!(route as LocalView).screen
@@ -92,6 +96,14 @@ function createDefaultWebNavigator<T>(
     changeListeners.forEach(l => l(topItem.screen.content, topItem.screen.id))
   }
 
+  /**
+   * The rootId is required by the analytics record. It is the id of the component at the root of the UI tree. We can only set this after the
+   * "success" and "complete" events.
+   */
+  function updateRootIdOfCurrentScreen(id: string | undefined) {
+    navigationStack.getTopItem()!.screen.rootId = id
+  }
+
   async function fetchContentAndUpdateView(
     route: RemoteView,
     view: BeagleViewType,
@@ -100,8 +112,11 @@ function createDefaultWebNavigator<T>(
   ) {
     try {
       controller.onLoading(view, completeNavigation)
-      controller.onSuccess(view, await beagleService.viewClient.fetch(route))
+      const loadedScreen = await beagleService.viewClient.fetch(route)
+      controller.onSuccess(view, loadedScreen)
       completeNavigation()
+      updateRootIdOfCurrentScreen(loadedScreen.id)
+      createScreenAnalytics()
     } catch (error) {
       const retry = () => fetchContentAndUpdateView(route, view, controller, completeNavigation)
       controller.onError(view, error, retry, completeNavigation)
@@ -143,6 +158,8 @@ function createDefaultWebNavigator<T>(
     if (isLocalView(route)) {
       stackController.onSuccess(view, (route as LocalView).screen)
       complete()
+      updateRootIdOfCurrentScreen(routeId)
+      createScreenAnalytics()
       return Promise.resolve()
     }
 
@@ -156,6 +173,7 @@ function createDefaultWebNavigator<T>(
       navigationStack.popStack()
       setNavigationContext(navigationContext)
       runChangeListeners()
+      createScreenAnalytics()
     },
     pushView: ({ route, navigationContext }) => newNavigationItem(route, 'pushItem', undefined, navigationContext),
     popView: ({ navigationContext }) => {
@@ -163,6 +181,7 @@ function createDefaultWebNavigator<T>(
       navigationStack.popItem()
       setNavigationContext(navigationContext)
       runChangeListeners()
+      createScreenAnalytics()
     },
     popToView: ({ route, navigationContext }) => {
       if (!route) return logger.error('Can\'t pop, route should not be undefined')
@@ -171,6 +190,7 @@ function createDefaultWebNavigator<T>(
       if (removed && removed.length) {
         setNavigationContext(navigationContext)
         runChangeListeners()
+        createScreenAnalytics()
       }
     },
     resetStack: ({ route, controllerId, navigationContext }) => newNavigationItem(route, 'resetStack', controllerId, navigationContext),

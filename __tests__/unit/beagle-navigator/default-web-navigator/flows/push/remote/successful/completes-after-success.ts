@@ -23,7 +23,7 @@ export function remoteSuccessfulFlowWithCompletionAfterSuccess(type: PushOperati
   describe('Successful remote view flow (completion after success)', () => {
     const localContextsManager = createLocalContextsMock()
     const route = { url: '/test' }
-    const result = { _beagleComponent_: 'beagle:container' }
+    const result = { _beagleComponent_: 'beagle:container', id: 'test-root' }
     let t: ReturnType<typeof prepare>
 
     beforeAll(async () => {
@@ -58,7 +58,7 @@ export function remoteSuccessfulFlowWithCompletionAfterSuccess(type: PushOperati
     it('should add the new route to the navigation data structure', () => {
       expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledWith({
         controller: t.controller,
-        screen: { id: route.url, content: t.beagleViewRef.current },
+        screen: { id: route.url, content: t.beagleViewRef.current, rootId: result.id },
         localContextsManager: localContextsManager,
       })
       expect(t.doubleStack[navigationToStackOperation[type]]).toHaveBeenCalledAfter(t.controller.onSuccess as jest.Mock)
@@ -67,6 +67,7 @@ export function remoteSuccessfulFlowWithCompletionAfterSuccess(type: PushOperati
     it('should create analytics record', () => {
       expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledWith({
         route: route.url,
+        rootId: result.id,
         platform: t.service.getConfig().platform,
       })
       expect(t.service.analyticsService.createScreenRecord).toHaveBeenCalledAfter(t.controller.onSuccess as jest.Mock)
