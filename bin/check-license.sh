@@ -16,7 +16,7 @@
 #
 
 IFS=$'\n'
-year='2020'
+year='2020, 2022'
 company='ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA'
 
 # ORIGIN_URL=$(git config remote.origin.url)
