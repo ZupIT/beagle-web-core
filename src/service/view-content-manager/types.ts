@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,35 @@ import { BeagleView } from 'beagle-view/types'
 export interface ViewContentManager {
   /**
    * Gets the id of the current component.
-   * 
+   *
    * @returns the component's id
    */
   getElementId: () => string,
   /**
    * Gets the Beagle representation (tree) of the current component. Attention: this is a copy
    * of the actual node, to alter any property of the node, there must be a re-render.
-   * 
+   *
    * @returns the component's node
    */
   getElement: () => IdentifiableBeagleUIElement,
   /**
    * Gets the BeagleView that generated the current component.
-   * 
+   *
    * @returns the BeagleView
    */
   getView: () => BeagleView,
+  /**
+   * Sets a state for this component in the parent BeagleView. This is useful for persisting a
+   * state across navigations. This is not lost when the component is unmounted.
+   */
+  setState: (key: string, value: any) => void,
+  /**
+   * Recovers a state from this component in the parent BeagleView. This is useful for persisting a
+   * state across navigations. This is not lost when the component is unmounted.
+   *
+   * @returns the state
+   */
+  getState: (key: string) => Record<string, any>,
 }
 
 export interface ViewContentManagerMap {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,34 +15,29 @@
  */
 
 import BeagleService from 'service/beagle-service'
-import { BeagleView } from 'beagle-view/types'
-import { mockLocalStorage } from '../../old-structure/utils/test-utils'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
+import BeagleView from 'beagle-view'
 import { createTemplateRenderMocks } from './template.mock'
-import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement } from 'beagle-tree/types'
 import * as templateManager from 'beagle-view/render/template-manager'
 
 describe('Render a template with doTemplateRender ', () => {
-  let view: BeagleView
+  let view: BeagleViewType
   const baseUrl = 'http://test.com'
   const viewId = 'beagleId'
   const mocks = createTemplateRenderMocks()
-  const localStorageMock = mockLocalStorage()
-  const { createView, viewContentManagerMap } = BeagleService.create({
+  const service = BeagleService.create({
     baseUrl,
     components: {},
   })
+  const { viewContentManagerMap } = service
 
   describe('doTemplateRender', () => {
     beforeAll(() => {
       viewContentManagerMap.unregister(viewId)
-      view = createView()
+      view = BeagleView.create(service)
       view.getRenderer().doFullRender(mocks.baseContainer as BeagleUIElement)
       viewContentManagerMap.register(viewId, view)
-      localStorageMock.clear()
-    })
-
-    afterAll(() => {
-      localStorageMock.unmock()
     })
 
     it('should start only with the container that will be the parent of the children templates', async () => {
@@ -54,9 +49,7 @@ describe('Render a template with doTemplateRender ', () => {
       let treeChildren: IdentifiableBeagleUIElement[]
       let mockChildren: BeagleUIElement[]
       const templateManagerSpy = jest.spyOn(templateManager, 'getEvaluatedTemplate')
-      const componentManager = jest.fn((component: IdentifiableBeagleUIElement, index: number) => {
-        return component
-      })
+      const componentManager = jest.fn((component: BeagleUIElement) => component)
 
       const templateOrder = [
         mocks.templateManager.templates[0].view,
@@ -185,14 +178,9 @@ describe('Render a template with doTemplateRender ', () => {
   describe('doTemplateRender - exceptions', () => {
     beforeAll(() => {
       viewContentManagerMap.unregister(viewId)
-      view = createView()
+      view = BeagleView.create(service)
       view.getRenderer().doFullRender(mocks.baseContainer as BeagleUIElement)
       viewContentManagerMap.register(viewId, view)
-      localStorageMock.clear()
-    })
-
-    afterAll(() => {
-      localStorageMock.unmock()
     })
 
     it('should start only with the container that will be the parent of the children templates', async () => {
@@ -204,7 +192,7 @@ describe('Render a template with doTemplateRender ', () => {
       let treeChildren: IdentifiableBeagleUIElement[]
       let mockChildren: BeagleUIElement[]
       const templateManagerSpy = jest.spyOn(templateManager, 'getEvaluatedTemplate')
-      const componentManager = jest.fn((component: IdentifiableBeagleUIElement, index: number) => {
+      const componentManager = jest.fn((component: BeagleUIElement, index: number) => {
         component.id = `${component.id}:${index}`
         return component
       })

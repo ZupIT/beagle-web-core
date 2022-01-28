@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,14 +46,13 @@ function createActionAttributes(action: BeagleAction, whiteListedAttributesInCon
  */
 function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig): ActionAnalyticsRecord {
   const { action, eventName, component, platform, route } = params
-  const currentRoute = route
   const element = getElementByBeagleId(component.id)
   const position = element && getElementPosition(element)
-  const xPath = element && getPath(element)
+  const xPath = element && getPath(element) || ''
 
   let record: ActionAnalyticsRecord = {
     type: 'action',
-    platform: `WEB ${platform}`,
+    platform: platform || '',
     event: eventName,
     component: {
       type: component && component._beagleComponent_,
@@ -63,6 +62,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
     beagleAction: action._beagleAction_,
     ...createActionAttributes(action, config.actions[action._beagleAction_]),
     timestamp: Date.now(),
+    screen: route,
   }
 
   if (position)
@@ -73,14 +73,6 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
       ...record,
       additionalEntries: { ...action.analytics.additionalEntries },
     }
-  }
-
-  if (currentRoute) {
-    if ('screen' in currentRoute)
-      record.screen = currentRoute.screen.identifier || currentRoute.screen.id
-
-    if ('url' in currentRoute)
-      record.screen = currentRoute.url
   }
 
   return record

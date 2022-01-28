@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import { getEvaluatedTemplate } from 'beagle-view/render/template-manager'
 import BeagleParseError from 'error/BeagleParseError'
 import { Renderer } from './types'
 import Component from './component'
-import Navigation from './navigation'
 import Expression from './expression'
 import Action from './action'
 import Context from './context'
@@ -40,7 +39,7 @@ interface Params {
   renderToScreen: (tree: any) => void,
   lifecycleHooks: LifecycleHookMap,
   childrenMetadata: ChildrenMetadataMap,
-  executionMode: ExecutionMode,
+  executionMode?: ExecutionMode,
   actionHandlers: Record<string, ActionHandler>,
   operationHandlers: Record<string, Operation>,
   disableCssTransformation: boolean,
@@ -53,12 +52,13 @@ function createRenderer({
   renderToScreen,
   lifecycleHooks,
   childrenMetadata,
-  executionMode,
+  // this is not currently being used. It's ok to set it to whatever value
+  executionMode = 'production',
   actionHandlers,
   operationHandlers,
   disableCssTransformation,
 }: Params): Renderer {
-  const { urlBuilder, preFetcher, globalContext } = beagleView.getBeagleService()
+  const { globalContext } = beagleView.getBeagleService()
 
   function runGlobalLifecycleHook(viewTree: any = {}, lifecycle: Lifecycle) {
     if (Object.keys(viewTree).length === 0) return viewTree
@@ -95,7 +95,6 @@ function createRenderer({
       Component.formatChildrenProperty(component, childrenMetadata[component._beagleComponent_])
       Component.assignId(component)
       Component.eraseNullProperties(component)
-      Navigation.preFetchViews(component, urlBuilder, preFetcher)
     })
 
     return viewTree as IdentifiableBeagleUIElement
@@ -123,7 +122,8 @@ function createRenderer({
   }
 
   function evaluateComponents(viewTree: IdentifiableBeagleUIElement) {
-    const contextMap = Context.evaluate(viewTree, [globalContext.getAsDataContext()])
+    const localContexts = beagleView.getLocalContexts().getAllAsDataContext()
+    const contextMap = Context.evaluate(viewTree, [globalContext.getAsDataContext(), ...localContexts])
     return Tree.replaceEach(viewTree, (component) => {
       Action.deserialize({
         component,
@@ -198,13 +198,14 @@ function createRenderer({
 
     if (!anchorElement) return logger.error(`Beagle can't do the template rendering because it couldn't the node identified by the provided anchor: ${anchor}.`)
 
-    const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, globalContexts: DataContext[]) => {
-      const hierarchy = Context.evaluate(uiTree, globalContexts, false)
+    const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, extraContexts: DataContext[]) => {
+      const hierarchy = Context.evaluate(uiTree, extraContexts, false)
       return Object.keys(hierarchy).map(key => hierarchy[key]).reduce((prev, cur) => [...prev, ...cur], [])
     }
 
-    const globalContexts = [beagleView.getBeagleService().globalContext.getAsDataContext()]
-    const treeContextHierarchy = getTreeContextHierarchy(uiTree, globalContexts) || []
+    const beagleService = beagleView.getBeagleService()
+    const extraContexts = [beagleService.globalContext.getAsDataContext(), ...beagleView.getLocalContexts().getAllAsDataContext()]
+    const treeContextHierarchy = getTreeContextHierarchy(uiTree, extraContexts) || []
     const contextTemplates: IdentifiableBeagleUIElement[] = []
     const insertion = {
       prepend: (children: IdentifiableBeagleUIElement[]) => [...children?.reverse() || [], ...anchorElement.children || []],
@@ -215,9 +216,8 @@ function createRenderer({
     contexts.forEach((context, index) => {
       const contextHierarchy = [...context || [], ...treeContextHierarchy]
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
-
       if (template) {
-        let templateTree = Tree.clone(template) as IdentifiableBeagleUIElement
+        let templateTree = Tree.clone(template)
         templateTree = {
           ...templateTree,
           ...((componentManager && componentManager(templateTree, index)) || {}),

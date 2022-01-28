@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ function getContexts(component: IdentifiableBeagleUIElement, includeImplicitCont
  * Parses a tree looking for the context hierarchy of each component. The context hierarchy of a
  * component is a stack of contexts. The top position of the stack will be the closest context
  * to the component, while the bottom will be the farthest.
- * 
+ *
  * @param viewTree the tree to parse the contexts from
  * @param globalContexts optional. Will consider these global contexts when evaluating the tree
  * @param includeImplicitContexts optional, default is true. When false, contexts declared via the
@@ -85,9 +85,9 @@ function evaluate(
 /**
  * Finds a context in a context hierarchy. A context hierarchy is the stack of contexts available
  * to a component or action.
- * 
+ *
  * If there's no context with `id === contextId`, undefined is returned.
- * 
+ *
  * @param contextHierarchy stack of contexts available, top value has the greatest priority
  * @param contextId the id of the context to find. If not specified, the context in the top of the
  * stack is returned

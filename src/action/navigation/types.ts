@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import { BaseAction } from 'action/types'
-import { Route } from 'beagle-view/navigator/types'
+import { Route, NavigationContext } from 'beagle-navigator/types'
 
 export interface OpenExternalURLAction extends BaseAction {
   _beagleAction_: 'beagle:openExternalURL',
@@ -31,37 +31,44 @@ export interface OpenNativeRouteAction extends BaseAction {
 export interface PushStackAction extends BaseAction {
   _beagleAction_: 'beagle:pushStack',
   route: Route,
+  navigationContext?: NavigationContext,
 }
 
 export interface PopStackAction extends BaseAction {
   _beagleAction_: 'beagle:popStack',
+  navigationContext?: NavigationContext,
 }
 
 export interface PushViewAction extends BaseAction {
   _beagleAction_: 'beagle:pushView',
   route: Route,
   controllerId?: string,
+  navigationContext?: NavigationContext,
 }
 
 export interface PopViewAction extends BaseAction {
   _beagleAction_: 'beagle:popView',
+  navigationContext?: NavigationContext,
 }
 
 export interface PopToViewAction extends BaseAction {
   _beagleAction_: 'beagle:popToView',
   route: string,
+  navigationContext?: NavigationContext,
 }
 
 export interface ResetStackAction extends BaseAction {
   _beagleAction_: 'beagle:resetStack',
   route: Route,
   controllerId?: string,
+  navigationContext?: NavigationContext,
 }
 
 export interface ResetApplicationAction extends BaseAction {
   _beagleAction_: 'beagle:resetApplication',
   route: Route,
   controllerId?: string,
+  navigationContext?: NavigationContext,
 }
 
 export interface GenericNavigationAction extends BaseAction {
@@ -70,6 +77,7 @@ export interface GenericNavigationAction extends BaseAction {
   controllerId?: string,
   url?: string,
   data?: Record<string, any>,
+  navigationContext?: NavigationContext,
 }
 
 export type BeagleNavigationAction = (

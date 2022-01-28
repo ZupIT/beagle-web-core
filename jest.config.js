@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ module.exports = {
   },
   preset: 'ts-jest',
   setupFiles: ['./jest.setup.ts'],
+  setupFilesAfterEnv: ['jest-extended'],
   testEnvironment: "node",
   testMatch: [
     "**/?(*.)+(spec).ts"
@@ -42,6 +43,7 @@ module.exports = {
   moduleNameMapper: {
     '^action(.*)$': '<rootDir>/src/action$1',
     '^beagle-tree(.*)$': '<rootDir>/src/beagle-tree$1',
+    '^beagle-navigator(.*)$': '<rootDir>/src/beagle-navigator$1',
     '^beagle-view(.*)$': '<rootDir>/src/beagle-view$1',
     '^error(.*)$': '<rootDir>/src/error$1',
     '^legacy(.*)$': '<rootDir>/src/legacy$1',

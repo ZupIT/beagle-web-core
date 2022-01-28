@@ -15,6 +15,7 @@
     "paths": {
       "action/*": ["action/*"],
       "beagle-tree/*": ["beagle-tree/*"],
+      "beagle-navigator/*": ["beagle-navigator/*"],
       "beagle-view/*": ["beagle-view/*"],
       "error/*": ["error/*"],
       "legacy/*": ["legacy/*"],

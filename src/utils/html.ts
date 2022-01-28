@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ export function getPath(element: Node): any {
   * @returns the element of the given Id
   */
 export function getElementByBeagleId(elementId: string) {
-  if (!document || !document.querySelector) return
+  if (typeof document !== 'object' || !document.querySelector) return
   return document.querySelector(`[data-beagle-id="${elementId}"]`)
 }
 

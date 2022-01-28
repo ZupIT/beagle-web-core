@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { AnalyticsConfig, BeagleAction, IdentifiableBeagleUIElement, Route } from 'index'
+import { AnalyticsConfig, BeagleAction } from 'index'
 import formatActionRecord from 'service/analytics/actions'
 import { ActionRecordParams } from 'service/analytics/types'
 import * as htmlHelpers from 'utils/html'
@@ -42,9 +42,7 @@ describe('Actions Analytics Service', () => {
     platform: 'Jest',
     component: button,
     action: actionMock,
-    route: {
-      url: 'text.action.payload'
-    }
+    route: 'text.action.payload',
   }
 
   analyticsConfigMock = {
@@ -54,7 +52,7 @@ describe('Actions Analytics Service', () => {
 
   const expectedBase = {
     type: 'action',
-    platform: 'WEB Jest',
+    platform: 'Jest',
     event: 'OnPress',
     component: {
       type: 'beagle:button',

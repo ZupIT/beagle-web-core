@@ -10,6 +10,9 @@ Object {
   "BeagleChildren": [Function],
   "BeagleError": [Function],
   "BeagleNetworkError": [Function],
+  "BeagleViewImpl": Object {
+    "create": [Function],
+  },
   "BeforeRender": [Function],
   "BeforeStart": [Function],
   "BeforeViewSnapshot": [Function],
@@ -18,6 +21,14 @@ Object {
     "eraseNullProperties": [Function],
     "formatChildrenProperty": [Function],
     "resetIdCounter": [Function],
+  },
+  "DefaultNavigatorController": Object {
+    "onError": [Function],
+    "onLoading": [Function],
+    "onSuccess": [Function],
+  },
+  "DefaultWebNavigator": Object {
+    "create": [Function],
   },
   "ObjectUtils": Object {
     "getOriginalKeyByCaseInsensitiveKey": [Function],

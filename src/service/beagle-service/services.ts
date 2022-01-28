@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,8 @@
  */
 
 import { HttpClient } from 'service/network/types'
-import RemoteCache from 'service/network/remote-cache'
-import DefaultHeaders from 'service/network/default-headers'
 import URLBuilder from 'service/network/url-builder'
 import ViewClient from 'service/network/view-client'
-import PreFetcher from 'service/network/pre-fetcher'
 import GlobalContext from 'service/global-context'
 import ViewContentManagerMap from 'service/view-content-manager'
 import AnalyticsService from 'service/analytics'
@@ -29,32 +26,16 @@ export function createServices(config: BeagleConfig<any>) {
   const httpClient: HttpClient = {
     fetch: (...args) => (config.fetchData ? config.fetchData(...args) : fetch(...args)),
   }
-  const storage = config.customStorage || localStorage
   const urlBuilder = URLBuilder.create(config.baseUrl)
-  const analytics = config.analytics
-  const remoteCache = RemoteCache.create(storage)
-  const defaultHeaders = DefaultHeaders.create(remoteCache, config.useBeagleHeaders)
-  const viewClient = ViewClient.create(
-    storage,
-    defaultHeaders,
-    remoteCache,
-    httpClient,
-    config.strategy,
-  )
-  const preFetcher = PreFetcher.create(viewClient)
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
   const analyticsService = AnalyticsService.create(config.analyticsProvider)
+  const viewClient = config.viewClient || ViewClient.create(httpClient, urlBuilder)
 
   return {
-    storage,
     httpClient,
     urlBuilder,
-    analytics,
-    remoteCache,
     viewClient,
-    defaultHeaders,
-    preFetcher,
     globalContext,
     viewContentManagerMap,
     analyticsService,

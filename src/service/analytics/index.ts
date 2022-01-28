@@ -14,40 +14,26 @@
  * limitations under the License.
  */
 
-import { BeagleView } from 'index'
 import formatActionRecord from './actions'
-import { AnalyticsProvider, AnalyticsRecord, ActionRecordParams, ScreenRecordParams, ScreenAnalyticsRecord } from './types'
+import { AnalyticsProvider, ActionRecordParams, ScreenRecordParams, ScreenAnalyticsRecord } from './types'
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
 
   async function createScreenRecord(params: ScreenRecordParams) {
     if (!provider) return
     const config = provider.getConfig()
-    const { platform, route, currentTree } = params
+    const { platform, route, rootId } = params
 
     if (config && !config.enableScreenAnalytics) return
     const record: ScreenAnalyticsRecord = {
       type: 'screen',
-      platform: `WEB ${platform}`,
-      timestamp: Date.now()
-    }
-
-    if (route) {
-
-      if ('screen' in route)
-        record.screen = route.screen.identifier || route.screen.id
-
-      if ('url' in route)
-        record.screen = route.url
-
-      /* The backend allows us to create the root component as a ScreenComponent, 
-      which means sometimes the root id might be an identifier
-      this is deprecated and will be removed in version 2.0 */
-      record.rootId = currentTree.identifier || currentTree.id
+      platform: platform || '',
+      timestamp: Date.now(),
+      screen: route,
+      rootId,
     }
 
     provider.createRecord(record)
-
   }
 
   async function createActionRecord(params: ActionRecordParams) {
