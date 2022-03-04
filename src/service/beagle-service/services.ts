@@ -30,7 +30,7 @@ export function createServices(config: BeagleConfig<any>) {
   const globalContext = GlobalContext.create()
   const viewContentManagerMap = ViewContentManagerMap.create()
   const analyticsService = AnalyticsService.create(config.analyticsProvider)
-  const viewClient = config.viewClient || ViewClient.create(httpClient, urlBuilder)
+  const viewClient = config.viewClient || ViewClient.create(httpClient, urlBuilder, config.platform)
 
   return {
     httpClient,
