@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+import LocalContextsManager from 'beagle-view/local-contexts/manager'
 import setContext from 'action/set-context'
 import Tree from 'beagle-tree'
 import { IdentifiableBeagleUIElement } from 'beagle-tree/types'
-import { createBeagleViewMock } from '../../utils/test-utils'
+import { createBeagleViewMock, createLocalContextsMock } from '../../utils/test-utils'
 import {
   createSingleContextMock,
   createDoubleContextMock,
@@ -379,6 +380,46 @@ describe('Actions: beagle:setContext', () => {
     expect(globalContext.set).toHaveBeenCalledWith('new value', undefined)
   })
 
+  it('should call set local context when updating the navigation context', () => {
+    const mock = createGlobalContextMock()
+    const localContextsManager = createLocalContextsMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock, getLocalContexts: () => localContextsManager })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'navigationContext',
+        value: 'new value',
+      },
+      beagleView,
+      element: Tree.findById(mock, 'button')!,
+      executeAction: jest.fn(),
+    })
+
+    expect(localContextsManager.setContext).toHaveBeenCalledWith('navigationContext', 'new value', undefined)
+  })
+
+  it('should call set local context when updating a beagle view local context', () => {
+    const mock = createGlobalContextMock()
+    const localContextsManager = LocalContextsManager.create()
+    localContextsManager.setContext('my-local-context', { my: 'value' })
+    const setContextSpy = jest.spyOn(localContextsManager, 'setContext')
+    const beagleView = createBeagleViewMock({ getTree: () => mock, getLocalContexts: () => localContextsManager })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'my-local-context',
+        value: 'new value',
+      },
+      beagleView,
+      element: Tree.findById(mock, 'button')!,
+      executeAction: jest.fn(),
+    })
+
+    expect(setContextSpy).toHaveBeenCalledWith('my-local-context', 'new value', undefined)
+  })
+
   it('should call set global context when updating a global context and pass path if defined', () => {
     const mock = createGlobalContextMock()
     const beagleView = createBeagleViewMock({ getTree: () => mock })
@@ -526,5 +567,23 @@ describe('Actions: beagle:setContext', () => {
 
     expect(mock.context?.value[0]).toBe('new')
     expect(mock.context?.value[1]).toBe('value')
+  })
+
+  it('should not be able to set the navigationContext context', () => {
+    const mock = createExplicitAndImplicitContextMock()
+    const beagleView = createBeagleViewMock({ getTree: () => mock })
+
+    setContext({
+      action: {
+        _beagleAction_: 'beagle:setContext',
+        contextId: 'navigationContext',
+        value: 'value',
+      },
+      beagleView,
+      element: mock,
+      executeAction: jest.fn(),
+    })
+
+    expect(beagleView.getRenderer().doPartialRender).not.toHaveBeenCalled()
   })
 })

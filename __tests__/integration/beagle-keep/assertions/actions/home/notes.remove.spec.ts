@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ describe('Beagle Keep: actions: home: note list', () => {
 
   function shouldHideNote(result: DeleteResult) {
     const allNotes = Tree.findByType(result.viewAfterHidingNote, 'custom:note')
-    const hiddenNotes = allNotes.filter(note => note.style.display === 'none')
+    const hiddenNotes = allNotes.filter(note => note.style!.display === 'none')
     expect(hiddenNotes.length).toBe(1)
     expect(hiddenNotes[0].noteId).toBe(result.removedNoteId)
   }
@@ -93,7 +93,7 @@ describe('Beagle Keep: actions: home: note list', () => {
     it('should remove the note from the list', () => {
       const allNotes: FullNote[] = result.viewBeforeHidingNote.context!.value.notes
       const allIds = allNotes.map(note => note.id)
-      const renderedNotes = Tree.findByType(result.viewAfterRemovingNote, 'custom:note')
+      const renderedNotes = Tree.findByType(result.viewAfterRemovingNote!, 'custom:note')
       const renderedIds = renderedNotes.map(renderedNote => renderedNote.noteId)
 
       expect(allIds.length - renderedIds.length).toBe(1)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ describe('globalContext', () => {
   const listener = jest.fn()
   const globalContext = GlobalContext.create()
   globalContext.subscribe(listener)
-  
+
   beforeEach(() => {
     listener.mockClear()
     globalMocks.log.mockClear()
@@ -36,7 +36,6 @@ describe('globalContext', () => {
   })
 
   // Testing global context with object
-
   it('set with path should alter the object creating the hierarch path and trigger listeners', () => {
     const path = 'testing.path'
 
@@ -79,7 +78,7 @@ describe('globalContext', () => {
       id: 'global',
       value: text
     }
-    
+
     expect(listener).toHaveBeenCalled()
     expect(globalContext.getAsDataContext()).toEqual(obj)
   })
@@ -116,8 +115,8 @@ describe('globalContext', () => {
       }
     }
     globalContext.clear(path)
-    
-    expect(listener).toHaveBeenCalledTimes(2)
+
+    expect(listener).toHaveBeenCalledTimes(1)
     expect(globalContext.getAsDataContext()).toEqual(newObj)
   })
 
@@ -148,7 +147,7 @@ describe('globalContext', () => {
       }
     }
     globalContext.clear('testing.clear')
-    expect(listener).toHaveBeenCalledTimes(3)
+    expect(listener).toHaveBeenCalledTimes(2)
     expect(globalContext.getAsDataContext()).toEqual(newObj)
   })
 

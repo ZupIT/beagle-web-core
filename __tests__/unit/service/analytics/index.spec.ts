@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
  * @jest-environment jsdom
  */
 
-import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction } from 'index'
+import { AnalyticsConfig, AnalyticsProvider, AnalyticsRecord, BeagleAction, BeagleUIElement, IdentifiableBeagleUIElement } from 'index'
 import { ActionRecordParams, AnalyticsService, ScreenRecordParams } from 'service/analytics/types'
 import analyticsService from '../../../../src/service/analytics'
 import * as htmlHelpers from 'utils/html'
@@ -36,10 +36,9 @@ describe('Actions Analytics Service', () => {
   let screenBase: ScreenRecordParams
 
   screenBase = {
-    route: {
-      url: 'text.action.payload'
-    },
+    route: 'text.action.payload',
     platform: 'Jest',
+    rootId: 'test-root',
   }
 
   actionMock = {
@@ -56,9 +55,7 @@ describe('Actions Analytics Service', () => {
       onPress: actionMock
     },
     action: actionMock,
-    route: {
-      url: 'text.action.payload'
-    },
+    route: 'text.action.payload',
   }
 
   expectedRecordBase = {
@@ -283,6 +280,7 @@ describe('Actions Analytics Service', () => {
       type: 'screen',
       platform: 'Jest',
       screen: 'text.action.payload',
+      rootId: 'test-root',
       timestamp: 10
     }
 

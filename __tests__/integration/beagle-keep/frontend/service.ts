@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,35 @@
 
 import { uniqueId } from 'lodash'
 import BeagleService from 'service/beagle-service'
-import { BeagleConfig } from 'service/beagle-service/types'
+import DefaultWebNavigator from 'beagle-navigator/default-web-navigator'
+import { BeagleView as BeagleViewType } from 'beagle-view/types'
 import Tree from 'beagle-tree'
-import { NetworkOptions } from 'beagle-view/types'
 import createConfig, { ConfigOptions } from './config'
+import { IdentifiableBeagleUIElement } from 'index'
 
 interface ViewParams {
-  route?: string,
-  networkOptions?: NetworkOptions,
+  route: string,
   initialController?: string,
+}
+
+interface BeagleWidget {
+  view: BeagleViewType,
+  viewId: string,
+  render: jest.Mock<void, [IdentifiableBeagleUIElement<any>]>,
+}
+
+interface BeagleWidgetRef {
+  current: BeagleWidget,
 }
 
 function start(options?: ConfigOptions) {
   const service = BeagleService.create(createConfig(options))
 
-  async function createBeagleRemoteView({ networkOptions, initialController, route }: ViewParams) {
-    const view = service.createView(networkOptions, initialController)
+  function createWidget(view: BeagleViewType): BeagleWidget {
     const viewId = uniqueId()
     service.viewContentManagerMap.register(viewId, view)
 
-    const render = jest.fn((tree) => {
+    const render = jest.fn((tree: IdentifiableBeagleUIElement) => {
       Tree.forEach(tree, (component) => {
         const componentFunction = service.getConfig().components[component._beagleComponent_]
         if (!componentFunction) {
@@ -46,10 +55,19 @@ function start(options?: ConfigOptions) {
       })
     })
 
-    view.subscribe(render)
-    if (route) await view.getNavigator().pushView({ url: route })
+    view.onChange(render)
 
-    return { view, render }
+    return { view, viewId, render }
+  }
+
+  async function createBeagleRemoteView({ initialController, route }: ViewParams) {
+    const navigator = DefaultWebNavigator.create(service, createWidget)
+    const widgetRef: Partial<BeagleWidgetRef> = {}
+    navigator.onChange(widget => widgetRef.current = widget)
+
+    await navigator.pushStack({ route: { url: route }, controllerId: initialController })
+
+    return widgetRef as BeagleWidgetRef
   }
 
   return { service, createBeagleRemoteView }

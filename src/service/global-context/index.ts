@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 
 import logger from 'logger'
-import setLodash from 'lodash/set'
-import getLodash from 'lodash/get'
 import unset from 'lodash/unset'
 import has from 'lodash/has'
+import setLodash from 'lodash/set'
+import getLodash from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
 import { DataContext } from 'beagle-tree/types'
 import { GlobalContext, GlobalContextListener } from './types'
@@ -32,14 +32,13 @@ function createGlobalContext(): GlobalContext {
 
   function subscribe(listener: GlobalContextListener) {
     listeners.push(listener)
-
     return () => {
       const index = listeners.indexOf(listener)
       if (index !== -1) listeners.splice(index, 1)
     }
   }
 
-  function callUpdateListeners() {
+  function callUpdateListeners(listeners: Array<GlobalContextListener>) {
     listeners.forEach(listener => listener())
   }
 
@@ -48,35 +47,29 @@ function createGlobalContext(): GlobalContext {
   }
 
   function get(path?: string) {
-    if (!path)
-      return cloneDeep(globalContext.value)
-
+    if (!path) return cloneDeep(globalContext.value)
     return getLodash(globalContext.value, path)
   }
 
   function set(value: any, path?: string) {
-    if (!path)
-      globalContext.value = value
+    if (!path) globalContext.value = value
     else {
       globalContext.value = globalContext.value || {}
       setLodash(globalContext, `value.${path}`, value)
     }
-
-    callUpdateListeners()
+    callUpdateListeners(listeners)
   }
 
   function clear(path?: string) {
     if (!path) {
       globalContext.value = null
-      callUpdateListeners()
-    }
-    else {
+    } else {
       if (has(globalContext.value, path)) {
         unset(globalContext.value, path)
-        callUpdateListeners()
-      }
-      else logger.warn(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
+      } else logger.warn(`Invalid path: The path you are trying to clean ${path} doesn't exist in the global context`)
     }
+
+    if (!path || has(globalContext.value, path)) callUpdateListeners(listeners)
   }
 
   return {

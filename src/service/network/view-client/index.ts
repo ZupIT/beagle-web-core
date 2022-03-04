@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,248 +14,55 @@
  * limitations under the License.
  */
 
-import BeagleError, { isBeagleError } from 'error/BeagleError'
-import BeagleNetworkError from 'error/BeagleNetworkError'
-import { BeagleUIElement, ErrorComponentParams } from 'beagle-tree/types'
-import { HttpClient, HttpMethod } from 'service/network/types'
-import { RemoteCache, CacheMetadata } from 'service/network/remote-cache/types'
-import { DefaultHeaders } from 'service/network/default-headers/types'
-import { BeagleStorage } from 'service/beagle-service/types'
-import { ViewClient, Strategy, StrategyType, StrategyArrays, ViewClientLoadParams } from './types'
+import { RemoteView } from 'beagle-navigator/types'
+import { BeagleUIElement } from 'beagle-tree/types'
+import { HttpClient } from '../types'
+import { URLBuilder } from '../url-builder/types'
+import { findNavigationActions, validateUrl } from './utils'
+import { ViewClient } from './types'
 
-export const namespace = '@beagle-web/cache'
+const preFetched = new Map()
 
-const DEFAULT_STRATEGY: Strategy = 'beagle-with-fallback-to-cache'
-
-const strategyNameToStrategyArrays: Record<Strategy, StrategyArrays> = {
-  'beagle-cache-only': { fetch: ['cache-ttl', 'network-beagle'], fallback: [] },
-  'beagle-with-fallback-to-cache': { fetch: ['cache-ttl', 'network-beagle'], fallback: ['cache'] },
-  'network-with-fallback-to-cache': { fetch: ['network'], fallback: ['cache'] },
-  'cache-with-fallback-to-network': { fetch: ['cache'], fallback: ['network'] },
-  'cache-only': { fetch: ['cache'], fallback: [] },
-  'network-only': { fetch: ['network'], fallback: [] },
-  'cache-first': { fetch: ['cache', 'network'], fallback: [] },
+async function preFetchViews(
+  component: BeagleUIElement,
+  urlBuilder: URLBuilder,
+) {
+  component.children?.forEach(async (item: BeagleUIElement) => {
+    const navigationActions = findNavigationActions(item, false)
+    navigationActions.forEach(async (action: any) => {
+      const shouldPrefetch = action.route && action.route.shouldPrefetch
+      const isUrlValid = action.route && validateUrl(action.route.url)
+      if (shouldPrefetch && isUrlValid) {
+        const url = urlBuilder.build(action.route.url)
+        const response = await fetch(url, action.route.httpAdditionalData)
+        preFetched.set(action.route.url, await response.json())
+      }
+    })
+  })
 }
 
-function createViewClient(
-  storage: BeagleStorage,
-  defaultHeadersService: DefaultHeaders,
-  remoteCache: RemoteCache,
-  httpClient: HttpClient,
-  globalStrategy = DEFAULT_STRATEGY,
-): ViewClient {
-  /* The following function is async for future compatibility with environments other than web. React
-  native's localStorage, for instance, always returns promises. */
-  async function loadFromCache(url: string, method: HttpMethod = 'get') {
-    const fromStorage = await storage.getItem(`${namespace}/${url}/${method}`)
-    const uiTree = fromStorage ? JSON.parse(fromStorage) as BeagleUIElement : null
-    if (!uiTree) throw new Error('Cannot load tree from cache.')
-    return uiTree
+function createViewClient(httpClient: HttpClient, urlBuilder: URLBuilder): ViewClient {
+
+  async function fetchView(route: RemoteView): Promise<BeagleUIElement> {
+    const url = urlBuilder.build(route.url)
+    const response = await httpClient.fetch(url, route.httpAdditionalData)
+
+    if (response.ok) return await response.json()
+
+    if (route.fallback) return route.fallback
+    throw new Error(`${response.status}: ${response.statusText}`)
   }
-
-  async function loadFromCacheCheckingTTL(url: string, method: HttpMethod = 'get') {
-    const metadata = await remoteCache.getMetadata(url, method)
-    const timeInMs = Date.now()
-    const isCacheValid = (
-      metadata
-      && (timeInMs - metadata.requestTime) / 1000 < parseInt(metadata.ttl)
-    )
-    if (!metadata || !isCacheValid) {
-      throw new Error('Beagle cache has expired.')
-    }
-    return loadFromCache(url, method)
-  }
-
-  function updateCacheMetadataFromResponse(
-    response: Response,
-    requestTime: number,
-    url: string,
-    method: HttpMethod
-  ) {
-    const beagleHash = response.headers.get('beagle-hash') || ''
-    const cacheControl = response.headers.get('cache-control') || ''
-    const maxAge = cacheControl && cacheControl.match(/max-age=(\d+)/)
-    const ttl = (maxAge && maxAge[1]) || ''
-    const metadata: CacheMetadata = {
-      beagleHash,
-      requestTime,
-      ttl,
-    }
-    remoteCache.updateMetadata(metadata, url, method)
-  }
-
-  async function getUITreeCacheProtocol(
-    response: Response,
-    url: string,
-    method: HttpMethod,
-    shouldSaveCache: boolean,
-  ) {
-    let uiTree = {} as BeagleUIElement
-    if (response.status === 304) {
-      uiTree = await loadFromCache(url, method)
-    } else {
-      uiTree = await response.json() as BeagleUIElement
-      if (shouldSaveCache) {
-        storage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
-      }
-    }
-    return uiTree
-  }
-
-  async function loadFromServer(
-    url: string,
-    method: HttpMethod = 'get',
-    headers?: Record<string, string>,
-    body?: any,
-    shouldSaveCache = true,
-    useBeagleCacheProtocol = true,
-  ) {
-    let response: Response
-    const requestTime = Date.now()
-    const defaultHeaders = await defaultHeadersService.get(url, method)
-    const allHeaders: Record<string, any> = { ...headers, ...defaultHeaders }
-    try {
-      response = await httpClient.fetch(
-        url,
-        { method, headers: allHeaders, body }
-      )
-    } catch (error) {
-      throw new BeagleNetworkError(url, error.message, error?.status || 'unknown status', 'GET')
-    }
-
-    if (response.status < 100 || response.status >= 400) throw new BeagleNetworkError(url, response, response.status, method)
-
-    let uiTree = {} as BeagleUIElement
-    if (useBeagleCacheProtocol) {
-      updateCacheMetadataFromResponse(response, requestTime, url, method)
-      uiTree = await getUITreeCacheProtocol(response, url, method, shouldSaveCache)
-    } else {
-      uiTree = await response.json() as BeagleUIElement
-
-      if (shouldSaveCache) {
-        storage.setItem(`${namespace}/${url}/${method}`, JSON.stringify(uiTree))
-      }
-    }
-    return uiTree
-  }
-
-  function buildSerializableErrorsArray(errors: Error[]) {
-    const promises = errors.map(e => {
-      if (isBeagleError(e)) {
-        const serializableError = (e as BeagleError).getSerializableError()
-        return serializableError instanceof Promise
-          ? serializableError
-          : Promise.resolve(serializableError)
-      }
-
-      return Promise.resolve({ message: e.message })
-    })
-
-    return Promise.all(promises)
-  }
-
-  async function load({
-    url,
-    fallbackUIElement,
-    method = 'get',
-    headers,
-    body,
-    strategy = globalStrategy,
-    loadingComponent = 'custom:loading',
-    errorComponent = 'custom:error',
-    shouldShowLoading = true,
-    shouldShowError = true,
-    onChangeTree,
-    retry,
-  }: ViewClientLoadParams) {
-    if (body && typeof body !== 'string') {
-      body = JSON.stringify(body)
-    }
-    async function loadNetwork(hasPreviousSuccess = false, useBeagleCacheProtocol = true) {
-      if (shouldShowLoading && !hasPreviousSuccess) {
-        onChangeTree({ _beagleComponent_: loadingComponent })
-      }
-      const tree = await loadFromServer(
-        url,
-        method,
-        headers,
-        body,
-        strategy !== 'network-only',
-        useBeagleCacheProtocol,
-      )
-      onChangeTree(tree)
-    }
-
-    async function loadCache() {
-      onChangeTree(await loadFromCache(url, method))
-    }
-
-    async function loadCacheTTL() {
-      onChangeTree(await loadFromCacheCheckingTTL(url, method))
-    }
-
-    async function runStrategies(
-      strategies: Array<StrategyType>,
-      stopOnSuccess: boolean,
-    ): Promise<[boolean, Array<Error>]> {
-      const errors: Array<Error> = []
-      let hasSuccess = false
-      let isBeagleCache = false
-
-      for (let i = 0; i < strategies.length; i++) {
-        try {
-          if (strategies[i] === 'network') await loadNetwork(hasSuccess, false)
-          else if (strategies[i] === 'network-beagle') {
-            await loadNetwork(hasSuccess, true)
-            isBeagleCache = true
-          }
-          else if (strategies[i] === 'cache-ttl') {
-            await loadCacheTTL()
-            isBeagleCache = true
-          }
-          else await loadCache()
-          hasSuccess = true
-          if (stopOnSuccess || isBeagleCache) return [hasSuccess, errors]
-        } catch (error) {
-          if (!['cache', 'cache-ttl'].some(strategy => strategy === strategies[i])){
-            errors.push(error)
-          }
-        }
-      }
-
-      return [hasSuccess, errors]
-    }
-
-    async function start() {
-      const { fetch, fallback: fallbackStrategy } = strategyNameToStrategyArrays[strategy]
-      const [hasFetchSuccess, fetchErrors] = await runStrategies(fetch, false)
-      if (hasFetchSuccess) return
-      if (fallbackUIElement) return onChangeTree(fallbackUIElement)
-      const [hasFallbackStrategySuccess, fallbackStrategyErrors] = await runStrategies(fallbackStrategy, true)
-      if (hasFallbackStrategySuccess) return
-      const errors = [...fetchErrors, ...fallbackStrategyErrors]
-      if (shouldShowError) {
-        const errorUITree: BeagleUIElement & ErrorComponentParams = {
-          _beagleComponent_: errorComponent,
-          retry,
-          errors: await buildSerializableErrorsArray(errors),
-        }
-        onChangeTree(errorUITree)
-      }
-      throw errors
-    }
-
-    await start()
-  }
-
   return {
-    load,
-    loadFromCache,
-    loadFromCacheCheckingTTL,
-    loadFromServer,
+    fetch: async (route) => {
+      const view = preFetched.get(route.url) || await fetchView(route)
+      preFetched.delete(route.url)
+      preFetchViews(view, urlBuilder)
+      return view
+    },
   }
 }
 
 export default {
+  preFetchViews,
   create: createViewClient,
 }

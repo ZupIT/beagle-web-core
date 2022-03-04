@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,17 @@
 import logger from 'logger'
 
 export { logger }
+
+// navigator
+import DefaultWebNavigator from 'beagle-navigator/default-web-navigator'
+import DefaultNavigatorController from 'beagle-navigator/default-web-controller'
+
+export { DefaultWebNavigator, DefaultNavigatorController }
+
+// beagle view
+import BeagleViewImpl from 'beagle-view'
+
+export { BeagleViewImpl }
 
 // beagle utilities
 import Tree from 'beagle-tree'
@@ -42,34 +53,28 @@ export { SerializableNetworkError, SerializableResponse } from 'error/BeagleNetw
 export { BeagleError, BeagleNetworkError }
 
 // decorators
-
 export * from 'metadata/decorator'
 
 // service types
-
 export * from 'service/global-context/types'
 export * from 'service/view-content-manager/types'
 export * from 'service/beagle-service/types'
 export * from 'service/network/types'
-export * from 'service/network/default-headers/types'
-export * from 'service/network/remote-cache/types'
 export * from 'service/network/url-builder/types'
-export { Strategy, ViewClient } from 'service/network/view-client/types'
+export { ViewClient } from 'service/network/view-client/types'
 export { AnalyticsProvider, AnalyticsRecord, AnalyticsConfig } from 'service/analytics/types'
 
 // general types
-
 export * from 'action/types'
 export * from 'action/navigation/types'
 export * from 'beagle-tree/types'
 export * from 'beagle-view/types'
 export * from 'beagle-view/render/types'
 export * from 'beagle-view/render/template-manager/types'
-export * from 'beagle-view/navigator/types'
+export * from 'beagle-navigator/types'
 export * from 'metadata/types'
 
 // beagle service: default exportation
-
 import BeagleService from 'service/beagle-service'
 
 export default BeagleService.create

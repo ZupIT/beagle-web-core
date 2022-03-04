@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,25 @@
  */
 
 import formatActionRecord from './actions'
-import { AnalyticsProvider, AnalyticsRecord, ActionRecordParams, ScreenRecordParams } from './types'
+import { AnalyticsProvider, ActionRecordParams, ScreenRecordParams, ScreenAnalyticsRecord } from './types'
 
 function createAnalyticsService(provider?: AnalyticsProvider) {
 
   async function createScreenRecord(params: ScreenRecordParams) {
     if (!provider) return
     const config = provider.getConfig()
-    const { platform, route } = params
+    const { platform, route, rootId } = params
 
     if (config && !config.enableScreenAnalytics) return
-    const record: AnalyticsRecord = {
+    const record: ScreenAnalyticsRecord = {
       type: 'screen',
       platform: platform || '',
       timestamp: Date.now(),
+      screen: route,
+      rootId,
     }
-
-    if (route) {
-      if ('screen' in route)
-        record.screen = route.screen.identifier || route.screen.id
-
-      if ('url' in route)
-        record.screen = route.url
-    }
-
 
     provider.createRecord(record)
-
   }
 
   async function createActionRecord(params: ActionRecordParams) {

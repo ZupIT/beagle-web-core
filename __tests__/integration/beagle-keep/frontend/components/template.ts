@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import { map, isEqual } from 'lodash'
-import { DataContext, IdentifiableBeagleUIElement } from 'beagle-tree/types'
+import { DataContext, BeagleUIElement } from 'beagle-tree/types'
 import { Component, TemplateProps } from './types'
 import { TemplateManager,TemplateManagerItem } from 'beagle-view/render/template-manager/types'
 
@@ -23,7 +23,6 @@ const Template: Component<TemplateProps> = ({
   id,
   key,
   dataSource,
-  templates,
   viewContentManager,
 }) => {
   function onChange() {
@@ -34,7 +33,7 @@ const Template: Component<TemplateProps> = ({
     if (!hasChanged) return
 
     const contexts: DataContext[][] = dataSource.map(item => [{ id: 'item', value: item }])
-    const componentManager = (component: IdentifiableBeagleUIElement, index: number) => ({ ...component, id: `template:${id}:${component.id}:${index}` })
+    const componentManager = (component: BeagleUIElement, index: number) => ({ ...component, id: `template:${id}:${component.id}:${index}` })
     const manager: TemplateManager = {
       default: templatesRaw.find((t: TemplateManagerItem) => !t.case)?.view,
       templates: templatesRaw.filter((t: TemplateManagerItem) => t.case) || []

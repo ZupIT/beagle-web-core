@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
+ * Copyright 2020, 2022 ZUP IT SERVICOS EM TECNOLOGIA E INOVACAO SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ describe('Beagle Service: configuration', () => {
       expect(() => Configuration.validate(mockConfig)).toThrow(expect.any(BeagleError))
     })
 
-
     it('should keep two operations with the same name (case-insensitive)', () => {
       const mockConfig: BeagleConfig<any> = {
         baseUrl: 'url.com',
@@ -56,57 +55,6 @@ describe('Beagle Service: configuration', () => {
       expect(Object.keys({ ...mockConfig.customOperations })).toEqual(['function', 'FUNCTION'])
       expect(Object.keys({ ...mockConfig.customOperations }).length).toEqual(2)
 
-    })
-  })
-
-  describe('Beagle Service: configuration: update legacy', () => {
-    it('should interpret middlewares as the global lifecycle hook for beforeViewSnapshot', () => {
-      const middleware1 = jest.fn(t => ({ ...t, m1: true }))
-      const middleware2 = jest.fn(t => ({ ...t, m2: true }))
-      const config: BeagleConfig<any> = {
-        baseUrl: '',
-        components: {},
-        middlewares: [middleware1, middleware2],
-      }
-
-      Configuration.update(config)
-
-      expect(config.lifecycles!.beforeViewSnapshot).toBeDefined()
-      const tree = { _beagleComponent_: 'beagle:container', id: '1' }
-      const returnValue = config.lifecycles!.beforeViewSnapshot!(tree)
-      expect(middleware1).toHaveBeenCalledWith(tree)
-      expect(middleware2).toHaveBeenCalledWith({ ...tree, m1: true })
-    })
-
-    function shouldExecuteBothLifecycleAndMiddlewares(isLifecyclePure: boolean) {
-      const beforeViewSnapshot = jest.fn(t => {
-        if (isLifecyclePure) return { ...t, bfs: true }
-        t.bfs = true
-      })
-      const middleware1 = jest.fn(t => ({ ...t, m1: true }))
-      const middleware2 = jest.fn(t => ({ ...t, m2: true }))
-      const config: BeagleConfig<any> = {
-        baseUrl: '',
-        components: {},
-        middlewares: [middleware1, middleware2],
-        lifecycles: { beforeViewSnapshot },
-      }
-
-      Configuration.update(config)
-
-      const tree = { _beagleComponent_: 'beagle:container', id: '1' }
-      const returnValue = config.lifecycles!.beforeViewSnapshot!(tree)
-      expect(beforeViewSnapshot).toHaveBeenCalledWith(tree)
-      expect(middleware1).toHaveBeenCalledWith({ ...tree, bfs: true })
-      expect(middleware2).toHaveBeenCalledWith({ ...tree, bfs: true, m1: true })
-    }
-
-    it('should execute both middlewares and the global beforeViewSnapshot (pure)', () => {
-      shouldExecuteBothLifecycleAndMiddlewares(true)
-    })
-
-    it('should execute both middlewares and the global beforeViewSnapshot (impure)', () => {
-      shouldExecuteBothLifecycleAndMiddlewares(false)
     })
   })
 
