@@ -52,7 +52,7 @@ function formatActionRecord(params: ActionRecordParams, config: AnalyticsConfig)
 
   let record: ActionAnalyticsRecord = {
     type: 'action',
-    platform: platform || '',
+    platform: platform ? platform.split('-', 2)[1] : '',
     event: eventName,
     component: {
       type: component && component._beagleComponent_,

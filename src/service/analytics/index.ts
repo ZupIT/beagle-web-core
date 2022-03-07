@@ -27,7 +27,7 @@ function createAnalyticsService(provider?: AnalyticsProvider) {
     if (config && !config.enableScreenAnalytics) return
     const record: ScreenAnalyticsRecord = {
       type: 'screen',
-      platform: platform || '',
+      platform: platform ? platform.split('-', 2)[1] : '',
       timestamp: Date.now(),
       screen: route,
       rootId,

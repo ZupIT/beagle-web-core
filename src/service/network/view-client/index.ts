@@ -47,7 +47,7 @@ function createViewClient(httpClient: HttpClient, urlBuilder: URLBuilder, platfo
     const url = urlBuilder.build(route.url)
     const additionalData: HttpAdditionalData | undefined = platform ? {
       ...route.httpAdditionalData,
-      headers: { ...route.httpAdditionalData?.headers, 'beagle-platform': platform },
+      headers: { ...route.httpAdditionalData?.headers, 'beagle-platform': platform.split('-', 2)[0] },
     } : route.httpAdditionalData
     const response = await httpClient.fetch(url, additionalData)
 
