@@ -1,6 +1,8 @@
 {
   "horusecCliFilesOrPathsToIgnore": [
-    "**/__tests__/**"
+    "**/__tests__/**",
+    "src/action/alert.ts",
+    "src/action/confirm.ts"
   ],
   "horusecCliFalsePositiveHashes": [
     "7f4dcb734f5592f049ec82c5825ff044af3f3b228141b426338ddbaba225bdeb",
