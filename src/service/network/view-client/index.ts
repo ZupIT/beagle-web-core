@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { RemoteView } from 'beagle-navigator/types'
+import { HttpAdditionalData, RemoteView } from 'beagle-navigator/types'
 import { BeagleUIElement } from 'beagle-tree/types'
 import { HttpClient } from '../types'
 import { URLBuilder } from '../url-builder/types'
@@ -41,11 +41,15 @@ async function preFetchViews(
   })
 }
 
-function createViewClient(httpClient: HttpClient, urlBuilder: URLBuilder): ViewClient {
+function createViewClient(httpClient: HttpClient, urlBuilder: URLBuilder, platform?: string): ViewClient {
 
   async function fetchView(route: RemoteView): Promise<BeagleUIElement> {
     const url = urlBuilder.build(route.url)
-    const response = await httpClient.fetch(url, route.httpAdditionalData)
+    const additionalData: HttpAdditionalData | undefined = platform ? {
+      ...route.httpAdditionalData,
+      headers: { ...route.httpAdditionalData?.headers, 'beagle-platform': platform },
+    } : route.httpAdditionalData
+    const response = await httpClient.fetch(url, additionalData)
 
     if (response.ok) return await response.json()
 

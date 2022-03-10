@@ -59,9 +59,9 @@ export type NavigationType = Extract<keyof BeagleNavigator<any>, (
 )>
 
 export interface HttpAdditionalData {
-  method: HttpMethod,
-  headers: Record<string, string>,
-  body: any,
+  method?: HttpMethod,
+  headers?: Record<string, string>,
+  body?: any,
 }
 
 export interface RemoteView {
