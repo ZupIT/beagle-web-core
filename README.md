@@ -17,7 +17,7 @@
 
 ## **About**
 
-Beagle Web is the library used to render Beagle views in any Javascript project. It is currently used to develop Beagle for Angular, React, and React Native. The code here is the core part of all these libraries. If you're looking to develop a project in any of these frameworks, check out: 
+Beagle Web is a library used to render Beagle views in any Javascript project. It is currently used to develop Beagle for Angular, React, and React Native. The code here is the core part of all these libraries. If you're looking to develop a project in any of these frameworks, check out: 
 
 - Beagle Angular: [**npm**](https://www.npmjs.com/package/@zup-it/beagle-angular),
 [**Git**](https://github.com/ZupIT/beagle-web-angular)
