@@ -32,6 +32,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Running Horusec
+        env:
+           REPOSITORY_OWNER: ${{ github.event.pull_request.head.repo.full_name }}
         run: |
+          echo "Repository Owner is: ${{env.REPOSITORY_OWNER}}"
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest
-          horusec start -p . -e true -u "https://api-horusec.zup.com.br" -G true -n "${GITHUB_REPOSITORY}_${GITHUB_REF##*/}"
+          horusec start -p . -e=$(if [ "${{env.REPOSITORY_OWNER}}" == "ZupIT/beagle" ]; then echo "true"; else echo "false"; fi) -u "https://api-horusec.zup.com.br" -G true -n "${GITHUB_REPOSITORY}_${GITHUB_REF##*/}" -a "${{secrets.HORUSEC_TOKEN}}"
