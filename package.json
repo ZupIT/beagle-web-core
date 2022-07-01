@@ -52,7 +52,7 @@
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.4",
     "random-seed": "^0.3.0",
-    "ts-jest": "^26.4.1",
+    "ts-jest": "^28.0.5",
     "ts-node": "^10.4.0",
     "tscpaths": "https://github.com/Tiagoperes/tscpaths.git#498769882091cfe6fd8c4067bb50843dc4ca551e",
     "typescript": "3.7.5"
