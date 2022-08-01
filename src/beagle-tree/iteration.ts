@@ -25,7 +25,8 @@ export function forEach<T extends BeagleUIElement>(tree: T, iteratee: Iteratee<T
 
   function run(node: T) {
     iteratee(node, index++)
-    if (node.children) node.children.forEach(child => run(child as T))
+    const children = (node.children || (node.child ? [node.child] : null))
+    if (children) children.forEach(child => run(child as T))
   }
 
   run(tree)
@@ -53,7 +54,7 @@ export function replaceEach<T extends BeagleUIElement>(
 
 export function iterator(tree: BeagleUIElement): Iterator<BeagleUIElement> {
   if (Object.keys(tree).length === 0) return (function* () {})()
-  
+
   function* generator(node: BeagleUIElement): Iterator<BeagleUIElement> {
     yield node
     if (!node.children) return
