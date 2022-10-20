@@ -60,7 +60,7 @@ describe('Render a template with doTemplateRender ', () => {
       ]
 
       beforeAll(() => {
-        view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, componentManager)
+        view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, 'index', componentManager)
         tree = view.getTree()
         treeChildren = tree.children || []
         mockChildren = mocks.renderedContainer.children || []
@@ -132,13 +132,13 @@ describe('Render a template with doTemplateRender ', () => {
         })
 
         it('should continue with five children after a new template render call, without the mode being defined', () => {
-          view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, componentManager)
+          view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, 'index', componentManager)
           expect(view.getTree().children).toBeDefined()
           expect(view.getTree().children?.length).toBe(5)
         })
 
         it('should have ten children when the mode is defined as "append", having the previous result and then appended the new result', () => {
-          view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, componentManager, 'append')
+          view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, 'index', componentManager, 'append')
           const renderedChildren = view.getTree().children || []
 
           expect(renderedChildren).toBeDefined()
@@ -154,7 +154,7 @@ describe('Render a template with doTemplateRender ', () => {
         })
 
         it('should have fifteen children when the mode is defined as "prepend", having the new result and then appended the previous result', () => {
-          view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, componentManager, 'prepend')
+          view.getRenderer().doTemplateRender(mocks.templateManager, 'template-container', mocks.dataSource, 'index', componentManager, 'prepend')
           const renderedChildren = view.getTree().children || []
 
           expect(renderedChildren).toBeDefined()
@@ -202,7 +202,8 @@ describe('Render a template with doTemplateRender ', () => {
           mocks.exceptionTemplateManager,
           'template-container',
           mocks.exceptionDataSource,
-          componentManager
+          'index',
+          componentManager,
         )
 
         tree = view.getTree()

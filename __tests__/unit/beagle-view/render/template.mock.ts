@@ -70,14 +70,14 @@ export function createTemplateRenderMocks(): TemplateMocks {
     implicitContexts.unknown,
   ]
 
-  const renderImplicitContext = (_implicitContexts_: DataContext[] = []) =>
-    (_implicitContexts_ && _implicitContexts_.length > 0 ? { _implicitContexts_ } : {})
-
   const templates = {
-    firstChild: (implicitContext: DataContext[] = []) => ({
+    firstChild: (index: number = 0) => ({
       _beagleComponent_: 'beagle:container',
       id: `first-child`,
-      ...renderImplicitContext(implicitContext),
+      _implicitContexts_: [
+        { id: 'index', value: index, readonly: true },
+        ...implicitContexts.first,
+      ],
       children: [
         {
           _beagleComponent_: 'beagle:textInput',
@@ -86,16 +86,22 @@ export function createTemplateRenderMocks(): TemplateMocks {
         }
       ],
     }),
-    secondChild: (implicitContext: DataContext[] = []) => ({
+    secondChild: (index: number = 0) => ({
       _beagleComponent_: 'beagle:textInput',
       id: `second-child`,
       value: 'second',
-      ...renderImplicitContext(implicitContext),
+      _implicitContexts_: [
+        { id: 'index', value: index, readonly: true },
+        ...implicitContexts.second,
+      ],
     }),
-    thirdChild: (implicitContext: DataContext[] = []) => ({
+    thirdChild: (index: number = 0) => ({
       _beagleComponent_: 'beagle:container',
       id: `third-child`,
-      ...renderImplicitContext(implicitContext),
+      _implicitContexts_: [
+        { id: 'index', value: index, readonly: true },
+        ...implicitContexts.third,
+      ],
       children: [
         {
           _beagleComponent_: 'beagle:textInput',
@@ -109,16 +115,22 @@ export function createTemplateRenderMocks(): TemplateMocks {
         }
       ],
     }),
-    unknownChild: (implicitContext: DataContext[] = []) => ({
+    unknownChild: (index: number = 0) => ({
       _beagleComponent_: 'beagle:textInput',
       id: `unknown-child`,
       value: 'unknown',
-      ...renderImplicitContext(implicitContext),
+      _implicitContexts_: [
+        { id: 'index', value: index, readonly: true },
+        ...implicitContexts.unknown,
+      ],
     }),
-    secondUnknownChild: (implicitContext: DataContext[] = []) => ({
+    secondUnknownChild: (index: number = 0) => ({
       _beagleComponent_: 'beagle:container',
       id: `second-unknown-child`,
-      ...renderImplicitContext(implicitContext),
+      _implicitContexts_: [
+        { id: 'index', value: index, readonly: true },
+        ...implicitContexts.secondUnknown,
+      ],
       children: [
         {
           _beagleComponent_: 'beagle:textInput',
@@ -181,22 +193,22 @@ export function createTemplateRenderMocks(): TemplateMocks {
     renderedContainer: {
       ...baseContainer,
       children: [
-        templates.firstChild(implicitContexts.first),
-        templates.secondChild(implicitContexts.second),
-        templates.unknownChild(implicitContexts.unknown),
-        templates.thirdChild(implicitContexts.third),
-        templates.secondUnknownChild(implicitContexts.secondUnknown),
+        templates.firstChild(0),
+        templates.secondChild(1),
+        templates.unknownChild(2),
+        templates.thirdChild(3),
+        templates.secondUnknownChild(4),
       ],
     },
     renderedExceptionContainer: {
       ...baseContainer,
       children: [
-        { ...templates.firstChild(implicitContexts.first), id: 'first-child:1' },
-        { ...templates.firstChild(implicitContexts.first), id: 'first-child:2' },
-        { ...templates.thirdChild(implicitContexts.third), id: 'third-child:3' },
-        { ...templates.secondUnknownChild(implicitContexts.secondUnknown), id: 'second-unknown-child:5' },
-        { ...templates.secondChild(implicitContexts.second), id: 'second-child:7' },
-        { ...templates.thirdChild(implicitContexts.third), id: 'third-child:8' },
+        { ...templates.firstChild(1), id: 'first-child:1' },
+        { ...templates.firstChild(2), id: 'first-child:2' },
+        { ...templates.thirdChild(3), id: 'third-child:3' },
+        { ...templates.secondUnknownChild(5), id: 'second-unknown-child:5' },
+        { ...templates.secondChild(7), id: 'second-child:7' },
+        { ...templates.thirdChild(8), id: 'third-child:8' },
       ],
     }
   }

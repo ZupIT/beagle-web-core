@@ -19,13 +19,12 @@ import get from 'lodash/get'
 import { BeagleAction } from 'action/types'
 import { DataContext, BeagleUIElement } from 'beagle-tree/types'
 import Automaton from 'utils/automaton'
+import { EXPRESSION_REGEX, FULL_EXPRESSION_REGEX } from 'utils/expression'
 import BeagleNotFoundError from 'error/BeagleNotFoundError'
 import BeagleParseError from 'error/BeagleParseError'
 import { Operation } from 'service/beagle-service/types'
 import Context from './context'
 
-const expressionRegex = /(\\*)@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}/g
-const fullExpressionRegex = /^@\{(([^'\}]|('([^'\\]|\\.)*'))*)\}$/
 const IGNORE_COMPONENT_KEYS = ['id', 'context', 'children', '_beagleComponent_']
 
 function getContextBindingValue(
@@ -137,7 +136,7 @@ function evaluateExpression(expression: string, contextHierarchy: DataContext[],
 }
 
 function resolveExpressionsInString(str: string, contextHierarchy: DataContext[], operationHandlers: Record<string, Operation>) {
-  const fullMatch = str.match(fullExpressionRegex)
+  const fullMatch = str.match(FULL_EXPRESSION_REGEX)
   if (fullMatch) {
     try {
       const bindingValue = evaluateExpression(fullMatch[1], contextHierarchy, operationHandlers)
@@ -147,7 +146,7 @@ function resolveExpressionsInString(str: string, contextHierarchy: DataContext[]
       return null
     }
   }
-  return str.replace(expressionRegex, (bindingStr, slashes, path) => {
+  return str.replace(EXPRESSION_REGEX, (bindingStr, slashes, path) => {
     const isBindingScaped = slashes.length % 2 === 1
     const scapedSlashes = slashes.replace(/\\\\/g, '\\')
     if (isBindingScaped) return `${scapedSlashes.replace(/\\$/, '')}@{${path}}`

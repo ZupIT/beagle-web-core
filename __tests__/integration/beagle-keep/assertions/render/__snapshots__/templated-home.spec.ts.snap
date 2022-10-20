@@ -3517,6 +3517,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 0,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -3620,6 +3625,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 1,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -3722,6 +3732,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 2,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -3831,6 +3846,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 3,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -3933,6 +3953,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 4,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -4037,6 +4062,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 5,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -4140,6 +4170,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 6,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -4242,6 +4277,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 7,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -4702,6 +4742,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 0,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -4757,6 +4802,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 1,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -4811,6 +4861,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 2,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -4877,6 +4932,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 3,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -4931,6 +4991,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 4,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -4987,6 +5052,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 5,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -5042,6 +5112,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 6,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -5096,6 +5171,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 7,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -5618,6 +5698,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 0,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -5674,6 +5759,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 1,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -5729,6 +5819,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 2,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -5796,6 +5891,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 3,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -5851,6 +5951,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 4,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -5908,6 +6013,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 5,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -5964,6 +6074,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 6,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -6019,6 +6134,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 7,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -6542,6 +6662,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 0,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -6645,6 +6770,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 1,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -6747,6 +6877,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 2,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -6856,6 +6991,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 3,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -6958,6 +7098,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 4,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -7062,6 +7207,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 5,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -7165,6 +7315,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 6,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -7267,6 +7422,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 7,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -7727,6 +7887,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 0,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -7830,6 +7995,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 1,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -7932,6 +8102,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 2,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -8041,6 +8216,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 3,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -8143,6 +8323,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 4,
+        },
         Object {
           "id": "item",
           "value": Object {
@@ -8247,6 +8432,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 5,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -8350,6 +8540,11 @@ Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
         Object {
+          "id": "index",
+          "readonly": true,
+          "value": 6,
+        },
+        Object {
           "id": "item",
           "value": Object {
             "createdAt": 1600453354284,
@@ -8452,6 +8647,11 @@ Object {
     Object {
       "_beagleComponent_": "beagle:container",
       "_implicitContexts_": Array [
+        Object {
+          "id": "index",
+          "readonly": true,
+          "value": 7,
+        },
         Object {
           "id": "item",
           "value": Object {
