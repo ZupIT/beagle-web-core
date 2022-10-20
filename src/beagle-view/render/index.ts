@@ -208,15 +208,15 @@ function createRenderer({
       replace: (children: IdentifiableBeagleUIElement[]) => children || [],
     }
 
-    contexts.forEach((contextContexts, index) => {
-      const contextHierarchy = [...contextContexts, ...treeContextHierarchy]
+    contexts.forEach((dependentContexts, index) => {
+      const contextHierarchy = [...dependentContexts, ...treeContextHierarchy]
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
       if (template) {
         let templateTree = Tree.clone(template)
         templateTree = {
           ...templateTree,
           ...((componentManager && componentManager(templateTree, index)) || {}),
-          _implicitContexts_: [{ id: indexContextId, value: index, readonly: true }, ...contextContexts],
+          _implicitContexts_: [{ id: indexContextId, value: index, readonly: true }, ...dependentContexts],
         }
         contextTemplates.push(preProcess(templateTree))
       }
