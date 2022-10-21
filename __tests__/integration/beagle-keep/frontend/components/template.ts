@@ -39,7 +39,7 @@ const Template: Component<TemplateProps> = ({
       templates: templatesRaw.filter((t: TemplateManagerItem) => t.case) || []
     }
 
-    viewContentManager.getView().getRenderer().doTemplateRender(manager, id, contexts, componentManager)
+    viewContentManager.getView().getRenderer().doTemplateRender(manager, id, contexts, 'index', componentManager)
   }
 
   /* the setTimeout here is to simulate angular and react lifecycles, "onInit", for instance. This

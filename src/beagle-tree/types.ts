@@ -36,10 +36,15 @@ export interface DataContext {
   value?: any,
 }
 
+export interface ImplicitDataContext extends DataContext {
+  readonly?: boolean,
+  onChange?: (newValue?: any) => void,
+}
+
 export interface BeagleUIElement<Schema = DefaultSchema> {
   _beagleComponent_: ComponentName<Schema>,
   context?: DataContext,
-  _implicitContexts_?: DataContext[],
+  _implicitContexts_?: ImplicitDataContext[],
   children?: Array<BeagleUIElement<Schema>>,
   style?: Style,
   [key: string]: any,

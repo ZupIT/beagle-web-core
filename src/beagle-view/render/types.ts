@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeInsertionMode, TreeUpdateMode } from 'beagle-tree/types'
+import { BeagleUIElement, IdentifiableBeagleUIElement, ImplicitDataContext, TreeInsertionMode, TreeUpdateMode } from 'beagle-tree/types'
 import { ComponentManager, TemplateManager } from 'beagle-view/render/template-manager/types'
 
 export interface Renderer {
@@ -93,7 +93,10 @@ export interface Renderer {
    * @param templateManager templates used to render each line of the context matrix.
    * @param anchor the id of the node in the current tree to attach the new nodes to.
    * @param contexts matrix of contexts where each line represents an item to be rendered according to
-   * the templateManager.
+   * the `templateManager`.
+   * @param indexContextId optional. When not set, the default value will be `index`, otherwise, when set,
+   * it will be used to create a readonly context that allows to get the index of the current item rendered
+   * on the tree, according to the `templateManager`.
    * @param componentManager optional. When set, the template result goes through this function before
    * being finally rendered.
    * @param mode optional. when `viewTree` is just a new branch to be added to the tree, the mode must be
@@ -102,8 +105,9 @@ export interface Renderer {
   doTemplateRender: (
     templateManager: TemplateManager,
     anchor: string,
-    contexts: DataContext[][],
+    contexts: ImplicitDataContext[][],
+    indexContextId?: string,
     componentManager?: ComponentManager,
-    mode?: TreeInsertionMode
+    mode?: TreeInsertionMode,
   ) => void,
 }
