@@ -17,13 +17,14 @@
 import Tree from 'beagle-tree'
 import logger from 'logger'
 import { ActionHandler } from 'action/types'
-import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, TreeInsertionMode, TreeUpdateMode } from 'beagle-tree/types'
+import { BeagleUIElement, DataContext, IdentifiableBeagleUIElement, ImplicitDataContext, TreeInsertionMode, TreeUpdateMode } from 'beagle-tree/types'
 import { ExecutionMode, Lifecycle, LifecycleHookMap, Operation } from 'service/beagle-service/types'
 import { BeagleView } from 'beagle-view/types'
 import { ChildrenMetadataMap, ComponentTypeMetadata } from 'metadata/types'
 import { ComponentManager, TemplateManager } from 'beagle-view/render/template-manager/types'
 import { getEvaluatedTemplate } from 'beagle-view/render/template-manager'
 import BeagleParseError from 'error/BeagleParseError'
+import { getTreeContextHierarchy } from 'utils/context'
 import { Renderer } from './types'
 import Component from './component'
 import Expression from './expression'
@@ -183,7 +184,8 @@ function createRenderer({
   function doTemplateRender(
     templateManager: TemplateManager,
     anchor: string,
-    contexts: DataContext[][],
+    contexts: ImplicitDataContext[][],
+    indexContextId = 'index',
     componentManager?: ComponentManager,
     mode: TreeInsertionMode = 'replace',
   ) {
@@ -198,14 +200,7 @@ function createRenderer({
 
     if (!anchorElement) return logger.error(`Beagle can't do the template rendering because it couldn't the node identified by the provided anchor: ${anchor}.`)
 
-    const getTreeContextHierarchy = (uiTree: IdentifiableBeagleUIElement, extraContexts: DataContext[]) => {
-      const hierarchy = Context.evaluate(uiTree, extraContexts, false)
-      return Object.keys(hierarchy).map(key => hierarchy[key]).reduce((prev, cur) => [...prev, ...cur], [])
-    }
-
-    const beagleService = beagleView.getBeagleService()
-    const extraContexts = [beagleService.globalContext.getAsDataContext(), ...beagleView.getLocalContexts().getAllAsDataContext()]
-    const treeContextHierarchy = getTreeContextHierarchy(uiTree, extraContexts) || []
+    const treeContextHierarchy = getTreeContextHierarchy(beagleView)
     const contextTemplates: IdentifiableBeagleUIElement[] = []
     const insertion = {
       prepend: (children: IdentifiableBeagleUIElement[]) => [...children?.reverse() || [], ...anchorElement.children || []],
@@ -213,15 +208,15 @@ function createRenderer({
       replace: (children: IdentifiableBeagleUIElement[]) => children || [],
     }
 
-    contexts.forEach((context, index) => {
-      const contextHierarchy = [...context || [], ...treeContextHierarchy]
+    contexts.forEach((dependentContexts, index) => {
+      const contextHierarchy = [...dependentContexts, ...treeContextHierarchy]
       const template = getEvaluatedTemplate(templateManager, contextHierarchy, operationHandlers)
       if (template) {
         let templateTree = Tree.clone(template)
         templateTree = {
           ...templateTree,
           ...((componentManager && componentManager(templateTree, index)) || {}),
-          _implicitContexts_: context,
+          _implicitContexts_: [{ id: indexContextId, value: index, readonly: true }, ...dependentContexts],
         }
         contextTemplates.push(preProcess(templateTree))
       }

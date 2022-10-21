@@ -17,6 +17,7 @@
 import logger from 'logger'
 import set from 'lodash/set'
 import Context from 'beagle-view/render/context'
+import { ImplicitDataContext } from 'beagle-tree/types'
 import { ActionHandler, SetContextAction } from './types'
 
 const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleView }) => {
@@ -26,7 +27,7 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
 
   const uiTree = beagleView.getTree()
   const extraContexts = [globalContext.getAsDataContext(), ...localContexts]
-  const contextHierarchy = Context.evaluate(uiTree, extraContexts, false)[element.id]
+  const contextHierarchy = Context.evaluate(uiTree, extraContexts, true)[element.id]
 
   if (!contextHierarchy) {
     return logger.warn(
@@ -52,6 +53,12 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
     return
   }
 
+  const implicitContext = context as ImplicitDataContext
+  if (implicitContext.readonly) {
+    logger.warn(`Could not set the implicit context with id "${contextId}", because it is readonly.`)
+    return
+  }
+
   if (!path) context.value = value
   else {
     context.value = context.value || {}
@@ -59,6 +66,8 @@ const setContext: ActionHandler<SetContextAction> = ({ action, element, beagleVi
   }
 
   beagleView.getRenderer().doPartialRender(uiTree)
+
+  if (implicitContext.onChange) implicitContext.onChange(context.value)
 }
 
 export default setContext
