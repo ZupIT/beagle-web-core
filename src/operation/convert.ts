@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-import array from './array'
-import convert from './convert'
-import logic from './logic'
-import number from './number'
-import other from './other'
-import string from './string'
-
 export default {
-  ...array,
-  ...convert,
-  ...logic,
-  ...number,
-  ...other,
-  ...string,
+  int: (value: string | number): number => parseInt(typeof value === 'string' ? value : value.toString()),
+  double: (value: string | number): number => parseFloat(typeof value === 'string' ? value : value.toString()),
+  string: (value: number): string => value.toString(),
 }

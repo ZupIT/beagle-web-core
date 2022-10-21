@@ -206,6 +206,73 @@ describe('Operations', () => {
     })
   })
 
+  describe('Convert', () => {
+    describe('int', () => {
+      it('should keep a int a int', () => {
+        expect(Operation.int(6)).toBe(6)
+      })
+
+      it('should return zero when the number is higher than zero but lesser than one', () => {
+        expect(Operation.int(0.33)).toBe(0)
+      })
+
+      it('should return the number before the dot when it is a number with floating point', () => {
+        expect(Operation.int(4.343546436)).toBe(4)
+      })
+
+      it('should return the int as number when it is a string', () => {
+        expect(Operation.int('7')).toBe(7)
+      })
+
+      it('should return the number before the dot when it is a number with floating point inside a string', () => {
+        expect(Operation.int('9.33')).toBe(9)
+        expect(Operation.int('2.343546436')).toBe(2)
+      })
+
+      it('should return NaN when the values are not a number', () => {
+        expect(Operation.int('this is a text')).toBe(NaN)
+      })
+    })
+
+    describe('double', () => {
+      it('should return the int number as int', () => {
+        expect(Operation.double(6)).toBe(6)
+      })
+
+      it('should return the number when it is higher than zero but lesser than one', () => {
+        expect(Operation.double(0.33)).toBe(0.33)
+      })
+
+      it('should return the number when it has a floating point and decimal places', () => {
+        expect(Operation.double(4.343546436)).toBe(4.343546436)
+      })
+
+      it('should return the int number when it is a string', () => {
+        expect(Operation.double('7')).toBe(7)
+      })
+
+      it('should return the number when it is a number with floating point inside a string', () => {
+        expect(Operation.double('9.33')).toBe(9.33)
+        expect(Operation.double('2.343546436')).toBe(2.343546436)
+      })
+
+      it('should return NaN when the values are not a number', () => {
+        expect(Operation.double('this is a text')).toBe(NaN)
+      })
+    })
+
+    describe('string', () => {
+      it('should return the int as string when it is a number', () => {
+        expect(Operation.string(7)).toBe('7')
+      })
+
+      it('should return the number as string when it is a number with floating point', () => {
+        expect(Operation.string(9.33)).toBe('9.33')
+        expect(Operation.string(2.343546436)).toBe('2.343546436')
+      })
+    })
+  })
+
   it('should have tested every operation', () => {
     const keys = Object.keys(Operation)
     // @ts-ignore
