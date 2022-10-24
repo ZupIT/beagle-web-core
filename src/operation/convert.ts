@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
+import { isInteger, isNaN, isNumber, toNumber } from 'lodash'
+
+function convertToNumber(value: string | number): number {
+  return isNumber(value) ? value : toNumber(value)
+}
+
 export default {
-  int: (value: string | number): number => parseInt(typeof value === 'string' ? value : value.toString()),
-  double: (value: string | number): number => parseFloat(typeof value === 'string' ? value : value.toString()),
+  int: (value: string | number): number => {
+    const valueNumber = convertToNumber(value)
+    if (isInteger(valueNumber) || isNaN(valueNumber)) return valueNumber
+    return Math.trunc(valueNumber)
+  },
+  double: (value: string | number): number => convertToNumber(value),
   string: (value: number): string => value.toString(),
 }
