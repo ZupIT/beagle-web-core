@@ -40,7 +40,7 @@
     "@types/random-seed": "^0.3.3",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
-    "eslint": "^6.8.0",
+    "eslint": "^8.26.0",
     "eslint-plugin-import": "^2.20.1",
     "glob": "^7.2.0",
     "glob-promise": "^4.2.2",
