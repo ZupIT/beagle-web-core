@@ -53,7 +53,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     }
     if (!response.ok) throw new BeagleNetworkError(url, response, response.status, method)
     onSuccess && executeAction(onSuccess, 'onSuccess', contextResponse)
-  } catch (error) {
+  } catch (error: any) {
     logger.error(error)
     const event = {
       ...contextResponse,
