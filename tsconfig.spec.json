@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es2020"
+    "target": "esnext"
   },
   "include": [
     "__tests__/**/*"

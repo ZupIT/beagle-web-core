@@ -14,7 +14,7 @@
   "scripts": {
     "fix-aliases": "node node_modules/tscpaths/cjs -p tsconfig.prod.json -s ./src -o ./dist",
     "build": "tsc --project tsconfig.prod.json --declaration && node bin/copy-files && yarn fix-aliases",
-    "check-types": "tsc --project tsconfig.prod.json --noEmit",
+    "check-types": "tsc --project tsconfig.prod.json --noEmit --skipLibCheck",
     "check-test-types": "tsc --project tsconfig.spec.json --noEmit --allowSyntheticDefaultImports",
     "test": "jest",
     "test:verbose": "IS_LOGGING_ENABLED=true jest",
