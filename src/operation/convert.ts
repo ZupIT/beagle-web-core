@@ -19,9 +19,7 @@ import isNaN from 'lodash/isNaN'
 import isNumber from 'lodash/isNumber'
 import toNumber from 'lodash/toNumber'
 
-function convertToNumber(value: string | number): number {
-  return isNumber(value) ? value : toNumber(value)
-}
+const convertToNumber = (value: string | number): number => isNumber(value) ? value : toNumber(value)
 
 export default {
   int: (value: string | number): number => {
