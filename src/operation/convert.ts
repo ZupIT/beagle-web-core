@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { isInteger, isNaN, isNumber, toNumber } from 'lodash'
+import isInteger from 'lodash/isInteger'
+import isNaN from 'lodash/isNaN'
+import isNumber from 'lodash/isNumber'
+import toNumber from 'lodash/toNumber'
 
 const convertToNumber = (value: string | number): number => isNumber(value) ? value : toNumber(value)
 
