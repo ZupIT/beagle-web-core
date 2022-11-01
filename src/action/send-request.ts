@@ -53,11 +53,11 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     }
     if (!response.ok) throw new BeagleNetworkError(url, response, response.status, method)
     onSuccess && executeAction(onSuccess, 'onSuccess', contextResponse)
-  } catch (error: any) {
+  } catch (error) {
     logger.error(error)
     const event = {
       ...contextResponse,
-      message: error.message || 'Unexpected error',
+      message: (error as any).message || 'Unexpected error',
     }
     onError && executeAction(onError, 'onError', event)
   } finally {
