@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import array from './array'
-import convert from './convert'
-import logic from './logic'
-import number from './number'
-import other from './other'
-import string from './string'
+import isInteger from 'lodash/isInteger'
+import isNaN from 'lodash/isNaN'
+import isNumber from 'lodash/isNumber'
+import toNumber from 'lodash/toNumber'
+
+const convertToNumber = (value: string | number): number => isNumber(value) ? value : toNumber(value)
 
 export default {
-  ...array,
-  ...convert,
-  ...logic,
-  ...number,
-  ...other,
-  ...string,
+  int: (value: string | number): number => {
+    const valueNumber = convertToNumber(value)
+    if (isInteger(valueNumber) || isNaN(valueNumber)) return valueNumber
+    return Math.trunc(valueNumber)
+  },
+  double: (value: string | number): number => convertToNumber(value),
+  string: (value: number): string => value.toString(),
 }

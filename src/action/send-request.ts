@@ -57,7 +57,7 @@ const sendRequest: ActionHandler<SendRequestAction> = async ({
     logger.error(error)
     const event = {
       ...contextResponse,
-      message: error.message || 'Unexpected error',
+      message: (error as any).message || 'Unexpected error',
     }
     onError && executeAction(onError, 'onError', event)
   } finally {
