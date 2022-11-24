@@ -11,8 +11,8 @@ export type ContextExpressionEvalResult = {
   contextPath?: string,
 }
 
-export function isContextExpression(expression: string, view: BeagleView): ContextExpressionEvalResult {
-  if (expression) {
+export function isContextExpression(expression: any, view: BeagleView): ContextExpressionEvalResult {
+  if (expression && typeof expression === 'string') {
     const paths = expression.match(FULL_EXPRESSION_REGEX)?.at(1)?.split('.')
     const treeContextHierarchy = getTreeContextHierarchy(view)
     if (paths && paths.length && Context.find(treeContextHierarchy, paths[0])) {
